@@ -1,0 +1,279 @@
+<html>
+	<head>
+		<title>AXIOM Controller Simulator</title>
+		<script src="http://ajax.googleapis.com/ajax/libs/jquery/1.11.1/jquery.min.js"></script>
+		<script>
+		/*function Button(name, position) {
+			var _name = name;
+			var _position = position;
+			this.SetName = function(name) {
+				_name = name;
+			}
+			this.GetName = function() {
+				return _name;
+			}
+		}
+		
+		var BTN1 = new Button("ISO", 1);
+		*/
+		
+		var btn1label = "ISO";
+		var btn2label = "Shutter";
+		var btn3label = "WB";
+		
+		var parametermenuopen = "";
+		
+		var ISOOptions = ["100", "200", "400", "800"];
+		var selectedISOOptionsindex = 0;
+		
+		var ShutterOptions = ["1/25", "1/30", "1/50", "1/100", "1/200"];
+		var selectedShutterOptionsindex = 0;
+		
+		var WBOptions = ["3200K", "4000K", "5600K"];
+		var selectedWBOptionsindex = 0;
+		
+		$(document).ready(function(){
+			DrawCanvas();
+			$("#btn1").click(function(){
+				parametermenuopen = "ISO";
+				DrawCanvas();
+			});
+			$("#btn2").click(function(){
+				parametermenuopen = "Shutter";
+				DrawCanvas();
+			});
+			$("#btn3").click(function(){
+				parametermenuopen = "WB";
+				DrawCanvas();
+			});
+			$("#btnhome").click(function(){
+				parametermenuopen = "";
+				DrawCanvas();
+			});
+			$("#btnup").click(function(){
+				if(parametermenuopen == "ISO") {
+					selectedISOOptionsindex--
+					if (selectedISOOptionsindex < 0)
+						selectedISOOptionsindex = 0;
+				}
+				if(parametermenuopen == "Shutter") {
+					selectedShutterOptionsindex--;
+					if (selectedShutterOptionsindex < 0)
+						selectedShutterOptionsindex = 0;
+				}
+				if(parametermenuopen == "WB") {
+					selectedWBOptionsindex--;
+					if (selectedWBOptionsindex < 0)
+						selectedWBOptionsindex = 0;
+				}
+				DrawCanvas();
+			});
+			$("#btndown").click(function(){
+				if(parametermenuopen == "ISO") {
+					selectedISOOptionsindex++;
+					if (selectedISOOptionsindex > ISOOptions.length-1)
+						selectedISOOptionsindex = ISOOptions.length-1;
+				}
+				if(parametermenuopen == "Shutter") {
+					selectedShutterOptionsindex++;
+					if (selectedShutterOptionsindex > ShutterOptions.length-1)
+						selectedShutterOptionsindex = ShutterOptions.length-1;
+				}
+				if(parametermenuopen == "WB") {
+					selectedWBOptionsindex++;
+					if (selectedWBOptionsindex > WBOptions.length-1)
+						selectedWBOptionsindex = WBOptions.length-1;
+				}
+				DrawCanvas();
+			});
+			$("#btnsel").click(function(){
+				parametermenuopen = "";
+				DrawCanvas();
+			});
+		});
+		
+		function ClearScreen() {
+			var c = document.getElementById("myCanvas");
+			var ctx=c.getContext("2d");
+			ctx.fillStyle="#FFFFFF";
+			ctx.fillRect(0,0,320,240); 
+		}
+		
+		function DrawCanvas() {
+			var c = document.getElementById("myCanvas");
+			var ctx=c.getContext("2d");
+
+			ClearScreen();
+			
+			
+			if (parametermenuopen == "ISO") {
+				//Button 1 Selected
+				ctx.fillStyle="#666666";
+				ctx.fillRect(0,0,100,20); 
+				ctx.fillStyle="#BBBBFF";
+				ctx.font="14px Arial";
+				ctx.textAlign="center"; 
+				ctx.fillText(btn1label, 50, 15);
+				
+				//Value 1 Selected
+				ctx.font="20px Arial";
+				ctx.fillStyle="#4444FF";
+				ctx.textAlign="center"; 			
+				ctx.fillText(ISOOptions[selectedISOOptionsindex], 50, 40);
+			} else {
+				//Button 1
+				ctx.fillStyle="#000000";
+				ctx.fillRect(0,0,100,20); 
+				ctx.fillStyle="#FFFFFF";
+				ctx.font="14px Arial";
+				ctx.textAlign="center"; 
+				ctx.fillText(btn1label, 50, 15);
+				
+				//Value 1
+				ctx.font="20px Arial";
+				ctx.fillStyle="#000000";
+				ctx.textAlign="center"; 			
+				ctx.fillText(ISOOptions[selectedISOOptionsindex], 50, 40);
+			} 
+			if (parametermenuopen == "Shutter") {
+				//Button 2 Selected
+				ctx.fillStyle="#666666";
+				ctx.fillRect(110,0,100,20); 
+				ctx.fillStyle="#BBBBFF";
+				ctx.font="14px Arial";
+				ctx.textAlign="center"; 
+				ctx.fillText(btn2label, 160, 15);
+				
+				//Value 2 Selected
+				ctx.font="20px Arial";
+				ctx.fillStyle="#4444FF";
+				ctx.textAlign="center"; 			
+				ctx.fillText(ShutterOptions[selectedShutterOptionsindex], 160, 40);
+			} else {
+				//Button 2
+				ctx.fillStyle="#000000";
+				ctx.fillRect(110,0,100,20); 
+				ctx.fillStyle="#FFFFFF";
+				ctx.font="14px Arial";
+				ctx.textAlign="center"; 
+				ctx.fillText(btn2label, 160, 15);
+				
+				//Value 2
+				ctx.font="20px Arial";
+				ctx.fillStyle="#000000";
+				ctx.textAlign="center"; 			
+				ctx.fillText(ShutterOptions[selectedShutterOptionsindex], 160, 40);
+			}
+			if (parametermenuopen == "WB") {
+			//Button 2 Selected
+				ctx.fillStyle="#666666";
+				ctx.fillRect(220,0,100,20); 
+				ctx.fillStyle="#BBBBFF";
+				ctx.font="14px Arial";
+				ctx.textAlign="center"; 
+				ctx.fillText(btn3label, 270, 15);
+				
+				//Value 2 Selected
+				ctx.font="20px Arial";
+				ctx.fillStyle="#4444FF";
+				ctx.textAlign="center"; 			
+				ctx.fillText(WBOptions[selectedWBOptionsindex], 270, 40);
+			} else {
+				//Button 2
+				ctx.fillStyle="#000000";
+				ctx.fillRect(220,0,100,20); 
+				ctx.fillStyle="#FFFFFF";
+				ctx.font="14px Arial";
+				ctx.textAlign="center"; 
+				ctx.fillText(btn3label, 270, 15);
+				
+				//Value 2
+				ctx.font="20px Arial";
+				ctx.fillStyle="#000000";
+				ctx.textAlign="center"; 			
+				ctx.fillText(WBOptions[selectedWBOptionsindex], 270, 40);
+			}
+				
+			if (parametermenuopen == "ISO") {
+				ctx.fillStyle="#000000";
+				ctx.fillRect(0,50,320,120); 
+				ctx.font="14px Arial";
+				ctx.fillStyle="#FFFFFF";
+				ctx.textAlign="center"; 
+				
+				for (var i=0; i<ISOOptions.length; i++) {
+					if (selectedISOOptionsindex == i) {
+						//highlighted
+						ctx.fillStyle="#FFFFFF";
+						ctx.fillRect(0,80-14+20*i,320,20); 
+						ctx.fillStyle="#000000";
+						ctx.fillText(ISOOptions[i], 160, 80+20*i);
+					} else {
+						//not highlighted
+						ctx.fillStyle="#FFFFFF";
+						ctx.fillText(ISOOptions[i], 160, 80+20*i);
+					}
+				}
+			} else if (parametermenuopen == "Shutter") {
+				ctx.fillStyle="#000000";
+				ctx.fillRect(0,50,320,120); 
+				ctx.font="14px Arial";
+				ctx.fillStyle="#FFFFFF";
+				ctx.textAlign="center"; 
+				
+				for (var i=0; i<ShutterOptions.length; i++) {
+					if (selectedShutterOptionsindex == i) {
+						//highlighted
+						ctx.fillStyle="#FFFFFF";
+						ctx.fillRect(0,80-14+20*i,320,20); 
+						ctx.fillStyle="#000000";
+						ctx.fillText(ShutterOptions[i], 160, 80+20*i);
+					} else {
+						//not highlighted
+						ctx.fillStyle="#FFFFFF";
+						ctx.fillText(ShutterOptions[i], 160, 80+20*i);
+					}
+				}
+			} else if (parametermenuopen == "WB") {
+				ctx.fillStyle="#000000";
+				ctx.fillRect(0,50,320,120); 
+				ctx.font="14px Arial";
+				ctx.fillStyle="#FFFFFF";
+				ctx.textAlign="center"; 
+				
+				for (var i=0; i<WBOptions.length; i++) {
+					if (selectedWBOptionsindex == i) {
+						//highlighted
+						ctx.fillStyle="#FFFFFF";
+						ctx.fillRect(0,80-14+20*i,320,20); 
+						ctx.fillStyle="#000000";
+						ctx.fillText(WBOptions[i], 160, 80+20*i);
+					} else {
+						//not highlighted
+						ctx.fillStyle="#FFFFFF";
+						ctx.fillText(WBOptions[i], 160, 80+20*i);
+					}
+				}
+			}
+		}
+		</script>
+	</head>
+
+	<body>
+		<input type="button" value="Button 1" id="btn1" style="width:101px; margin-right:5px;">
+		<input type="button" value="Button 2" id="btn2" style="width:101px; margin-right:5px;">
+		<input type="button" value="Button 3" id="btn3" style="width:101px;"><br />
+		<canvas id="myCanvas" width="320" height="200" style="border:1px solid #d3d3d3;">Your browser does not support the HTML5 canvas tag.</canvas><br />
+		<input type="button" value="Button 4" id="btn4" style="width:101px; margin-right:5px;">
+		<input type="button" value="Button 5" id="btn5" style="width:101px; margin-right:5px;">
+		<input type="button" value="Button 6" id="btn6" style="width:101px;"><br />
+		<div style="position:absolute; top:8px; left:360px">
+			<input type="button" value="Home" id="btnhome"><br /><br />
+			<input type="button" value="up" id="btnup" style="margin-left:54px; width:50px; height:50px;"><br />
+			<input type="button" value="left" id="btnleft" style="width:50px; height:50px;" >
+			<input type="button" value="OK" id="btnsel" style="width:50px; height:50px;" >
+			<input type="button" value="right" id="btnright" style="width:50px; height:50px;"><br />
+			<input type="button" value="down" id="btndown" style="margin-left:54px; width:50px; height:50px;">
+		</div>
+	</body
+</html>
