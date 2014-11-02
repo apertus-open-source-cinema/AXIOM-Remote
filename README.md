@@ -1,4 +1,4 @@
-dictator
+AXIOM Dictator Remote Control
 ========
 
-The dictator is a universal wire or wireless remote control for the Elphel camera/Axiom and many other things.
+The Dictator is a universal remote control for the AXIOM and potentially many other things.
