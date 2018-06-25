@@ -1,4 +1,4 @@
-AXIOM Dictator Remote Control
+AXIOM Remote
 ========
 
-The Dictator is a universal remote control for the AXIOM and potentially many other things.
+A universal remote control with rocker switches, buttons, dials and an LCD for menu/settings (no live video) for AXIOM devices and potentially many other things as well.
