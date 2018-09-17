@@ -294,8 +294,10 @@
 #define pgm_read_byte(addr) (*(const unsigned char *)(addr))
 #define pgm_read_16bit(addr) (*(uint16_t)(addr))
 #define pgm_read_word(addr) (*(const unsigned short *)(addr))
- #define pgm_read_dword(addr) (*(const unsigned long *)(addr))
+#define pgm_read_dword(addr) (*(const unsigned long *)(addr))
 #define pgm_read_pointer(addr) ((void *)pgm_read_dword(addr))
+
+#define array_len(a)    (sizeof(a)/sizeof(a[0]))
 
 #define _width 320
 #define _height 240

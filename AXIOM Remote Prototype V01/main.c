@@ -50,13 +50,13 @@ uint16_t framebuffer[_width][_height];
 
 // Menu related stuff
 uint8_t menuSelectionIndex = 0;
-enum currentMenu {Main, Submenu1, Submenu2}; 
-enum currentMenu CurrentMenu;
+enum _menus_t {Main, Submenu1, Submenu2}; 
+enum _menus_t _current_menu;
 char menuItemLabels[10][20]; //Main Menu
 char menuItemValuesText[10][10];
 uint8_t menuItemValues[10];
-uint8_t menu_offset = 0;
-uint8_t parameter_menu_active;
+uint8_t _menu_offset = 0;
+uint8_t _parameter_menu_active;
 uint8_t parameterSelectionIndex;
 typedef struct drop_down_choice_t {
     char      label[32];
@@ -71,9 +71,13 @@ typedef struct menu_item_t {
     char              label[64];
     bool              disabled;
     bool              hidden;
+    enum _menus_t     link_to_submenu;
     menu_item_type_t  type; 
     uint8_t           value;
-    uint16_t          UID;
+    bool              (*action_ptr)(); //function pointer to the action when that menu entry is clicked
+    char*             (*current_value_ptr)(); //function pointer to return the current value
+    drop_down_choice_t choices[30];
+    uint8_t            choice_count;
 } menu_item_t;
 menu_item_t _menu_main_item[10];
 char menu_breadcrumbs[64];
@@ -115,6 +119,17 @@ int8_t LimitRange(int8_t in, int8_t min, int8_t max) {
         return min;
     }
     return in;
+}
+
+bool menu_item_test_action() {
+    //do something!
+    return true;
+}
+
+char * menu_item_test_get_current_value(menu_item_t this) {
+    char return_value[32];
+    strcpy (return_value, this.choices[this.value].label);
+    return return_value;
 }
 
 static inline
@@ -1666,21 +1681,21 @@ void lcd_init() {
 }
 
 uint8_t get_current_menu_item_count() {
-    if (CurrentMenu == Main) {
+    if (_current_menu == Main) {
         return sizeof (menuItemLabels) / sizeof *(menuItemLabels);
     }
-    if (CurrentMenu == Submenu1) {
+    if (_current_menu == Submenu1) {
         return sizeof (submenu1_item_labels) / sizeof *(submenu1_item_labels);
     }
-    if (CurrentMenu == Submenu2) {
-        return sizeof (submenu2_item_labels) / sizeof *(submenu2_item_labels);
+    if (_current_menu == Submenu2) {
+        return array_len(submenu2_item_labels);
     }
 }
 
 uint8_t getCurrentParameterItemCount() {
-    if (parameter_menu_active == 2)
+    if (_parameter_menu_active == 3)
         return 2;
-    if (parameter_menu_active == 5)
+    if (_parameter_menu_active == 4)
         return 4;
 }
 
@@ -1701,17 +1716,6 @@ void initMenu(){
     _menu_selected_text_color = color565(255, 255, 255);
     _menu_hightlighted_item_color = color565(0, 128, 255);
     _menu_disabled_text_color = color565(230, 230, 230);
-
-    
-   /*
-    //sprintf(menuItemValuesText[2], mainMenuItem2 ? "On" : "Off");
-    //sprintf(menuItemValuesText[3], "%d", menuItemValues[3]);
-    sprintf(menuItemValuesText[4], "%d", menuItemValues[4]);
-    //sprintf(menuItemValuesText[5], "%d", menuItemValues[5]);
-    sprintf(menuItemValuesText[6], "%d", menuItemValues[6]);
-    sprintf(menuItemValuesText[7], "%d", menuItemValues[7]);
-    sprintf(menuItemValuesText[8], "%d", menuItemValues[8]);
-    sprintf(menuItemValuesText[9], "%d", menuItemValues[9]);*/
     
     
     strcpy(submenu1_item_labels[0], "<- back");
@@ -1730,7 +1734,7 @@ void initMenu(){
     strcpy(mainMenuItem2Choices[0].label, "Off");
     mainMenuItem2Choices[1].value = 1;
     strcpy(mainMenuItem2Choices[1].label, "On");
-    mainMenuItem2 = 0;
+    //mainMenuItem2 = 0;
     
     mainMenuItem3Choices[0].value = 0;
     strcpy(mainMenuItem3Choices[0].label, "Low");
@@ -1748,31 +1752,47 @@ void initMenu(){
     _menu_main_item[0].hidden = false;
     strcpy(_menu_main_item[0].label, "Submenu 1");
     _menu_main_item[0].type = submenu;
+    _menu_main_item[0].link_to_submenu = Submenu1;
+    _menu_main_item[0].current_value_ptr = &menu_item_test_get_current_value;
     
     _menu_main_item[1].disabled = false;
     _menu_main_item[1].hidden = false;
     strcpy(_menu_main_item[1].label, "Submenu 2");
     _menu_main_item[1].type = submenu;
+    _menu_main_item[0].link_to_submenu = Submenu2;
+    _menu_main_item[1].current_value_ptr = &menu_item_test_get_current_value;
     
     _menu_main_item[2].disabled = true;
     _menu_main_item[2].hidden = false;
     strcpy(_menu_main_item[2].label, "disabled sample");
     _menu_main_item[2].type = dropdown;
+    _menu_main_item[2].current_value_ptr = &menu_item_test_get_current_value;
     
     _menu_main_item[3].disabled = false;
     _menu_main_item[3].hidden = false;
     strcpy(_menu_main_item[3].label, "Fun");
     _menu_main_item[3].type = dropdown;
+    _menu_main_item[3].choices[0] = mainMenuItem2Choices[0];
+    _menu_main_item[3].choices[1] = mainMenuItem2Choices[1];
+    _menu_main_item[3].choice_count = array_len(mainMenuItem2Choices);
+    _menu_main_item[3].current_value_ptr = &menu_item_test_get_current_value;
     
     _menu_main_item[4].disabled = false;
     _menu_main_item[4].hidden = false;
     strcpy(_menu_main_item[4].label, "Fun Level");
     _menu_main_item[4].type = dropdown;
+    //_menu_main_item[4].action_ptr = &menu_item_test_action;
+    _menu_main_item[4].current_value_ptr = &menu_item_test_get_current_value;
+    _menu_main_item[4].choices[0] = mainMenuItem3Choices[0];
+    _menu_main_item[4].choices[1] = mainMenuItem3Choices[1];
+    _menu_main_item[4].choices[2] = mainMenuItem3Choices[2];
+    _menu_main_item[4].choices[3] = mainMenuItem3Choices[3];
+    _menu_main_item[4].choice_count = array_len(mainMenuItem3Choices);
     
-    CurrentMenu = Main;
-    parameter_menu_active = 0;
+    _current_menu = Main;
+    _parameter_menu_active = 0;
     parameterSelectionIndex = 0;
-    menu_offset = 0;
+    _menu_offset = 0;
     
     strcpy(menu_breadcrumbs, "Menu");
 }
@@ -1789,16 +1809,16 @@ void initMenu(){
     @param    currentvalueindex which option (index) from the struct is the current setting
 */
 /**************************************************************************/
-void draw_parameter_menu(uint16_t x, uint16_t y, drop_down_choice_t items[], uint8_t currentvalueindex){
-    uint8_t choice_number = getCurrentParameterItemCount(); // why doesn't this work?: sizeof (items) / sizeof (*items); //
-    uint16_t height = 2 + 2 + choice_number * 30;
+void draw_parameter_menu(uint16_t x, uint16_t y, menu_item_t menuitem) {
+    //uint8_t choice_number = 2;//choice_count; //getCurrentParameterItemCount(); // why doesn't this work?: sizeof (items) / sizeof (*items); //
+    uint16_t height = 2 + 2 + menuitem.choice_count * 30;
     
     //calculate the maximum width of the provided text options so we can define the menu width
     uint16_t max_width = 0;
     uint8_t i;
-    for (i=0; i<choice_number; i++) {
+    for (i=0; i<menuitem.choice_count; i++) {
         uint16_t x1,y1,w1,h1;
-        getTextBounds(items[i].label, x, y, &x1, &y1, &w1, &h1);
+        getTextBounds(menuitem.choices[i].label, x, y, &x1, &y1, &w1, &h1);
         if (w1 > max_width) {
             max_width = w1;
         }
@@ -1829,9 +1849,9 @@ void draw_parameter_menu(uint16_t x, uint16_t y, drop_down_choice_t items[], uin
     fillRect (x, y, width, height, menu_background_color);
     drawRect (x+1, y+1, width-2, height-2, menu_text_color);
     
-    for (i=0; i<choice_number; i++){
+    for (i=0; i<menuitem.choice_count; i++){
         char draw_label[32];
-        strcpy(draw_label, items[i].label);
+        strcpy(draw_label, menuitem.choices[i].label);
         
         if (i == parameterSelectionIndex) {
             if (btn_E1_pressed){
@@ -1847,7 +1867,7 @@ void draw_parameter_menu(uint16_t x, uint16_t y, drop_down_choice_t items[], uin
         }
         
         // add a circle icon at beginning of the line and label of the current setting
-        if (i == currentvalueindex) {
+        if (i == menuitem.value) {
             if (i == parameterSelectionIndex) {
               fillCircle(x+6, y+15+i*30, 3, _menu_selected_text_color);
             } else {
@@ -1858,38 +1878,64 @@ void draw_parameter_menu(uint16_t x, uint16_t y, drop_down_choice_t items[], uin
 }
 
 void btn_E1_released () {
-    if (CurrentMenu == Main) {
-        if (menuSelectionIndex == 0) {
-            CurrentMenu = Submenu1;
-            menuSelectionIndex = 0;
-            strcpy(menu_breadcrumbs, "Menu > Submenu1");
+    // if this menu item has been disabled don't do anything
+    if (_menu_main_item[menuSelectionIndex].disabled) {
+        return;
+    }
+    
+    if (_current_menu == Main) {
+        
+        // is the current item linking into a submenu?
+        if (_menu_main_item[menuSelectionIndex].type == submenu) {
+            // navigate into submenu
+            _current_menu = _menu_main_item[menuSelectionIndex].link_to_submenu;
+           
+            // reset cursor to first item in list;
+            menuSelectionIndex = 0; 
+            
+            //update bread crumbs
+            strcpy(menu_breadcrumbs, "Menu > ");
+            strcat(menu_breadcrumbs, _menu_main_item[menuSelectionIndex].label);
+            return;
         }
-        if (menuSelectionIndex == 1) {
-            CurrentMenu = Submenu2;
-            menuSelectionIndex = 0;
-            strcpy(menu_breadcrumbs, "Menu > Submenu2");
+        
+        // is the current item supposed to show a drop-down menu?
+        if ((_menu_main_item[menuSelectionIndex].type == dropdown) && (_parameter_menu_active == 0)) {
+            //open parameter menu
+            _parameter_menu_active = menuSelectionIndex;
+            return;
         }
-        if ((menuSelectionIndex == 2) && (parameter_menu_active == 0)) {
-            parameter_menu_active = 2;
-        } else if ((menuSelectionIndex == 2) && (parameter_menu_active == 2)) {
+        
+        // are we in a drop-down menu currently?
+        if((_menu_main_item[menuSelectionIndex].type == dropdown) && (_parameter_menu_active != 0)) {
+            // set new value
+            _menu_main_item[menuSelectionIndex].value = parameterSelectionIndex;
+            
+            //close parameter menu
+            _parameter_menu_active = 0;
+        }
+/*
+        if ((menuSelectionIndex == 2) && (_parameter_menu_active == 0)) {
+            _parameter_menu_active = 2;
+        } else if ((menuSelectionIndex == 2) && (_parameter_menu_active == 2)) {
             mainMenuItem2 = parameterSelectionIndex;
-            parameter_menu_active = 0;
+            _parameter_menu_active = 0;
         }
-        if ((menuSelectionIndex == 5) && (parameter_menu_active == 0)) {
-            parameter_menu_active = 5;
-        } else if ((menuSelectionIndex == 5) && (parameter_menu_active == 5)) {
+        if ((menuSelectionIndex == 5) && (_parameter_menu_active == 0)) {
+            _parameter_menu_active = 5;
+        } else if ((menuSelectionIndex == 5) && (_parameter_menu_active == 5)) {
             mainMenuItem3 = parameterSelectionIndex;
-            parameter_menu_active = 0;
-        }
-    } else if (CurrentMenu == Submenu1) {
+            _parameter_menu_active = 0;
+        }*/
+    } else if (_current_menu == Submenu1) {
         if (menuSelectionIndex == 0) {
-            CurrentMenu = Main;
+            _current_menu = Main;
             menuSelectionIndex = 0;
             strcpy(menu_breadcrumbs, "Menu");
         }
-    } else if (CurrentMenu == Submenu2) {
+    } else if (_current_menu == Submenu2) {
         if (menuSelectionIndex == 0) {
-            CurrentMenu = Main;
+            _current_menu = Main;
             menuSelectionIndex = 1;
             strcpy(menu_breadcrumbs, "Menu");
         }
@@ -1897,16 +1943,16 @@ void btn_E1_released () {
 }
 void btn_E2_released () {
     // to emulate the back button currently
-    if (CurrentMenu == Submenu1) {
-            CurrentMenu = Main;
+    if (_current_menu == Submenu1) {
+            _current_menu = Main;
             menuSelectionIndex = 0;
             strcpy(menu_breadcrumbs, "Menu");
-    } else if (CurrentMenu == Submenu2) {
-            CurrentMenu = Main;
+    } else if (_current_menu == Submenu2) {
+            _current_menu = Main;
             menuSelectionIndex = 1;
             strcpy(menu_breadcrumbs, "Menu");
-    } else if (parameter_menu_active) {
-        parameter_menu_active = 0;
+    } else if (_parameter_menu_active) {
+        _parameter_menu_active = 0;
     }
 }
 
@@ -1919,37 +1965,70 @@ void draw_menu_item (uint16_t x, uint16_t y, menu_item_t menu_main_item, bool se
     if (menu_main_item.type == submenu) {
         sprintf(value, ">");
     } else {
-        sprintf(value, "%d", menu_main_item.value);
+        //sprintf(value, "%d", menu_main_item.value);
+        //sprintf(value, "%d", (*menu_main_item.current_value_ptr)(menu_main_item));
+        strcpy(value, (*menu_main_item.current_value_ptr)(menu_main_item));
     }
-        
+    
+    // is the current line highlighted?
+    if (highlighted && !menu_main_item.disabled) {
+        fillRect(x, y, _width, 29, _menu_hightlighted_item_color);
+        drawString(x+5, y+19, menu_main_item.label, _menu_selected_text_color, _menu_selected_text_color, 1, left, 0); 
+        drawString(x+210, y+19, value, _menu_selected_text_color, _menu_selected_text_color, 1, right, 80);
+        return;
+    } 
+    
+    // is a parameter menu active currently and the item is disabled?
+    if (_parameter_menu_active && menu_main_item.disabled) {
+        fillRect(x, y, _width, 29, menu_dimmed_item_color);
+        drawString(x+5, y+19, menu_main_item.label, _menu_disabled_text_color, _menu_disabled_text_color, 1, left, 0); 
+        drawString(x+210, y+19, value, _menu_disabled_text_color, _menu_disabled_text_color, 1, right, 80);
+        return;
+    }
+    
+    // is a parameter menu active currently?
+    if (_parameter_menu_active) {
+        fillRect(x, y, _width, 29, menu_dimmed_item_color);
+        drawString(x+5, y+19, menu_main_item.label, menu_text_color, menu_text_color, 1, left, 0); 
+        drawString(x+210, y+19, value, menu_text_color, menu_text_color, 1, right, 80);
+        return;
+    } 
+    
+    // is the current line selected and disabled?
+    if (selected && menu_main_item.disabled) {
+        fillRect(x, y, _width, 29, _menu_disabled_item_color);
+        fillRect(0, y, 3, 29, menu_selected_item_color);
+        fillRect(_width-16-3, y, 3, 29, menu_selected_item_color);
+        drawString(x+5, y+19, menu_main_item.label, _menu_disabled_text_color, _menu_disabled_text_color, 1, left, 0); 
+        drawString(x+210, y+19, value, _menu_disabled_text_color, _menu_disabled_text_color, 1, right, 80);
+        return;
+    }
+    
+    // is the current line disabled?
     if (menu_main_item.disabled) {
         fillRect(x, y, _width, 29, _menu_disabled_item_color);
         drawString(x+5, y+19, menu_main_item.label, _menu_disabled_text_color, _menu_disabled_text_color, 1, left, 0); 
         drawString(x+210, y+19, value, _menu_disabled_text_color, _menu_disabled_text_color, 1, right, 80);
-    } else if (highlighted) {
-        fillRect(x, y, _width, 29, _menu_hightlighted_item_color);
-        drawString(x+5, y+19, menu_main_item.label, _menu_selected_text_color, _menu_selected_text_color, 1, left, 0); 
-        drawString(x+210, y+19, value, _menu_selected_text_color, _menu_selected_text_color, 1, right, 80); 
-    } else if (!selected) {
-        if (parameter_menu_active) {
-            fillRect(x, y, _width, 29, menu_dimmed_item_color);
-            drawString(x+5, y+19, menu_main_item.label, menu_text_color, menu_text_color, 1, left, 0); 
-            drawString(x+210, y+19, value, menu_text_color, menu_text_color, 1, right, 80);
-        } else {
-            fillRect(x, y, _width, 29, menu_item_color);
-            drawString(x+5, y+19, menu_main_item.label, menu_text_color, menu_text_color, 1, left, 0); 
-            drawString(x+210, y+19, value, menu_text_color, menu_text_color, 1, right, 80); 
-        }
-    } else {
+        return;
+    }
+    
+    // is the current line selected (cursor)?
+    if (selected) {
         fillRect(x, y, _width, 29, menu_selected_item_color);
         drawString(x+5, y+19, menu_main_item.label, _menu_selected_text_color, _menu_selected_text_color, 1, left, 0); 
         drawString(x+210, y+19, value, _menu_selected_text_color, _menu_selected_text_color, 1, right, 80);  
+        return;
     }
+    
+    //if nothing of the above applies simply draw the line item normally
+    fillRect(x, y, _width, 29, menu_item_color);
+    drawString(x+5, y+19, menu_main_item.label, menu_text_color, menu_text_color, 1, left, 0); 
+    drawString(x+210, y+19, value, menu_text_color, menu_text_color, 1, right, 80); 
 }
 
 void draw_scroll_indicator(uint8_t number, uint8_t CurrentMenuItemCount){
     uint8_t scrollbarheight = (_height-31) * (float)((float)number/(float)(CurrentMenuItemCount));
-    uint8_t scrollbaroffset = 31 + menu_offset * (((_height-31) - scrollbarheight) / (CurrentMenuItemCount - number));
+    uint8_t scrollbaroffset = 31 + _menu_offset * (((_height-31) - scrollbarheight) / (CurrentMenuItemCount - number));
     
     //Background
     fillRect(_width-16, 31, 16, _height-31, menu_item_color);
@@ -1974,26 +2053,14 @@ void drawMenu(bool firstime) {
         drawLine(0, 30, _width, 30, menu_background_color);
     }
     
-    /*strcpy(menuItemValuesText[0], ">");
-    strcpy(menuItemValuesText[1], ">");
-    sprintf(menuItemValuesText[2], mainMenuItem2Choices[mainMenuItem2].label);
-    sprintf(menuItemValuesText[5], mainMenuItem3Choices[mainMenuItem3].label);
-    sprintf(menuItemValuesText[4], "%d", menuItemValues[4]);
-    //sprintf(menuItemValuesText[5], "%d", menuItemValues[5]);
-    sprintf(menuItemValuesText[6], "%d", menuItemValues[6]);
-    sprintf(menuItemValuesText[7], "%d", menuItemValues[7]);
-    sprintf(menuItemValuesText[8], "%d", menuItemValues[8]);
-    sprintf(menuItemValuesText[9], "%d", menuItemValues[9]);*/
-    
-    
-    if (CurrentMenu == Main) {
+    if (_current_menu == Main) {
         uint8_t i;
-        int8_t displaySelectionIndex = menuSelectionIndex - menu_offset; 
+        int8_t displaySelectionIndex = menuSelectionIndex - _menu_offset; 
         if (displaySelectionIndex >= 7) {
-            menu_offset += 1;
+            _menu_offset += 1;
         }
         if (displaySelectionIndex < 0) {
-            menu_offset -= 1;
+            _menu_offset -= 1;
         }
         
         int number = 5;//sizeof (menuItemLabels) / sizeof *(menuItemLabels);
@@ -2001,23 +2068,30 @@ void drawMenu(bool firstime) {
         number = LimitRange(number, 0, 7);
         
         for (i=0; i < number; i++){
-            draw_menu_item(0, 31+i*30, _menu_main_item[i+menu_offset], i+menu_offset==menuSelectionIndex, ((i+menu_offset==menuSelectionIndex) && btn_E1_pressed));
+            draw_menu_item(0, 31+i*30, _menu_main_item[i+_menu_offset], i+_menu_offset==menuSelectionIndex, ((i+_menu_offset==menuSelectionIndex) && btn_E1_pressed));
             //draw_menu_item(0, 31+i*30, menuItemLabels[i+menu_offset], menuItemValuesText[i+menu_offset], i+menu_offset==menuSelectionIndex, ((i+menu_offset==menuSelectionIndex) && btn_E1_pressed));
         }
         if (number == 7) {
             draw_scroll_indicator(number, get_current_menu_item_count());
         }
-        if (parameter_menu_active == 2) {
-            uint16_t offset = 31 + (parameter_menu_active-menu_offset)*30 - 2;
+        
+        // draw parameter menu
+        if (_parameter_menu_active != 0) {
+            uint16_t offset = 31 + (_parameter_menu_active-_menu_offset)*30 - 2;
+            draw_parameter_menu(304, offset, _menu_main_item[_parameter_menu_active]);
+        }
+        
+        /*if (_parameter_menu_active == 2) {
+            uint16_t offset = 31 + (_parameter_menu_active-_menu_offset)*30 - 2;
             draw_parameter_menu(304, offset, mainMenuItem2Choices, mainMenuItem2);
         }
-        if (parameter_menu_active == 5) {
-            uint16_t offset = 31 + (parameter_menu_active-menu_offset)*30 - 2;
+        if (_parameter_menu_active == 4) {
+            uint16_t offset = 31 + (_parameter_menu_active-_menu_offset)*30 - 2;
             draw_parameter_menu(304, offset, mainMenuItem3Choices, mainMenuItem3);
-        }
+        }*/
     }
     
-    if (CurrentMenu == Submenu1) {
+    if (_current_menu == Submenu1) {
         uint8_t i; 
         int number = sizeof (submenu1_item_labels) / sizeof *(submenu1_item_labels);
         for (i=0; i < number; i++){
@@ -2025,7 +2099,7 @@ void drawMenu(bool firstime) {
         }
     }
     
-    if (CurrentMenu == Submenu2) {
+    if (_current_menu == Submenu2) {
         int i;
         int number = sizeof (submenu2_item_labels) / sizeof *(submenu2_item_labels);
         for (i=0; i < number; i++){
@@ -2224,7 +2298,7 @@ int	main(void)
             
             int8_t diff = data[0] - qe[0];
             
-            if(parameter_menu_active) {
+            if(_parameter_menu_active) {
                 parameterSelectionIndex += diff;
                 parameterSelectionIndex = LimitRange(parameterSelectionIndex, 0, getCurrentParameterItemCount()-1);
 
