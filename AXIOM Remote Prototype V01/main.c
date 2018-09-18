@@ -27,13 +27,13 @@
 #include "draw.c"
 #include "menu.c"
 
-	// DEVCFG0
+// DEVCFG0
 #pragma config BOOTISA = MIPS32
 #pragma config ICESEL = ICS_PGx1
 #pragma config FECCCON = OFF_UNLOCKED
 #pragma config FSLEEP = 0
 
-	// DEVCFG1
+// DEVCFG1
 #pragma	config FDMTEN = OFF
 #pragma	config FWDTEN = OFF
 #pragma config POSCMOD = OFF
@@ -42,7 +42,7 @@
 #pragma config FNOSC = SPLL
 #pragma config FCKSM = CSECMD
 
-	// DEVCFG2
+// DEVCFG2
 #pragma config FPLLICLK = PLL_FRC
 #pragma config FPLLIDIV = DIV_2
 #pragma config FPLLRNG = RANGE_5_10_MHZ
@@ -51,7 +51,7 @@
 #pragma config UPLLEN = OFF
 #pragma config UPLLFSEL = FREQ_24MHZ
 
-	// DEVCFG3
+// DEVCFG3
 #pragma config USERID = 0xC0DE
 #pragma config FMIIEN = OFF
 #pragma config PGL1WAY = OFF
@@ -59,7 +59,7 @@
 #pragma config IOL1WAY = OFF
 #pragma config FUSBIDIO = OFF
 
-	// DEVCP0
+// DEVCP0
 #pragma config CP = OFF
 
 
@@ -87,27 +87,23 @@ uint16_t _framebuffer[_width][_height];
 
 // Menu related stuff
 uint8_t _menu_selection_index = 0; // index of the currently selected item in the menu
-
-
-//char menuItemLabels[10][20]; //Main Menu
-//char menuItemValuesText[10][10];
-//uint8_t menuItemValues[10];
-
 uint8_t _menu_offset = 0; // when scrolling the menu this is the offset for the items
-
 uint8_t _parameter_menu_active; // is a parameter menu currently visible (0 = no)
 uint8_t _parameter_selection_index; // index of the item currently selected in a parameter menu
 
 
-drop_down_choice_t mainMenuItem2Choices[2];
-drop_down_choice_t mainMenuItem3Choices[4];
+//drop_down_choice_t mainMenuItem2Choices[2];
+//drop_down_choice_t mainMenuItem3Choices[4];
 //uint8_t mainMenuItem2;
 //uint8_t mainMenuItem3;
 
-menu_item_t _menu_main_item[10];
+//menu_item_t _menu_main_item[10];
 
-menu_item_t _menu_sub1_item[3];
-menu_item_t _menu_sub2_item[5];
+//menu_item_t _menu_sub1_item[3];
+//menu_item_t _menu_sub2_item[5];
+
+menu_t _main_menu[5];
+uint8_t _main_menu_count;
 
 char menu_breadcrumbs[64];
 /*
@@ -616,11 +612,11 @@ uint8_t read_command8(uint8_t command, uint8_t index) {
 }
 
 //doesnt work, extended command?
+
 void setLCDBacklight(uint8_t brightness) {
     lcd_pmp_cmd(0x51);
     lcd_pmp_wr(brightness);
 }
-
 
 void clearFramebuffer(uint16_t color) {
     uint16_t x;
@@ -956,66 +952,72 @@ void lcd_init() {
 }
 
 void btn_E1_released() {
-    // if this menu item has been disabled don't do anything
-    if (_menu_main_item[_menu_selection_index].disabled) {
-        return;
-    }
+    uint8_t a;
+    for (a = 0; a < _main_menu_count; a++) {
+        if (_main_menu[a].menu_id == _current_menu) {
 
-    if (_current_menu == Main) {
+            // if this menu item has been disabled don't do anything
+            if (_main_menu[a].menu_item[_menu_selection_index].disabled) {
+                return;
+            }
 
-        // is the current item linking into a submenu?
-        if (_menu_main_item[_menu_selection_index].type == submenu) {
-            // navigate into submenu
-            _current_menu = _menu_main_item[_menu_selection_index].link_to_submenu;
+            if (_current_menu == Main) {
 
-            // reset cursor to first item in list;
-            _menu_selection_index = 0;
+                // is the current item linking into a submenu?
+                if (_main_menu[a].menu_item[_menu_selection_index].type == submenu) {
+                    // navigate into submenu
+                    _current_menu = _main_menu[a].menu_item[_menu_selection_index].link_to_submenu;
 
-            //update bread crumbs
-            strcpy(menu_breadcrumbs, "Menu > ");
-            strcat(menu_breadcrumbs, _menu_main_item[_menu_selection_index].label);
-            return;
-        }
+                    // reset cursor to first item in list;
+                    _menu_selection_index = 0;
 
-        // is the current item supposed to show a drop-down menu?
-        if ((_menu_main_item[_menu_selection_index].type == dropdown) && (_parameter_menu_active == 0)) {
-            //open parameter menu
-            _parameter_menu_active = _menu_selection_index;
-            return;
-        }
+                    //update bread crumbs
+                    strcpy(menu_breadcrumbs, "Menu > ");
+                    strcat(menu_breadcrumbs, _main_menu[a].menu_item[_menu_selection_index].label);
+                    return;
+                }
 
-        // are we in a drop-down menu currently?
-        if ((_menu_main_item[_menu_selection_index].type == dropdown) && (_parameter_menu_active != 0)) {
-            // set new value
-            _menu_main_item[_menu_selection_index].value = _parameter_selection_index;
+                // is the current item supposed to show a drop-down menu?
+                if ((_main_menu[a].menu_item[_menu_selection_index].type == dropdown) && (_parameter_menu_active == 0)) {
+                    //open parameter menu
+                    _parameter_menu_active = _menu_selection_index;
+                    return;
+                }
 
-            //close parameter menu
-            _parameter_menu_active = 0;
-        }
-        /*
-                if ((menuSelectionIndex == 2) && (_parameter_menu_active == 0)) {
-                    _parameter_menu_active = 2;
-                } else if ((menuSelectionIndex == 2) && (_parameter_menu_active == 2)) {
-                    mainMenuItem2 = parameterSelectionIndex;
+                // are we in a drop-down menu currently?
+                if ((_main_menu[a].menu_item[_menu_selection_index].type == dropdown) && (_parameter_menu_active != 0)) {
+                    // set new value
+                    _main_menu[a].menu_item[_menu_selection_index].value = _parameter_selection_index;
+
+                    //close parameter menu
                     _parameter_menu_active = 0;
                 }
-                if ((menuSelectionIndex == 5) && (_parameter_menu_active == 0)) {
-                    _parameter_menu_active = 5;
-                } else if ((menuSelectionIndex == 5) && (_parameter_menu_active == 5)) {
-                    mainMenuItem3 = parameterSelectionIndex;
-                    _parameter_menu_active = 0;
-                }*/
-    } else if (_current_menu == Submenu1) {
-        if (_menu_selection_index == 0) {
-            _current_menu = Main;
-            _menu_selection_index = 0;
-            strcpy(menu_breadcrumbs, "Menu");
-        }
-    } else if (_current_menu == Submenu2) {
-        if (_menu_selection_index == 0) {
-            _current_menu = Main;
-            _menu_selection_index = 1;
-            strcpy(menu_breadcrumbs, "Menu");
+                /*
+                        if ((menuSelectionIndex == 2) && (_parameter_menu_active == 0)) {
+                            _parameter_menu_active = 2;
+                        } else if ((menuSelectionIndex == 2) && (_parameter_menu_active == 2)) {
+                            mainMenuItem2 = parameterSelectionIndex;
+                            _parameter_menu_active = 0;
+                        }
+                        if ((menuSelectionIndex == 5) && (_parameter_menu_active == 0)) {
+                            _parameter_menu_active = 5;
+                        } else if ((menuSelectionIndex == 5) && (_parameter_menu_active == 5)) {
+                            mainMenuItem3 = parameterSelectionIndex;
+                            _parameter_menu_active = 0;
+                        }*/
+            } else if (_current_menu == Submenu1) {
+                if (_menu_selection_index == 0) {
+                    _current_menu = Main;
+                    _menu_selection_index = 0;
+                    strcpy(menu_breadcrumbs, "Menu");
+                }
+            } else if (_current_menu == Submenu2) {
+                if (_menu_selection_index == 0) {
+                    _current_menu = Main;
+                    _menu_selection_index = 1;
+                    strcpy(menu_breadcrumbs, "Menu");
+                }
+            }
         }
     }
 }

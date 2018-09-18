@@ -19,7 +19,7 @@
 extern uint16_t _cursor_x;
 extern uint16_t _cursor_y;
 
-extern enum _menus_t _current_menu;
+extern enum _menu_id_t _current_menu;
 
 extern uint8_t _menu_offset; // when scrolling the menu this is the offset for the items
 
@@ -31,10 +31,10 @@ typedef struct drop_down_choice_t {
     uint8_t value;
 } drop_down_choice_t;
 
-enum _menus_t {
+enum _menu_id_t {
     Main, Submenu1, Submenu2
 };
-enum _menus_t _current_menu;
+enum _menu_id_t _current_menu;
 
 typedef enum {
     submenu, readonly, numeric, dropdown
@@ -44,7 +44,7 @@ typedef struct menu_item_t {
     char label[64];
     bool disabled;
     bool hidden;
-    enum _menus_t link_to_submenu;
+    enum _menu_id_t link_to_submenu;
     menu_item_type_t type;
     uint8_t value;
     bool(*action_ptr)(); //function pointer to the action when that menu entry is clicked
@@ -53,9 +53,18 @@ typedef struct menu_item_t {
     uint8_t choice_count;
 } menu_item_t;
 
+typedef struct menu_t {
+    char label[64];
+    enum _menu_id_t menu_id;
+    menu_item_t menu_item[64];
+    uint8_t menu_items_count;
+} menu_t;
+
 typedef enum {
     left, center, right
 } textAlign;
+
+extern uint8_t _main_menu_count;
 
 // AXIOM Remote buttons and knobs
 extern bool btn_E1_pressed;
@@ -71,10 +80,12 @@ extern uint8_t _menu_selection_index;
 extern drop_down_choice_t mainMenuItem2Choices[2];
 extern drop_down_choice_t mainMenuItem3Choices[4];
 
-extern menu_item_t _menu_main_item[10];
+//extern menu_item_t _menu_main_item[10];
 
-extern menu_item_t _menu_sub1_item[3];
-extern menu_item_t _menu_sub2_item[5];
+//extern menu_item_t _menu_sub1_item[3];
+//extern menu_item_t _menu_sub2_item[5];
+
+extern menu_t _main_menu[5];
 
 extern char menu_breadcrumbs[64];
 
