@@ -13,8 +13,8 @@
 #include "definitions.h"
 #include "gfxfont.h"
 
-#ifndef MAIN
-#define MAIN
+#ifndef MAIN_H
+#define MAIN_H
 
 extern uint16_t _cursor_x;
 extern uint16_t _cursor_y;
@@ -93,4 +93,4 @@ extern GFXfont gfxFont;
 
 extern uint16_t _framebuffer[_width][_height];
 
-#endif /* MAIN */
+#endif /* MAIN_H */

@@ -20,8 +20,8 @@
 #include "definitions.h"
 #include "utility.c"
 
-#ifndef MENU
-#define MENU
+#ifndef MENU_C
+#define MENU_C
 
 uint8_t get_current_menu_item_count() {
     if (_current_menu == Main) {
@@ -233,17 +233,17 @@ void initMenu() {
 
     _menu_sub1_item[0].disabled = false;
     _menu_sub1_item[0].hidden = false;
-    strcpy(_menu_sub1_item[0].label, "Item 1");
+    strcpy(_menu_sub1_item[0].label, "Submenu 1 Item 1");
     _menu_sub1_item[0].type = dropdown;
 
     _menu_sub1_item[1].disabled = false;
     _menu_sub1_item[1].hidden = false;
-    strcpy(_menu_sub1_item[1].label, "Item 1");
+    strcpy(_menu_sub1_item[1].label, "Submenu 1 Item 2");
     _menu_sub1_item[1].type = dropdown;
 
     _menu_sub1_item[2].disabled = false;
     _menu_sub1_item[2].hidden = false;
-    strcpy(_menu_sub1_item[2].label, "Item 1");
+    strcpy(_menu_sub1_item[2].label, "Submenu 1 Item 3");
     _menu_sub1_item[2].type = dropdown;
 
     //menu_item_t _menu_sub2_item[5];
@@ -402,4 +402,4 @@ void drawMenu(bool firstime) {
 }
 
 
-#endif /* MENU */
+#endif /* MENU_C */

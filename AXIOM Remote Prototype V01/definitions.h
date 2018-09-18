@@ -10,8 +10,8 @@
  **	Compile with -O6 for best experience
  */
 
-#ifndef DEFINITIONS
-#define DEFINITIONS
+#ifndef DEFINITIONS_H
+#define DEFINITIONS_H
 
 #define	MCU_16BIT
 
@@ -266,4 +266,4 @@
 
 #define	delay_ms(t) delay_us(1000*(t))
 
-#endif /* DEFINITIONS */
+#endif /* DEFINITIONS_H */

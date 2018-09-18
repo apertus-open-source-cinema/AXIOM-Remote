@@ -19,8 +19,8 @@
 #include "definitions.h"
 #include "main.h"
 
-#ifndef DRAW
-#define DRAW
+#ifndef DRAW_C
+#define DRAW_C
 
 /**************************************************************************/
 /*!
@@ -705,4 +705,4 @@ void drawString(int16_t x, int16_t y, char* text, uint16_t color, uint16_t bg, u
     }*/
 }
 
-#endif /* DRAW */
+#endif /* DRAW_C */
