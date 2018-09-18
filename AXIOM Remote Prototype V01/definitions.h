@@ -1,19 +1,17 @@
-/* ************************************************************************** */
-/** Descriptive File Name
-
-  @Company
-    Company Name
-
-  @File Name
-    filename.h
-
-  @Summary
-    Brief description of the file.
-
-  @Description
-    Describe the purpose of this file.
+/*	AXIOM Remote
+ **
+ **	Copyright (C) 2018 Herbert Poetzl, Sebastian Pichelhofer
+ * 
+ **
+ **	This program is free software; you can redistribute it and/or modify
+ **    	it under the terms of the GNU General Public License 2 as published 
+ **	by the Free Software Foundation.
+ **
+ **	Compile with -O6 for best experience
  */
-/* ************************************************************************** */
+
+#ifndef DEFINITIONS
+#define DEFINITIONS
 
 	// DEVCFG0
 #pragma config BOOTISA = MIPS32
@@ -303,3 +301,5 @@
 #define _height 240
 
 #define	delay_ms(t) delay_us(1000*(t))
+
+#endif /* DEFINITIONS */
