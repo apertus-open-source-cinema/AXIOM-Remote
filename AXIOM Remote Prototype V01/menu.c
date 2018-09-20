@@ -48,9 +48,7 @@ bool menu_item_test_action() {
 }
 
 char * menu_item_test_get_current_value(menu_item_t this) {
-    char return_value[32];
-    strcpy(return_value, this.choices[this.value].label);
-    return return_value;
+    return this.choices[this.value].label;
 }
 
 void draw_menu_item(uint16_t x, uint16_t y, menu_item_t menu_main_item, bool selected, bool highlighted) {
