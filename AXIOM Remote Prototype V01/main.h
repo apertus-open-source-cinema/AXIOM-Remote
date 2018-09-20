@@ -32,7 +32,7 @@ typedef struct drop_down_choice_t {
 } drop_down_choice_t;
 
 enum _menu_id_t {
-    Main, Submenu1, Submenu2
+    menu_none, menu_main, menu_submenu1, menu_submenu2
 };
 enum _menu_id_t _current_menu;
 
@@ -60,8 +60,22 @@ typedef struct menu_t {
     uint8_t menu_items_count;
 } menu_t;
 
+typedef struct page_item_t {
+    char label[64];
+    bool disabled;
+    enum _page_id_t link_to_subpage;
+    uint8_t value;
+    bool(*action_ptr)(); //function pointer to the action when page item is clicked
+    char* (*current_value_ptr)(); //function pointer to return the current value
+} page_item_t;
+
+enum _page_id_t {
+    page_none, page_home, page_1
+};
+enum _page_id_t _current_page;
+
 typedef enum {
-    left, center, right
+    align_left, align_center, align_right
 } textAlign;
 
 extern uint8_t _main_menu_count;

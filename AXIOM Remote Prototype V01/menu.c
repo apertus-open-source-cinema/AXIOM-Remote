@@ -68,24 +68,24 @@ void draw_menu_item(uint16_t x, uint16_t y, menu_item_t menu_main_item, bool sel
     // is the current line highlighted?
     if (highlighted && !menu_main_item.disabled) {
         fillRect(x, y, _width, 29, _menu_hightlighted_item_color);
-        drawString(x + 5, y + 19, menu_main_item.label, _menu_selected_text_color, _menu_selected_text_color, 1, left, 0);
-        drawString(x + 210, y + 19, value, _menu_selected_text_color, _menu_selected_text_color, 1, right, 80);
+        drawString(x + 5, y + 19, menu_main_item.label, _menu_selected_text_color, _menu_selected_text_color, 1, align_left, 0);
+        drawString(x + 210, y + 19, value, _menu_selected_text_color, _menu_selected_text_color, 1, align_right, 80);
         return;
     }
 
     // is a parameter menu active currently and the item is disabled?
     if (_parameter_menu_active && menu_main_item.disabled) {
         fillRect(x, y, _width, 29, menu_dimmed_item_color);
-        drawString(x + 5, y + 19, menu_main_item.label, _menu_disabled_text_color, _menu_disabled_text_color, 1, left, 0);
-        drawString(x + 210, y + 19, value, _menu_disabled_text_color, _menu_disabled_text_color, 1, right, 80);
+        drawString(x + 5, y + 19, menu_main_item.label, _menu_disabled_text_color, _menu_disabled_text_color, 1, align_left, 0);
+        drawString(x + 210, y + 19, value, _menu_disabled_text_color, _menu_disabled_text_color, 1, align_right, 80);
         return;
     }
 
     // is a parameter menu active currently?
     if (_parameter_menu_active) {
         fillRect(x, y, _width, 29, menu_dimmed_item_color);
-        drawString(x + 5, y + 19, menu_main_item.label, menu_text_color, menu_text_color, 1, left, 0);
-        drawString(x + 210, y + 19, value, menu_text_color, menu_text_color, 1, right, 80);
+        drawString(x + 5, y + 19, menu_main_item.label, menu_text_color, menu_text_color, 1, align_left, 0);
+        drawString(x + 210, y + 19, value, menu_text_color, menu_text_color, 1, align_right, 80);
         return;
     }
 
@@ -94,31 +94,31 @@ void draw_menu_item(uint16_t x, uint16_t y, menu_item_t menu_main_item, bool sel
         fillRect(x, y, _width, 29, _menu_disabled_item_color);
         fillRect(0, y, 3, 29, menu_selected_item_color);
         fillRect(_width - 16 - 3, y, 3, 29, menu_selected_item_color);
-        drawString(x + 5, y + 19, menu_main_item.label, _menu_disabled_text_color, _menu_disabled_text_color, 1, left, 0);
-        drawString(x + 210, y + 19, value, _menu_disabled_text_color, _menu_disabled_text_color, 1, right, 80);
+        drawString(x + 5, y + 19, menu_main_item.label, _menu_disabled_text_color, _menu_disabled_text_color, 1, align_left, 0);
+        drawString(x + 210, y + 19, value, _menu_disabled_text_color, _menu_disabled_text_color, 1, align_right, 80);
         return;
     }
 
     // is the current line disabled?
     if (menu_main_item.disabled) {
         fillRect(x, y, _width, 29, _menu_disabled_item_color);
-        drawString(x + 5, y + 19, menu_main_item.label, _menu_disabled_text_color, _menu_disabled_text_color, 1, left, 0);
-        drawString(x + 210, y + 19, value, _menu_disabled_text_color, _menu_disabled_text_color, 1, right, 80);
+        drawString(x + 5, y + 19, menu_main_item.label, _menu_disabled_text_color, _menu_disabled_text_color, 1, align_left, 0);
+        drawString(x + 210, y + 19, value, _menu_disabled_text_color, _menu_disabled_text_color, 1, align_right, 80);
         return;
     }
 
     // is the current line selected (cursor)?
     if (selected) {
         fillRect(x, y, _width, 29, menu_selected_item_color);
-        drawString(x + 5, y + 19, menu_main_item.label, _menu_selected_text_color, _menu_selected_text_color, 1, left, 0);
-        drawString(x + 210, y + 19, value, _menu_selected_text_color, _menu_selected_text_color, 1, right, 80);
+        drawString(x + 5, y + 19, menu_main_item.label, _menu_selected_text_color, _menu_selected_text_color, 1, align_left, 0);
+        drawString(x + 210, y + 19, value, _menu_selected_text_color, _menu_selected_text_color, 1, align_right, 80);
         return;
     }
 
     //if nothing of the above applies simply draw the line item normally
     fillRect(x, y, _width, 29, menu_item_color);
-    drawString(x + 5, y + 19, menu_main_item.label, menu_text_color, menu_text_color, 1, left, 0);
-    drawString(x + 210, y + 19, value, menu_text_color, menu_text_color, 1, right, 80);
+    drawString(x + 5, y + 19, menu_main_item.label, menu_text_color, menu_text_color, 1, align_left, 0);
+    drawString(x + 210, y + 19, value, menu_text_color, menu_text_color, 1, align_right, 80);
 }
 
 void draw_scroll_indicator(uint8_t number, uint8_t CurrentMenuItemCount) {
@@ -185,166 +185,107 @@ void initMenu() {
      //mainMenuItem3 = 0;*/
 
     uint8_t j = 0;
-    strcpy(_main_menu[Main].label, "Main Menu");
-    _main_menu[Main].menu_id = Main;
+    strcpy(_main_menu[menu_main].label, "Main Menu");
+    _main_menu[menu_main].menu_id = menu_main;
 
-    _main_menu[Main].menu_item[j].disabled = false;
-    _main_menu[Main].menu_item[j].hidden = false;
-    strcpy(_main_menu[Main].menu_item[j].label, "Submenu 1");
-    _main_menu[Main].menu_item[j].type = submenu;
-    _main_menu[Main].menu_item[j].link_to_submenu = Submenu1;
-    _main_menu[Main].menu_item[j].current_value_ptr = &menu_item_test_get_current_value;
+    _main_menu[menu_main].menu_item[j].disabled = false;
+    _main_menu[menu_main].menu_item[j].hidden = false;
+    strcpy(_main_menu[menu_main].menu_item[j].label, "Submenu 1");
+    _main_menu[menu_main].menu_item[j].type = submenu;
+    _main_menu[menu_main].menu_item[j].link_to_submenu = menu_submenu1;
+    _main_menu[menu_main].menu_item[j].current_value_ptr = &menu_item_test_get_current_value;
     j++;
-    _main_menu[Main].menu_item[j].disabled = false;
-    _main_menu[Main].menu_item[j].hidden = false;
-    strcpy(_main_menu[Main].menu_item[j].label, "Submenu 2");
-    _main_menu[Main].menu_item[j].type = submenu;
-    _main_menu[Main].menu_item[j].link_to_submenu = Submenu2;
-    _main_menu[Main].menu_item[j].current_value_ptr = &menu_item_test_get_current_value;
+    _main_menu[menu_main].menu_item[j].disabled = false;
+    _main_menu[menu_main].menu_item[j].hidden = false;
+    strcpy(_main_menu[menu_main].menu_item[j].label, "Submenu 2");
+    _main_menu[menu_main].menu_item[j].type = submenu;
+    _main_menu[menu_main].menu_item[j].link_to_submenu = menu_submenu2;
+    _main_menu[menu_main].menu_item[j].current_value_ptr = &menu_item_test_get_current_value;
     j++;
-    _main_menu[Main].menu_item[j].disabled = true;
-    _main_menu[Main].menu_item[j].hidden = false;
-    strcpy(_main_menu[Main].menu_item[j].label, "Disabled Item");
-    _main_menu[Main].menu_item[j].type = submenu;
-    _main_menu[Main].menu_item[j].current_value_ptr = &menu_item_test_get_current_value;
+    _main_menu[menu_main].menu_item[j].disabled = true;
+    _main_menu[menu_main].menu_item[j].hidden = false;
+    strcpy(_main_menu[menu_main].menu_item[j].label, "Disabled Item");
+    _main_menu[menu_main].menu_item[j].type = submenu;
+    _main_menu[menu_main].menu_item[j].current_value_ptr = &menu_item_test_get_current_value;
     j++;
-    _main_menu[Main].menu_item[j].disabled = false;
-    _main_menu[Main].menu_item[j].hidden = false;
-    strcpy(_main_menu[Main].menu_item[j].label, "Fun");
-    _main_menu[Main].menu_item[j].type = dropdown;
-    _main_menu[Main].menu_item[j].current_value_ptr = &menu_item_test_get_current_value;
-    _main_menu[Main].menu_item[j].choices[0].value = 0;
-    strcpy(_main_menu[Main].menu_item[j].choices[0].label, "Off");
-    _main_menu[Main].menu_item[j].choices[1].value = 1;
-    strcpy(_main_menu[Main].menu_item[j].choices[1].label, "On");
-    _main_menu[Main].menu_item[j].choice_count = 2;
+    _main_menu[menu_main].menu_item[j].disabled = false;
+    _main_menu[menu_main].menu_item[j].hidden = false;
+    strcpy(_main_menu[menu_main].menu_item[j].label, "Fun");
+    _main_menu[menu_main].menu_item[j].type = dropdown;
+    _main_menu[menu_main].menu_item[j].current_value_ptr = &menu_item_test_get_current_value;
+    _main_menu[menu_main].menu_item[j].choices[0].value = 0;
+    strcpy(_main_menu[menu_main].menu_item[j].choices[0].label, "Off");
+    _main_menu[menu_main].menu_item[j].choices[1].value = 1;
+    strcpy(_main_menu[menu_main].menu_item[j].choices[1].label, "On");
+    _main_menu[menu_main].menu_item[j].choice_count = 2;
     j++;
-    _main_menu[Main].menu_item[j].disabled = false;
-    _main_menu[Main].menu_item[j].hidden = false;
-    strcpy(_main_menu[Main].menu_item[j].label, "Fun Level");
-    _main_menu[Main].menu_item[j].type = dropdown;
-    _main_menu[Main].menu_item[j].current_value_ptr = &menu_item_test_get_current_value;
-    _main_menu[Main].menu_item[j].choices[0].value = 0;
-    strcpy(_main_menu[Main].menu_item[j].choices[0].label, "Low");
-    _main_menu[Main].menu_item[j].choices[1].value = 1;
-    strcpy(_main_menu[Main].menu_item[j].choices[1].label, "Medium");
-    _main_menu[Main].menu_item[j].choices[2].value = 2;
-    strcpy(_main_menu[Main].menu_item[j].choices[2].label, "High");
-    _main_menu[Main].menu_item[j].choices[3].value = 3;
-    strcpy(_main_menu[Main].menu_item[j].choices[3].label, "Crazy");
-    _main_menu[Main].menu_item[j].choice_count = 4;
+    _main_menu[menu_main].menu_item[j].disabled = false;
+    _main_menu[menu_main].menu_item[j].hidden = false;
+    strcpy(_main_menu[menu_main].menu_item[j].label, "Fun Level");
+    _main_menu[menu_main].menu_item[j].type = dropdown;
+    _main_menu[menu_main].menu_item[j].current_value_ptr = &menu_item_test_get_current_value;
+    _main_menu[menu_main].menu_item[j].choices[0].value = 0;
+    strcpy(_main_menu[menu_main].menu_item[j].choices[0].label, "Low");
+    _main_menu[menu_main].menu_item[j].choices[1].value = 1;
+    strcpy(_main_menu[menu_main].menu_item[j].choices[1].label, "Medium");
+    _main_menu[menu_main].menu_item[j].choices[2].value = 2;
+    strcpy(_main_menu[menu_main].menu_item[j].choices[2].label, "High");
+    _main_menu[menu_main].menu_item[j].choices[3].value = 3;
+    strcpy(_main_menu[menu_main].menu_item[j].choices[3].label, "Crazy");
+    _main_menu[menu_main].menu_item[j].choice_count = 4;
     j++;
-    _main_menu[Main].menu_item[j].disabled = false;
-    _main_menu[Main].menu_item[j].hidden = false;
-    strcpy(_main_menu[Main].menu_item[j].label, "Readonly Item");
-    _main_menu[Main].menu_item[j].type = readonly;
-    _main_menu[Main].menu_item[j].current_value_ptr = &menu_item_test_get_current_value;
+    _main_menu[menu_main].menu_item[j].disabled = false;
+    _main_menu[menu_main].menu_item[j].hidden = false;
+    strcpy(_main_menu[menu_main].menu_item[j].label, "Readonly Item");
+    _main_menu[menu_main].menu_item[j].type = readonly;
+    _main_menu[menu_main].menu_item[j].current_value_ptr = &menu_item_test_get_current_value;
     j++;
-    _main_menu[Main].menu_item[j].disabled = false;
-    _main_menu[Main].menu_item[j].hidden = false;
-    strcpy(_main_menu[Main].menu_item[j].label, "Readonly Item");
-    _main_menu[Main].menu_item[j].type = readonly;
-    _main_menu[Main].menu_item[j].current_value_ptr = &menu_item_test_get_current_value;
+    _main_menu[menu_main].menu_item[j].disabled = false;
+    _main_menu[menu_main].menu_item[j].hidden = false;
+    strcpy(_main_menu[menu_main].menu_item[j].label, "Readonly Item");
+    _main_menu[menu_main].menu_item[j].type = readonly;
+    _main_menu[menu_main].menu_item[j].current_value_ptr = &menu_item_test_get_current_value;
     j++;
-    _main_menu[Main].menu_item[j].disabled = false;
-    _main_menu[Main].menu_item[j].hidden = false;
-    strcpy(_main_menu[Main].menu_item[j].label, "Readonly Item");
-    _main_menu[Main].menu_item[j].type = readonly;
-    _main_menu[Main].menu_item[j].current_value_ptr = &menu_item_test_get_current_value;
+    _main_menu[menu_main].menu_item[j].disabled = false;
+    _main_menu[menu_main].menu_item[j].hidden = false;
+    strcpy(_main_menu[menu_main].menu_item[j].label, "Readonly Item");
+    _main_menu[menu_main].menu_item[j].type = readonly;
+    _main_menu[menu_main].menu_item[j].current_value_ptr = &menu_item_test_get_current_value;
     j++;
-    _main_menu[Main].menu_item[j].disabled = false;
-    _main_menu[Main].menu_item[j].hidden = false;
-    strcpy(_main_menu[Main].menu_item[j].label, "Readonly Item");
-    _main_menu[Main].menu_item[j].type = readonly;
-    _main_menu[Main].menu_item[j].current_value_ptr = &menu_item_test_get_current_value;
-    _main_menu[Main].menu_items_count = j + 1;
+    _main_menu[menu_main].menu_item[j].disabled = false;
+    _main_menu[menu_main].menu_item[j].hidden = false;
+    strcpy(_main_menu[menu_main].menu_item[j].label, "Readonly Item");
+    _main_menu[menu_main].menu_item[j].type = readonly;
+    _main_menu[menu_main].menu_item[j].current_value_ptr = &menu_item_test_get_current_value;
+    _main_menu[menu_main].menu_items_count = j + 1;
 
     j = 0;
-    strcpy(_main_menu[Submenu1].label, "Submenu 1");
-    _main_menu[Submenu1].menu_id = Submenu1;
-    _main_menu[Submenu1].menu_item[j].disabled = false;
-    _main_menu[Submenu1].menu_item[j].hidden = false;
-    strcpy(_main_menu[Submenu1].menu_item[j].label, "Back");
-    _main_menu[Submenu1].menu_item[j].type = submenu;
-    _main_menu[Submenu1].menu_item[j].link_to_submenu = Main;
-    _main_menu[Submenu1].menu_item[j].current_value_ptr = &menu_item_test_get_current_value;
+    strcpy(_main_menu[menu_submenu1].label, "Submenu 1");
+    _main_menu[menu_submenu1].menu_id = menu_submenu1;
+    _main_menu[menu_submenu1].menu_item[j].disabled = false;
+    _main_menu[menu_submenu1].menu_item[j].hidden = false;
+    strcpy(_main_menu[menu_submenu1].menu_item[j].label, "Back");
+    _main_menu[menu_submenu1].menu_item[j].type = submenu;
+    _main_menu[menu_submenu1].menu_item[j].link_to_submenu = menu_main;
+    _main_menu[menu_submenu1].menu_item[j].current_value_ptr = &menu_item_test_get_current_value;
     j++;
-    _main_menu[Submenu1].menu_item[j].disabled = false;
-    _main_menu[Submenu1].menu_item[j].hidden = false;
-    strcpy(_main_menu[Submenu1].menu_item[j].label, "Submenu 1 Item 1");
-    _main_menu[Submenu1].menu_item[j].type = readonly;
-    _main_menu[Submenu1].menu_item[j].current_value_ptr = &menu_item_test_get_current_value;
+    _main_menu[menu_submenu1].menu_item[j].disabled = false;
+    _main_menu[menu_submenu1].menu_item[j].hidden = false;
+    strcpy(_main_menu[menu_submenu1].menu_item[j].label, "Submenu 1 Item 1");
+    _main_menu[menu_submenu1].menu_item[j].type = readonly;
+    _main_menu[menu_submenu1].menu_item[j].current_value_ptr = &menu_item_test_get_current_value;
     j++;
-    _main_menu[Submenu1].menu_item[j].disabled = false;
-    _main_menu[Submenu1].menu_item[j].hidden = false;
-    strcpy(_main_menu[Submenu1].menu_item[j].label, "Submenu 1 Item 2");
-    _main_menu[Submenu1].menu_item[j].type = readonly;
-    _main_menu[Submenu1].menu_item[j].current_value_ptr = &menu_item_test_get_current_value;
-    _main_menu[Submenu1].menu_items_count = j + 1;
+    _main_menu[menu_submenu1].menu_item[j].disabled = false;
+    _main_menu[menu_submenu1].menu_item[j].hidden = false;
+    strcpy(_main_menu[menu_submenu1].menu_item[j].label, "Submenu 1 Item 2");
+    _main_menu[menu_submenu1].menu_item[j].type = readonly;
+    _main_menu[menu_submenu1].menu_item[j].current_value_ptr = &menu_item_test_get_current_value;
+    _main_menu[menu_submenu1].menu_items_count = j + 1;
 
-    _main_menu_count = 2;
-    /*
-        // new menu structure definitions
-        _menu_main_item[0].disabled = false;
-        _menu_main_item[0].hidden = false;
-        strcpy(_menu_main_item[0].label, "Submenu 1");
-        _menu_main_item[0].type = submenu;
-        _menu_main_item[0].link_to_submenu = Submenu1;
-        _menu_main_item[0].current_value_ptr = &menu_item_test_get_current_value;
-
-        _menu_main_item[1].disabled = false;
-        _menu_main_item[1].hidden = false;
-        strcpy(_menu_main_item[1].label, "Submenu 2");
-        _menu_main_item[1].type = submenu;
-        _menu_main_item[0].link_to_submenu = Submenu2;
-        _menu_main_item[1].current_value_ptr = &menu_item_test_get_current_value;
-
-        _menu_main_item[2].disabled = true;
-        _menu_main_item[2].hidden = false;
-        strcpy(_menu_main_item[2].label, "disabled sample");
-        _menu_main_item[2].type = dropdown;
-        _menu_main_item[2].current_value_ptr = &menu_item_test_get_current_value;
-
-        _menu_main_item[3].disabled = false;
-        _menu_main_item[3].hidden = false;
-        strcpy(_menu_main_item[3].label, "Fun");
-        _menu_main_item[3].type = dropdown;
-        _menu_main_item[3].choices[0] = mainMenuItem2Choices[0];
-        _menu_main_item[3].choices[1] = mainMenuItem2Choices[1];
-        _menu_main_item[3].choice_count = array_len(mainMenuItem2Choices);
-        _menu_main_item[3].current_value_ptr = &menu_item_test_get_current_value;
-
-        _menu_main_item[4].disabled = false;
-        _menu_main_item[4].hidden = false;
-        strcpy(_menu_main_item[4].label, "Fun Level");
-        _menu_main_item[4].type = dropdown;
-        //_menu_main_item[4].action_ptr = &menu_item_test_action;
-        _menu_main_item[4].current_value_ptr = &menu_item_test_get_current_value;
-        _menu_main_item[4].choices[0] = mainMenuItem3Choices[0];
-        _menu_main_item[4].choices[1] = mainMenuItem3Choices[1];
-        _menu_main_item[4].choices[2] = mainMenuItem3Choices[2];
-        _menu_main_item[4].choices[3] = mainMenuItem3Choices[3];
-        _menu_main_item[4].choice_count = array_len(mainMenuItem3Choices);
-
-
-        _menu_sub1_item[0].disabled = false;
-        _menu_sub1_item[0].hidden = false;
-        strcpy(_menu_sub1_item[0].label, "Submenu 1 Item 1");
-        _menu_sub1_item[0].type = dropdown;
-
-        _menu_sub1_item[1].disabled = false;
-        _menu_sub1_item[1].hidden = false;
-        strcpy(_menu_sub1_item[1].label, "Submenu 1 Item 2");
-        _menu_sub1_item[1].type = dropdown;
-
-        _menu_sub1_item[2].disabled = false;
-        _menu_sub1_item[2].hidden = false;
-        strcpy(_menu_sub1_item[2].label, "Submenu 1 Item 3");
-        _menu_sub1_item[2].type = dropdown;
-
-        //menu_item_t _menu_sub2_item[5];*/
-
-    _current_menu = Main;
+    _main_menu_count = 3; // no menu is first so always add 1 to number of menus
+    
+    // init menu selection indexes
+    _current_menu = menu_main;
     _parameter_menu_active = 0;
     _parameter_selection_index = 0;
     _menu_offset = 0;
@@ -412,14 +353,14 @@ void draw_parameter_menu(uint16_t x, uint16_t y, menu_item_t menuitem) {
         if (i == _parameter_selection_index) {
             if (btn_E1_pressed) {
                 fillRect(x + 2, y + 2 + i * 30, width - 4, 29, _menu_hightlighted_item_color);
-                drawString(x + 12, y + 21 + i * 30, draw_label, _menu_selected_text_color, _menu_selected_text_color, 1, left, 0);
+                drawString(x + 12, y + 21 + i * 30, draw_label, _menu_selected_text_color, _menu_selected_text_color, 1, align_left, 0);
             } else {
                 fillRect(x + 2, y + 2 + i * 30, width - 4, 29, menu_selected_item_color);
-                drawString(x + 12, y + 21 + i * 30, draw_label, _menu_selected_text_color, _menu_selected_text_color, 1, left, 0);
+                drawString(x + 12, y + 21 + i * 30, draw_label, _menu_selected_text_color, _menu_selected_text_color, 1, align_left, 0);
             }
         } else {
             fillRect(x + 2, y + 2 + i * 30, width - 4, 29, menu_item_color);
-            drawString(x + 12, y + 21 + i * 30, draw_label, menu_text_color, menu_text_color, 1, left, 0);
+            drawString(x + 12, y + 21 + i * 30, draw_label, menu_text_color, menu_text_color, 1, align_left, 0);
         }
 
         // add a circle icon at beginning of the line and label of the current setting
@@ -440,7 +381,7 @@ void drawMenu(bool firstime) {
 
         //draw header
         fillRect(0, 0, _width, 28, menu_item_color);
-        drawString(5, 19, menu_breadcrumbs, menu_text_color, menu_text_color, 1, left, 0);
+        drawString(5, 19, menu_breadcrumbs, menu_text_color, menu_text_color, 1, align_left, 0);
         drawLine(0, 29, _width, 29, menu_selected_item_color);
         drawLine(0, 30, _width, 30, menu_background_color);
     }

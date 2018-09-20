@@ -675,14 +675,14 @@ void drawString(int16_t x, int16_t y, char* text, uint16_t color, uint16_t bg, u
                         cursor_x  = 0;
                         cursor_y += (int16_t)size * (uint8_t)pgm_read_byte(&gfxFont.yAdvance);
                     }*/
-                    if (align == left) {
+                    if (align == align_left) {
                         drawChar(_cursor_x + xo, _cursor_y, c, color, bg, size);
                         _cursor_x += (uint8_t) pgm_read_byte(&glyph->xAdvance) * (int16_t) size;
                     }
-                    if (align == center) {
+                    if (align == align_center) {
                         //TODO
                     }
-                    if ((align == right) && (textwidth > 0)) {
+                    if ((align == align_right) && (textwidth > 0)) {
                         drawChar(_cursor_x + xo + textwidth - w1, _cursor_y, c, color, bg, size);
                         _cursor_x += (uint8_t) pgm_read_byte(&glyph->xAdvance) * (int16_t) size;
                     }

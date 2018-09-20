@@ -91,26 +91,10 @@ uint8_t _menu_offset = 0; // when scrolling the menu this is the offset for the 
 uint8_t _parameter_menu_active; // is a parameter menu currently visible (0 = no)
 uint8_t _parameter_selection_index; // index of the item currently selected in a parameter menu
 
-
-//drop_down_choice_t mainMenuItem2Choices[2];
-//drop_down_choice_t mainMenuItem3Choices[4];
-//uint8_t mainMenuItem2;
-//uint8_t mainMenuItem3;
-
-//menu_item_t _menu_main_item[10];
-
-//menu_item_t _menu_sub1_item[3];
-//menu_item_t _menu_sub2_item[5];
-
 menu_t _main_menu[5];
 uint8_t _main_menu_count;
 
 char menu_breadcrumbs[64];
-/*
-char submenu1_item_labels[5][20];
-char submenu2_item_labels[4][20];
-char submenu3_item_labels[3][20];
- */
 
 // Color Definitions
 uint16_t menu_item_color;
@@ -1022,12 +1006,12 @@ void btn_E1_released() {
 
 void btn_E2_released() {
     // to emulate the back button currently
-    if (_current_menu == Submenu1) {
-        _current_menu = Main;
+    if (_current_menu == menu_submenu1) {
+        _current_menu = menu_main;
         _menu_selection_index = 0;
         strcpy(menu_breadcrumbs, "Menu");
-    } else if (_current_menu == Submenu2) {
-        _current_menu = Main;
+    } else if (_current_menu == menu_submenu2) {
+        _current_menu = menu_main;
         _menu_selection_index = 1;
         strcpy(menu_breadcrumbs, "Menu");
     } else if (_parameter_menu_active) {
@@ -1136,7 +1120,7 @@ int main(void) {
                 btn_TS2_pos = true;
                 lcd_pmp_wr(ILI9341_INVCTR);
                 lcd_pmp_wr(0x07);
-                drawString(20, 180, "TS2: up  ", color565(0, 0, 0), color565(255, 255, 255), 1, left, 0);
+                drawString(20, 180, "TS2: up  ", color565(0, 0, 0), color565(255, 255, 255), 1, align_left, 0);
 
                 static uint32_t res = 0;
                 uart2_str0("\n\rRead Display Status ... ");
@@ -1157,7 +1141,7 @@ int main(void) {
                 //testing display invesions
                 //lcd_pmp_wr(ILI9341_INVCTR);
                 //lcd_pmp_wr(0x02);
-                drawString(20, 180, "TS2: down", color565(0, 0, 0), color565(255, 255, 255), 1, left, 0);
+                drawString(20, 180, "TS2: down", color565(0, 0, 0), color565(255, 255, 255), 1, align_left, 0);
 
                 static uint32_t res = 0;
                 uart2_str0("\n\rRead Display Status ... ");
