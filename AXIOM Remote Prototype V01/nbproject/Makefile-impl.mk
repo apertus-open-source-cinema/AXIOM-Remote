@@ -24,7 +24,7 @@ CLEAN_SUBPROJECTS=${CLEAN_SUBPROJECTS_${SUBPROJECTS}}
 
 
 # Project Name
-PROJECTNAME=Test01.X
+PROJECTNAME=AXIOM Remote Prototype V01
 
 # Active Configuration
 DEFAULTCONF=default
