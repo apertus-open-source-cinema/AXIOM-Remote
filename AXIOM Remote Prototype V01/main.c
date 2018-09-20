@@ -956,56 +956,54 @@ void btn_E1_released() {
     for (a = 0; a < _main_menu_count; a++) {
         if (_main_menu[a].menu_id == _current_menu) {
 
-            // if this menu item has been disabled don't do anything
+            // if this menu item is disabled don't do anything
             if (_main_menu[a].menu_item[_menu_selection_index].disabled) {
                 return;
             }
 
-            if (_current_menu == Main) {
+            // is the current item linking into a submenu?
+            if (_main_menu[a].menu_item[_menu_selection_index].type == submenu) {
+                // navigate into submenu
+                _current_menu = _main_menu[a].menu_item[_menu_selection_index].link_to_submenu;
 
-                // is the current item linking into a submenu?
-                if (_main_menu[a].menu_item[_menu_selection_index].type == submenu) {
-                    // navigate into submenu
-                    _current_menu = _main_menu[a].menu_item[_menu_selection_index].link_to_submenu;
+                // reset cursor to first item in list;
+                _menu_selection_index = 0;
 
-                    // reset cursor to first item in list;
-                    _menu_selection_index = 0;
+                //update bread crumbs
+                strcpy(menu_breadcrumbs, "Menu > ");
+                strcat(menu_breadcrumbs, _main_menu[a].menu_item[_menu_selection_index].label);
+                return;
+            }
 
-                    //update bread crumbs
-                    strcpy(menu_breadcrumbs, "Menu > ");
-                    strcat(menu_breadcrumbs, _main_menu[a].menu_item[_menu_selection_index].label);
-                    return;
-                }
+            // is the current item supposed to show a drop-down menu?
+            if ((_main_menu[a].menu_item[_menu_selection_index].type == dropdown) && (_parameter_menu_active == 0)) {
+                //open parameter menu
+                _parameter_menu_active = _menu_selection_index;
+                return;
+            }
 
-                // is the current item supposed to show a drop-down menu?
-                if ((_main_menu[a].menu_item[_menu_selection_index].type == dropdown) && (_parameter_menu_active == 0)) {
-                    //open parameter menu
-                    _parameter_menu_active = _menu_selection_index;
-                    return;
-                }
+            // are we in a drop-down menu currently?
+            if ((_main_menu[a].menu_item[_menu_selection_index].type == dropdown) && (_parameter_menu_active != 0)) {
+                // set new value
+                _main_menu[a].menu_item[_menu_selection_index].value = _parameter_selection_index;
 
-                // are we in a drop-down menu currently?
-                if ((_main_menu[a].menu_item[_menu_selection_index].type == dropdown) && (_parameter_menu_active != 0)) {
-                    // set new value
-                    _main_menu[a].menu_item[_menu_selection_index].value = _parameter_selection_index;
-
-                    //close parameter menu
-                    _parameter_menu_active = 0;
-                }
-                /*
-                        if ((menuSelectionIndex == 2) && (_parameter_menu_active == 0)) {
-                            _parameter_menu_active = 2;
-                        } else if ((menuSelectionIndex == 2) && (_parameter_menu_active == 2)) {
-                            mainMenuItem2 = parameterSelectionIndex;
-                            _parameter_menu_active = 0;
-                        }
-                        if ((menuSelectionIndex == 5) && (_parameter_menu_active == 0)) {
-                            _parameter_menu_active = 5;
-                        } else if ((menuSelectionIndex == 5) && (_parameter_menu_active == 5)) {
-                            mainMenuItem3 = parameterSelectionIndex;
-                            _parameter_menu_active = 0;
-                        }*/
-            } else if (_current_menu == Submenu1) {
+                //close parameter menu
+                _parameter_menu_active = 0;
+            }
+            /*
+                    if ((menuSelectionIndex == 2) && (_parameter_menu_active == 0)) {
+                        _parameter_menu_active = 2;
+                    } else if ((menuSelectionIndex == 2) && (_parameter_menu_active == 2)) {
+                        mainMenuItem2 = parameterSelectionIndex;
+                        _parameter_menu_active = 0;
+                    }
+                    if ((menuSelectionIndex == 5) && (_parameter_menu_active == 0)) {
+                        _parameter_menu_active = 5;
+                    } else if ((menuSelectionIndex == 5) && (_parameter_menu_active == 5)) {
+                        mainMenuItem3 = parameterSelectionIndex;
+                        _parameter_menu_active = 0;
+                    }*/
+            /*} else if (_current_menu == Submenu1) {
                 if (_menu_selection_index == 0) {
                     _current_menu = Main;
                     _menu_selection_index = 0;
@@ -1017,7 +1015,7 @@ void btn_E1_released() {
                     _menu_selection_index = 1;
                     strcpy(menu_breadcrumbs, "Menu");
                 }
-            }
+            }*/
         }
     }
 }
@@ -1224,7 +1222,7 @@ int main(void) {
 
             if (_parameter_menu_active) {
                 _parameter_selection_index += diff;
-                _parameter_selection_index = LimitRange(_parameter_selection_index, 0, getCurrentParameterItemCount() - 1);
+                _parameter_selection_index = LimitRange(_parameter_selection_index, 0, get_current_item_choice_count() - 1);
 
             } else {
                 _menu_selection_index += diff;

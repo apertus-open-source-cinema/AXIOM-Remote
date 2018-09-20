@@ -24,22 +24,21 @@
 #define MENU_C
 
 uint8_t get_current_menu_item_count() {
-    if (_current_menu == Main) {
-        return 5; //sizeof (_menu_main_item) / sizeof *(_menu_main_item);
+    uint8_t a;
+    for (a = 0; a < _main_menu_count; a++) {
+        if (_main_menu[a].menu_id == _current_menu) {
+            return _main_menu[a].menu_items_count;
+        }
     }
-    /* if (_current_menu == Submenu1) {
-         return sizeof (submenu1_item_labels) / sizeof *(submenu1_item_labels);
-     }
-     if (_current_menu == Submenu2) {
-         return array_len(submenu2_item_labels);
-     }*/
 }
 
-uint8_t getCurrentParameterItemCount() {
-    if (_parameter_menu_active == 3)
-        return 2;
-    if (_parameter_menu_active == 4)
-        return 4;
+uint8_t get_current_item_choice_count() {
+    uint8_t a;
+    for (a = 0; a < _main_menu_count; a++) {
+        if (_main_menu[a].menu_id == _current_menu) {
+            return _main_menu[a].menu_item[_menu_selection_index].choice_count;
+        }
+    }
 }
 
 bool menu_item_test_action() {
@@ -169,21 +168,21 @@ void initMenu() {
      strcpy(submenu2_item_labels[2], "Submenu2 Item 2");
      strcpy(submenu2_item_labels[3], "Submenu2 Item 3");*/
 
-   /* mainMenuItem2Choices[0].value = 0;
-    strcpy(mainMenuItem2Choices[0].label, "Off");
-    mainMenuItem2Choices[1].value = 1;
-    strcpy(mainMenuItem2Choices[1].label, "On");
-    //mainMenuItem2 = 0;
+    /* mainMenuItem2Choices[0].value = 0;
+     strcpy(mainMenuItem2Choices[0].label, "Off");
+     mainMenuItem2Choices[1].value = 1;
+     strcpy(mainMenuItem2Choices[1].label, "On");
+     //mainMenuItem2 = 0;
 
-    mainMenuItem3Choices[0].value = 0;
-    strcpy(mainMenuItem3Choices[0].label, "Low");
-    mainMenuItem3Choices[1].value = 1;
-    strcpy(mainMenuItem3Choices[1].label, "Medium");
-    mainMenuItem3Choices[2].value = 2;
-    strcpy(mainMenuItem3Choices[2].label, "High");
-    mainMenuItem3Choices[3].value = 3;
-    strcpy(mainMenuItem3Choices[3].label, "Crazy");
-    //mainMenuItem3 = 0;*/
+     mainMenuItem3Choices[0].value = 0;
+     strcpy(mainMenuItem3Choices[0].label, "Low");
+     mainMenuItem3Choices[1].value = 1;
+     strcpy(mainMenuItem3Choices[1].label, "Medium");
+     mainMenuItem3Choices[2].value = 2;
+     strcpy(mainMenuItem3Choices[2].label, "High");
+     mainMenuItem3Choices[3].value = 3;
+     strcpy(mainMenuItem3Choices[3].label, "Crazy");
+     //mainMenuItem3 = 0;*/
 
     uint8_t j = 0;
     strcpy(_main_menu[Main].label, "Main Menu");
@@ -234,69 +233,116 @@ void initMenu() {
     _main_menu[Main].menu_item[j].choices[3].value = 3;
     strcpy(_main_menu[Main].menu_item[j].choices[3].label, "Crazy");
     _main_menu[Main].menu_item[j].choice_count = 4;
+    j++;
+    _main_menu[Main].menu_item[j].disabled = false;
+    _main_menu[Main].menu_item[j].hidden = false;
+    strcpy(_main_menu[Main].menu_item[j].label, "Readonly Item");
+    _main_menu[Main].menu_item[j].type = readonly;
+    _main_menu[Main].menu_item[j].current_value_ptr = &menu_item_test_get_current_value;
+    j++;
+    _main_menu[Main].menu_item[j].disabled = false;
+    _main_menu[Main].menu_item[j].hidden = false;
+    strcpy(_main_menu[Main].menu_item[j].label, "Readonly Item");
+    _main_menu[Main].menu_item[j].type = readonly;
+    _main_menu[Main].menu_item[j].current_value_ptr = &menu_item_test_get_current_value;
+    j++;
+    _main_menu[Main].menu_item[j].disabled = false;
+    _main_menu[Main].menu_item[j].hidden = false;
+    strcpy(_main_menu[Main].menu_item[j].label, "Readonly Item");
+    _main_menu[Main].menu_item[j].type = readonly;
+    _main_menu[Main].menu_item[j].current_value_ptr = &menu_item_test_get_current_value;
+    j++;
+    _main_menu[Main].menu_item[j].disabled = false;
+    _main_menu[Main].menu_item[j].hidden = false;
+    strcpy(_main_menu[Main].menu_item[j].label, "Readonly Item");
+    _main_menu[Main].menu_item[j].type = readonly;
+    _main_menu[Main].menu_item[j].current_value_ptr = &menu_item_test_get_current_value;
     _main_menu[Main].menu_items_count = j + 1;
-    _main_menu_count = 1;
 
-/*
-    // new menu structure definitions
-    _menu_main_item[0].disabled = false;
-    _menu_main_item[0].hidden = false;
-    strcpy(_menu_main_item[0].label, "Submenu 1");
-    _menu_main_item[0].type = submenu;
-    _menu_main_item[0].link_to_submenu = Submenu1;
-    _menu_main_item[0].current_value_ptr = &menu_item_test_get_current_value;
+    j = 0;
+    strcpy(_main_menu[Submenu1].label, "Submenu 1");
+    _main_menu[Submenu1].menu_id = Submenu1;
+    _main_menu[Submenu1].menu_item[j].disabled = false;
+    _main_menu[Submenu1].menu_item[j].hidden = false;
+    strcpy(_main_menu[Submenu1].menu_item[j].label, "Back");
+    _main_menu[Submenu1].menu_item[j].type = submenu;
+    _main_menu[Submenu1].menu_item[j].link_to_submenu = Main;
+    _main_menu[Submenu1].menu_item[j].current_value_ptr = &menu_item_test_get_current_value;
+    j++;
+    _main_menu[Submenu1].menu_item[j].disabled = false;
+    _main_menu[Submenu1].menu_item[j].hidden = false;
+    strcpy(_main_menu[Submenu1].menu_item[j].label, "Submenu 1 Item 1");
+    _main_menu[Submenu1].menu_item[j].type = readonly;
+    _main_menu[Submenu1].menu_item[j].current_value_ptr = &menu_item_test_get_current_value;
+    j++;
+    _main_menu[Submenu1].menu_item[j].disabled = false;
+    _main_menu[Submenu1].menu_item[j].hidden = false;
+    strcpy(_main_menu[Submenu1].menu_item[j].label, "Submenu 1 Item 2");
+    _main_menu[Submenu1].menu_item[j].type = readonly;
+    _main_menu[Submenu1].menu_item[j].current_value_ptr = &menu_item_test_get_current_value;
+    _main_menu[Submenu1].menu_items_count = j + 1;
 
-    _menu_main_item[1].disabled = false;
-    _menu_main_item[1].hidden = false;
-    strcpy(_menu_main_item[1].label, "Submenu 2");
-    _menu_main_item[1].type = submenu;
-    _menu_main_item[0].link_to_submenu = Submenu2;
-    _menu_main_item[1].current_value_ptr = &menu_item_test_get_current_value;
+    _main_menu_count = 2;
+    /*
+        // new menu structure definitions
+        _menu_main_item[0].disabled = false;
+        _menu_main_item[0].hidden = false;
+        strcpy(_menu_main_item[0].label, "Submenu 1");
+        _menu_main_item[0].type = submenu;
+        _menu_main_item[0].link_to_submenu = Submenu1;
+        _menu_main_item[0].current_value_ptr = &menu_item_test_get_current_value;
 
-    _menu_main_item[2].disabled = true;
-    _menu_main_item[2].hidden = false;
-    strcpy(_menu_main_item[2].label, "disabled sample");
-    _menu_main_item[2].type = dropdown;
-    _menu_main_item[2].current_value_ptr = &menu_item_test_get_current_value;
+        _menu_main_item[1].disabled = false;
+        _menu_main_item[1].hidden = false;
+        strcpy(_menu_main_item[1].label, "Submenu 2");
+        _menu_main_item[1].type = submenu;
+        _menu_main_item[0].link_to_submenu = Submenu2;
+        _menu_main_item[1].current_value_ptr = &menu_item_test_get_current_value;
 
-    _menu_main_item[3].disabled = false;
-    _menu_main_item[3].hidden = false;
-    strcpy(_menu_main_item[3].label, "Fun");
-    _menu_main_item[3].type = dropdown;
-    _menu_main_item[3].choices[0] = mainMenuItem2Choices[0];
-    _menu_main_item[3].choices[1] = mainMenuItem2Choices[1];
-    _menu_main_item[3].choice_count = array_len(mainMenuItem2Choices);
-    _menu_main_item[3].current_value_ptr = &menu_item_test_get_current_value;
+        _menu_main_item[2].disabled = true;
+        _menu_main_item[2].hidden = false;
+        strcpy(_menu_main_item[2].label, "disabled sample");
+        _menu_main_item[2].type = dropdown;
+        _menu_main_item[2].current_value_ptr = &menu_item_test_get_current_value;
 
-    _menu_main_item[4].disabled = false;
-    _menu_main_item[4].hidden = false;
-    strcpy(_menu_main_item[4].label, "Fun Level");
-    _menu_main_item[4].type = dropdown;
-    //_menu_main_item[4].action_ptr = &menu_item_test_action;
-    _menu_main_item[4].current_value_ptr = &menu_item_test_get_current_value;
-    _menu_main_item[4].choices[0] = mainMenuItem3Choices[0];
-    _menu_main_item[4].choices[1] = mainMenuItem3Choices[1];
-    _menu_main_item[4].choices[2] = mainMenuItem3Choices[2];
-    _menu_main_item[4].choices[3] = mainMenuItem3Choices[3];
-    _menu_main_item[4].choice_count = array_len(mainMenuItem3Choices);
+        _menu_main_item[3].disabled = false;
+        _menu_main_item[3].hidden = false;
+        strcpy(_menu_main_item[3].label, "Fun");
+        _menu_main_item[3].type = dropdown;
+        _menu_main_item[3].choices[0] = mainMenuItem2Choices[0];
+        _menu_main_item[3].choices[1] = mainMenuItem2Choices[1];
+        _menu_main_item[3].choice_count = array_len(mainMenuItem2Choices);
+        _menu_main_item[3].current_value_ptr = &menu_item_test_get_current_value;
+
+        _menu_main_item[4].disabled = false;
+        _menu_main_item[4].hidden = false;
+        strcpy(_menu_main_item[4].label, "Fun Level");
+        _menu_main_item[4].type = dropdown;
+        //_menu_main_item[4].action_ptr = &menu_item_test_action;
+        _menu_main_item[4].current_value_ptr = &menu_item_test_get_current_value;
+        _menu_main_item[4].choices[0] = mainMenuItem3Choices[0];
+        _menu_main_item[4].choices[1] = mainMenuItem3Choices[1];
+        _menu_main_item[4].choices[2] = mainMenuItem3Choices[2];
+        _menu_main_item[4].choices[3] = mainMenuItem3Choices[3];
+        _menu_main_item[4].choice_count = array_len(mainMenuItem3Choices);
 
 
-    _menu_sub1_item[0].disabled = false;
-    _menu_sub1_item[0].hidden = false;
-    strcpy(_menu_sub1_item[0].label, "Submenu 1 Item 1");
-    _menu_sub1_item[0].type = dropdown;
+        _menu_sub1_item[0].disabled = false;
+        _menu_sub1_item[0].hidden = false;
+        strcpy(_menu_sub1_item[0].label, "Submenu 1 Item 1");
+        _menu_sub1_item[0].type = dropdown;
 
-    _menu_sub1_item[1].disabled = false;
-    _menu_sub1_item[1].hidden = false;
-    strcpy(_menu_sub1_item[1].label, "Submenu 1 Item 2");
-    _menu_sub1_item[1].type = dropdown;
+        _menu_sub1_item[1].disabled = false;
+        _menu_sub1_item[1].hidden = false;
+        strcpy(_menu_sub1_item[1].label, "Submenu 1 Item 2");
+        _menu_sub1_item[1].type = dropdown;
 
-    _menu_sub1_item[2].disabled = false;
-    _menu_sub1_item[2].hidden = false;
-    strcpy(_menu_sub1_item[2].label, "Submenu 1 Item 3");
-    _menu_sub1_item[2].type = dropdown;
+        _menu_sub1_item[2].disabled = false;
+        _menu_sub1_item[2].hidden = false;
+        strcpy(_menu_sub1_item[2].label, "Submenu 1 Item 3");
+        _menu_sub1_item[2].type = dropdown;
 
-    //menu_item_t _menu_sub2_item[5];*/
+        //menu_item_t _menu_sub2_item[5];*/
 
     _current_menu = Main;
     _parameter_menu_active = 0;
@@ -404,10 +450,10 @@ void drawMenu(bool firstime) {
     for (a = 0; a < _main_menu_count; a++) {
         if (_main_menu[a].menu_id == _current_menu) {
             uint8_t i;
-            
+
             // this is the index of the 7 menu items drawn on screen currently
             int8_t display_selection_index = _menu_selection_index - _menu_offset;
-            
+
             if (display_selection_index >= 7) {
                 _menu_offset += 1;
             }
@@ -433,52 +479,52 @@ void drawMenu(bool firstime) {
             }
         }
     }
-/*
-    if (_current_menu == Main) {
-        uint8_t i;
-        int8_t display_selection_index = _menu_selection_index - _menu_offset;
-        if (display_selection_index >= 7) {
-            _menu_offset += 1;
-        }
-        if (display_selection_index < 0) {
-            _menu_offset -= 1;
+    /*
+        if (_current_menu == Main) {
+            uint8_t i;
+            int8_t display_selection_index = _menu_selection_index - _menu_offset;
+            if (display_selection_index >= 7) {
+                _menu_offset += 1;
+            }
+            if (display_selection_index < 0) {
+                _menu_offset -= 1;
+            }
+
+            int number = 5; //sizeof (menuItemLabels) / sizeof *(menuItemLabels);
+
+            number = LimitRange(number, 0, 7);
+
+            for (i = 0; i < number; i++) {
+                draw_menu_item(0, 31 + i * 30, _menu_main_item[i + _menu_offset], i + _menu_offset == _menu_selection_index, ((i + _menu_offset == _menu_selection_index) && btn_E1_pressed));
+                //draw_menu_item(0, 31+i*30, menuItemLabels[i+menu_offset], menuItemValuesText[i+menu_offset], i+menu_offset==menuSelectionIndex, ((i+menu_offset==menuSelectionIndex) && btn_E1_pressed));
+            }
+            if (number == 7) {
+                draw_scroll_indicator(number, get_current_menu_item_count());
+            }
+
+            // draw parameter menu
+            if (_parameter_menu_active != 0) {
+                uint16_t offset = 31 + (_parameter_menu_active - _menu_offset)*30 - 2;
+                draw_parameter_menu(304, offset, _menu_main_item[_parameter_menu_active]);
+            }
         }
 
-        int number = 5; //sizeof (menuItemLabels) / sizeof *(menuItemLabels);
-
-        number = LimitRange(number, 0, 7);
-
-        for (i = 0; i < number; i++) {
-            draw_menu_item(0, 31 + i * 30, _menu_main_item[i + _menu_offset], i + _menu_offset == _menu_selection_index, ((i + _menu_offset == _menu_selection_index) && btn_E1_pressed));
-            //draw_menu_item(0, 31+i*30, menuItemLabels[i+menu_offset], menuItemValuesText[i+menu_offset], i+menu_offset==menuSelectionIndex, ((i+menu_offset==menuSelectionIndex) && btn_E1_pressed));
-        }
-        if (number == 7) {
-            draw_scroll_indicator(number, get_current_menu_item_count());
+        if (_current_menu == Submenu1) {
+            uint8_t i;
+            //int number = sizeof (submenu1_item_labels) / sizeof *(submenu1_item_labels);
+            int number = array_len(_menu_sub1_item); // (submenu1_item_labels) / sizeof *(submenu1_item_labels);
+            for (i = 0; i < number; i++) {
+                draw_menu_item(0, 31 + i * 30, _menu_sub1_item[i + _menu_offset], i == _menu_selection_index, ((i == _menu_selection_index) && btn_E1_pressed));
+            }
         }
 
-        // draw parameter menu
-        if (_parameter_menu_active != 0) {
-            uint16_t offset = 31 + (_parameter_menu_active - _menu_offset)*30 - 2;
-            draw_parameter_menu(304, offset, _menu_main_item[_parameter_menu_active]);
-        }
-    }
-
-    if (_current_menu == Submenu1) {
-        uint8_t i;
-        //int number = sizeof (submenu1_item_labels) / sizeof *(submenu1_item_labels);
-        int number = array_len(_menu_sub1_item); // (submenu1_item_labels) / sizeof *(submenu1_item_labels);
-        for (i = 0; i < number; i++) {
-            draw_menu_item(0, 31 + i * 30, _menu_sub1_item[i + _menu_offset], i == _menu_selection_index, ((i == _menu_selection_index) && btn_E1_pressed));
-        }
-    }
-
-    if (_current_menu == Submenu2) {
-        int i;
-        //int number = sizeof (submenu2_item_labels) / sizeof *(submenu2_item_labels);
-        // for (i = 0; i < number; i++) {
-        //draw_menu_item(0, 31+i*30, submenu2_item_labels[i], "", i==menuSelectionIndex, ((i==menuSelectionIndex) && btn_E1_pressed));
-        //}
-    }*/
+        if (_current_menu == Submenu2) {
+            int i;
+            //int number = sizeof (submenu2_item_labels) / sizeof *(submenu2_item_labels);
+            // for (i = 0; i < number; i++) {
+            //draw_menu_item(0, 31+i*30, submenu2_item_labels[i], "", i==menuSelectionIndex, ((i==menuSelectionIndex) && btn_E1_pressed));
+            //}
+        }*/
 
     //drawRGBBitmap(10, 10, (uint16_t*)(gradient.pixel_data), gradient.width, gradient.height);
     //fillCircle(150, 5, 3, menuSelectedItemColor);
