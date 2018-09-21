@@ -102,22 +102,22 @@ extern bool btn_TS2_pos;
 extern uint8_t E1_pos;
 extern uint8_t E2_pos;
 
-extern uint8_t _menu_selection_index;
+//extern uint8_t _menu_selection_index;
 
-extern drop_down_choice_t mainMenuItem2Choices[2];
-extern drop_down_choice_t mainMenuItem3Choices[4];
+//extern drop_down_choice_t mainMenuItem2Choices[2];
+//extern drop_down_choice_t mainMenuItem3Choices[4];
 
 //extern menu_item_t _menu_main_item[10];
 
 //extern menu_item_t _menu_sub1_item[3];
 //extern menu_item_t _menu_sub2_item[5];
 
-extern menu_t _main_menu[5];
+/*extern menu_t _main_menu[5];
 
-extern char menu_breadcrumbs[64];
+extern char menu_breadcrumbs[64];*/
 
 // Color Definitions
-extern uint16_t menu_item_color;
+/*extern uint16_t menu_item_color;
 extern uint16_t menu_dimmed_item_color;
 extern uint16_t _menu_disabled_item_color;
 extern uint16_t menu_selected_item_color;
@@ -125,7 +125,7 @@ extern uint16_t _menu_hightlighted_item_color;
 extern uint16_t menu_background_color;
 extern uint16_t menu_text_color;
 extern uint16_t _menu_disabled_text_color;
-extern uint16_t _menu_selected_text_color;
+extern uint16_t _menu_selected_text_color;*/
 
 extern GFXfont gfxFont;
 

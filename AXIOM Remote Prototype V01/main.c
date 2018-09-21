@@ -71,6 +71,7 @@ uint16_t _cursor_y = 0;
 // LCD text drawing font
 GFXfont gfxFont;
 
+
 // AXIOM Remote buttons and knobs
 bool btn_E1_pressed = false;
 bool btn_E2_pressed = false;
@@ -85,33 +86,10 @@ uint8_t E2_pos = 0;
 uint16_t _framebuffer[_width][_height];
 
 
-// Menu related stuff
-uint8_t _menu_selection_index = 0; // index of the currently selected item in the menu
-uint8_t _menu_offset = 0; // when scrolling the menu this is the offset for the items
-uint8_t _parameter_menu_active; // is a parameter menu currently visible (0 = no)
-uint8_t _parameter_selection_index; // index of the item currently selected in a parameter menu
-
-menu_t _main_menu[5];
-uint8_t _main_menu_count;
-char menu_breadcrumbs[64];
-
-
 // Page related stuff
 //_page_id_t _current_page;
 page_t _main_page[3];
 uint8_t _page_count;
-
-
-// Color Definitions
-uint16_t menu_item_color;
-uint16_t menu_dimmed_item_color;
-uint16_t _menu_disabled_item_color;
-uint16_t menu_selected_item_color;
-uint16_t _menu_hightlighted_item_color;
-uint16_t menu_background_color;
-uint16_t menu_text_color;
-uint16_t _menu_disabled_text_color;
-uint16_t _menu_selected_text_color;
 
 static inline
 void unlock(void) {
@@ -608,6 +586,14 @@ void setLCDBacklight(uint8_t brightness) {
     lcd_pmp_wr(brightness);
 }
 
+void draw_lcd() {
+    if (_current_menu != menu_none) {
+        draw_menu();
+    } else if (_current_page != page_none) {
+        draw_page();
+    }
+}
+
 void clearFramebuffer(uint16_t color) {
     uint16_t x;
     uint8_t y;
@@ -1028,7 +1014,7 @@ void btn_E2_released() {
 //void draw_menu_item (uint16_t x, uint16_t y, char* label, char* value, bool selected, bool highlighted){
 
 void updateFramebuffer() {
-    drawMenu(true);
+    draw_lcd();
 }
 
 int main(void) {
@@ -1076,7 +1062,7 @@ int main(void) {
     static uint8_t data_status[16];
     static uint8_t qe[2];
 
-    drawMenu(true);
+    draw_lcd();
 
     
     while (1) {
@@ -1177,12 +1163,12 @@ int main(void) {
                 if (!btn_E1_pressed) {
                     //drawString(70, 120, "E1: down", color565(0,0,0), color565(255,255,255), 1); 
                     btn_E1_pressed = true;
-                    drawMenu(false);
+                    draw_lcd();
                 } else {
                     //drawString(70, 120, "E1: up  ", color565(0,0,0), color565(255,255,255), 1); 
                     btn_E1_released();
                     btn_E1_pressed = false;
-                    drawMenu(true);
+                    draw_lcd();
                 }
             }
             if (data[2] == 0x10) {
@@ -1194,7 +1180,7 @@ int main(void) {
                     //drawString(70, 140, "E2: up  ", color565(0,0,0), color565(255,255,255), 1); 
 
                     btn_E2_released();
-                    drawMenu(true);
+                    draw_lcd();
 
                     btn_E2_pressed = false;
                 }
@@ -1227,7 +1213,7 @@ int main(void) {
 
             qe[0] = data[0];
 
-            drawMenu(false);
+            draw_lcd();
 
 
             //char encoder1[3] = "000";
@@ -1246,7 +1232,7 @@ int main(void) {
             E2_pos = qe[1];
 
             //menuItemValues[_menu_selection_index] += diff;
-            drawMenu(false);
+            draw_lcd();
 
             //char encoder1[3] = "000";
             //sprintf(encoder1, "E2: %d", qe[1]);

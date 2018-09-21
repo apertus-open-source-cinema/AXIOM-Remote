@@ -23,6 +23,26 @@
 #ifndef MENU_C
 #define MENU_C
 
+// Menu related stuff
+uint8_t _menu_selection_index = 0; // index of the currently selected item in the menu
+uint8_t _menu_offset = 0; // when scrolling the menu this is the offset for the items
+uint8_t _parameter_menu_active; // is a parameter menu currently visible (0 = no)
+uint8_t _parameter_selection_index; // index of the item currently selected in a parameter menu
+menu_t _main_menu[5];
+uint8_t _main_menu_count;
+char menu_breadcrumbs[64];
+
+// Color Definitions
+uint16_t menu_item_color;
+uint16_t menu_dimmed_item_color;
+uint16_t _menu_disabled_item_color;
+uint16_t menu_selected_item_color;
+uint16_t _menu_hightlighted_item_color;
+uint16_t menu_background_color;
+uint16_t menu_text_color;
+uint16_t _menu_disabled_text_color;
+uint16_t _menu_selected_text_color;
+
 uint8_t get_current_menu_item_count() {
     uint8_t a;
     for (a = 0; a < _main_menu_count; a++) {
@@ -254,9 +274,9 @@ void init_menus() {
     _main_menu[menu_submenu1].menu_items_count = j + 1;
 
     _main_menu_count = 3; // "none" menu is first so always add 1 to number of menus
-    
-    
-    
+
+
+
     // init menu selection indexes
     _current_menu = menu_main;
     _parameter_menu_active = 0;
@@ -347,17 +367,17 @@ void draw_parameter_menu(uint16_t x, uint16_t y, menu_item_t menuitem) {
     }
 }
 
-void drawMenu(bool firstime) {
-    if (firstime) {
-        //clear the screen
-        fillRect(0, 0, _width, _height, menu_background_color);
+void draw_menu() {
 
-        //draw header
-        fillRect(0, 0, _width, 28, menu_item_color);
-        drawString(5, 19, menu_breadcrumbs, menu_text_color, menu_text_color, 1, align_left, 0);
-        drawLine(0, 29, _width, 29, menu_selected_item_color);
-        drawLine(0, 30, _width, 30, menu_background_color);
-    }
+    //clear the screen
+    fillRect(0, 0, _width, _height, menu_background_color);
+
+    //draw header
+    fillRect(0, 0, _width, 28, menu_item_color);
+    drawString(5, 19, menu_breadcrumbs, menu_text_color, menu_text_color, 1, align_left, 0);
+    drawLine(0, 29, _width, 29, menu_selected_item_color);
+    drawLine(0, 30, _width, 30, menu_background_color);
+
 
     uint8_t a;
 
