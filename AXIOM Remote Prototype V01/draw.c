@@ -350,7 +350,7 @@ void drawRoundRect(int16_t x, int16_t y, int16_t w, int16_t h, int16_t r, uint16
  */
 
 /**************************************************************************/
-void fillRoundRect(int16_t x, int16_t y, int16_t w, int16_t h, int16_t r, uint16_t color) {
+void fill_round_rect(int16_t x, int16_t y, int16_t w, int16_t h, int16_t r, uint16_t color) {
     fillRect(x + r, y, w - 2 * r, h, color);
 
     // draw four corners

@@ -18,7 +18,7 @@
 #ifndef UTILITY_C
 #define UTILITY_C
 
-int8_t LimitRange(int8_t in, int8_t min, int8_t max) {
+int8_t limit_range(int8_t in, int8_t min, int8_t max) {
     if (in >= max) {
         return max;
     }

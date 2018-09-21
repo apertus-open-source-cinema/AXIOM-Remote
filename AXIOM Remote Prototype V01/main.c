@@ -93,8 +93,14 @@ uint8_t _parameter_selection_index; // index of the item currently selected in a
 
 menu_t _main_menu[5];
 uint8_t _main_menu_count;
-
 char menu_breadcrumbs[64];
+
+
+// Page related stuff
+//_page_id_t _current_page;
+page_t _main_page[3];
+uint8_t _page_count;
+
 
 // Color Definitions
 uint16_t menu_item_color;
@@ -1059,7 +1065,8 @@ int main(void) {
 
     lcd_init();
 
-    initMenu();
+    init_menus();
+    init_pages();
 
     static uint16_t r = 0;
     static uint16_t g = 0;
@@ -1071,7 +1078,7 @@ int main(void) {
 
     drawMenu(true);
 
-
+    
     while (1) {
 
         // Read Button Press Messages
@@ -1120,7 +1127,7 @@ int main(void) {
                 btn_TS2_pos = true;
                 lcd_pmp_wr(ILI9341_INVCTR);
                 lcd_pmp_wr(0x07);
-                drawString(20, 180, "TS2: up  ", color565(0, 0, 0), color565(255, 255, 255), 1, align_left, 0);
+                //drawString(20, 180, "TS2: up  ", color565(0, 0, 0), color565(255, 255, 255), 1, align_left, 0);
 
                 static uint32_t res = 0;
                 uart2_str0("\n\rRead Display Status ... ");
@@ -1141,7 +1148,7 @@ int main(void) {
                 //testing display invesions
                 //lcd_pmp_wr(ILI9341_INVCTR);
                 //lcd_pmp_wr(0x02);
-                drawString(20, 180, "TS2: down", color565(0, 0, 0), color565(255, 255, 255), 1, align_left, 0);
+                //drawString(20, 180, "TS2: down", color565(0, 0, 0), color565(255, 255, 255), 1, align_left, 0);
 
                 static uint32_t res = 0;
                 uart2_str0("\n\rRead Display Status ... ");
@@ -1206,11 +1213,11 @@ int main(void) {
 
             if (_parameter_menu_active) {
                 _parameter_selection_index += diff;
-                _parameter_selection_index = LimitRange(_parameter_selection_index, 0, get_current_item_choice_count() - 1);
+                _parameter_selection_index = limit_range(_parameter_selection_index, 0, get_current_item_choice_count() - 1);
 
             } else {
                 _menu_selection_index += diff;
-                _menu_selection_index = LimitRange(_menu_selection_index, 0, get_current_menu_item_count() - 1);
+                _menu_selection_index = limit_range(_menu_selection_index, 0, get_current_menu_item_count() - 1);
             }
 
             //char encoder1[30] = "000000000";

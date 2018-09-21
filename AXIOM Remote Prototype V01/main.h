@@ -10,11 +10,11 @@
  **	Compile with -O6 for best experience
  */
 
-#include "definitions.h"
-#include "gfxfont.h"
-
 #ifndef MAIN_H
 #define MAIN_H
+
+#include "definitions.h"
+#include "gfxfont.h"
 
 extern uint16_t _cursor_x;
 extern uint16_t _cursor_y;
@@ -26,7 +26,7 @@ extern uint8_t _menu_offset; // when scrolling the menu this is the offset for t
 extern uint8_t _parameter_menu_active; // is a parameter menu currently visible (0 = no)
 extern uint8_t _parameter_selection_index; // index of the item currently selected in a parameter menu
 
-typedef struct drop_down_choice_t {
+typedef struct {
     char label[32];
     uint8_t value;
 } drop_down_choice_t;
@@ -40,7 +40,7 @@ typedef enum {
     submenu, readonly, numeric, dropdown
 } menu_item_type_t;
 
-typedef struct menu_item_t {
+typedef struct {
     char label[64];
     bool disabled;
     bool hidden;
@@ -53,14 +53,21 @@ typedef struct menu_item_t {
     uint8_t choice_count;
 } menu_item_t;
 
-typedef struct menu_t {
+typedef struct {
     char label[64];
     enum _menu_id_t menu_id;
     menu_item_t menu_item[64];
     uint8_t menu_items_count;
 } menu_t;
 
-typedef struct page_item_t {
+extern uint8_t _main_menu_count;
+
+enum _page_id_t {
+    page_none, page_home, page_1
+};
+enum _page_id_t _current_page;
+
+typedef struct {
     char label[64];
     bool disabled;
     enum _page_id_t link_to_subpage;
@@ -69,16 +76,22 @@ typedef struct page_item_t {
     char* (*current_value_ptr)(); //function pointer to return the current value
 } page_item_t;
 
-enum _page_id_t {
-    page_none, page_home, page_1
-};
-enum _page_id_t _current_page;
+typedef struct {
+    char label[64];
+    enum _page_id_t page_id;
+    page_item_t page_item[6];
+    uint8_t page_items_count;
+} page_t;
+
+extern page_t _main_page[3];
+
+extern uint8_t _page_count;
+
 
 typedef enum {
     align_left, align_center, align_right
 } textAlign;
 
-extern uint8_t _main_menu_count;
 
 // AXIOM Remote buttons and knobs
 extern bool btn_E1_pressed;

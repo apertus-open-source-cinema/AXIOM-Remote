@@ -143,7 +143,7 @@ void draw_scroll_indicator(uint8_t number, uint8_t CurrentMenuItemCount) {
  */
 
 /**************************************************************************/
-void initMenu() {
+void init_menus() {
     //Color Theme definitions
     menu_item_color = color565(255, 255, 255);
     menu_dimmed_item_color = color565(247, 251, 247);
@@ -154,35 +154,6 @@ void initMenu() {
     _menu_selected_text_color = color565(255, 255, 255);
     _menu_hightlighted_item_color = color565(0, 128, 255);
     _menu_disabled_text_color = color565(230, 230, 230);
-
-
-    /* strcpy(submenu1_item_labels[0], "<- back");
-     strcpy(submenu1_item_labels[1], "Submenu1 Item 1");
-     strcpy(submenu1_item_labels[2], "Submenu1 Item 2");
-     strcpy(submenu1_item_labels[3], "Submenu1 Item 3");
-     strcpy(submenu1_item_labels[4], "Submenu1 Item 4");
-
-
-     strcpy(submenu2_item_labels[0], "<- back");
-     strcpy(submenu2_item_labels[1], "Submenu2 Item 1");
-     strcpy(submenu2_item_labels[2], "Submenu2 Item 2");
-     strcpy(submenu2_item_labels[3], "Submenu2 Item 3");*/
-
-    /* mainMenuItem2Choices[0].value = 0;
-     strcpy(mainMenuItem2Choices[0].label, "Off");
-     mainMenuItem2Choices[1].value = 1;
-     strcpy(mainMenuItem2Choices[1].label, "On");
-     //mainMenuItem2 = 0;
-
-     mainMenuItem3Choices[0].value = 0;
-     strcpy(mainMenuItem3Choices[0].label, "Low");
-     mainMenuItem3Choices[1].value = 1;
-     strcpy(mainMenuItem3Choices[1].label, "Medium");
-     mainMenuItem3Choices[2].value = 2;
-     strcpy(mainMenuItem3Choices[2].label, "High");
-     mainMenuItem3Choices[3].value = 3;
-     strcpy(mainMenuItem3Choices[3].label, "Crazy");
-     //mainMenuItem3 = 0;*/
 
     uint8_t j = 0;
     strcpy(_main_menu[menu_main].label, "Main Menu");
@@ -282,7 +253,9 @@ void initMenu() {
     _main_menu[menu_submenu1].menu_item[j].current_value_ptr = &menu_item_test_get_current_value;
     _main_menu[menu_submenu1].menu_items_count = j + 1;
 
-    _main_menu_count = 3; // no menu is first so always add 1 to number of menus
+    _main_menu_count = 3; // "none" menu is first so always add 1 to number of menus
+    
+    
     
     // init menu selection indexes
     _current_menu = menu_main;
@@ -404,7 +377,7 @@ void drawMenu(bool firstime) {
 
             int menu_items_count = _main_menu[a].menu_items_count; //sizeof (menuItemLabels) / sizeof *(menuItemLabels);
 
-            menu_items_count = LimitRange(menu_items_count, 0, 7);
+            menu_items_count = limit_range(menu_items_count, 0, 7);
 
             for (i = 0; i < menu_items_count; i++) {
                 draw_menu_item(0, 31 + i * 30, _main_menu[a].menu_item[i + _menu_offset], i + _menu_offset == _menu_selection_index, ((i + _menu_offset == _menu_selection_index) && btn_E1_pressed));
