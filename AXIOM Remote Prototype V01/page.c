@@ -98,6 +98,16 @@ void init_pages() {
     //_main_page[page_home].page_item[j].link_to_submenu = menu_submenu1;
     //_main_page[page_home].page_item[j].current_value_ptr = &menu_item_test_get_current_value;
     j++;
+    _main_page[page_home].page_item[j].disabled = false;
+    strcpy(_main_page[page_home].page_item[j].label, "Item 2");
+    //_main_page[page_home].page_item[j].link_to_submenu = menu_submenu1;
+    //_main_page[page_home].page_item[j].current_value_ptr = &menu_item_test_get_current_value;
+    j++;
+    _main_page[page_home].page_item[j].disabled = false;
+    strcpy(_main_page[page_home].page_item[j].label, "Item 3");
+    //_main_page[page_home].page_item[j].link_to_submenu = menu_submenu1;
+    //_main_page[page_home].page_item[j].current_value_ptr = &menu_item_test_get_current_value;
+    j++;
 
     _current_page = 0;
     _page_count = 2;
