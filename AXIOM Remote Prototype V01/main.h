@@ -127,7 +127,11 @@ extern uint16_t menu_text_color;
 extern uint16_t _menu_disabled_text_color;
 extern uint16_t _menu_selected_text_color;*/
 
-extern GFXfont gfxFont;
+//extern GFXfont gfxFont;
+extern GFXfont _FreeSans9pt7b;
+extern GFXfont _FreeSans12pt7b;
+extern GFXfont _FreeSans18pt7b;
+extern GFXfont _FreeSans24pt7b;
 
 extern uint16_t _framebuffer[_width][_height];
 

@@ -32,7 +32,8 @@
 
 /**************************************************************************/
 void drawPixel(int16_t x, int16_t y, uint16_t color) {
-    _framebuffer[x][y] = color;
+    //origin shall be at the lower left corner
+    _framebuffer[x][_height - y] = color;
 }
 
 /**************************************************************************/
@@ -110,7 +111,7 @@ void drawFastVLine(int16_t x, int16_t y, int16_t h, uint16_t color) {
  */
 
 /**************************************************************************/
-void fillRect(int16_t x, int16_t y, int16_t w, int16_t h, uint16_t color) {
+void fill_rect(int16_t x, int16_t y, int16_t w, int16_t h, uint16_t color) {
     /*int16_t x2 = x + w - 1, y2 = y + h - 1;
     if((x2 < 0) || (y2 < 0)) return;
 
@@ -351,7 +352,7 @@ void drawRoundRect(int16_t x, int16_t y, int16_t w, int16_t h, int16_t r, uint16
 
 /**************************************************************************/
 void fill_round_rect(int16_t x, int16_t y, int16_t w, int16_t h, int16_t r, uint16_t color) {
-    fillRect(x + r, y, w - 2 * r, h, color);
+    fill_rect(x + r, y, w - 2 * r, h, color);
 
     // draw four corners
     fillCircleHelper(x + w - r - 1, y + r, r, 1, h - 2 * r - 1, color);
@@ -370,99 +371,47 @@ void fill_round_rect(int16_t x, int16_t y, int16_t w, int16_t h, int16_t r, uint
  */
 
 /**************************************************************************/
-void drawChar(int16_t x, int16_t y, unsigned char c, uint16_t color, uint16_t bg, uint8_t size) {
-    if (0) { // Classic built-in font
-        if ((x >= _width) || // Clip right
-                (y >= _height) || // Clip bottom
-                ((x + 6 * size - 1) < 0) || // Clip left
-                ((y + 8 * size - 1) < 0)) { // Clip top
-            return;
-        }
-        //bool _cp437 = true;
-        //if(!_cp437 && (c >= 176)) c++; // Handle 'classic' charset behavior
+void drawChar(int16_t x, int16_t y, unsigned char c, uint16_t color, uint16_t bg, GFXfont gfxFont) {
 
-        // 5x7 characters
-        int8_t i;
-        for (i = 0; i < 5; i++) { // Char bitmap = 5 columns
-            uint8_t line = pgm_read_byte(&font[c * 5 + i]);
-            int8_t j;
-            for (j = 0; j < 8; j++, line >>= 1) {
-                if (line & 1) {
-                    if (size == 1)
-                        drawPixel(x + i, y + 7 - j, color);
-                    else
-                        fillRect(x + i*size, y + 7 - j*size, size, size, color);
-                } else if (bg != color) {
-                    if (size == 1)
-                        drawPixel(x + i, y + 7 - j, bg);
-                    else
-                        fillRect(x + i*size, y + 7 - j*size, size, size, bg);
-                }
+    c -= (uint8_t) pgm_read_byte(&gfxFont.first);
+    GFXglyph *glyph = &(((GFXglyph *) pgm_read_pointer(&gfxFont.glyph))[c]);
+    uint8_t *bitmap = (uint8_t *) pgm_read_pointer(&gfxFont.bitmap);
+
+    uint16_t bo = pgm_read_word(&glyph->bitmapOffset);
+    uint8_t w = pgm_read_byte(&glyph->width);
+    uint8_t h = pgm_read_byte(&glyph->height);
+    int8_t xo = pgm_read_byte(&glyph->xOffset);
+    int8_t yo = pgm_read_byte(&glyph->yOffset);
+    uint8_t xx, yy, bits = 0, bit = 0;
+    int16_t xo16 = 0, yo16 = 0;
+
+    // Todo: Add character clipping here
+
+    // NOTE: THERE IS NO 'BACKGROUND' COLOR OPTION ON CUSTOM FONTS.
+    // THIS IS ON PURPOSE AND BY DESIGN.  The background color feature
+    // has typically been used with the 'classic' font to overwrite old
+    // screen contents with new data.  This ONLY works because the
+    // characters are a uniform size; it's not a sensible thing to do with
+    // proportionally-spaced fonts with glyphs of varying sizes (and that
+    // may overlap).  To replace previously-drawn text when using a custom
+    // font, use the getTextBounds() function to determine the smallest
+    // rectangle encompassing a string, erase the area with fillRect(),
+    // then draw new text.  This WILL infortunately 'blink' the text, but
+    // is unavoidable.  Drawing 'background' pixels will NOT fix this,
+    // only creates a new set of problems.  Have an idea to work around
+    // this (a canvas object type for MCUs that can afford the RAM and
+    // displays supporting setAddrWindow() and pushColors()), but haven't
+    // implemented this yet.
+
+    for (yy = 0; yy < h; yy++) {
+        for (xx = 0; xx < w; xx++) {
+            if (!(bit++ & 7)) {
+                bits = pgm_read_byte(&bitmap[bo++]);
             }
-        }
-        if (bg != color) { // If opaque, draw vertical line for last column
-            if (size == 1) {
-                drawFastVLine(x + 5, y, 8, bg);
-            } else {
-                fillRect(x + 5 * size, y, size, 8 * size, bg);
+            if (bits & 0x80) {
+                drawPixel(x + xo + xx, y - yo - yy, color);
             }
-        }
-    } else { // Custom font
-
-        // Character is assumed previously filtered by write() to eliminate
-        // newlines, returns, non-printable characters, etc.  Calling
-        // drawChar() directly with 'bad' characters of font may cause mayhem!
-
-        c -= (uint8_t) pgm_read_byte(&gfxFont.first);
-        GFXglyph *glyph = &(((GFXglyph *) pgm_read_pointer(&gfxFont.glyph))[c]);
-        uint8_t *bitmap = (uint8_t *) pgm_read_pointer(&gfxFont.bitmap);
-
-        uint16_t bo = pgm_read_word(&glyph->bitmapOffset);
-        uint8_t w = pgm_read_byte(&glyph->width),
-                h = pgm_read_byte(&glyph->height);
-        int8_t xo = pgm_read_byte(&glyph->xOffset),
-                yo = pgm_read_byte(&glyph->yOffset);
-        uint8_t xx, yy, bits = 0, bit = 0;
-        int16_t xo16 = 0, yo16 = 0;
-
-        if (size > 1) {
-            xo16 = xo;
-            yo16 = yo;
-        }
-
-        // Todo: Add character clipping here
-
-        // NOTE: THERE IS NO 'BACKGROUND' COLOR OPTION ON CUSTOM FONTS.
-        // THIS IS ON PURPOSE AND BY DESIGN.  The background color feature
-        // has typically been used with the 'classic' font to overwrite old
-        // screen contents with new data.  This ONLY works because the
-        // characters are a uniform size; it's not a sensible thing to do with
-        // proportionally-spaced fonts with glyphs of varying sizes (and that
-        // may overlap).  To replace previously-drawn text when using a custom
-        // font, use the getTextBounds() function to determine the smallest
-        // rectangle encompassing a string, erase the area with fillRect(),
-        // then draw new text.  This WILL infortunately 'blink' the text, but
-        // is unavoidable.  Drawing 'background' pixels will NOT fix this,
-        // only creates a new set of problems.  Have an idea to work around
-        // this (a canvas object type for MCUs that can afford the RAM and
-        // displays supporting setAddrWindow() and pushColors()), but haven't
-        // implemented this yet.
-
-        for (yy = 0; yy < h; yy++) {
-            for (xx = 0; xx < w; xx++) {
-                if (!(bit++ & 7)) {
-                    bits = pgm_read_byte(&bitmap[bo++]);
-                }
-                if (bits & 0x80) {
-                    if (size == 1) {
-                        drawPixel(x + xo + xx, y + yo + yy, color);
-                    } else {
-                        fillRect(x + (xo16 + xx) * size, y + (yo16 + yy) * size,
-                                size, size, color);
-                    }
-                }
-                bits <<= 1;
-            }
+            bits <<= 1;
         }
     }
 }
@@ -563,42 +512,107 @@ void setCursor(int16_t x, int16_t y) {
  */
 
 /**************************************************************************/
-void getCharBounds(char c, int16_t *x, int16_t *y, int16_t *minx, int16_t *miny, int16_t *maxx, int16_t *maxy, uint8_t textsize) {
+void getCharBounds(char c, int16_t *x, int16_t *y, int16_t *minx, int16_t *miny, int16_t *maxx, int16_t *maxy, uint8_t textsize, GFXfont gfxFont) {
     bool wrap = false;
-    if (1) {
-        if (c == '\n') { // Newline?
-            *x = 0; // Reset x to zero, advance y by one line
-            *y += textsize * (uint8_t) pgm_read_byte(&gfxFont.yAdvance);
-        } else if (c != '\r') { // Not a carriage return; is normal char
-            uint8_t first = pgm_read_byte(&gfxFont.first),
-                    last = pgm_read_byte(&gfxFont.last);
-            if ((c >= first) && (c <= last)) { // Char present in this font?
-                GFXglyph *glyph = &(((GFXglyph *) pgm_read_pointer(
-                        &gfxFont.glyph))[c - first]);
-                uint8_t gw = pgm_read_byte(&glyph->width),
-                        gh = pgm_read_byte(&glyph->height),
-                        xa = pgm_read_byte(&glyph->xAdvance);
-                int8_t xo = pgm_read_byte(&glyph->xOffset),
-                        yo = pgm_read_byte(&glyph->yOffset);
-                if (wrap && ((*x + (((int16_t) xo + gw) * textsize)) > _width)) {
-                    *x = 0; // Reset x to zero, advance y by one line
-                    *y += textsize * (uint8_t) pgm_read_byte(&gfxFont.yAdvance);
-                }
-                int16_t ts = (int16_t) textsize,
-                        x1 = *x + xo * ts,
-                        y1 = *y + yo * ts,
-                        x2 = x1 + gw * ts - 1,
-                        y2 = y1 + gh * ts - 1;
-                if (x1 < *minx) *minx = x1;
-                if (y1 < *miny) *miny = y1;
-                if (x2 > *maxx) *maxx = x2;
-                if (y2 > *maxy) *maxy = y2;
-                *x += xa * ts;
+    if (c == '\n') { // Newline?
+        *x = 0; // Reset x to zero, advance y by one line
+        *y += textsize * (uint8_t) pgm_read_byte(&gfxFont.yAdvance);
+    } else if (c != '\r') { // Not a carriage return; is normal char
+        uint8_t first = pgm_read_byte(&gfxFont.first),
+                last = pgm_read_byte(&gfxFont.last);
+        if ((c >= first) && (c <= last)) { // Char present in this font?
+            GFXglyph *glyph = &(((GFXglyph *) pgm_read_pointer(
+                    &gfxFont.glyph))[c - first]);
+            uint8_t gw = pgm_read_byte(&glyph->width),
+                    gh = pgm_read_byte(&glyph->height),
+                    xa = pgm_read_byte(&glyph->xAdvance);
+            int8_t xo = pgm_read_byte(&glyph->xOffset),
+                    yo = pgm_read_byte(&glyph->yOffset);
+            if (wrap && ((*x + (((int16_t) xo + gw) * textsize)) > _width)) {
+                *x = 0; // Reset x to zero, advance y by one line
+                *y += textsize * (uint8_t) pgm_read_byte(&gfxFont.yAdvance);
             }
+            int16_t ts = (int16_t) textsize,
+                    x1 = *x + xo * ts,
+                    y1 = *y + yo * ts,
+                    x2 = x1 + gw * ts - 1,
+                    y2 = y1 + gh * ts - 1;
+            if (x1 < *minx) *minx = x1;
+            if (y1 < *miny) *miny = y1;
+            if (x2 > *maxx) *maxx = x2;
+            if (y2 > *maxy) *maxy = y2;
+            *x += xa * ts;
         }
     }
 }
+/**************************************************************************/
+/*!
+    @brief    Helper to calculate the x-offset (distance from cursor to left border of the character) in pixels to be drawn
+    @param    c     The ascii character to measure
+    @param    font    The font to be used
+ */
 
+/**************************************************************************/
+uint16_t get_char_xoffset(const char c, GFXfont gfxFont) {
+
+    uint8_t first = pgm_read_byte(&gfxFont.first);
+    uint8_t last = pgm_read_byte(&gfxFont.last);
+
+    if ((c >= first) && (c <= last)) { // Char present in this font?
+        GFXglyph *glyph = &(((GFXglyph *) pgm_read_pointer(&gfxFont.glyph))[c - first]);
+        uint8_t gw = pgm_read_byte(&glyph->width);
+        uint8_t xa = pgm_read_byte(&glyph->xAdvance);
+        int8_t xo = pgm_read_byte(&glyph->xOffset);
+
+        return xo;
+    }
+    return 0;
+}
+/**************************************************************************/
+/*!
+    @brief    Helper to calculate the width in pixels of a string to be drawn
+    @param    str     The ascii string to measure
+    @param    font    The font to be used
+ */
+
+/**************************************************************************/
+uint16_t get_string_width(const char* str, GFXfont gfxFont) {
+    uint16_t width = 0;
+    uint8_t gap;
+    uint8_t xo1;
+    bool first_letter = true;
+
+    while (*str != 0) {
+        uint8_t first = pgm_read_byte(&gfxFont.first);
+        uint8_t last = pgm_read_byte(&gfxFont.last);
+
+        if ((*str >= first) && (*str <= last)) { // Char present in this font?
+            GFXglyph *glyph = &(((GFXglyph *) pgm_read_pointer(&gfxFont.glyph))[*str - first]);
+            uint8_t gw = pgm_read_byte(&glyph->width);
+            uint8_t xa = pgm_read_byte(&glyph->xAdvance);
+            int8_t xo = pgm_read_byte(&glyph->xOffset);
+            gap = xa - gw - xo;
+            width += xa;
+
+            if (first_letter) {
+                xo1 = xo;
+                first_letter = false;
+            }
+
+            *str++;
+        }
+    }
+
+    // remove the gap after the last letter
+    if (width > 0) {
+        width -= gap;
+    }
+    // remove the xoffset before the first letter
+    if (width > 0) {
+        width -= xo1;
+    }
+    return width;
+}
 /**************************************************************************/
 /*!
     @brief    Helper to determine size of a string with current font/size. Pass string and a cursor position, returns UL corner and W,H.
@@ -607,11 +621,12 @@ void getCharBounds(char c, int16_t *x, int16_t *y, int16_t *minx, int16_t *miny,
     @param    y       The current cursor Y
     @param    x1      The boundary X coordinate, set by function
     @param    y1      The boundary Y coordinate, set by function
-    @param    w      The boundary width, set by function
-    @param    h      The boundary height, set by function
+    @param    w       The boundary width, set by function
+    @param    h       The boundary height, set by function
  */
+
 /**************************************************************************/
-void getTextBounds(char *str, int16_t x, int16_t y, int16_t *x1, int16_t *y1, uint16_t *w, uint16_t *h) {
+void get_text_bounds(char *str, int16_t x, int16_t y, int16_t *x1, int16_t *y1, uint16_t *w, uint16_t *h, GFXfont gfxfont) {
     uint8_t c; // Current character
 
     *x1 = x;
@@ -621,7 +636,7 @@ void getTextBounds(char *str, int16_t x, int16_t y, int16_t *x1, int16_t *y1, ui
     int16_t minx = _width, miny = _height, maxx = -1, maxy = -1;
 
     while ((c = *str++))
-        getCharBounds(c, &x, &y, &minx, &miny, &maxx, &maxy, 1);
+        getCharBounds(c, &x, &y, &minx, &miny, &maxx, &maxy, 1, gfxfont);
 
     if (maxx >= minx) {
         *x1 = minx;
@@ -633,60 +648,48 @@ void getTextBounds(char *str, int16_t x, int16_t y, int16_t *x1, int16_t *y1, ui
     }
 }
 
-void drawString(int16_t x, int16_t y, char* text, uint16_t color, uint16_t bg, uint8_t size, textAlign align, uint16_t textwidth) {
-    //bool wrap = false;
-    if (0) { //old font  
-        uint8_t letterwidth = 6;
+void draw_string(int16_t x, int16_t y, char* text, uint16_t color, uint16_t bg, GFXfont gfxFont, textAlign align, uint16_t textblockwidth) {
+    uint8_t first = pgm_read_byte(&gfxFont.first);
+    uint8_t last = pgm_read_byte(&gfxFont.last);
+    uint8_t length = strlen(text);
 
-        uint8_t length = strlen(text);
-        uint8_t i;
-        for (i = 0; i < length; i++) {
-            char c = text[i];
-            drawChar(x + letterwidth * i*size, y, c, color, bg, size);
+    _cursor_x = x;
+    _cursor_y = y;
+
+    uint16_t text_width = get_string_width(text, gfxFont);
+
+    uint8_t i;
+    for (i = 0; i < length; i++) {
+        char c = text[i];
+
+        if (c == 32) { // space " " character 
+            _cursor_x += 10;
         }
-    } else { // Custom font
-        uint8_t first = pgm_read_byte(&gfxFont.first);
-        uint8_t last = pgm_read_byte(&gfxFont.last);
-        uint8_t length = strlen(text);
 
-        _cursor_x = x;
-        _cursor_y = y;
+        if ((c >= first) && (c <= last)) {
+            GFXglyph *glyph = &(((GFXglyph *) pgm_read_pointer(&gfxFont.glyph))[c - first]);
+            uint8_t w = pgm_read_byte(&glyph->width),
+                    h = pgm_read_byte(&glyph->height);
+            if ((w > 0) && (h > 0)) { // Is there an associated bitmap?
+                int16_t xo = (int8_t) pgm_read_byte(&glyph->xOffset); // sic
+                
+                if (i == 0) {
+                    //first character doesn't need x offset
+                    _cursor_x -= xo;
+                }
+                
+                if (align == align_left) {
 
-        uint16_t x1, y1, w1, h1;
-
-        getTextBounds(text, x, y, &x1, &y1, &w1, &h1);
-        //asdasd
-
-        uint8_t i;
-        for (i = 0; i < length; i++) {
-            char c = text[i];
-
-            if (c == 32) { // space " " character 
-                _cursor_x += 10;
-            }
-
-            if ((c >= first) && (c <= last)) {
-                GFXglyph *glyph = &(((GFXglyph *) pgm_read_pointer(&gfxFont.glyph))[c - first]);
-                uint8_t w = pgm_read_byte(&glyph->width),
-                        h = pgm_read_byte(&glyph->height);
-                if ((w > 0) && (h > 0)) { // Is there an associated bitmap?
-                    int16_t xo = (int8_t) pgm_read_byte(&glyph->xOffset); // sic
-                    /*if(wrap && ((cursor_x + size * (xo + w)) > _width)) {
-                        cursor_x  = 0;
-                        cursor_y += (int16_t)size * (uint8_t)pgm_read_byte(&gfxFont.yAdvance);
-                    }*/
-                    if (align == align_left) {
-                        drawChar(_cursor_x + xo, _cursor_y, c, color, bg, size);
-                        _cursor_x += (uint8_t) pgm_read_byte(&glyph->xAdvance) * (int16_t) size;
-                    }
-                    if (align == align_center) {
-                        //TODO
-                    }
-                    if ((align == align_right) && (textwidth > 0)) {
-                        drawChar(_cursor_x + xo + textwidth - w1, _cursor_y, c, color, bg, size);
-                        _cursor_x += (uint8_t) pgm_read_byte(&glyph->xAdvance) * (int16_t) size;
-                    }
-
+                    drawChar(_cursor_x + xo, _cursor_y, c, color, bg, gfxFont);
+                    _cursor_x += (uint8_t) pgm_read_byte(&glyph->xAdvance);
+                }
+                if ((align == align_center) && (textblockwidth > 0)) {
+                    drawChar(_cursor_x + xo - text_width / 2 + textblockwidth / 2, _cursor_y, c, color, bg, gfxFont);
+                    _cursor_x += (uint8_t) pgm_read_byte(&glyph->xAdvance);
+                }
+                if ((align == align_right) && (textblockwidth > 0)) {
+                    drawChar(_cursor_x + xo + textblockwidth - text_width, _cursor_y, c, color, bg, gfxFont);
+                    _cursor_x += (uint8_t) pgm_read_byte(&glyph->xAdvance);
                 }
             }
         }
