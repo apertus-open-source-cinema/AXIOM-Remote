@@ -4,6 +4,12 @@ This software runs bare metal on the PIC32MZ.
 Further documentation/hardware schematics please see:
 https://wiki.apertus.org/index.php/AXIOM_Remote
  
+#License
+This program is free software; you can redistribute it and/or modify
+it under the terms of the GNU General Public License 2 as published 
+by the Free Software Foundation.
+for details see: LICENSE.txt
+
 ## Folder Structure
 ```/nbproject/``` contains a project that can be opened in MPLABX (note that the XC32 compiler is a separate download).
 
