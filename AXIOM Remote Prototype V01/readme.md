@@ -1,5 +1,27 @@
+# AXIOM Remote
+This software runs bare metal on the PIC32MZ. 
 
-PIC16F1718 West
+Further documentation/hardware schematics please see:
+https://wiki.apertus.org/index.php/AXIOM_Remote
+ 
+## Folder Structure
+```/nbproject/``` contains a project that can be opened in MPLABX (note that the XC32 compiler is a separate download).
+
+```/datasheets/``` contains contains datasheets related to the used hardware (TFT and TFT controller, etc.).
+
+```/reference/``` contains demo code that was developed to test/showcase several aspects of the hardware
+
+## Terms used in the GUI
+* *menu* - refers to a screen with a header (showing breadcrumbs) and 6 menu_items displayed at the same time on the TFT (scrollbars are automatically shown if more than 6 menu_items are present  (type: ```menu_t```)
+* *menu_item* - refers to one option/line in the menu, can be hidden or disabled and can show readonly information, lead to another submenu or contain a numeric or dropdown list like selection (type: ```menu_item_t```)
+* *parameter_menu*
+* *Page*
+* *Page Item*
+
+## Interfacing with the East/West PIC16
+Two additional smaller PIC16 are used for handling push button, rotary encoder and LED IO.
+
+### PIC16F1718 West
 
 Index   Bits    Function
 
