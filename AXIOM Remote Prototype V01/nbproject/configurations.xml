@@ -7,6 +7,10 @@
       <itemPath>gfxfont.h</itemPath>
       <itemPath>main.h</itemPath>
       <itemPath>definitions.h</itemPath>
+      <itemPath>FreeSans9pt7b.h</itemPath>
+      <itemPath>FreeSans12pt7b.h</itemPath>
+      <itemPath>FreeSans18pt7b.h</itemPath>
+      <itemPath>FreeSans24pt7b.h</itemPath>
     </logicalFolder>
     <logicalFolder name="LinkerScript"
                    displayName="Linker Files"
@@ -21,6 +25,7 @@
       <itemPath>menu.c</itemPath>
       <itemPath>utility.c</itemPath>
       <itemPath>draw.c</itemPath>
+      <itemPath>page.c</itemPath>
     </logicalFolder>
     <logicalFolder name="ExternalFiles"
                    displayName="Important Files"

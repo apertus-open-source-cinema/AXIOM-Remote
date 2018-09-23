@@ -12,6 +12,9 @@
  **	Compile with -O6 for best experience
  */
 
+#ifndef MAIN_C
+#define MAIN_C
+
 #include <xc.h>
 #include <stdint.h>
 #include <stdbool.h>
@@ -22,6 +25,9 @@
 #include "gfxfont.h"
 #include "main.h"
 #include "FreeSans9pt7b.h"
+#include "FreeSans12pt7b.h"
+#include "FreeSans18pt7b.h"
+#include "FreeSans24pt7b.h"
 #include "axiom-logo.c"
 #include "utility.c"
 #include "draw.c"
@@ -69,7 +75,11 @@ uint16_t _cursor_y = 0;
 
 
 // LCD text drawing font
-GFXfont gfxFont;
+//GFXfont gfxFont;
+GFXfont _FreeSans9pt7b;
+GFXfont _FreeSans12pt7b;
+GFXfont _FreeSans18pt7b;
+GFXfont _FreeSans24pt7b;
 
 
 // AXIOM Remote buttons and knobs
@@ -921,7 +931,11 @@ void lcd_init() {
     lcd_pmp_wr(0x36);
     lcd_pmp_wr(0x0F);
 
-    gfxFont = FreeSans9pt7b;
+    //gfxFont = FreeSans9pt7b;
+    _FreeSans9pt7b = FreeSans9pt7b;
+    _FreeSans12pt7b = FreeSans12pt7b;
+    _FreeSans18pt7b = FreeSans18pt7b;
+    _FreeSans24pt7b = FreeSans24pt7b;
 
     // Clear the image
     clearFramebuffer(ILI9341_WHITE);
@@ -1324,3 +1338,5 @@ int main(void) {
 
     return 0;
 }
+
+#endif /* MAIN_C */
