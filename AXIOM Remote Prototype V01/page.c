@@ -184,7 +184,7 @@ void init_pages() {
 
     _main_page[page_home].page_items_count = j + 1;
 
-    _current_page = page_home;
+    _current_page = page_none;
     _page_count = 2;
 }
 

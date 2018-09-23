@@ -31,7 +31,7 @@
  */
 
 /**************************************************************************/
-void drawPixel(int16_t x, int16_t y, uint16_t color) {
+void draw_pixel(int16_t x, int16_t y, uint16_t color) {
     //origin shall be at the lower left corner
     _framebuffer[x][_height - y] = color;
 }
@@ -74,9 +74,9 @@ void drawLine(int16_t x0, int16_t y0, int16_t x1, int16_t y1, uint16_t color) {
 
     for (; x0 <= x1; x0++) {
         if (steep) {
-            drawPixel(y0, x0, color);
+            draw_pixel(y0, x0, color);
         } else {
-            drawPixel(x0, y0, color);
+            draw_pixel(x0, y0, color);
         }
         err -= dy;
         if (err < 0) {
@@ -169,10 +169,10 @@ void drawCircle(int16_t x0, int16_t y0, int16_t r, uint16_t color) {
     int16_t x = 0;
     int16_t y = r;
 
-    drawPixel(x0, y0 + r, color);
-    drawPixel(x0, y0 - r, color);
-    drawPixel(x0 + r, y0, color);
-    drawPixel(x0 - r, y0, color);
+    draw_pixel(x0, y0 + r, color);
+    draw_pixel(x0, y0 - r, color);
+    draw_pixel(x0 + r, y0, color);
+    draw_pixel(x0 - r, y0, color);
 
     while (x < y) {
         if (f >= 0) {
@@ -184,14 +184,14 @@ void drawCircle(int16_t x0, int16_t y0, int16_t r, uint16_t color) {
         ddF_x += 2;
         f += ddF_x;
 
-        drawPixel(x0 + x, y0 + y, color);
-        drawPixel(x0 - x, y0 + y, color);
-        drawPixel(x0 + x, y0 - y, color);
-        drawPixel(x0 - x, y0 - y, color);
-        drawPixel(x0 + y, y0 + x, color);
-        drawPixel(x0 - y, y0 + x, color);
-        drawPixel(x0 + y, y0 - x, color);
-        drawPixel(x0 - y, y0 - x, color);
+        draw_pixel(x0 + x, y0 + y, color);
+        draw_pixel(x0 - x, y0 + y, color);
+        draw_pixel(x0 + x, y0 - y, color);
+        draw_pixel(x0 - x, y0 - y, color);
+        draw_pixel(x0 + y, y0 + x, color);
+        draw_pixel(x0 - y, y0 + x, color);
+        draw_pixel(x0 + y, y0 - x, color);
+        draw_pixel(x0 - y, y0 - x, color);
     }
 }
 
@@ -223,20 +223,20 @@ void drawCircleHelper(int16_t x0, int16_t y0, int16_t r, uint8_t cornername, uin
         ddF_x += 2;
         f += ddF_x;
         if (cornername & 0x4) {
-            drawPixel(x0 + x, y0 + y, color);
-            drawPixel(x0 + y, y0 + x, color);
+            draw_pixel(x0 + x, y0 + y, color);
+            draw_pixel(x0 + y, y0 + x, color);
         }
         if (cornername & 0x2) {
-            drawPixel(x0 + x, y0 - y, color);
-            drawPixel(x0 + y, y0 - x, color);
+            draw_pixel(x0 + x, y0 - y, color);
+            draw_pixel(x0 + y, y0 - x, color);
         }
         if (cornername & 0x8) {
-            drawPixel(x0 - y, y0 + x, color);
-            drawPixel(x0 - x, y0 + y, color);
+            draw_pixel(x0 - y, y0 + x, color);
+            draw_pixel(x0 - x, y0 + y, color);
         }
         if (cornername & 0x1) {
-            drawPixel(x0 - y, y0 - x, color);
-            drawPixel(x0 - x, y0 - y, color);
+            draw_pixel(x0 - y, y0 - x, color);
+            draw_pixel(x0 - x, y0 - y, color);
         }
     }
 }
@@ -409,7 +409,7 @@ void drawChar(int16_t x, int16_t y, unsigned char c, uint16_t color, uint16_t bg
                 bits = pgm_read_byte(&bitmap[bo++]);
             }
             if (bits & 0x80) {
-                drawPixel(x + xo + xx, y - yo - yy, color);
+                draw_pixel(x + xo + xx, y - yo - yy, color);
             }
             bits <<= 1;
         }
@@ -481,7 +481,7 @@ void drawRGBBitmap(int16_t x, int16_t y, const uint16_t *pcolors, int16_t w, int
     for (draw_x = 0; draw_x < w; draw_x++) {
         for (draw_y = 0; draw_y < h; draw_y++) {
             //drawPixel(draw_y+y, _height-x+w+draw_x, *pcolors++);
-            drawPixel(draw_y + x, y + draw_x, *pcolors++);
+            draw_pixel(draw_y + x, y + draw_x, *pcolors++);
             //drawPixel(draw_y+x, _height-y+w+draw_x, *pcolors++);
         }
     }
