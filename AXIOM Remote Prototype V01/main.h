@@ -54,9 +54,9 @@ typedef struct {
 } menu_item_t;
 
 typedef struct {
-    char label[64];
+    char label[32];
     enum _menu_id_t menu_id;
-    menu_item_t menu_item[64];
+    menu_item_t menu_item[32];
     uint8_t menu_items_count;
 } menu_t;
 
@@ -71,7 +71,7 @@ typedef struct {
     char label[64];
     bool disabled;
     bool highlighted;
-    bool label_only;
+    bool label_only;    
     enum _page_id_t link_to_subpage;
     uint8_t value;
     bool(*action_ptr)(); //function pointer to the action when page item is clicked

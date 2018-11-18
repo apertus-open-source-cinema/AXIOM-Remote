@@ -74,35 +74,37 @@ char * menu_item_test_get_current_value(menu_item_t this) {
     return this.choices[this.value].label;
 }
 
-void draw_menu_item(uint16_t x, uint16_t y, menu_item_t menu_main_item, bool selected, bool highlighted) {
+void draw_menu_item(uint16_t x, uint16_t y, uint8_t menu_index, uint8_t menu_main_item_index, bool selected, bool highlighted) {
+    //void draw_menu_item(uint16_t x, uint16_t y, menu_item_t menu_main_item, bool selected, bool highlighted) {
     uint16_t yoffset_label_from_base = 7;
 
+
     // don't draw empty items
-    if (menu_main_item.label == NULL) {
+    if (_main_menu[menu_index].menu_item[menu_main_item_index].label == NULL) {
         return;
     }
 
     char value[16];
-    if (menu_main_item.type == submenu) {
+    if (_main_menu[menu_index].menu_item[menu_main_item_index].type == submenu) {
         sprintf(value, ">");
     } else {
         //sprintf(value, "%d", menu_main_item.value);
         //sprintf(value, "%d", (*menu_main_item.current_value_ptr)(menu_main_item));
-        strcpy(value, (*menu_main_item.current_value_ptr)(menu_main_item));
+        strcpy(value, (*_main_menu[menu_index].menu_item[menu_main_item_index].current_value_ptr)(_main_menu[menu_index].menu_item[menu_main_item_index]));
     }
 
     // is the current line highlighted?
-    if (highlighted && !menu_main_item.disabled) {
+    if (highlighted && !_main_menu[menu_index].menu_item[menu_main_item_index].disabled) {
         fill_rect(x, y, _width, 29, _menu_hightlighted_item_color);
-        draw_string(x + 5, y + yoffset_label_from_base, menu_main_item.label, _menu_selected_text_color, _menu_selected_text_color, _FreeSans9pt7b, align_left, 0);
+        draw_string(x + 5, y + yoffset_label_from_base, _main_menu[menu_index].menu_item[menu_main_item_index].label, _menu_selected_text_color, _menu_selected_text_color, _FreeSans9pt7b, align_left, 0);
         draw_string(x + 210, y + yoffset_label_from_base, value, _menu_selected_text_color, _menu_selected_text_color, _FreeSans9pt7b, align_right, 80);
         return;
     }
 
     // is a parameter menu active currently and the item is disabled?
-    if (_parameter_menu_active && menu_main_item.disabled) {
+    if (_parameter_menu_active && _main_menu[menu_index].menu_item[menu_main_item_index].disabled) {
         fill_rect(x, y, _width, 29, menu_dimmed_item_color);
-        draw_string(x + 5, y + yoffset_label_from_base, menu_main_item.label, _menu_disabled_text_color, _menu_disabled_text_color, _FreeSans9pt7b, align_left, 0);
+        draw_string(x + 5, y + yoffset_label_from_base, _main_menu[menu_index].menu_item[menu_main_item_index].label, _menu_disabled_text_color, _menu_disabled_text_color, _FreeSans9pt7b, align_left, 0);
         draw_string(x + 210, y + yoffset_label_from_base, value, _menu_disabled_text_color, _menu_disabled_text_color, _FreeSans9pt7b, align_right, 80);
         return;
     }
@@ -110,25 +112,25 @@ void draw_menu_item(uint16_t x, uint16_t y, menu_item_t menu_main_item, bool sel
     // is a parameter menu active currently?
     if (_parameter_menu_active) {
         fill_rect(x, y, _width, 29, menu_dimmed_item_color);
-        draw_string(x + 5, y + yoffset_label_from_base, menu_main_item.label, menu_text_color, menu_text_color, _FreeSans9pt7b, align_left, 0);
+        draw_string(x + 5, y + yoffset_label_from_base, _main_menu[menu_index].menu_item[menu_main_item_index].label, menu_text_color, menu_text_color, _FreeSans9pt7b, align_left, 0);
         draw_string(x + 210, y + yoffset_label_from_base, value, menu_text_color, menu_text_color, _FreeSans9pt7b, align_right, 80);
         return;
     }
 
     // is the current line selected and disabled?
-    if (selected && menu_main_item.disabled) {
+    if (selected && _main_menu[menu_index].menu_item[menu_main_item_index].disabled) {
         fill_rect(x, y, _width, 29, _menu_disabled_item_color);
         fill_rect(0, y, 3, 29, menu_selected_item_color);
         fill_rect(_width - 16 - 3, y, 3, 29, menu_selected_item_color);
-        draw_string(x + 5, y + yoffset_label_from_base, menu_main_item.label, _menu_disabled_text_color, _menu_disabled_text_color, _FreeSans9pt7b, align_left, 0);
+        draw_string(x + 5, y + yoffset_label_from_base, _main_menu[menu_index].menu_item[menu_main_item_index].label, _menu_disabled_text_color, _menu_disabled_text_color, _FreeSans9pt7b, align_left, 0);
         draw_string(x + 210, y + yoffset_label_from_base, value, _menu_disabled_text_color, _menu_disabled_text_color, _FreeSans9pt7b, align_right, 80);
         return;
     }
 
     // is the current line disabled?
-    if (menu_main_item.disabled) {
+    if (_main_menu[menu_index].menu_item[menu_main_item_index].disabled) {
         fill_rect(x, y, _width, 29, _menu_disabled_item_color);
-        draw_string(x + 5, y + yoffset_label_from_base, menu_main_item.label, _menu_disabled_text_color, _menu_disabled_text_color, _FreeSans9pt7b, align_left, 0);
+        draw_string(x + 5, y + yoffset_label_from_base, _main_menu[menu_index].menu_item[menu_main_item_index].label, _menu_disabled_text_color, _menu_disabled_text_color, _FreeSans9pt7b, align_left, 0);
         draw_string(x + 210, y + yoffset_label_from_base, value, _menu_disabled_text_color, _menu_disabled_text_color, _FreeSans9pt7b, align_right, 80);
         return;
     }
@@ -136,14 +138,14 @@ void draw_menu_item(uint16_t x, uint16_t y, menu_item_t menu_main_item, bool sel
     // is the current line selected (cursor)?
     if (selected) {
         fill_rect(x, y, _width, 29, menu_selected_item_color);
-        draw_string(x + 5, y + yoffset_label_from_base, menu_main_item.label, _menu_selected_text_color, _menu_selected_text_color, _FreeSans9pt7b, align_left, 0);
+        draw_string(x + 5, y + yoffset_label_from_base, _main_menu[menu_index].menu_item[menu_main_item_index].label, _menu_selected_text_color, _menu_selected_text_color, _FreeSans9pt7b, align_left, 0);
         draw_string(x + 210, y + yoffset_label_from_base, value, _menu_selected_text_color, _menu_selected_text_color, _FreeSans9pt7b, align_right, 80);
         return;
     }
 
     //if nothing of the above applies simply draw the line item normally
     fill_rect(x, y, _width, 29, menu_item_color);
-    draw_string(x + 5, y + yoffset_label_from_base, menu_main_item.label, menu_text_color, menu_text_color, _FreeSans9pt7b, align_left, 0);
+    draw_string(x + 5, y + yoffset_label_from_base, _main_menu[menu_index].menu_item[menu_main_item_index].label, menu_text_color, menu_text_color, _FreeSans9pt7b, align_left, 0);
     draw_string(x + 210, y + yoffset_label_from_base, value, menu_text_color, menu_text_color, _FreeSans9pt7b, align_right, 80);
 }
 
@@ -311,18 +313,22 @@ void init_menus() {
  */
 
 /**************************************************************************/
-void draw_parameter_menu(uint16_t x, uint16_t y, menu_item_t menuitem) {
+//void draw_parameter_menu(uint16_t x, uint16_t y, menu_item_t menuitem) {
+
+void draw_parameter_menu(uint16_t x, uint16_t y, uint8_t main_menu_index, uint8_t main_menu_item_index) {
+
+    //
     uint16_t yoffset_label_from_base = 5;
 
     //uint8_t choice_number = 2;//choice_count; //getCurrentParameterItemCount(); // why doesn't this work?: sizeof (items) / sizeof (*items); //
-    uint16_t height = 2 + 2 + menuitem.choice_count * 30;
+    uint16_t height = 2 + 2 + _main_menu[main_menu_index].menu_item[main_menu_item_index].choice_count * 30;
 
     //calculate the maximum width of the provided text options so we can define the menu width
     uint16_t max_width = 0;
     uint8_t i;
-    for (i = 0; i < menuitem.choice_count; i++) {
+    for (i = 0; i < _main_menu[main_menu_index].menu_item[main_menu_item_index].choice_count; i++) {
         uint16_t x1, y1, w1, h1;
-        get_text_bounds(menuitem.choices[i].label, x, y, &x1, &y1, &w1, &h1, _FreeSans9pt7b);
+        get_text_bounds(_main_menu[main_menu_index].menu_item[main_menu_item_index].choices[i].label, x, y, &x1, &y1, &w1, &h1, _FreeSans9pt7b);
         if (w1 > max_width) {
             max_width = w1;
         }
@@ -353,9 +359,9 @@ void draw_parameter_menu(uint16_t x, uint16_t y, menu_item_t menuitem) {
     fill_rect(x, y - 31 - 2, width, height, menu_background_color);
     drawRect(x + 1, y - 31 + 1, width - 2, height - 2, menu_text_color);
 
-    for (i = 0; i < menuitem.choice_count; i++) {
+    for (i = 0; i < _main_menu[main_menu_index].menu_item[main_menu_item_index].choice_count; i++) {
         char draw_label[32];
-        strcpy(draw_label, menuitem.choices[i].label);
+        strcpy(draw_label, _main_menu[main_menu_index].menu_item[main_menu_item_index].choices[i].label);
 
         if (i == _parameter_selection_index) {
             if (btn_E1_pressed) {
@@ -371,7 +377,7 @@ void draw_parameter_menu(uint16_t x, uint16_t y, menu_item_t menuitem) {
         }
 
         // add a circle icon at beginning of the line and label of the current setting
-        if (i == menuitem.value) {
+        if (i == _main_menu[main_menu_index].menu_item[main_menu_item_index].value) {
             if (i == _parameter_selection_index) {
                 fillCircle(x + 6, _height - (y - 13 + i * 30), 3, _menu_selected_text_color);
             } else {
@@ -418,7 +424,7 @@ void draw_menu() {
             menu_items_count = limit_range(menu_items_count, 0, 7);
 
             for (i = 0; i < menu_items_count; i++) {
-                draw_menu_item(0, (_height - 31 - 30) - i * 30, _main_menu[a].menu_item[i + _menu_offset], i + _menu_offset == _menu_selection_index, ((i + _menu_offset == _menu_selection_index) && btn_E1_pressed));
+                draw_menu_item(0, (_height - 31 - 30) - i * 30, a, i + _menu_offset, i + _menu_offset == _menu_selection_index, ((i + _menu_offset == _menu_selection_index) && btn_E1_pressed));
             }
             if (menu_items_count == 7) {
                 draw_scroll_indicator(menu_items_count, _main_menu[a].menu_items_count);
@@ -427,7 +433,7 @@ void draw_menu() {
             // draw parameter menu
             if (_parameter_menu_active != 0) {
                 uint16_t offset = (_height - 31)-(_parameter_menu_active - _menu_offset)*30 - 2;
-                draw_parameter_menu(304, offset, _main_menu[a].menu_item[_parameter_menu_active]);
+                draw_parameter_menu(304, offset, a, _parameter_menu_active);
             }
         }
     }
@@ -496,6 +502,5 @@ void main_menu_button_release_handler(ButtonID button_index) {
 void main_menu_button_press_handler(ButtonID button_index) {
 
 }
-
 
 #endif /* MENU_C */

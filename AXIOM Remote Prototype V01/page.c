@@ -46,10 +46,10 @@ uint8_t _page_item_value_height;
  */
 
 /**************************************************************************/
-void draw_page_item(uint8_t screen_index, page_item_t page_item) {
+void draw_page_item(uint8_t screen_index) {
 
     // don't draw empty items
-    if (page_item.label == NULL) {
+    if (_main_page[page_home].page_item[screen_index].label == NULL) {
         return;
     }
 
@@ -67,12 +67,10 @@ void draw_page_item(uint8_t screen_index, page_item_t page_item) {
     if (screen_index == 1) {
         x = _padding_side + _padding_elements + _page_item_width;
         y = _height - page_item_height;
-        ;
     }
     if (screen_index == 2) {
         x = _padding_side + 2 * _padding_elements + 2 * _page_item_width;
         y = _height - page_item_height;
-        ;
     }
     if (screen_index == 3) {
         x = _padding_side;
@@ -91,7 +89,7 @@ void draw_page_item(uint8_t screen_index, page_item_t page_item) {
     uint16_t page_item_label_color;
     uint16_t page_item_value_background_color;
     uint16_t page_item_value_color;
-    if (page_item.highlighted) {
+    if (_main_page[page_home].page_item[screen_index].highlighted) {
         page_item_label_color = _page_item_highlight_color;
         page_item_value_background_color = _page_item_highlight_color;
         page_item_value_color = _page_item_label_color;
@@ -105,46 +103,46 @@ void draw_page_item(uint8_t screen_index, page_item_t page_item) {
         // 3 top items
 
         // draw a special page item that only has a label instead of value/label 
-        if (page_item.label_only) {
+        if (_main_page[page_home].page_item[screen_index].label_only) {
             // draw label
             fill_round_rect(x, y + 1, _page_item_width, page_item_height * 2 / 3, 3, _page_item_label_background_color);
-            draw_string(x, y + 14, page_item.label, page_item_label_color, page_item_label_color,
+            draw_string(x, y + 14, _main_page[page_home].page_item[screen_index].label, page_item_label_color, page_item_label_color,
                     _FreeSans12pt7b, align_center, _page_item_width);
         } else {
             // draw label
             fill_round_rect(x, y + _page_item_value_height, _page_item_width, _page_item_label_height, 3, _page_item_label_background_color);
             fill_rect(x, y + _page_item_value_height, _page_item_width, 3, 3, _page_item_label_background_color);
-            draw_string(x, y + _page_item_value_height + 7, page_item.label, page_item_label_color, page_item_label_color,
+            draw_string(x, y + _page_item_value_height + 7, _main_page[page_home].page_item[screen_index].label, page_item_label_color, page_item_label_color,
                     _FreeSans9pt7b, align_center, _page_item_width);
 
             // draw value
             fill_round_rect(x, y, _page_item_width, _page_item_value_height, 3, page_item_value_background_color);
             fill_rect(x, y + _page_item_value_height - 3, _page_item_width, 3, page_item_value_background_color);
             char value[16];
-            sprintf(value, "%d", page_item.value);
+            sprintf(value, "%d", _main_page[page_home].page_item[screen_index].value);
             draw_string(x, y + 10, value, page_item_value_color, page_item_value_color, _FreeSans18pt7b, align_center, _page_item_width);
         }
     } else {
         // 3 bottom items
 
         // draw a special page item that only has a label instead of value/label 
-        if (page_item.label_only) {
+        if (_main_page[page_home].page_item[screen_index].label_only) {
             // draw label
             fill_round_rect(x, y + 1, _page_item_width, page_item_height * 2 / 3, 3, _page_item_label_background_color);
-            draw_string(x, y + 14, page_item.label, page_item_label_color, page_item_label_color,
+            draw_string(x, y + 14, _main_page[page_home].page_item[screen_index].label, page_item_label_color, page_item_label_color,
                     _FreeSans12pt7b, align_center, _page_item_width);
         } else {
             // draw label
             fill_round_rect(x, y + 1, _page_item_width, _page_item_label_height, 3, _page_item_label_background_color);
             fill_rect(x, y + _page_item_label_height - 3, _page_item_width, 3, 3, _page_item_label_background_color);
-            draw_string(x, y + 7, page_item.label, page_item_label_color, page_item_label_color,
+            draw_string(x, y + 7, _main_page[page_home].page_item[screen_index].label, page_item_label_color, page_item_label_color,
                     _FreeSans9pt7b, align_center, _page_item_width);
 
             // draw value
             fill_round_rect(x, y + _page_item_label_height, _page_item_width, _page_item_value_height, 3, page_item_value_background_color);
             fill_rect(x, y + _page_item_label_height, _page_item_width, 3, page_item_value_background_color);
             char value[16];
-            sprintf(value, "%d", page_item.value);
+            sprintf(value, "%d", _main_page[page_home].page_item[screen_index].value);
             draw_string(x, y + _page_item_label_height + 6, value, page_item_value_color, page_item_value_color,
                     _FreeSans18pt7b, align_center, _page_item_width);
         }
@@ -166,7 +164,7 @@ void draw_page() {
         if (_main_page[a].page_id == _current_page) {
             uint8_t i;
             for (i = 0; i < _main_page[a].page_items_count; i++) {
-                draw_page_item(i, _main_page[a].page_item[i]);
+                draw_page_item(i);
             }
         }
     }
