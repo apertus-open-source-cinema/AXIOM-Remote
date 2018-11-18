@@ -6,7 +6,7 @@
  * code partly based on Adafruit ILI9341 TFT Displays written by Limor "ladyada" Fried for Adafruit Industries.
  **
  **	This program is free software; you can redistribute it and/or modify
- **    	it under the terms of the GNU General Public License 2 as published 
+ ** it under the terms of the GNU General Public License 2 as published 
  **	by the Free Software Foundation.
  **
  **	Compile with -O6 for best experience
@@ -411,6 +411,14 @@ void uart2_str0(const char *str) {
         uart2_ch(*str++);
 }
 
+void debug_uart(char *str) {
+    while (*str) {
+        uart2_ch(*str++);
+    }
+    uart2_str0("\n");
+    uart2_str0("\r");
+}
+
 static inline
 void delay_us(unsigned cnt) {
     while (cnt--) {
@@ -616,8 +624,10 @@ void setLCDBacklight(uint8_t brightness) {
 void draw_lcd() {
     if (_current_menu != menu_none) {
         draw_menu();
-    } else if (_current_page != page_none) {
+    } else if (_current_page == page_home) {
         draw_page();
+    } else if (_current_page == page_wb) {
+        draw_wb_page();
     }
 }
 
@@ -1048,8 +1058,32 @@ void updateFramebuffer() {
     draw_lcd();
 }
 
-void button_event_handler (ButtonID button_event, bool pressed) {
+void button_event_handler(ButtonID button_event, bool pressed) {
     // TODO handle the 3 state-events a button can be in
+
+    if (_current_page == page_home) {
+        if (pressed) {
+            main_page_button_press_handler(button_event);
+        } else {
+            main_page_button_release_handler(button_event);
+
+        }
+    }
+    if (_current_page == page_wb) {
+        if (pressed) {
+            wb_page_button_press_handler(button_event);
+        } else {
+            wb_page_button_release_handler(button_event);
+        }
+    }
+    if (_current_menu == menu_main) {
+        if (pressed) {
+            main_menu_button_press_handler(button_event);
+        } else {
+            main_menu_button_release_handler(button_event);
+
+        }
+    }
 }
 
 int main(void) {
@@ -1088,6 +1122,9 @@ int main(void) {
 
     init_menus();
     init_pages();
+
+    //subpages
+    init_wb_page();
 
     static uint16_t r = 0;
     static uint16_t g = 0;
@@ -1129,7 +1166,7 @@ int main(void) {
             uart2_byte(data_status[1]);
             uart2_byte(data_status[2]);
             uart2_str0("\n\r");
-            */
+             */
 
             if (data[1] & 0x08) {
                 if (data_status[1] & 0x08) {
@@ -1142,92 +1179,114 @@ int main(void) {
                     //btn_P1_pressed = true;
                 }
             }
-            
+
             if (data[1] & 0x10) {
                 if (data_status[1] & 0x10) {
                     uart2_str0("P2 up\n\r");
+                    button_event_handler(P2, false);
                 } else {
                     uart2_str0("P2 down\n\r");
+                    button_event_handler(P2, true);
                 }
             }
-            
+
             if (data[1] & 0x20) {
                 if (data_status[1] & 0x20) {
                     uart2_str0("P3 up\n\r");
+                    button_event_handler(P3, false);
                 } else {
                     uart2_str0("P3 down\n\r");
+                    button_event_handler(P3, true);
                 }
             }
-            
+
             if (data[2] & 0x80) {
                 if (data_status[2] & 0x80) {
+                    button_event_handler(P4, false);
                     uart2_str0("P4 up\n\r");
                 } else {
+                    button_event_handler(P4, true);
                     uart2_str0("P4 down\n\r");
                 }
             }
-            
+
             if (data[2] & 0x40) {
                 if (data_status[2] & 0x40) {
                     uart2_str0("P5 up\n\r");
+                    button_event_handler(P5, false);
                 } else {
                     uart2_str0("P5 down\n\r");
+                    button_event_handler(P5, true);
                 }
             }
-            
+
             if (data[2] & 0x20) {
                 if (data_status[2] & 0x20) {
                     uart2_str0("P6 up\n\r");
+                    button_event_handler(P6, false);
                 } else {
                     uart2_str0("P6 down\n\r");
+                    button_event_handler(P6, true);
                 }
             }
-            
+
             if (data[2] & 0x10) {
                 if (data_status[2] & 0x10) {
                     uart2_str0("P7 up\n\r");
+                    button_event_handler(P7, false);
                 } else {
                     uart2_str0("P7 down\n\r");
+                    button_event_handler(P7, true);
                 }
             }
-            
+
             if (data[2] & 0x08) {
                 if (data_status[2] & 0x08) {
                     uart2_str0("P8 up\n\r");
+                    button_event_handler(P8, false);
                 } else {
                     uart2_str0("P8 down\n\r");
+                    button_event_handler(P8, true);
                 }
             }
-            
+
             if (data[2] & 0x04) {
                 if (data_status[2] & 0x04) {
                     uart2_str0("P9 up\n\r");
+                    button_event_handler(P9, false);
                 } else {
                     uart2_str0("P9 down\n\r");
+                    button_event_handler(P9, true);
                 }
             }
-            
+
             if (data[1] & 0x04) {
                 if (data_status[1] & 0x04) {
                     uart2_str0("P10 up\n\r");
+                    button_event_handler(P10, false);
                 } else {
                     uart2_str0("P10 down\n\r");
+                    button_event_handler(P10, true);
                 }
             }
-            
+
             if (data[1] & 0x02) {
                 if (data_status[1] & 0x02) {
                     uart2_str0("P11 up\n\r");
+                    button_event_handler(P11, false);
                 } else {
                     uart2_str0("P11 down\n\r");
+                    button_event_handler(P11, true);
                 }
             }
-            
+
             if (data[1] & 0x01) {
                 if (data_status[1] & 0x01) {
                     uart2_str0("P12 up\n\r");
+                    button_event_handler(P12, false);
                 } else {
                     uart2_str0("P12 down\n\r");
+                    button_event_handler(P12, true);
                 }
             }
 

@@ -63,13 +63,15 @@ typedef struct {
 extern uint8_t _main_menu_count;
 
 enum _page_id_t {
-    page_none, page_home, page_1
+    page_none, page_home, page_wb
 };
 enum _page_id_t _current_page;
 
 typedef struct {
     char label[64];
     bool disabled;
+    bool highlighted;
+    bool label_only;
     enum _page_id_t link_to_subpage;
     uint8_t value;
     bool(*action_ptr)(); //function pointer to the action when page item is clicked

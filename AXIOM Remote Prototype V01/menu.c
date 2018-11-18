@@ -485,5 +485,17 @@ void draw_menu() {
     //setLCDBacklight(menuItemValues[0]);
 }
 
+void main_menu_button_release_handler(ButtonID button_index) {
+    if (button_index == P7) {
+        _current_page = page_home;
+        _current_menu = menu_none;
+        draw_page();
+    }
+}
+
+void main_menu_button_press_handler(ButtonID button_index) {
+
+}
+
 
 #endif /* MENU_C */
