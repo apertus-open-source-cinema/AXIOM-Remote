@@ -290,7 +290,7 @@ void init_menus() {
 
 
     // init menu selection indexes
-    _current_menu = menu_main;
+    _current_menu = menu_none;
     _parameter_menu_active = 0;
     _parameter_selection_index = 0;
     _menu_offset = 0;

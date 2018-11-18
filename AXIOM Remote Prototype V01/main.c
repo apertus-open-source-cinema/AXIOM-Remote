@@ -85,6 +85,18 @@ GFXfont _FreeSans24pt7b;
 // AXIOM Remote buttons and knobs
 bool btn_E1_pressed = false;
 bool btn_E2_pressed = false;
+bool btn_P1_pressed = false;
+bool btn_P2_pressed = false;
+bool btn_P3_pressed = false;
+bool btn_P4_pressed = false;
+bool btn_P5_pressed = false;
+bool btn_P6_pressed = false;
+bool btn_P7_pressed = false;
+bool btn_P8_pressed = false;
+bool btn_P9_pressed = false;
+bool btn_P10_pressed = false;
+bool btn_P11_pressed = false;
+bool btn_P12_pressed = false;
 bool btn_S1_pos = false;
 bool btn_TS1_pos = false;
 bool btn_TS2_pos = false;
@@ -408,14 +420,19 @@ void delay_us(unsigned cnt) {
     }
 }
 
-void __attribute__((vector(_UART2_RX_VECTOR), interrupt(IPL7SRS), nomips16)) uart2_isr(void) {
-    while (U2STAbits.URXDA) { // process buffer 
+void __attribute__((vector(_UART2_RX_VECTOR), interrupt(IPL7SRS), nomips16)) uart2_rx_isr(void) {
+    /*while (U2STAbits.URXDA) { // process buffer 
         char ch = U2RXREG;
 
         uart2_ch(ch); // echo back
-    }
+    }*/
 
     IFS4CLR = _IFS4_U2RXIF_MASK; // clear UART2 Rx IRQ
+}
+
+void __attribute__((vector(_UART2_TX_VECTOR), interrupt(IPL7SRS), nomips16)) uart2_tx_isr(void) {
+
+    IFS4CLR = _IFS4_U2TXIF_MASK; // clear UART2 TX IRQ
 }
 
 uint8_t i2c2_get(uint8_t idx) {
@@ -1031,6 +1048,10 @@ void updateFramebuffer() {
     draw_lcd();
 }
 
+void button_event_handler (ButtonID button_event, bool pressed) {
+    // TODO handle the 3 state-events a button can be in
+}
+
 int main(void) {
     static uint8_t rgb[4];
 
@@ -1078,7 +1099,7 @@ int main(void) {
 
     draw_lcd();
 
-    
+
     while (1) {
 
         // Read Button Press Messages
@@ -1091,14 +1112,132 @@ int main(void) {
          *  register 4 to 6 (i2c2_getn(0x04, data, 3) data[0], data[1], data[2]) contain the status registers of each button/knobs current state
          */
 
+
+        // each PIC8 handles a part of the buttons/switches
         i2c2_getn(0x00, data, 3);
+        i2c2_getn(0x04, data_status, 3);
         if (data[0] || data[1] || data[2]) {
-            //uart2_byte(data[0]);
-            //uart2_byte(data[1]);
-            //uart2_byte(data[2]);
-            //uart2_str0("-1\n\r");
+            /*
+            uart2_str0("change: ");
+            uart2_byte(data[0]);
+            uart2_byte(data[1]);
+            uart2_byte(data[2]);
+            uart2_str0("\n\r");
+
+            uart2_str0("status: ");
+            uart2_byte(data_status[0]);
+            uart2_byte(data_status[1]);
+            uart2_byte(data_status[2]);
+            uart2_str0("\n\r");
+            */
+
+            if (data[1] & 0x08) {
+                if (data_status[1] & 0x08) {
+                    button_event_handler(P1, false);
+                    //btn_P1_pressed = false;
+                    //uart2_str0("P1 up\n\r");
+                } else {
+                    button_event_handler(P1, true);
+                    //uart2_str0("P1 down\n\r");
+                    //btn_P1_pressed = true;
+                }
+            }
+            
+            if (data[1] & 0x10) {
+                if (data_status[1] & 0x10) {
+                    uart2_str0("P2 up\n\r");
+                } else {
+                    uart2_str0("P2 down\n\r");
+                }
+            }
+            
+            if (data[1] & 0x20) {
+                if (data_status[1] & 0x20) {
+                    uart2_str0("P3 up\n\r");
+                } else {
+                    uart2_str0("P3 down\n\r");
+                }
+            }
+            
+            if (data[2] & 0x80) {
+                if (data_status[2] & 0x80) {
+                    uart2_str0("P4 up\n\r");
+                } else {
+                    uart2_str0("P4 down\n\r");
+                }
+            }
+            
+            if (data[2] & 0x40) {
+                if (data_status[2] & 0x40) {
+                    uart2_str0("P5 up\n\r");
+                } else {
+                    uart2_str0("P5 down\n\r");
+                }
+            }
+            
+            if (data[2] & 0x20) {
+                if (data_status[2] & 0x20) {
+                    uart2_str0("P6 up\n\r");
+                } else {
+                    uart2_str0("P6 down\n\r");
+                }
+            }
+            
+            if (data[2] & 0x10) {
+                if (data_status[2] & 0x10) {
+                    uart2_str0("P7 up\n\r");
+                } else {
+                    uart2_str0("P7 down\n\r");
+                }
+            }
+            
+            if (data[2] & 0x08) {
+                if (data_status[2] & 0x08) {
+                    uart2_str0("P8 up\n\r");
+                } else {
+                    uart2_str0("P8 down\n\r");
+                }
+            }
+            
+            if (data[2] & 0x04) {
+                if (data_status[2] & 0x04) {
+                    uart2_str0("P9 up\n\r");
+                } else {
+                    uart2_str0("P9 down\n\r");
+                }
+            }
+            
+            if (data[1] & 0x04) {
+                if (data_status[1] & 0x04) {
+                    uart2_str0("P10 up\n\r");
+                } else {
+                    uart2_str0("P10 down\n\r");
+                }
+            }
+            
+            if (data[1] & 0x02) {
+                if (data_status[1] & 0x02) {
+                    uart2_str0("P11 up\n\r");
+                } else {
+                    uart2_str0("P11 down\n\r");
+                }
+            }
+            
+            if (data[1] & 0x01) {
+                if (data_status[1] & 0x01) {
+                    uart2_str0("P12 up\n\r");
+                } else {
+                    uart2_str0("P12 down\n\r");
+                }
+            }
+
+            /*if (data[1] == 0x04) {
+                //btn_TS1_pos = true;
+                uart2_byte("P4 pressed");
+            }*/
         }
 
+        // each PIC8 handles a part of the buttons/switches
         i2c3_getn(0x00, data, 3);
         i2c3_getn(0x04, data_status, 3);
 

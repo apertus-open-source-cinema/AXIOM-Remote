@@ -92,6 +92,9 @@ typedef enum {
     align_left, align_center, align_right
 } textAlign;
 
+typedef enum {
+    P1, P2, P3, P4, P5, P6, P7, P8, P9, P10, P11, P12, REC, PHOTO, E1, E2, S1, S2
+} ButtonID;
 
 // AXIOM Remote buttons and knobs
 extern bool btn_E1_pressed;
