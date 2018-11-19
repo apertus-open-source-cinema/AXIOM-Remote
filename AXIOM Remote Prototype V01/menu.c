@@ -90,7 +90,7 @@ void draw_menu_item(uint16_t x, uint16_t y, uint8_t menu_index, uint8_t menu_mai
     } else {
         //sprintf(value, "%d", menu_main_item.value);
         //sprintf(value, "%d", (*menu_main_item.current_value_ptr)(menu_main_item));
-        strcpy(value, (*_main_menu[menu_index].menu_item[menu_main_item_index].current_value_ptr)(_main_menu[menu_index].menu_item[menu_main_item_index]));
+        
     }
 
     // is the current line highlighted?
@@ -495,7 +495,6 @@ void main_menu_button_release_handler(ButtonID button_index) {
     if (button_index == P7) {
         _current_page = page_home;
         _current_menu = menu_none;
-        draw_page();
     }
 }
 

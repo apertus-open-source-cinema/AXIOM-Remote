@@ -68,14 +68,16 @@ enum _page_id_t {
 enum _page_id_t _current_page;
 
 typedef struct {
-    char label[64];
+    char label[32];
     bool disabled;
     bool highlighted;
-    bool label_only;    
+    bool label_only;
     enum _page_id_t link_to_subpage;
-    uint8_t value;
+    //uint8_t value;
+    char value[32];
     bool(*action_ptr)(); //function pointer to the action when page item is clicked
     char* (*current_value_ptr)(); //function pointer to return the current value
+    GFXfont fontsize;
 } page_item_t;
 
 typedef struct {
@@ -88,7 +90,6 @@ typedef struct {
 extern page_t _main_page[3];
 
 extern uint8_t _page_count;
-
 
 typedef enum {
     align_left, align_center, align_right
@@ -106,6 +107,23 @@ extern bool btn_TS1_pos;
 extern bool btn_TS2_pos;
 extern uint8_t E1_pos;
 extern uint8_t E2_pos;
+
+// White Balance related
+
+typedef struct {
+    char label[32];
+    uint16_t Kelvin;
+    int8_t ColorShift;
+} wb_option_t;
+
+typedef struct {
+    wb_option_t white_balance_options[3];
+    uint8_t white_balance_options_count;
+    uint8_t white_balance_selection_index;
+} white_balance;
+
+white_balance _white_balance;
+
 
 //extern uint8_t _menu_selection_index;
 

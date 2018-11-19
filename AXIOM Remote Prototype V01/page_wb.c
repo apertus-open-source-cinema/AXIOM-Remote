@@ -37,8 +37,10 @@ uint8_t _padding_side;
 uint8_t _padding_elements;
 uint8_t _page_item_label_height;
 uint8_t _page_item_value_height;
-menu_t _wb_menu;
-uint8_t _wb_menu_selection_index;
+
+//menu_t _wb_menu;
+uint8_t _wb_menu_highlight_index;
+
 
 
 /**************************************************************************/
@@ -59,7 +61,7 @@ void draw_wb_page_item(uint8_t screen_index) {
     }
 
     // the screen only provides space for 6 items
-    limit_range(screen_index, 0, 5);
+    screen_index = limit_range(screen_index, 0, 5);
 
     uint16_t page_item_height = _page_item_label_height + _page_item_value_height;
 
@@ -130,9 +132,8 @@ void draw_wb_page_item(uint8_t screen_index) {
             // draw value
             fill_round_rect(x, y, _page_item_width, _page_item_value_height, 3, page_item_value_background_color);
             fill_rect(x, y + _page_item_value_height - 3, _page_item_width, 3, page_item_value_background_color);
-            char value[16];
-            sprintf(value, "%d", _main_page[page_wb].page_item[screen_index].value);
-            draw_string(x, y + 10, value, page_item_value_color, page_item_value_color, _FreeSans18pt7b, align_center, _page_item_width);
+            draw_string(x, y + 10, _main_page[page_wb].page_item[screen_index].value, page_item_value_color, page_item_value_color,
+                    _FreeSans12pt7b, align_center, _page_item_width);
         }
     } else {
         // 3 bottom items
@@ -154,10 +155,8 @@ void draw_wb_page_item(uint8_t screen_index) {
             // draw value
             fill_round_rect(x, y + _page_item_label_height, _page_item_width, _page_item_value_height, 3, page_item_value_background_color);
             fill_rect(x, y + _page_item_label_height, _page_item_width, 3, page_item_value_background_color);
-            char value[16];
-            sprintf(value, "%d", _main_page[page_wb].page_item[screen_index].value);
-            draw_string(x, y + _page_item_label_height + 6, value, page_item_value_color, page_item_value_color,
-                    _FreeSans18pt7b, align_center, _page_item_width);
+            draw_string(x, y + _page_item_label_height + 6, _main_page[page_wb].page_item[screen_index].value, page_item_value_color, page_item_value_color,
+                    _FreeSans12pt7b, align_center, _page_item_width);
         }
     }
 }
@@ -172,7 +171,7 @@ bool are_bottom_page_items_label_only() {
 
 void draw_wb_option_item(uint16_t x, uint16_t y, uint8_t option_item_index, bool selected) {
     // don't draw empty items
-    if (_wb_menu.menu_item[option_item_index].label == NULL) {
+    if (_white_balance.white_balance_options[option_item_index].label == NULL) {
         return;
     }
 
@@ -181,14 +180,22 @@ void draw_wb_option_item(uint16_t x, uint16_t y, uint8_t option_item_index, bool
     // is the current line selected (cursor)?
     if (selected) {
         fill_rect(x, y, _width - x, 29, _page_item_highlight_color);
-        draw_string(x + 5, y + yoffset_label_from_base, _wb_menu.menu_item[option_item_index].label, _page_item_label_color, _page_item_label_color, _FreeSans9pt7b, align_left, 0);
+        char value_string[32];
+        sprintf(value_string, "%s %dK", _white_balance.white_balance_options[option_item_index].label,
+                _white_balance.white_balance_options[option_item_index].Kelvin);
+        draw_string(x + 5, y + yoffset_label_from_base, value_string,
+                _page_item_label_color, _page_item_label_color, _FreeSans9pt7b, align_left, 0);
         //draw_string(x + 210, y + yoffset_label_from_base, value, _menu_selected_text_color, _menu_selected_text_color, _FreeSans9pt7b, align_right, 80);
         return;
     }
 
     //draw the option item normally
     //fill_rect(x, y, _width, 29, _page_item_value_background_color);
-    draw_string(x + 5, y + yoffset_label_from_base, _wb_menu.menu_item[option_item_index].label, _page_item_value_color, _page_item_value_color, _FreeSans9pt7b, align_left, 0);
+    char value_string[32];
+    sprintf(value_string, "%s %dK", _white_balance.white_balance_options[option_item_index].label,
+            _white_balance.white_balance_options[option_item_index].Kelvin);
+    draw_string(x + 5, y + yoffset_label_from_base, value_string,
+            _page_item_value_color, _page_item_value_color, _FreeSans9pt7b, align_left, 0);
     //draw_string(x + 210, y + yoffset_label_from_base, value, menu_text_color, menu_text_color, _FreeSans9pt7b, align_right, 80);
 }
 /**************************************************************************/
@@ -220,11 +227,13 @@ void draw_wb_page() {
         available_height += page_item_height / 3;
         offset = page_item_height / 3;
     }
+    fill_rect(0, page_item_height + 2 - offset, _width, available_height, _page_options_background_color);
+
 
     // Draw header
-    fill_rect(0, page_item_height + 2 - offset, _width, available_height, _page_options_background_color);
-    draw_string(5, page_item_height + 2 - offset + available_height - 18, _main_page[page_wb].label, _page_item_value_color, _page_item_value_color,
+    draw_string(5, page_item_height + 2 - offset + available_height - 22, _main_page[page_wb].label, _page_item_value_color, _page_item_value_color,
             _FreeSans9pt7b, align_left, 0);
+
 
     //draw circle as rotary knob indicator
     //TODO calculate center instead of hardcoded values
@@ -237,11 +246,15 @@ void draw_wb_page() {
 
     //draw option items
     uint8_t j;
-    for (j = 0; j < _wb_menu.menu_items_count; j++) {
-        draw_wb_option_item(150, page_item_height + 2 - offset + available_height - 18 - 30 - j * 30, j, (_wb_menu_selection_index == j));
+    for (j = 0; j < _white_balance.white_balance_options_count; j++) {
+        draw_wb_option_item(130, page_item_height + 2 - offset + available_height - 18 - 30 - j * 30, j, (_wb_menu_highlight_index == j));
     }
-
 }
+
+/*
+char * wb_item_get_current_value(uint8_t menu_item_index) {
+    return "Test"; //_wb_menu.menu_item[menu_item_index];
+}*/
 
 void init_wb_page() {
     //colors
@@ -269,19 +282,18 @@ void init_wb_page() {
 
     _main_page[page_wb].page_item[j].disabled = false;
     strcpy(_main_page[page_wb].page_item[j].label, "Preset 1");
-    _main_page[page_wb].page_item[j].value = 0;
+    strcpy(_main_page[page_wb].page_item[j].value, "3600K");
     _main_page[page_wb].page_item[j].highlighted = false;
     _main_page[page_wb].page_item[j].label_only = false;
     j++;
     _main_page[page_wb].page_item[j].disabled = false;
     strcpy(_main_page[page_wb].page_item[j].label, "Up");
-    _main_page[page_wb].page_item[j].value = 1;
     _main_page[page_wb].page_item[j].highlighted = false;
     _main_page[page_wb].page_item[j].label_only = true;
     j++;
     _main_page[page_wb].page_item[j].disabled = false;
     strcpy(_main_page[page_wb].page_item[j].label, "Preset 2");
-    _main_page[page_wb].page_item[j].value = 0;
+    strcpy(_main_page[page_wb].page_item[j].value, "5400K");
     _main_page[page_wb].page_item[j].highlighted = false;
     _main_page[page_wb].page_item[j].label_only = false;
     j++;
@@ -292,110 +304,97 @@ void init_wb_page() {
     j++;
     _main_page[page_wb].page_item[j].disabled = false;
     strcpy(_main_page[page_wb].page_item[j].label, "Down");
-    _main_page[page_wb].page_item[j].value = 15;
     _main_page[page_wb].page_item[j].highlighted = false;
     _main_page[page_wb].page_item[j].label_only = true;
     j++;
     _main_page[page_wb].page_item[j].disabled = false;
     strcpy(_main_page[page_wb].page_item[j].label, "OK");
-    _main_page[page_wb].page_item[j].value = 200;
     _main_page[page_wb].page_item[j].highlighted = false;
     _main_page[page_wb].page_item[j].label_only = true;
 
     _main_page[page_wb].page_items_count = j + 1;
 
+    /*
     uint8_t i = 0;
     _wb_menu.menu_item[i].disabled = false;
     _wb_menu.menu_item[i].hidden = false;
-    strcpy(_wb_menu.menu_item[i].label, "Daylight");
+    strcpy(_wb_menu.menu_item[i].label, "Daylight 5600K");
+    //_wb_menu.menu_item[i].current_value_ptr = &wb_item_get_current_value;
     i++;
     _wb_menu.menu_item[i].disabled = false;
     _wb_menu.menu_item[i].hidden = false;
-    strcpy(_wb_menu.menu_item[i].label, "Tungsten");
+    strcpy(_wb_menu.menu_item[i].label, "Tungsten 3200K");
     i++;
     _wb_menu.menu_item[i].disabled = false;
     _wb_menu.menu_item[i].hidden = false;
-    strcpy(_wb_menu.menu_item[i].label, "Fluorescent");
-    _wb_menu.menu_items_count = i + 1;
+    strcpy(_wb_menu.menu_item[i].label, "Fluorescent 4300K");
+    _wb_menu.menu_items_count = i + 1;*/
 
-    _wb_menu_selection_index = 0;
+    _wb_menu_highlight_index = 0;
 }
 
 void wb_page_button_press_handler(ButtonID button_index) {
     if (button_index == P1) {
         _main_page[page_wb].page_item[0].highlighted = true;
-        draw_lcd();
     }
     if (button_index == P2) {
         _main_page[page_wb].page_item[1].highlighted = true;
-        draw_lcd();
     }
     if (button_index == P3) {
         _main_page[page_wb].page_item[2].highlighted = true;
-        draw_lcd();
     }
     if (button_index == P4) {
         _main_page[page_wb].page_item[3].highlighted = true;
-        draw_lcd();
     }
     if (button_index == P5) {
         _main_page[page_wb].page_item[4].highlighted = true;
-        draw_lcd();
     }
     if (button_index == P6) {
-
         _main_page[page_wb].page_item[5].highlighted = true;
-        draw_lcd();
     }
 }
 
 void wb_page_button_release_handler(ButtonID button_index) {
     if (button_index == P1) {
         _main_page[page_wb].page_item[0].highlighted = false;
-        draw_lcd();
     }
     if (button_index == P2) {
         _main_page[page_wb].page_item[1].highlighted = false;
-        _wb_menu_selection_index--;
-        _wb_menu_selection_index = limit_range(_wb_menu_selection_index, 0, _wb_menu.menu_items_count - 1);
-        draw_lcd();
+        _wb_menu_highlight_index--;
+        _wb_menu_highlight_index = limit_range(_wb_menu_highlight_index, 0, _white_balance.white_balance_options_count - 1);
     }
     if (button_index == P3) {
         _main_page[page_wb].page_item[2].highlighted = false;
-        draw_lcd();
     }
     if (button_index == P4) {
         _main_page[page_wb].page_item[3].highlighted = false;
         _current_page = page_home;
-        draw_lcd();
     }
     if (button_index == P5) {
         _main_page[page_wb].page_item[4].highlighted = false;
-        _wb_menu_selection_index++;
-        _wb_menu_selection_index = limit_range(_wb_menu_selection_index, 0, _wb_menu.menu_items_count - 1);
-        draw_lcd();
+        _wb_menu_highlight_index++;
+        _wb_menu_highlight_index = limit_range(_wb_menu_highlight_index, 0, _white_balance.white_balance_options_count - 1);
     }
     if (button_index == P6) {
         _main_page[page_wb].page_item[5].highlighted = false;
-        //_current_page = page_home;
-        // TODO set value
-        draw_lcd();
+        _white_balance.white_balance_selection_index = _wb_menu_highlight_index;
+        update_pages();
+        _current_page = page_home;
     }
     if (button_index == P7) {
         _current_page = page_home;
-        draw_lcd();
     }
     if (button_index == E1) {
-        // TODO set value
+        _white_balance.white_balance_selection_index = _wb_menu_highlight_index;
+        update_pages();
         _current_page = page_home;
-        draw_lcd();
     }
 }
 
 void wb_page_knob_handler(ButtonID button_index, int8_t diff) {
     if (button_index == E1_rot) {
-        _wb_menu_selection_index += diff;
-        _wb_menu_selection_index = limit_range(_wb_menu_selection_index, 0, _wb_menu.menu_items_count - 1);
+        _wb_menu_highlight_index += diff;
+        _wb_menu_highlight_index = limit_range(_wb_menu_highlight_index, 0, _white_balance.white_balance_options_count - 1);
     }
 }
 

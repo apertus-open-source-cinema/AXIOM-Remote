@@ -667,7 +667,27 @@ void displayFramebuffer() {
     }
 }
 
-void lcd_init() {
+void init_WB() {
+    uart2_str0("\n\rWB Init ... ");
+    uint8_t i = 0;
+    strcpy(_white_balance.white_balance_options[i].label, "Daylight");
+    _white_balance.white_balance_options[i].Kelvin = 5600;
+    _white_balance.white_balance_options[i].ColorShift = 0;
+    i++;
+    strcpy(_white_balance.white_balance_options[i].label, "Tungsten");
+    _white_balance.white_balance_options[i].Kelvin = 3200;
+    _white_balance.white_balance_options[i].ColorShift = 0;
+    i++;
+    strcpy(_white_balance.white_balance_options[i].label, "Fluorescent");
+    _white_balance.white_balance_options[i].Kelvin = 4300;
+    _white_balance.white_balance_options[i].ColorShift = 0;
+
+    _white_balance.white_balance_options_count = i + 1;
+    _white_balance.white_balance_selection_index = 0;
+    uart2_str0("\n\rWB Init done ... ");
+}
+
+void init_lcd() {
     CFGEBIAbits.EBIPINEN = 0;
 
     PMCON = 0;
@@ -1062,6 +1082,7 @@ void knob_event_handler(ButtonID button_event, int8_t value) {
     if (_current_page == page_wb) {
         wb_page_knob_handler(button_event, value);
     }
+    draw_lcd();
 }
 
 void button_event_handler(ButtonID button_event, bool pressed) {
@@ -1073,21 +1094,21 @@ void button_event_handler(ButtonID button_event, bool pressed) {
         } else {
             main_page_button_release_handler(button_event);
         }
-    }
-    if (_current_page == page_wb) {
+    } else if (_current_page == page_wb) {
         if (pressed) {
             wb_page_button_press_handler(button_event);
         } else {
             wb_page_button_release_handler(button_event);
         }
-    }
-    if (_current_menu == menu_main) {
+    } else if (_current_menu == menu_main) {
         if (pressed) {
             main_menu_button_press_handler(button_event);
         } else {
             main_menu_button_release_handler(button_event);
         }
     }
+
+    draw_lcd();
 }
 
 int main(void) {
@@ -1122,13 +1143,17 @@ int main(void) {
     i2c3_setn(0x20, rgb, 4);
 
 
-    lcd_init();
+    init_lcd();
+
+    init_WB();
 
     init_menus();
+    uart2_str0("\n\rinit menus done ... ");
     init_pages();
-
+    uart2_str0("\n\rinit pages done ... ");
     //subpages
     init_wb_page();
+    uart2_str0("\n\rinit wbpages done ... ");
 
     static uint16_t r = 0;
     static uint16_t g = 0;
@@ -1139,7 +1164,7 @@ int main(void) {
     static uint8_t qe[2];
 
     draw_lcd();
-
+    uart2_str0("\n\rfirst LCD draw done ... ");
 
     while (1) {
 
@@ -1380,7 +1405,7 @@ int main(void) {
                     //drawString(70, 120, "E1: down", color565(0,0,0), color565(255,255,255), 1); 
                     btn_E1_pressed = true;
                     button_event_handler(E1, true);
-                    draw_lcd();
+                    //draw_lcd();
                 } else {
                     //drawString(70, 120, "E1: up  ", color565(0,0,0), color565(255,255,255), 1); 
                     button_event_handler(E1, false);
@@ -1399,7 +1424,7 @@ int main(void) {
                     //drawString(70, 140, "E2: up  ", color565(0,0,0), color565(255,255,255), 1); 
                     button_event_handler(E2, false);
                     btn_E2_released();
-                    draw_lcd();
+                    //draw_lcd();
 
                     btn_E2_pressed = false;
                 }
@@ -1534,6 +1559,8 @@ int main(void) {
 
         /* backlight on */
         LCD_BLT_O = 1;
+
+        //uart2_str0("\n\rfirst loop done ... ");
     }
 
     PMADDR = 0x8000;
