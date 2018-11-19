@@ -113,14 +113,18 @@ void draw_wb_page_item(uint8_t screen_index) {
         // draw a special page item that only has a label instead of value/label 
         if (_main_page[page_wb].page_item[screen_index].label_only) {
             // draw label
-            fill_round_rect(x, y + 1 + page_item_height / 3, _page_item_width, page_item_height * 2 / 3, 3, page_item_label_background_color);
-            draw_string(x, y + 10 + page_item_height / 3, _main_page[page_wb].page_item[screen_index].label, page_item_label_color, page_item_label_color,
+            fill_round_rect(x, y + 1 + page_item_height / 3, _page_item_width, page_item_height * 2 / 3, 3,
+                    page_item_label_background_color);
+            draw_string(x, y + 10 + page_item_height / 3, _main_page[page_wb].page_item[screen_index].label,
+                    page_item_label_color, page_item_label_color,
                     _FreeSans12pt7b, align_center, _page_item_width);
         } else {
             // draw label
-            fill_round_rect(x, y + _page_item_value_height, _page_item_width, _page_item_label_height, 3, page_item_value_background_color);
-            fill_rect(x, y + _page_item_value_height, _page_item_width, 3, 3, page_item_value_background_color);
-            draw_string(x, y + _page_item_value_height + 7, _main_page[page_wb].page_item[screen_index].label, page_item_value_color, page_item_value_color,
+            fill_round_rect(x, y + _page_item_value_height, _page_item_width, _page_item_label_height, 3,
+                    page_item_label_background_color);
+            fill_rect(x, y + _page_item_value_height, _page_item_width, 3, 3, page_item_label_background_color);
+            draw_string(x, y + _page_item_value_height + 7, _main_page[page_wb].page_item[screen_index].label,
+                    page_item_label_color, page_item_value_color,
                     _FreeSans9pt7b, align_center, _page_item_width);
 
             // draw value
@@ -374,12 +378,26 @@ void wb_page_button_release_handler(ButtonID button_index) {
     if (button_index == P6) {
         _main_page[page_wb].page_item[5].highlighted = false;
         //_current_page = page_home;
+        // TODO set value
         draw_lcd();
     }
     if (button_index == P7) {
         _current_page = page_home;
         draw_lcd();
     }
+    if (button_index == E1) {
+        // TODO set value
+        _current_page = page_home;
+        draw_lcd();
+    }
 }
+
+void wb_page_knob_handler(ButtonID button_index, int8_t diff) {
+    if (button_index == E1_rot) {
+        _wb_menu_selection_index += diff;
+        _wb_menu_selection_index = limit_range(_wb_menu_selection_index, 0, _wb_menu.menu_items_count - 1);
+    }
+}
+
 
 #endif /* PAGE_WB_C */

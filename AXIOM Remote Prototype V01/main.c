@@ -1058,15 +1058,20 @@ void updateFramebuffer() {
     draw_lcd();
 }
 
+void knob_event_handler(ButtonID button_event, int8_t value) {
+    if (_current_page == page_wb) {
+        wb_page_knob_handler(button_event, value);
+    }
+}
+
 void button_event_handler(ButtonID button_event, bool pressed) {
-    // TODO handle the 3 state-events a button can be in
+    // TODO: handle the 3 state-events a button can be in: up, down and down and up again already
 
     if (_current_page == page_home) {
         if (pressed) {
             main_page_button_press_handler(button_event);
         } else {
             main_page_button_release_handler(button_event);
-
         }
     }
     if (_current_page == page_wb) {
@@ -1081,7 +1086,6 @@ void button_event_handler(ButtonID button_event, bool pressed) {
             main_menu_button_press_handler(button_event);
         } else {
             main_menu_button_release_handler(button_event);
-
         }
     }
 }
@@ -1375,9 +1379,11 @@ int main(void) {
                 if (!btn_E1_pressed) {
                     //drawString(70, 120, "E1: down", color565(0,0,0), color565(255,255,255), 1); 
                     btn_E1_pressed = true;
+                    button_event_handler(E1, true);
                     draw_lcd();
                 } else {
                     //drawString(70, 120, "E1: up  ", color565(0,0,0), color565(255,255,255), 1); 
+                    button_event_handler(E1, false);
                     btn_E1_released();
                     btn_E1_pressed = false;
                     draw_lcd();
@@ -1387,10 +1393,11 @@ int main(void) {
                 if (!btn_E2_pressed) {
                     //drawString(70, 140, "E2: down", color565(0,0,0), color565(255,255,255), 1); 
                     btn_E2_pressed = true;
+                    button_event_handler(E2, true);
                     updateFramebuffer();
                 } else {
                     //drawString(70, 140, "E2: up  ", color565(0,0,0), color565(255,255,255), 1); 
-
+                    button_event_handler(E2, false);
                     btn_E2_released();
                     draw_lcd();
 
@@ -1408,6 +1415,7 @@ int main(void) {
             //E1_pos = qe[0];
 
             int8_t diff = data[0] - qe[0];
+            knob_event_handler(E1_rot, diff);
 
             if (_parameter_menu_active) {
                 _parameter_selection_index += diff;
