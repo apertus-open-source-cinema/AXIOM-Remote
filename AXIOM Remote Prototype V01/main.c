@@ -28,7 +28,8 @@
 #include "FreeSans12pt7b.h"
 #include "FreeSans18pt7b.h"
 #include "FreeSans24pt7b.h"
-#include "axiom-logo.c"
+//#include "axiom-logo.c"
+//#include "home-icon.c"
 #include "utility.c"
 #include "draw.c"
 #include "menu.c"
@@ -670,8 +671,9 @@ void displayFramebuffer() {
 void init_WB() {
     uart2_str0("\n\rWB Init ... ");
     uint8_t i = 0;
-    strcpy(_white_balance.white_balance_options[i].label, "Daylight");
-    _white_balance.white_balance_options[i].Kelvin = 5600;
+
+    strcpy(_white_balance.white_balance_options[i].label, "Candles");
+    _white_balance.white_balance_options[i].Kelvin = 2000;
     _white_balance.white_balance_options[i].ColorShift = 0;
     i++;
     strcpy(_white_balance.white_balance_options[i].label, "Tungsten");
@@ -680,6 +682,18 @@ void init_WB() {
     i++;
     strcpy(_white_balance.white_balance_options[i].label, "Fluorescent");
     _white_balance.white_balance_options[i].Kelvin = 4300;
+    _white_balance.white_balance_options[i].ColorShift = 0;
+    i++;
+    strcpy(_white_balance.white_balance_options[i].label, "Daylight");
+    _white_balance.white_balance_options[i].Kelvin = 5600;
+    _white_balance.white_balance_options[i].ColorShift = 0;
+    i++;
+    strcpy(_white_balance.white_balance_options[i].label, "Cloudy");
+    _white_balance.white_balance_options[i].Kelvin = 6500;
+    _white_balance.white_balance_options[i].ColorShift = 0;
+    i++;
+    strcpy(_white_balance.white_balance_options[i].label, "Shade");
+    _white_balance.white_balance_options[i].Kelvin = 7500;
     _white_balance.white_balance_options[i].ColorShift = 0;
 
     _white_balance.white_balance_options_count = i + 1;

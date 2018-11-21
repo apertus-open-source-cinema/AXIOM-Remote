@@ -388,7 +388,6 @@ void draw_parameter_menu(uint16_t x, uint16_t y, uint8_t main_menu_index, uint8_
 }
 
 void draw_menu() {
-
     //clear the screen
     fill_rect(0, 0, _width, _height, menu_background_color);
 

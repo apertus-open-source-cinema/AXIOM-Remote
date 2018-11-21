@@ -15,6 +15,8 @@
 
 #include "definitions.h"
 #include "gfxfont.h"
+#include "trash-icon.c"
+#include "help-icon.c"
 
 extern uint16_t _cursor_x;
 extern uint16_t _cursor_y;
@@ -67,25 +69,35 @@ enum _page_id_t {
 };
 enum _page_id_t _current_page;
 
+enum _item_type_t {
+    value_and_label, button
+};
+
 typedef struct {
     char label[32];
     bool disabled;
     bool highlighted;
-    bool label_only;
+    enum _item_type_t item_type;
     enum _page_id_t link_to_subpage;
     //uint8_t value;
     char value[32];
     bool(*action_ptr)(); //function pointer to the action when page item is clicked
     char* (*current_value_ptr)(); //function pointer to return the current value
     GFXfont fontsize;
+    uint16_t text_color;
+    uint16_t background_color;
 } page_item_t;
 
 typedef struct {
-    char label[64];
+    char label[32];
     enum _page_id_t page_id;
-    page_item_t page_item[6];
+    page_item_t page_item[12];
     uint8_t page_items_count;
 } page_t;
+
+
+
+uint8_t _button_height;
 
 extern page_t _main_page[3];
 
@@ -117,7 +129,7 @@ typedef struct {
 } wb_option_t;
 
 typedef struct {
-    wb_option_t white_balance_options[3];
+    wb_option_t white_balance_options[16];
     uint8_t white_balance_options_count;
     uint8_t white_balance_selection_index;
 } white_balance;

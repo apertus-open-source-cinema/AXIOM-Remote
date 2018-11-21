@@ -103,12 +103,13 @@ void draw_page_item(uint8_t screen_index) {
         // 3 top items
 
         // draw a special page item that only has a label instead of value/label 
-        if (_main_page[page_home].page_item[screen_index].label_only) {
+        if (_main_page[page_home].page_item[screen_index].item_type == button) {
             // draw label
             fill_round_rect(x, y + 1, _page_item_width, page_item_height * 2 / 3, 3, _page_item_label_background_color);
             draw_string(x, y + 14, _main_page[page_home].page_item[screen_index].label, page_item_label_color, page_item_label_color,
                     _FreeSans12pt7b, align_center, _page_item_width);
-        } else {
+        }
+        if (_main_page[page_home].page_item[screen_index].item_type == value_and_label) {
             // draw label
             fill_round_rect(x, y + _page_item_value_height, _page_item_width, _page_item_label_height, 3, _page_item_label_background_color);
             fill_rect(x, y + _page_item_value_height, _page_item_width, 3, 3, _page_item_label_background_color);
@@ -121,19 +122,20 @@ void draw_page_item(uint8_t screen_index) {
             char value[16];
             //strcpy(value, (*_main_page[page_home].page_item[screen_index].current_value_ptr)(_main_page[page_home].page_item[screen_index].value));
             //sprintf(value, "%d", _main_page[page_home].page_item[screen_index].value);
-            draw_string(x, y + 10, _main_page[page_home].page_item[screen_index].value, page_item_value_color, page_item_value_color, 
+            draw_string(x, y + 10, _main_page[page_home].page_item[screen_index].value, page_item_value_color, page_item_value_color,
                     _FreeSans12pt7b, align_center, _page_item_width);
         }
     } else {
         // 3 bottom items
 
         // draw a special page item that only has a label instead of value/label 
-        if (_main_page[page_home].page_item[screen_index].label_only) {
+        if (_main_page[page_home].page_item[screen_index].item_type == button) {
             // draw label
             fill_round_rect(x, y + 1, _page_item_width, page_item_height * 2 / 3, 3, _page_item_label_background_color);
             draw_string(x, y + 14, _main_page[page_home].page_item[screen_index].label, page_item_label_color, page_item_label_color,
                     _FreeSans12pt7b, align_center, _page_item_width);
-        } else {
+        }
+        if (_main_page[page_home].page_item[screen_index].item_type == value_and_label) {
             // draw label
             fill_round_rect(x, y + 1, _page_item_width, _page_item_label_height, 3, _page_item_label_background_color);
             fill_rect(x, y + _page_item_label_height - 3, _page_item_width, 3, 3, _page_item_label_background_color);
@@ -216,46 +218,47 @@ void init_pages() {
     strcpy(_main_page[page_home].page_item[j].label, "FPS");
     strcpy(_main_page[page_home].page_item[j].value, "...");
     _main_page[page_home].page_item[j].highlighted = false;
-    _main_page[page_home].page_item[j].label_only = false;
+    _main_page[page_home].page_item[j].item_type = value_and_label;
     j++;
     _main_page[page_home].page_item[j].disabled = false;
     strcpy(_main_page[page_home].page_item[j].label, "Item 2");
     strcpy(_main_page[page_home].page_item[j].value, "...");
     _main_page[page_home].page_item[j].highlighted = false;
-    _main_page[page_home].page_item[j].label_only = false;
+    _main_page[page_home].page_item[j].item_type = value_and_label;
     j++;
     _main_page[page_home].page_item[j].disabled = false;
     strcpy(_main_page[page_home].page_item[j].label, "Shutter");
     strcpy(_main_page[page_home].page_item[j].value, "...");
     _main_page[page_home].page_item[j].highlighted = false;
-    _main_page[page_home].page_item[j].label_only = false;
+    _main_page[page_home].page_item[j].item_type = value_and_label;
     j++;
     _main_page[page_home].page_item[j].disabled = false;
     strcpy(_main_page[page_home].page_item[j].label, "MENU");
     _main_page[page_home].page_item[j].highlighted = false;
-    _main_page[page_home].page_item[j].label_only = true;
+    _main_page[page_home].page_item[j].item_type = button;
     j++;
     _main_page[page_home].page_item[j].disabled = false;
     strcpy(_main_page[page_home].page_item[j].label, "Item 5");
     strcpy(_main_page[page_home].page_item[j].value, "...");
     _main_page[page_home].page_item[j].highlighted = false;
-    _main_page[page_home].page_item[j].label_only = false;
+    _main_page[page_home].page_item[j].item_type = value_and_label;
     j++;
     _main_page[page_home].page_item[j].disabled = false;
     strcpy(_main_page[page_home].page_item[j].label, "WB");
     sprintf(_main_page[page_home].page_item[j].value, "%dK", _white_balance.white_balance_options[_white_balance.white_balance_selection_index].Kelvin);
     _main_page[page_home].page_item[j].link_to_subpage = page_wb;
-    _main_page[page_home].page_item[j].fontsize =  _FreeSans12pt7b;
+    _main_page[page_home].page_item[j].fontsize = _FreeSans12pt7b;
     _main_page[page_home].page_item[j].highlighted = false;
-    _main_page[page_home].page_item[j].label_only = false;
+    _main_page[page_home].page_item[j].item_type = value_and_label;
 
     _main_page[page_home].page_items_count = j + 1;
 
     _current_page = page_home;
     _page_count = 2;
 }
+
 void update_pages() {
-        sprintf(_main_page[page_home].page_item[5].value, "%dK", _white_balance.white_balance_options[_white_balance.white_balance_selection_index].Kelvin);
+    sprintf(_main_page[page_home].page_item[5].value, "%dK", _white_balance.white_balance_options[_white_balance.white_balance_selection_index].Kelvin);
 }
 
 void main_page_button_press_handler(ButtonID button_index) {
