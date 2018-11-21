@@ -462,18 +462,30 @@ void drawRGBBitmap(int16_t x, int16_t y, const uint16_t *pcolors, int16_t w, int
 
     int16_t bx1 = 0, by1 = 0, // Clipped top-left within bitmap
             saveW = w; // Save original bitmap width value
-    if (x < 0) { // Clip left
+
+    // Clip left
+    if (x < 0) {
         w += x;
         bx1 = -x;
         x = 0;
     }
-    if (y < 0) { // Clip top
+
+    // Clip top
+    if (y < 0) {
         h += y;
         by1 = -y;
         y = 0;
     }
-    if (x2 >= _width) w = _width - x; // Clip right
-    if (y2 >= _height) h = _height - y; // Clip bottom
+
+    // Clip right
+    if (x2 >= _width) {
+        w = _width - x;
+    }
+
+    // Clip bottom
+    if (y2 >= _height) {
+        h = _height - y;
+    }
 
     uint16_t draw_x;
     uint16_t draw_y;
@@ -481,16 +493,10 @@ void drawRGBBitmap(int16_t x, int16_t y, const uint16_t *pcolors, int16_t w, int
     for (draw_x = 0; draw_x < w; draw_x++) {
         for (draw_y = 0; draw_y < h; draw_y++) {
             //drawPixel(draw_y+y, _height-x+w+draw_x, *pcolors++);
-            draw_pixel(draw_y + x, y + draw_x, *pcolors++);
+            draw_pixel(x + draw_y, y + w - draw_x, *pcolors++);
             //drawPixel(draw_y+x, _height-y+w+draw_x, *pcolors++);
         }
     }
-    /*pcolors += by1 * saveW + bx1; // Offset bitmap ptr to clipped top-left
-    setAddrWindow(x, y, w, h); // Clipped area
-    while(h--) { // For each (clipped) scanline...
-      drawPixel(pcolors, w); // Push one (clipped) row
-      pcolors += saveW; // Advance pointer by one full (unclipped) line
-    }*/
 }
 
 void setCursor(int16_t x, int16_t y) {
@@ -672,12 +678,12 @@ void draw_string(int16_t x, int16_t y, char* text, uint16_t color, uint16_t bg, 
                     h = pgm_read_byte(&glyph->height);
             if ((w > 0) && (h > 0)) { // Is there an associated bitmap?
                 int16_t xo = (int8_t) pgm_read_byte(&glyph->xOffset); // sic
-                
+
                 if (i == 0) {
                     //first character doesn't need x offset
                     _cursor_x -= xo;
                 }
-                
+
                 if (align == align_left) {
 
                     drawChar(_cursor_x + xo, _cursor_y, c, color, bg, gfxFont);
