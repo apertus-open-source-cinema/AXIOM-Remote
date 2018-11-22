@@ -19,15 +19,7 @@
 #include "main.h"
 #include "definitions.h"
 #include "utility.c"
-#include "home-icon.c"
-#include "home-icon-highlight.c"
-#include "back-icon.c"
-#include "back-icon-highlight.c"
-#include "up-icon.c"
-#include "up-icon-highlight.c"
-#include "down-icon.c"
-#include "down-icon-highlight.c"
-#include "wheel-illustration.c"
+
 
 //#include "main.c"
 
@@ -44,6 +36,7 @@ uint16_t _page_background_color;
 uint16_t _page_options_background_color;
 uint16_t _button_primary_background_color;
 uint16_t _button_background_color;
+uint16_t _button_hightlight_background_color;
 uint16_t _page_item_width;
 uint8_t _padding_side;
 uint8_t _padding_elements;
@@ -110,7 +103,7 @@ void draw_wb_page_item(uint8_t screen_index) {
     uint16_t page_item_value_color;
     if (_main_page[page_wb].page_item[screen_index].highlighted) {
         page_item_label_color = _page_item_label_background_color;
-        page_item_label_background_color = _page_item_highlight_color;
+        page_item_label_background_color = _button_hightlight_background_color;
         page_item_value_color = _page_item_label_color;
         page_item_value_background_color = _page_item_label_background_color;
     } else {
@@ -290,19 +283,19 @@ void draw_wb_page() {
 
     //draw option items
     if (_wb_menu_highlight_index > 1)
-        draw_wb_option_item(110, _button_height + 2 + available_height - 36, _wb_menu_highlight_index - 2, false);
+        draw_wb_option_item(110, _button_height + 2 + available_height - 38, _wb_menu_highlight_index - 2, false);
 
     if (_wb_menu_highlight_index > 0)
-        draw_wb_option_item(110, _button_height + 2 + available_height - 36 - (1 * 30), _wb_menu_highlight_index - 1, false);
+        draw_wb_option_item(110, _button_height + 2 + available_height - 38 - (1 * 30), _wb_menu_highlight_index - 1, false);
 
-    draw_wb_option_item(110, _button_height + 2 + available_height - 36 - (2 * 30), _wb_menu_highlight_index, true);
+    draw_wb_option_item(110, _button_height + 2 + available_height - 38 - (2 * 30), _wb_menu_highlight_index, true);
 
     if (_wb_menu_highlight_index < _white_balance.white_balance_options_count - 1)
-        draw_wb_option_item(110, _button_height + 2 + available_height - 36 - (3 * 30), _wb_menu_highlight_index + 1, false);
+        draw_wb_option_item(110, _button_height + 2 + available_height - 38 - (3 * 30), _wb_menu_highlight_index + 1, false);
 
     if (_wb_menu_highlight_index < _white_balance.white_balance_options_count - 2)
-        draw_wb_option_item(110, _button_height + 2 + available_height - 36 - (4 * 30), _wb_menu_highlight_index + 2, false);
-    
+        draw_wb_option_item(110, _button_height + 2 + available_height - 38 - (4 * 30), _wb_menu_highlight_index + 2, false);
+
 
     // draw side icons
     draw_wb_page_side_items();
@@ -314,8 +307,8 @@ char * wb_item_get_current_value(uint8_t menu_item_index) {
 }*/
 
 void init_wb_page() {
-    //colors
 
+    //colors
     _page_item_label_color = color565(255, 255, 255);
     _page_item_value_color = color565(0, 0, 0);
     _page_item_label_background_color = color565(0, 0, 0);
@@ -323,8 +316,9 @@ void init_wb_page() {
     _page_item_highlight_color = color565(255, 128, 0);
 
     _page_background_color = color565(97, 92, 91);
-    _button_primary_background_color = color565(243, 113, 109);
-    _button_background_color = color565(214, 214, 214);
+    _button_primary_background_color = color565(255, 128, 0);
+    _button_hightlight_background_color = color565(0, 128, 255);
+    _button_background_color = color565(220, 220, 220);
     _page_options_background_color = color565(255, 255, 255);
 
 

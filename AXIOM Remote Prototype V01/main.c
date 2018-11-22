@@ -34,6 +34,10 @@
 #include "draw.c"
 #include "menu.c"
 
+
+#define DEBUGBUTTONS TRUE
+
+
 // DEVCFG0
 #pragma config BOOTISA = MIPS32
 #pragma config ICESEL = ICS_PGx1
@@ -108,10 +112,10 @@ uint8_t E2_pos = 0;
 // the central frame buffer that is written to the LCD
 uint16_t _framebuffer[_width][_height];
 
-
 // Page related stuff
 //_page_id_t _current_page;
 page_t _main_page[3];
+
 uint8_t _page_count;
 
 static inline
@@ -615,9 +619,9 @@ uint8_t read_command8(uint8_t command, uint8_t index) {
     return ret;
 }
 
-//doesnt work, extended command?
-
 void setLCDBacklight(uint8_t brightness) {
+    //doesnt work, extended command not supported by LCD driver?
+
     lcd_pmp_cmd(0x51);
     lcd_pmp_wr(brightness);
 }
@@ -1162,12 +1166,14 @@ int main(void) {
     init_WB();
 
     init_menus();
-    uart2_str0("\n\rinit menus done ... ");
     init_pages();
-    uart2_str0("\n\rinit pages done ... ");
+
     //subpages
     init_wb_page();
-    uart2_str0("\n\rinit wbpages done ... ");
+
+    // start navigation
+    _current_menu = menu_none;
+    _current_page = page_home;
 
     static uint16_t r = 0;
     static uint16_t g = 0;
@@ -1196,8 +1202,9 @@ int main(void) {
         // each PIC8 handles a part of the buttons/switches
         i2c2_getn(0x00, data, 3);
         i2c2_getn(0x04, data_status, 3);
+
         if (data[0] || data[1] || data[2]) {
-            /*
+#ifdef DEBUGBUTTONS
             uart2_str0("change: ");
             uart2_byte(data[0]);
             uart2_byte(data[1]);
@@ -1209,36 +1216,48 @@ int main(void) {
             uart2_byte(data_status[1]);
             uart2_byte(data_status[2]);
             uart2_str0("\n\r");
-             */
+#endif
 
             if (data[1] & 0x08) {
                 if (data_status[1] & 0x08) {
                     button_event_handler(P1, false);
                     //btn_P1_pressed = false;
-                    //uart2_str0("P1 up\n\r");
+#ifdef DEBUGBUTTONS
+                    uart2_str0("P1 up\n\r");
+#endif
                 } else {
                     button_event_handler(P1, true);
-                    //uart2_str0("P1 down\n\r");
+#ifdef DEBUGBUTTONS
+                    uart2_str0("P1 down\n\r");
+#endif
                     //btn_P1_pressed = true;
                 }
             }
 
             if (data[1] & 0x10) {
                 if (data_status[1] & 0x10) {
+#ifdef DEBUGBUTTONS
                     uart2_str0("P2 up\n\r");
+#endif
                     button_event_handler(P2, false);
                 } else {
+#ifdef DEBUGBUTTONS
                     uart2_str0("P2 down\n\r");
+#endif
                     button_event_handler(P2, true);
                 }
             }
 
             if (data[1] & 0x20) {
                 if (data_status[1] & 0x20) {
+#ifdef DEBUGBUTTONS
                     uart2_str0("P3 up\n\r");
+#endif
                     button_event_handler(P3, false);
                 } else {
+#ifdef DEBUGBUTTONS
                     uart2_str0("P3 down\n\r");
+#endif
                     button_event_handler(P3, true);
                 }
             }
@@ -1246,97 +1265,139 @@ int main(void) {
             if (data[2] & 0x80) {
                 if (data_status[2] & 0x80) {
                     button_event_handler(P4, false);
+#ifdef DEBUGBUTTONS
                     uart2_str0("P4 up\n\r");
+#endif
                 } else {
                     button_event_handler(P4, true);
+#ifdef DEBUGBUTTONS
                     uart2_str0("P4 down\n\r");
+#endif
                 }
             }
 
             if (data[2] & 0x40) {
                 if (data_status[2] & 0x40) {
+#ifdef DEBUGBUTTONS
+                    uart2_str0("change: ");
+                    uart2_byte(data[0]);
+                    uart2_byte(data[1]);
+                    uart2_byte(data[2]);
+                    uart2_str0("\n\r");
+
+                    uart2_str0("status: ");
+                    uart2_byte(data_status[0]);
+                    uart2_byte(data_status[1]);
+                    uart2_byte(data_status[2]);
+                    uart2_str0("\n\r");
                     uart2_str0("P5 up\n\r");
+#endif
                     button_event_handler(P5, false);
                 } else {
+#ifdef DEBUGBUTTONS
                     uart2_str0("P5 down\n\r");
+#endif
                     button_event_handler(P5, true);
                 }
             }
 
             if (data[2] & 0x20) {
                 if (data_status[2] & 0x20) {
+#ifdef DEBUGBUTTONS
                     uart2_str0("P6 up\n\r");
+#endif
                     button_event_handler(P6, false);
                 } else {
+#ifdef DEBUGBUTTONS
                     uart2_str0("P6 down\n\r");
+#endif
                     button_event_handler(P6, true);
                 }
             }
 
             if (data[2] & 0x10) {
                 if (data_status[2] & 0x10) {
+#ifdef DEBUGBUTTONS
                     uart2_str0("P7 up\n\r");
+#endif
                     button_event_handler(P7, false);
                 } else {
+#ifdef DEBUGBUTTONS
                     uart2_str0("P7 down\n\r");
+#endif
                     button_event_handler(P7, true);
                 }
             }
 
             if (data[2] & 0x08) {
                 if (data_status[2] & 0x08) {
+#ifdef DEBUGBUTTONS
                     uart2_str0("P8 up\n\r");
+#endif
                     button_event_handler(P8, false);
                 } else {
+#ifdef DEBUGBUTTONS
                     uart2_str0("P8 down\n\r");
+#endif
                     button_event_handler(P8, true);
                 }
             }
 
             if (data[2] & 0x04) {
                 if (data_status[2] & 0x04) {
+#ifdef DEBUGBUTTONS
                     uart2_str0("P9 up\n\r");
+#endif
                     button_event_handler(P9, false);
                 } else {
+#ifdef DEBUGBUTTONS
                     uart2_str0("P9 down\n\r");
+#endif
                     button_event_handler(P9, true);
                 }
             }
 
             if (data[1] & 0x04) {
                 if (data_status[1] & 0x04) {
+#ifdef DEBUGBUTTONS
                     uart2_str0("P10 up\n\r");
+#endif
                     button_event_handler(P10, false);
                 } else {
+#ifdef DEBUGBUTTONS
                     uart2_str0("P10 down\n\r");
+#endif
                     button_event_handler(P10, true);
                 }
             }
 
             if (data[1] & 0x02) {
                 if (data_status[1] & 0x02) {
+#ifdef DEBUGBUTTONS
                     uart2_str0("P11 up\n\r");
+#endif
                     button_event_handler(P11, false);
                 } else {
+#ifdef DEBUGBUTTONS
                     uart2_str0("P11 down\n\r");
+#endif
                     button_event_handler(P11, true);
                 }
             }
 
             if (data[1] & 0x01) {
                 if (data_status[1] & 0x01) {
+#ifdef DEBUGBUTTONS
                     uart2_str0("P12 up\n\r");
+#endif
                     button_event_handler(P12, false);
                 } else {
+#ifdef DEBUGBUTTONS
                     uart2_str0("P12 down\n\r");
+#endif
                     button_event_handler(P12, true);
                 }
             }
-
-            /*if (data[1] == 0x04) {
-                //btn_TS1_pos = true;
-                uart2_byte("P4 pressed");
-            }*/
         }
 
         // each PIC8 handles a part of the buttons/switches
@@ -1344,103 +1405,71 @@ int main(void) {
         i2c3_getn(0x04, data_status, 3);
 
         if ((data[0] & 0x3F) || data[1] || (data[2] & 0x1F)) {
-            //uart2_byte(data[0]);
-            //uart2_byte(data[1]);
-            //uart2_byte(data[2]);
+#ifdef DEBUGBUTTONS
+            uart2_str0("change: ");
+            uart2_byte(data[0]);
+            uart2_byte(data[1]);
+            uart2_byte(data[2]);
+            uart2_str0("\n\r");
 
-            //uart2_str0(" -2- ");
-
-            //uart2_byte(data_status[0]);
-            // uart2_byte(data_status[1]);
-            //uart2_byte(data_status[2]);
-
-            //uart2_str0("\n\r");
+            uart2_str0("status: ");
+            uart2_byte(data_status[0]);
+            uart2_byte(data_status[1]);
+            uart2_byte(data_status[2]);
+            uart2_str0("\n\r");
+#endif
 
             if (data[1] == 0x04) {
-                btn_TS1_pos = true;
+                //btn_TS1_pos = true;
                 //drawString(20, 200, "TS1: up  ", color565(0,0,0), color565(255,255,255), 1); 
             }
             if (data[1] == 0x08) {
-                btn_TS1_pos = false;
+                //btn_TS1_pos = false;
                 //drawString(20, 200, "TS1: down", color565(0,0,0), color565(255,255,255), 1); 
             }
             if (data[2] == 0x04) {
-                btn_TS2_pos = true;
-                lcd_pmp_wr(ILI9341_INVCTR);
-                lcd_pmp_wr(0x07);
+                //btn_TS2_pos = true;
+
                 //drawString(20, 180, "TS2: up  ", color565(0, 0, 0), color565(255, 255, 255), 1, align_left, 0);
-
-                static uint32_t res = 0;
-                uart2_str0("\n\rRead Display Status ... ");
-
-                lcd_pmp_cmd(ILI9341_RDDST);
-                lcd_pmp_rd(); // previous
-                res = lcd_pmp_rd(); // 1p dummy
-                res = (res << 8) | lcd_pmp_rd(); // 2p [31:24]
-                res = (res << 8) | lcd_pmp_rd(); // 3p [23:16]
-                res = (res << 8) | lcd_pmp_rd(); // 4p [15:8]
-                res = (res << 8) | lcd_pmp_rdf(); // 5p [7:0]
-
-                uart2_long(res);
-
             }
             if (data[2] == 0x08) {
-                btn_TS2_pos = false;
-                //testing display invesions
-                //lcd_pmp_wr(ILI9341_INVCTR);
-                //lcd_pmp_wr(0x02);
+                //btn_TS2_pos = false;
                 //drawString(20, 180, "TS2: down", color565(0, 0, 0), color565(255, 255, 255), 1, align_left, 0);
-
-                static uint32_t res = 0;
-                uart2_str0("\n\rRead Display Status ... ");
-
-                lcd_pmp_cmd(ILI9341_RDDST);
-                lcd_pmp_rd(); // previous
-                res = lcd_pmp_rd(); // 1p dummy
-                res = (res << 8) | lcd_pmp_rd(); // 2p [31:24]
-                res = (res << 8) | lcd_pmp_rd(); // 3p [23:16]
-                res = (res << 8) | lcd_pmp_rd(); // 4p [15:8]
-                res = (res << 8) | lcd_pmp_rdf(); // 5p [7:0]
-
-                uart2_long(res);
-
             }
             if (data_status[0] == 0xEF) {
-                btn_S1_pos = false;
+                //btn_S1_pos = false;
                 //drawString(20, 160, "S1: OFF", color565(0,0,0), color565(255,255,255), 1); 
             }
             if (data_status[0] == 0xF7) {
-                btn_S1_pos = true;
+                //btn_S1_pos = true;
                 //drawString(20, 160, "S1: ON ", color565(0,0,0), color565(255,255,255), 1); 
             }
 
-            if (data[0] == 0x20) {
-                if (!btn_E1_pressed) {
-                    //drawString(70, 120, "E1: down", color565(0,0,0), color565(255,255,255), 1); 
-                    btn_E1_pressed = true;
-                    button_event_handler(E1, true);
-                    //draw_lcd();
-                } else {
-                    //drawString(70, 120, "E1: up  ", color565(0,0,0), color565(255,255,255), 1); 
+            if (data[0] & 0x20) {
+                if (data_status[0] & 0x20) {
                     button_event_handler(E1, false);
-                    btn_E1_released();
-                    btn_E1_pressed = false;
-                    draw_lcd();
+#ifdef DEBUGBUTTONS
+                    uart2_str0("E1 up\n\r");
+#endif
+                } else {
+                    button_event_handler(E1, true);
+#ifdef DEBUGBUTTONS
+                    uart2_str0("E1 down\n\r");
+#endif
                 }
             }
-            if (data[2] == 0x10) {
-                if (!btn_E2_pressed) {
-                    //drawString(70, 140, "E2: down", color565(0,0,0), color565(255,255,255), 1); 
-                    btn_E2_pressed = true;
-                    button_event_handler(E2, true);
-                    updateFramebuffer();
-                } else {
-                    //drawString(70, 140, "E2: up  ", color565(0,0,0), color565(255,255,255), 1); 
+            if (data[2] & 0x10) {
+                if (data_status[2] & 0x10) {
                     button_event_handler(E2, false);
-                    btn_E2_released();
-                    //draw_lcd();
+#ifdef DEBUGBUTTONS
+                    uart2_str0("E2 up\n\r");
+#endif
 
-                    btn_E2_pressed = false;
+                } else {
+                    button_event_handler(E2, true);
+#ifdef DEBUGBUTTONS
+                    uart2_str0("E2 down\n\r");
+#endif
                 }
             }
         }

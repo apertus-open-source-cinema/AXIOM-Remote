@@ -87,67 +87,64 @@ void draw_page_item(uint8_t screen_index) {
 
     // handle item hightlighting
     uint16_t page_item_label_color;
+    uint16_t page_item_label_background_color;
     uint16_t page_item_value_background_color;
     uint16_t page_item_value_color;
     if (_main_page[page_home].page_item[screen_index].highlighted) {
-        page_item_label_color = _page_item_highlight_color;
-        page_item_value_background_color = _page_item_highlight_color;
+        page_item_label_color = _page_item_label_background_color;
+        page_item_label_background_color = _page_item_highlight_color;
         page_item_value_color = _page_item_label_color;
+        page_item_value_background_color = _page_item_label_background_color;
     } else {
         page_item_label_color = _page_item_label_color;
-        page_item_value_background_color = _page_item_label_color;
+        page_item_label_background_color = _page_item_label_background_color;
+        page_item_value_background_color = _page_item_value_background_color;
         page_item_value_color = _page_item_value_color;
     }
 
     if (screen_index < 3) {
         // 3 top items
 
-        // draw a special page item that only has a label instead of value/label 
         if (_main_page[page_home].page_item[screen_index].item_type == button) {
-            // draw label
-            fill_round_rect(x, y + 1, _page_item_width, page_item_height * 2 / 3, 3, _page_item_label_background_color);
-            draw_string(x, y + 14, _main_page[page_home].page_item[screen_index].label, page_item_label_color, page_item_label_color,
+            fill_round_rect(x, y + 2 + _button_height, _page_item_width, _button_height, 3, page_item_label_background_color);
+            draw_string(x, y + 9 + _button_height, _main_page[page_home].page_item[screen_index].label,
+                    page_item_label_color, page_item_label_color,
                     _FreeSans12pt7b, align_center, _page_item_width);
         }
         if (_main_page[page_home].page_item[screen_index].item_type == value_and_label) {
             // draw label
-            fill_round_rect(x, y + _page_item_value_height, _page_item_width, _page_item_label_height, 3, _page_item_label_background_color);
-            fill_rect(x, y + _page_item_value_height, _page_item_width, 3, 3, _page_item_label_background_color);
-            draw_string(x, y + _page_item_value_height + 7, _main_page[page_home].page_item[screen_index].label, page_item_label_color, page_item_label_color,
+            fill_round_rect(x, y + _page_item_value_height, _page_item_width, _page_item_label_height, 3,
+                    page_item_label_background_color);
+            fill_rect(x, y + _page_item_value_height, _page_item_width, 3, 3, page_item_label_background_color);
+            draw_string(x, y + _page_item_value_height + 7, _main_page[page_home].page_item[screen_index].label,
+                    page_item_label_color, page_item_value_color,
                     _FreeSans9pt7b, align_center, _page_item_width);
 
             // draw value
             fill_round_rect(x, y, _page_item_width, _page_item_value_height, 3, page_item_value_background_color);
             fill_rect(x, y + _page_item_value_height - 3, _page_item_width, 3, page_item_value_background_color);
-            char value[16];
-            //strcpy(value, (*_main_page[page_home].page_item[screen_index].current_value_ptr)(_main_page[page_home].page_item[screen_index].value));
-            //sprintf(value, "%d", _main_page[page_home].page_item[screen_index].value);
             draw_string(x, y + 10, _main_page[page_home].page_item[screen_index].value, page_item_value_color, page_item_value_color,
                     _FreeSans12pt7b, align_center, _page_item_width);
         }
     } else {
         // 3 bottom items
 
-        // draw a special page item that only has a label instead of value/label 
         if (_main_page[page_home].page_item[screen_index].item_type == button) {
-            // draw label
-            fill_round_rect(x, y + 1, _page_item_width, page_item_height * 2 / 3, 3, _page_item_label_background_color);
-            draw_string(x, y + 14, _main_page[page_home].page_item[screen_index].label, page_item_label_color, page_item_label_color,
+            fill_round_rect(x, y + 2, _page_item_width, _button_height, 3, page_item_label_background_color);
+            draw_string(x, y + 9, _main_page[page_home].page_item[screen_index].label, page_item_label_color, page_item_label_color,
                     _FreeSans12pt7b, align_center, _page_item_width);
         }
         if (_main_page[page_home].page_item[screen_index].item_type == value_and_label) {
             // draw label
-            fill_round_rect(x, y + 1, _page_item_width, _page_item_label_height, 3, _page_item_label_background_color);
-            fill_rect(x, y + _page_item_label_height - 3, _page_item_width, 3, 3, _page_item_label_background_color);
+
+            fill_round_rect(x, y + 1, _page_item_width, _page_item_label_height, 3, page_item_label_background_color);
+            fill_rect(x, y + _page_item_label_height - 3, _page_item_width, 3, 3, page_item_label_background_color);
             draw_string(x, y + 7, _main_page[page_home].page_item[screen_index].label, page_item_label_color, page_item_label_color,
                     _FreeSans9pt7b, align_center, _page_item_width);
 
             // draw value
             fill_round_rect(x, y + _page_item_label_height, _page_item_width, _page_item_value_height, 3, page_item_value_background_color);
             fill_rect(x, y + _page_item_label_height, _page_item_width, 3, page_item_value_background_color);
-            char value[16];
-            //strcpy(value, (*_main_page[page_home].page_item[screen_index].current_value_ptr)(_main_page[page_home].page_item[screen_index].value));
-            //sprintf(value, "%d", _main_page[page_home].page_item[screen_index].value);
             draw_string(x, y + _page_item_label_height + 6, _main_page[page_home].page_item[screen_index].value, page_item_value_color, page_item_value_color,
                     _FreeSans12pt7b, align_center, _page_item_width);
         }
@@ -253,7 +250,7 @@ void init_pages() {
 
     _main_page[page_home].page_items_count = j + 1;
 
-    _current_page = page_home;
+    //_current_page = page_home;
     _page_count = 2;
 }
 

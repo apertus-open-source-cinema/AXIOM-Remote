@@ -17,6 +17,15 @@
 #include "gfxfont.h"
 #include "trash-icon.c"
 #include "help-icon.c"
+#include "home-icon.c"
+#include "home-icon-highlight.c"
+#include "back-icon.c"
+#include "back-icon-highlight.c"
+#include "up-icon.c"
+#include "up-icon-highlight.c"
+#include "down-icon.c"
+#include "down-icon-highlight.c"
+#include "wheel-illustration.c"
 
 extern uint16_t _cursor_x;
 extern uint16_t _cursor_y;
@@ -94,7 +103,6 @@ typedef struct {
     page_item_t page_item[12];
     uint8_t page_items_count;
 } page_t;
-
 
 
 uint8_t _button_height;
