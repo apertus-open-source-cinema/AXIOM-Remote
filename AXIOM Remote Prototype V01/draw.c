@@ -32,8 +32,13 @@
 
 /**************************************************************************/
 void draw_pixel(int16_t x, int16_t y, uint16_t color) {
-    //origin shall be at the lower left corner
-    _framebuffer[x][_height - y] = color;
+    //prevent drawing outside of bounds
+    if ((x >= 0) && (x < _width) && (y >= 0) && (y < _height)) {
+        //origin shall be at the lower left corner so we mirror y axis
+        _framebuffer[x][_height - y] = color;
+    } else {
+        //uart2_str0("draw attempt outside bounds\n\r");
+    }
 }
 
 /**************************************************************************/
@@ -383,7 +388,7 @@ void drawChar(int16_t x, int16_t y, unsigned char c, uint16_t color, uint16_t bg
     int8_t xo = pgm_read_byte(&glyph->xOffset);
     int8_t yo = pgm_read_byte(&glyph->yOffset);
     uint8_t xx, yy, bits = 0, bit = 0;
-    int16_t xo16 = 0, yo16 = 0;
+    //    int16_t xo16 = 0, yo16 = 0;
 
     // Todo: Add character clipping here
 
@@ -460,8 +465,8 @@ void drawRGBBitmap(int16_t x, int16_t y, const uint16_t *pcolors, int16_t w, int
             ((x2 = (x + w - 1)) < 0) || // " left
             ((y2 = (y + h - 1)) < 0)) return; // " bottom
 
-    int16_t bx1 = 0, by1 = 0, // Clipped top-left within bitmap
-            saveW = w; // Save original bitmap width value
+    int16_t bx1 = 0, by1 = 0; // Clipped top-left within bitmap
+    // saveW = w; // Save original bitmap width value
 
     // Clip left
     if (x < 0) {
@@ -566,8 +571,8 @@ uint16_t get_char_xoffset(const char c, GFXfont gfxFont) {
 
     if ((c >= first) && (c <= last)) { // Char present in this font?
         GFXglyph *glyph = &(((GFXglyph *) pgm_read_pointer(&gfxFont.glyph))[c - first]);
-        uint8_t gw = pgm_read_byte(&glyph->width);
-        uint8_t xa = pgm_read_byte(&glyph->xAdvance);
+        // uint8_t gw = pgm_read_byte(&glyph->width);
+        //uint8_t xa = pgm_read_byte(&glyph->xAdvance);
         int8_t xo = pgm_read_byte(&glyph->xOffset);
 
         return xo;

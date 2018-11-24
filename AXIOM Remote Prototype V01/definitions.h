@@ -263,6 +263,8 @@
 
 #define _width 320
 #define _height 240
+#define _right 319
+#define _top 239
 
 #define	delay_ms(t) delay_us(1000*(t))
 

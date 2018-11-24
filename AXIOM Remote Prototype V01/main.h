@@ -15,17 +15,17 @@
 
 #include "definitions.h"
 #include "gfxfont.h"
-#include "trash-icon.c"
-#include "help-icon.c"
-#include "home-icon.c"
-#include "home-icon-highlight.c"
-#include "back-icon.c"
-#include "back-icon-highlight.c"
-#include "up-icon.c"
-#include "up-icon-highlight.c"
-#include "down-icon.c"
-#include "down-icon-highlight.c"
-#include "wheel-illustration.c"
+#include "media/trash-icon.c"
+#include "media/help-icon.c"
+#include "media/home-icon.c"
+#include "media/home-icon-highlight.c"
+#include "media/back-icon.c"
+#include "media/back-icon-highlight.c"
+#include "media/up-icon.c"
+#include "media/up-icon-highlight.c"
+#include "media/down-icon.c"
+#include "media/down-icon-highlight.c"
+#include "media/wheel-illustration.c"
 
 extern uint16_t _cursor_x;
 extern uint16_t _cursor_y;
@@ -58,6 +58,8 @@ typedef struct {
     enum _menu_id_t link_to_submenu;
     menu_item_type_t type;
     uint8_t value;
+    bool selected;
+    bool highlighted;
     bool(*action_ptr)(); //function pointer to the action when that menu entry is clicked
     char* (*current_value_ptr)(); //function pointer to return the current value
     drop_down_choice_t choices[30];
@@ -176,6 +178,7 @@ extern GFXfont _FreeSans12pt7b;
 extern GFXfont _FreeSans18pt7b;
 extern GFXfont _FreeSans24pt7b;
 
-extern uint16_t _framebuffer[_width][_height];
+// the central frame buffer that is written to the LCD
+uint16_t _framebuffer[_width][_height];
 
 #endif /* MAIN_H */

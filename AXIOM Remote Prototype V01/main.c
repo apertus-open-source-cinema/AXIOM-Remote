@@ -109,9 +109,6 @@ uint8_t E1_pos = 0;
 uint8_t E2_pos = 0;
 
 
-// the central frame buffer that is written to the LCD
-uint16_t _framebuffer[_width][_height];
-
 // Page related stuff
 //_page_id_t _current_page;
 page_t _main_page[3];
@@ -1006,7 +1003,7 @@ void init_lcd() {
     clearFramebuffer(ILI9341_WHITE);
 }
 
-void btn_E1_released() {
+/*void btn_E1_released() {
     uint8_t a;
     for (a = 0; a < _main_menu_count; a++) {
         if (_main_menu[a].menu_id == _current_menu) {
@@ -1058,22 +1055,24 @@ void btn_E1_released() {
                         mainMenuItem3 = parameterSelectionIndex;
                         _parameter_menu_active = 0;
                     }*/
-            /*} else if (_current_menu == Submenu1) {
-                if (_menu_selection_index == 0) {
-                    _current_menu = Main;
-                    _menu_selection_index = 0;
-                    strcpy(menu_breadcrumbs, "Menu");
-                }
-            } else if (_current_menu == Submenu2) {
-                if (_menu_selection_index == 0) {
-                    _current_menu = Main;
-                    _menu_selection_index = 1;
-                    strcpy(menu_breadcrumbs, "Menu");
-                }
-            }*/
-        }
+
+/*} else if (_current_menu == Submenu1) {
+    if (_menu_selection_index == 0) {
+        _current_menu = Main;
+        _menu_selection_index = 0;
+        strcpy(menu_breadcrumbs, "Menu");
+    }
+} else if (_current_menu == Submenu2) {
+    if (_menu_selection_index == 0) {
+        _current_menu = Main;
+        _menu_selection_index = 1;
+        strcpy(menu_breadcrumbs, "Menu");
     }
 }
+}
+}
+}
+ */
 
 void btn_E2_released() {
     // to emulate the back button currently
@@ -1100,6 +1099,9 @@ void knob_event_handler(ButtonID button_event, int8_t value) {
     if (_current_page == page_wb) {
         wb_page_knob_handler(button_event, value);
     }
+    if (_current_menu != menu_none) {
+        main_menu_knob_handler(button_event, value);
+    }
     draw_lcd();
 }
 
@@ -1118,7 +1120,7 @@ void button_event_handler(ButtonID button_event, bool pressed) {
         } else {
             wb_page_button_release_handler(button_event);
         }
-    } else if (_current_menu == menu_main) {
+    } else if (_current_menu != menu_none) {
         if (pressed) {
             main_menu_button_press_handler(button_event);
         } else {
@@ -1489,10 +1491,10 @@ int main(void) {
                 _parameter_selection_index += diff;
                 _parameter_selection_index = limit_range(_parameter_selection_index, 0, get_current_item_choice_count() - 1);
 
-            } else {
+            } /*else {
                 _menu_selection_index += diff;
                 _menu_selection_index = limit_range(_menu_selection_index, 0, get_current_menu_item_count() - 1);
-            }
+            }*/
 
             //char encoder1[30] = "000000000";
             // sprintf(encoder1, "E1 (%d): %d", diff, menuSelectionIndex);
@@ -1501,7 +1503,7 @@ int main(void) {
 
             qe[0] = data[0];
 
-            draw_lcd();
+            //draw_lcd();
 
 
             //char encoder1[3] = "000";

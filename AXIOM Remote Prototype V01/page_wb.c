@@ -73,15 +73,15 @@ void draw_wb_page_item(uint8_t screen_index) {
     uint16_t x, y;
     if (screen_index == 0) {
         x = _padding_side;
-        y = _height - page_item_height;
+        y = _top - page_item_height;
     }
     if (screen_index == 1) {
         x = _padding_side + _padding_elements + _page_item_width;
-        y = _height - page_item_height;
+        y = _top - page_item_height;
     }
     if (screen_index == 2) {
         x = _padding_side + 2 * _padding_elements + 2 * _page_item_width;
-        y = _height - page_item_height;
+        y = _top - page_item_height;
     }
     if (screen_index == 3) {
         x = _padding_side;
@@ -273,7 +273,7 @@ void draw_wb_page() {
             _FreeSans18pt7b, align_left, 0);
 
     //two separation lines
-    drawLine(0, _height - 34, _width, _height - 34, _page_item_highlight_color);
+    drawLine(0, _height - 34, _right, _top - 34, _page_item_highlight_color);
 
 
 
