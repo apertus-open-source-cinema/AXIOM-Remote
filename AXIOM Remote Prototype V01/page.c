@@ -291,7 +291,8 @@ void main_page_button_release_handler(ButtonID button_index) {
     }
     if (button_index == P4) {
         _current_page = page_none;
-        _current_menu = menu_main;
+        //_current_menu = menu_main;
+        navigate_to_menu(menu_main);
         _main_page[page_home].page_item[3].highlighted = false;
     }
     if (button_index == P5) {

@@ -57,17 +57,17 @@ OBJECTDIR=build/${CND_CONF}/${IMAGE_TYPE}
 DISTDIR=dist/${CND_CONF}/${IMAGE_TYPE}
 
 # Source Files Quoted if spaced
-SOURCEFILES_QUOTED_IF_SPACED=main.c glcdfont.c axiom-logo.c menu.c utility.c draw.c page.c
+SOURCEFILES_QUOTED_IF_SPACED=media/axiom-logo.c media/back-icon-highlight.c media/back-icon.c media/down-icon-highlight.c media/down-icon.c media/help-icon.c media/home-icon-highlight.c media/home-icon.c media/trash-icon.c media/up-icon-highlight.c media/up-icon.c media/wheel-illustration.c main.c glcdfont.c menu.c utility.c draw.c page.c page_wb.c
 
 # Object Files Quoted if spaced
-OBJECTFILES_QUOTED_IF_SPACED=${OBJECTDIR}/main.o ${OBJECTDIR}/glcdfont.o ${OBJECTDIR}/axiom-logo.o ${OBJECTDIR}/menu.o ${OBJECTDIR}/utility.o ${OBJECTDIR}/draw.o ${OBJECTDIR}/page.o
-POSSIBLE_DEPFILES=${OBJECTDIR}/main.o.d ${OBJECTDIR}/glcdfont.o.d ${OBJECTDIR}/axiom-logo.o.d ${OBJECTDIR}/menu.o.d ${OBJECTDIR}/utility.o.d ${OBJECTDIR}/draw.o.d ${OBJECTDIR}/page.o.d
+OBJECTFILES_QUOTED_IF_SPACED=${OBJECTDIR}/media/axiom-logo.o ${OBJECTDIR}/media/back-icon-highlight.o ${OBJECTDIR}/media/back-icon.o ${OBJECTDIR}/media/down-icon-highlight.o ${OBJECTDIR}/media/down-icon.o ${OBJECTDIR}/media/help-icon.o ${OBJECTDIR}/media/home-icon-highlight.o ${OBJECTDIR}/media/home-icon.o ${OBJECTDIR}/media/trash-icon.o ${OBJECTDIR}/media/up-icon-highlight.o ${OBJECTDIR}/media/up-icon.o ${OBJECTDIR}/media/wheel-illustration.o ${OBJECTDIR}/main.o ${OBJECTDIR}/glcdfont.o ${OBJECTDIR}/menu.o ${OBJECTDIR}/utility.o ${OBJECTDIR}/draw.o ${OBJECTDIR}/page.o ${OBJECTDIR}/page_wb.o
+POSSIBLE_DEPFILES=${OBJECTDIR}/media/axiom-logo.o.d ${OBJECTDIR}/media/back-icon-highlight.o.d ${OBJECTDIR}/media/back-icon.o.d ${OBJECTDIR}/media/down-icon-highlight.o.d ${OBJECTDIR}/media/down-icon.o.d ${OBJECTDIR}/media/help-icon.o.d ${OBJECTDIR}/media/home-icon-highlight.o.d ${OBJECTDIR}/media/home-icon.o.d ${OBJECTDIR}/media/trash-icon.o.d ${OBJECTDIR}/media/up-icon-highlight.o.d ${OBJECTDIR}/media/up-icon.o.d ${OBJECTDIR}/media/wheel-illustration.o.d ${OBJECTDIR}/main.o.d ${OBJECTDIR}/glcdfont.o.d ${OBJECTDIR}/menu.o.d ${OBJECTDIR}/utility.o.d ${OBJECTDIR}/draw.o.d ${OBJECTDIR}/page.o.d ${OBJECTDIR}/page_wb.o.d
 
 # Object Files
-OBJECTFILES=${OBJECTDIR}/main.o ${OBJECTDIR}/glcdfont.o ${OBJECTDIR}/axiom-logo.o ${OBJECTDIR}/menu.o ${OBJECTDIR}/utility.o ${OBJECTDIR}/draw.o ${OBJECTDIR}/page.o
+OBJECTFILES=${OBJECTDIR}/media/axiom-logo.o ${OBJECTDIR}/media/back-icon-highlight.o ${OBJECTDIR}/media/back-icon.o ${OBJECTDIR}/media/down-icon-highlight.o ${OBJECTDIR}/media/down-icon.o ${OBJECTDIR}/media/help-icon.o ${OBJECTDIR}/media/home-icon-highlight.o ${OBJECTDIR}/media/home-icon.o ${OBJECTDIR}/media/trash-icon.o ${OBJECTDIR}/media/up-icon-highlight.o ${OBJECTDIR}/media/up-icon.o ${OBJECTDIR}/media/wheel-illustration.o ${OBJECTDIR}/main.o ${OBJECTDIR}/glcdfont.o ${OBJECTDIR}/menu.o ${OBJECTDIR}/utility.o ${OBJECTDIR}/draw.o ${OBJECTDIR}/page.o ${OBJECTDIR}/page_wb.o
 
 # Source Files
-SOURCEFILES=main.c glcdfont.c axiom-logo.c menu.c utility.c draw.c page.c
+SOURCEFILES=media/axiom-logo.c media/back-icon-highlight.c media/back-icon.c media/down-icon-highlight.c media/down-icon.c media/help-icon.c media/home-icon-highlight.c media/home-icon.c media/trash-icon.c media/up-icon-highlight.c media/up-icon.c media/wheel-illustration.c main.c glcdfont.c menu.c utility.c draw.c page.c page_wb.c
 
 
 CFLAGS=
@@ -106,6 +106,78 @@ endif
 # ------------------------------------------------------------------------------------
 # Rules for buildStep: compile
 ifeq ($(TYPE_IMAGE), DEBUG_RUN)
+${OBJECTDIR}/media/axiom-logo.o: media/axiom-logo.c  nbproject/Makefile-${CND_CONF}.mk
+	@${MKDIR} "${OBJECTDIR}/media" 
+	@${RM} ${OBJECTDIR}/media/axiom-logo.o.d 
+	@${RM} ${OBJECTDIR}/media/axiom-logo.o 
+	@${FIXDEPS} "${OBJECTDIR}/media/axiom-logo.o.d" $(SILENT) -rsi ${MP_CC_DIR}../  -c ${MP_CC}  $(MP_EXTRA_CC_PRE) -g -D__DEBUG -DICD3PlatformTool=1  -fframe-base-loclist  -x c -c -mprocessor=$(MP_PROCESSOR_OPTION)  -MMD -MF "${OBJECTDIR}/media/axiom-logo.o.d" -o ${OBJECTDIR}/media/axiom-logo.o media/axiom-logo.c    -DXPRJ_default=$(CND_CONF)  -legacy-libc  $(COMPARISON_BUILD)  -O6
+	
+${OBJECTDIR}/media/back-icon-highlight.o: media/back-icon-highlight.c  nbproject/Makefile-${CND_CONF}.mk
+	@${MKDIR} "${OBJECTDIR}/media" 
+	@${RM} ${OBJECTDIR}/media/back-icon-highlight.o.d 
+	@${RM} ${OBJECTDIR}/media/back-icon-highlight.o 
+	@${FIXDEPS} "${OBJECTDIR}/media/back-icon-highlight.o.d" $(SILENT) -rsi ${MP_CC_DIR}../  -c ${MP_CC}  $(MP_EXTRA_CC_PRE) -g -D__DEBUG -DICD3PlatformTool=1  -fframe-base-loclist  -x c -c -mprocessor=$(MP_PROCESSOR_OPTION)  -MMD -MF "${OBJECTDIR}/media/back-icon-highlight.o.d" -o ${OBJECTDIR}/media/back-icon-highlight.o media/back-icon-highlight.c    -DXPRJ_default=$(CND_CONF)  -legacy-libc  $(COMPARISON_BUILD)  -O6
+	
+${OBJECTDIR}/media/back-icon.o: media/back-icon.c  nbproject/Makefile-${CND_CONF}.mk
+	@${MKDIR} "${OBJECTDIR}/media" 
+	@${RM} ${OBJECTDIR}/media/back-icon.o.d 
+	@${RM} ${OBJECTDIR}/media/back-icon.o 
+	@${FIXDEPS} "${OBJECTDIR}/media/back-icon.o.d" $(SILENT) -rsi ${MP_CC_DIR}../  -c ${MP_CC}  $(MP_EXTRA_CC_PRE) -g -D__DEBUG -DICD3PlatformTool=1  -fframe-base-loclist  -x c -c -mprocessor=$(MP_PROCESSOR_OPTION)  -MMD -MF "${OBJECTDIR}/media/back-icon.o.d" -o ${OBJECTDIR}/media/back-icon.o media/back-icon.c    -DXPRJ_default=$(CND_CONF)  -legacy-libc  $(COMPARISON_BUILD)  -O6
+	
+${OBJECTDIR}/media/down-icon-highlight.o: media/down-icon-highlight.c  nbproject/Makefile-${CND_CONF}.mk
+	@${MKDIR} "${OBJECTDIR}/media" 
+	@${RM} ${OBJECTDIR}/media/down-icon-highlight.o.d 
+	@${RM} ${OBJECTDIR}/media/down-icon-highlight.o 
+	@${FIXDEPS} "${OBJECTDIR}/media/down-icon-highlight.o.d" $(SILENT) -rsi ${MP_CC_DIR}../  -c ${MP_CC}  $(MP_EXTRA_CC_PRE) -g -D__DEBUG -DICD3PlatformTool=1  -fframe-base-loclist  -x c -c -mprocessor=$(MP_PROCESSOR_OPTION)  -MMD -MF "${OBJECTDIR}/media/down-icon-highlight.o.d" -o ${OBJECTDIR}/media/down-icon-highlight.o media/down-icon-highlight.c    -DXPRJ_default=$(CND_CONF)  -legacy-libc  $(COMPARISON_BUILD)  -O6
+	
+${OBJECTDIR}/media/down-icon.o: media/down-icon.c  nbproject/Makefile-${CND_CONF}.mk
+	@${MKDIR} "${OBJECTDIR}/media" 
+	@${RM} ${OBJECTDIR}/media/down-icon.o.d 
+	@${RM} ${OBJECTDIR}/media/down-icon.o 
+	@${FIXDEPS} "${OBJECTDIR}/media/down-icon.o.d" $(SILENT) -rsi ${MP_CC_DIR}../  -c ${MP_CC}  $(MP_EXTRA_CC_PRE) -g -D__DEBUG -DICD3PlatformTool=1  -fframe-base-loclist  -x c -c -mprocessor=$(MP_PROCESSOR_OPTION)  -MMD -MF "${OBJECTDIR}/media/down-icon.o.d" -o ${OBJECTDIR}/media/down-icon.o media/down-icon.c    -DXPRJ_default=$(CND_CONF)  -legacy-libc  $(COMPARISON_BUILD)  -O6
+	
+${OBJECTDIR}/media/help-icon.o: media/help-icon.c  nbproject/Makefile-${CND_CONF}.mk
+	@${MKDIR} "${OBJECTDIR}/media" 
+	@${RM} ${OBJECTDIR}/media/help-icon.o.d 
+	@${RM} ${OBJECTDIR}/media/help-icon.o 
+	@${FIXDEPS} "${OBJECTDIR}/media/help-icon.o.d" $(SILENT) -rsi ${MP_CC_DIR}../  -c ${MP_CC}  $(MP_EXTRA_CC_PRE) -g -D__DEBUG -DICD3PlatformTool=1  -fframe-base-loclist  -x c -c -mprocessor=$(MP_PROCESSOR_OPTION)  -MMD -MF "${OBJECTDIR}/media/help-icon.o.d" -o ${OBJECTDIR}/media/help-icon.o media/help-icon.c    -DXPRJ_default=$(CND_CONF)  -legacy-libc  $(COMPARISON_BUILD)  -O6
+	
+${OBJECTDIR}/media/home-icon-highlight.o: media/home-icon-highlight.c  nbproject/Makefile-${CND_CONF}.mk
+	@${MKDIR} "${OBJECTDIR}/media" 
+	@${RM} ${OBJECTDIR}/media/home-icon-highlight.o.d 
+	@${RM} ${OBJECTDIR}/media/home-icon-highlight.o 
+	@${FIXDEPS} "${OBJECTDIR}/media/home-icon-highlight.o.d" $(SILENT) -rsi ${MP_CC_DIR}../  -c ${MP_CC}  $(MP_EXTRA_CC_PRE) -g -D__DEBUG -DICD3PlatformTool=1  -fframe-base-loclist  -x c -c -mprocessor=$(MP_PROCESSOR_OPTION)  -MMD -MF "${OBJECTDIR}/media/home-icon-highlight.o.d" -o ${OBJECTDIR}/media/home-icon-highlight.o media/home-icon-highlight.c    -DXPRJ_default=$(CND_CONF)  -legacy-libc  $(COMPARISON_BUILD)  -O6
+	
+${OBJECTDIR}/media/home-icon.o: media/home-icon.c  nbproject/Makefile-${CND_CONF}.mk
+	@${MKDIR} "${OBJECTDIR}/media" 
+	@${RM} ${OBJECTDIR}/media/home-icon.o.d 
+	@${RM} ${OBJECTDIR}/media/home-icon.o 
+	@${FIXDEPS} "${OBJECTDIR}/media/home-icon.o.d" $(SILENT) -rsi ${MP_CC_DIR}../  -c ${MP_CC}  $(MP_EXTRA_CC_PRE) -g -D__DEBUG -DICD3PlatformTool=1  -fframe-base-loclist  -x c -c -mprocessor=$(MP_PROCESSOR_OPTION)  -MMD -MF "${OBJECTDIR}/media/home-icon.o.d" -o ${OBJECTDIR}/media/home-icon.o media/home-icon.c    -DXPRJ_default=$(CND_CONF)  -legacy-libc  $(COMPARISON_BUILD)  -O6
+	
+${OBJECTDIR}/media/trash-icon.o: media/trash-icon.c  nbproject/Makefile-${CND_CONF}.mk
+	@${MKDIR} "${OBJECTDIR}/media" 
+	@${RM} ${OBJECTDIR}/media/trash-icon.o.d 
+	@${RM} ${OBJECTDIR}/media/trash-icon.o 
+	@${FIXDEPS} "${OBJECTDIR}/media/trash-icon.o.d" $(SILENT) -rsi ${MP_CC_DIR}../  -c ${MP_CC}  $(MP_EXTRA_CC_PRE) -g -D__DEBUG -DICD3PlatformTool=1  -fframe-base-loclist  -x c -c -mprocessor=$(MP_PROCESSOR_OPTION)  -MMD -MF "${OBJECTDIR}/media/trash-icon.o.d" -o ${OBJECTDIR}/media/trash-icon.o media/trash-icon.c    -DXPRJ_default=$(CND_CONF)  -legacy-libc  $(COMPARISON_BUILD)  -O6
+	
+${OBJECTDIR}/media/up-icon-highlight.o: media/up-icon-highlight.c  nbproject/Makefile-${CND_CONF}.mk
+	@${MKDIR} "${OBJECTDIR}/media" 
+	@${RM} ${OBJECTDIR}/media/up-icon-highlight.o.d 
+	@${RM} ${OBJECTDIR}/media/up-icon-highlight.o 
+	@${FIXDEPS} "${OBJECTDIR}/media/up-icon-highlight.o.d" $(SILENT) -rsi ${MP_CC_DIR}../  -c ${MP_CC}  $(MP_EXTRA_CC_PRE) -g -D__DEBUG -DICD3PlatformTool=1  -fframe-base-loclist  -x c -c -mprocessor=$(MP_PROCESSOR_OPTION)  -MMD -MF "${OBJECTDIR}/media/up-icon-highlight.o.d" -o ${OBJECTDIR}/media/up-icon-highlight.o media/up-icon-highlight.c    -DXPRJ_default=$(CND_CONF)  -legacy-libc  $(COMPARISON_BUILD)  -O6
+	
+${OBJECTDIR}/media/up-icon.o: media/up-icon.c  nbproject/Makefile-${CND_CONF}.mk
+	@${MKDIR} "${OBJECTDIR}/media" 
+	@${RM} ${OBJECTDIR}/media/up-icon.o.d 
+	@${RM} ${OBJECTDIR}/media/up-icon.o 
+	@${FIXDEPS} "${OBJECTDIR}/media/up-icon.o.d" $(SILENT) -rsi ${MP_CC_DIR}../  -c ${MP_CC}  $(MP_EXTRA_CC_PRE) -g -D__DEBUG -DICD3PlatformTool=1  -fframe-base-loclist  -x c -c -mprocessor=$(MP_PROCESSOR_OPTION)  -MMD -MF "${OBJECTDIR}/media/up-icon.o.d" -o ${OBJECTDIR}/media/up-icon.o media/up-icon.c    -DXPRJ_default=$(CND_CONF)  -legacy-libc  $(COMPARISON_BUILD)  -O6
+	
+${OBJECTDIR}/media/wheel-illustration.o: media/wheel-illustration.c  nbproject/Makefile-${CND_CONF}.mk
+	@${MKDIR} "${OBJECTDIR}/media" 
+	@${RM} ${OBJECTDIR}/media/wheel-illustration.o.d 
+	@${RM} ${OBJECTDIR}/media/wheel-illustration.o 
+	@${FIXDEPS} "${OBJECTDIR}/media/wheel-illustration.o.d" $(SILENT) -rsi ${MP_CC_DIR}../  -c ${MP_CC}  $(MP_EXTRA_CC_PRE) -g -D__DEBUG -DICD3PlatformTool=1  -fframe-base-loclist  -x c -c -mprocessor=$(MP_PROCESSOR_OPTION)  -MMD -MF "${OBJECTDIR}/media/wheel-illustration.o.d" -o ${OBJECTDIR}/media/wheel-illustration.o media/wheel-illustration.c    -DXPRJ_default=$(CND_CONF)  -legacy-libc  $(COMPARISON_BUILD)  -O6
+	
 ${OBJECTDIR}/main.o: main.c  nbproject/Makefile-${CND_CONF}.mk
 	@${MKDIR} "${OBJECTDIR}" 
 	@${RM} ${OBJECTDIR}/main.o.d 
@@ -117,12 +189,6 @@ ${OBJECTDIR}/glcdfont.o: glcdfont.c  nbproject/Makefile-${CND_CONF}.mk
 	@${RM} ${OBJECTDIR}/glcdfont.o.d 
 	@${RM} ${OBJECTDIR}/glcdfont.o 
 	@${FIXDEPS} "${OBJECTDIR}/glcdfont.o.d" $(SILENT) -rsi ${MP_CC_DIR}../  -c ${MP_CC}  $(MP_EXTRA_CC_PRE) -g -D__DEBUG -DICD3PlatformTool=1  -fframe-base-loclist  -x c -c -mprocessor=$(MP_PROCESSOR_OPTION)  -MMD -MF "${OBJECTDIR}/glcdfont.o.d" -o ${OBJECTDIR}/glcdfont.o glcdfont.c    -DXPRJ_default=$(CND_CONF)  -legacy-libc  $(COMPARISON_BUILD)  -O6
-	
-${OBJECTDIR}/axiom-logo.o: axiom-logo.c  nbproject/Makefile-${CND_CONF}.mk
-	@${MKDIR} "${OBJECTDIR}" 
-	@${RM} ${OBJECTDIR}/axiom-logo.o.d 
-	@${RM} ${OBJECTDIR}/axiom-logo.o 
-	@${FIXDEPS} "${OBJECTDIR}/axiom-logo.o.d" $(SILENT) -rsi ${MP_CC_DIR}../  -c ${MP_CC}  $(MP_EXTRA_CC_PRE) -g -D__DEBUG -DICD3PlatformTool=1  -fframe-base-loclist  -x c -c -mprocessor=$(MP_PROCESSOR_OPTION)  -MMD -MF "${OBJECTDIR}/axiom-logo.o.d" -o ${OBJECTDIR}/axiom-logo.o axiom-logo.c    -DXPRJ_default=$(CND_CONF)  -legacy-libc  $(COMPARISON_BUILD)  -O6
 	
 ${OBJECTDIR}/menu.o: menu.c  nbproject/Makefile-${CND_CONF}.mk
 	@${MKDIR} "${OBJECTDIR}" 
@@ -148,7 +214,85 @@ ${OBJECTDIR}/page.o: page.c  nbproject/Makefile-${CND_CONF}.mk
 	@${RM} ${OBJECTDIR}/page.o 
 	@${FIXDEPS} "${OBJECTDIR}/page.o.d" $(SILENT) -rsi ${MP_CC_DIR}../  -c ${MP_CC}  $(MP_EXTRA_CC_PRE) -g -D__DEBUG -DICD3PlatformTool=1  -fframe-base-loclist  -x c -c -mprocessor=$(MP_PROCESSOR_OPTION)  -MMD -MF "${OBJECTDIR}/page.o.d" -o ${OBJECTDIR}/page.o page.c    -DXPRJ_default=$(CND_CONF)  -legacy-libc  $(COMPARISON_BUILD)  -O6
 	
+${OBJECTDIR}/page_wb.o: page_wb.c  nbproject/Makefile-${CND_CONF}.mk
+	@${MKDIR} "${OBJECTDIR}" 
+	@${RM} ${OBJECTDIR}/page_wb.o.d 
+	@${RM} ${OBJECTDIR}/page_wb.o 
+	@${FIXDEPS} "${OBJECTDIR}/page_wb.o.d" $(SILENT) -rsi ${MP_CC_DIR}../  -c ${MP_CC}  $(MP_EXTRA_CC_PRE) -g -D__DEBUG -DICD3PlatformTool=1  -fframe-base-loclist  -x c -c -mprocessor=$(MP_PROCESSOR_OPTION)  -MMD -MF "${OBJECTDIR}/page_wb.o.d" -o ${OBJECTDIR}/page_wb.o page_wb.c    -DXPRJ_default=$(CND_CONF)  -legacy-libc  $(COMPARISON_BUILD)  -O6
+	
 else
+${OBJECTDIR}/media/axiom-logo.o: media/axiom-logo.c  nbproject/Makefile-${CND_CONF}.mk
+	@${MKDIR} "${OBJECTDIR}/media" 
+	@${RM} ${OBJECTDIR}/media/axiom-logo.o.d 
+	@${RM} ${OBJECTDIR}/media/axiom-logo.o 
+	@${FIXDEPS} "${OBJECTDIR}/media/axiom-logo.o.d" $(SILENT) -rsi ${MP_CC_DIR}../  -c ${MP_CC}  $(MP_EXTRA_CC_PRE)  -g -x c -c -mprocessor=$(MP_PROCESSOR_OPTION)  -MMD -MF "${OBJECTDIR}/media/axiom-logo.o.d" -o ${OBJECTDIR}/media/axiom-logo.o media/axiom-logo.c    -DXPRJ_default=$(CND_CONF)  -legacy-libc  $(COMPARISON_BUILD)  -O6
+	
+${OBJECTDIR}/media/back-icon-highlight.o: media/back-icon-highlight.c  nbproject/Makefile-${CND_CONF}.mk
+	@${MKDIR} "${OBJECTDIR}/media" 
+	@${RM} ${OBJECTDIR}/media/back-icon-highlight.o.d 
+	@${RM} ${OBJECTDIR}/media/back-icon-highlight.o 
+	@${FIXDEPS} "${OBJECTDIR}/media/back-icon-highlight.o.d" $(SILENT) -rsi ${MP_CC_DIR}../  -c ${MP_CC}  $(MP_EXTRA_CC_PRE)  -g -x c -c -mprocessor=$(MP_PROCESSOR_OPTION)  -MMD -MF "${OBJECTDIR}/media/back-icon-highlight.o.d" -o ${OBJECTDIR}/media/back-icon-highlight.o media/back-icon-highlight.c    -DXPRJ_default=$(CND_CONF)  -legacy-libc  $(COMPARISON_BUILD)  -O6
+	
+${OBJECTDIR}/media/back-icon.o: media/back-icon.c  nbproject/Makefile-${CND_CONF}.mk
+	@${MKDIR} "${OBJECTDIR}/media" 
+	@${RM} ${OBJECTDIR}/media/back-icon.o.d 
+	@${RM} ${OBJECTDIR}/media/back-icon.o 
+	@${FIXDEPS} "${OBJECTDIR}/media/back-icon.o.d" $(SILENT) -rsi ${MP_CC_DIR}../  -c ${MP_CC}  $(MP_EXTRA_CC_PRE)  -g -x c -c -mprocessor=$(MP_PROCESSOR_OPTION)  -MMD -MF "${OBJECTDIR}/media/back-icon.o.d" -o ${OBJECTDIR}/media/back-icon.o media/back-icon.c    -DXPRJ_default=$(CND_CONF)  -legacy-libc  $(COMPARISON_BUILD)  -O6
+	
+${OBJECTDIR}/media/down-icon-highlight.o: media/down-icon-highlight.c  nbproject/Makefile-${CND_CONF}.mk
+	@${MKDIR} "${OBJECTDIR}/media" 
+	@${RM} ${OBJECTDIR}/media/down-icon-highlight.o.d 
+	@${RM} ${OBJECTDIR}/media/down-icon-highlight.o 
+	@${FIXDEPS} "${OBJECTDIR}/media/down-icon-highlight.o.d" $(SILENT) -rsi ${MP_CC_DIR}../  -c ${MP_CC}  $(MP_EXTRA_CC_PRE)  -g -x c -c -mprocessor=$(MP_PROCESSOR_OPTION)  -MMD -MF "${OBJECTDIR}/media/down-icon-highlight.o.d" -o ${OBJECTDIR}/media/down-icon-highlight.o media/down-icon-highlight.c    -DXPRJ_default=$(CND_CONF)  -legacy-libc  $(COMPARISON_BUILD)  -O6
+	
+${OBJECTDIR}/media/down-icon.o: media/down-icon.c  nbproject/Makefile-${CND_CONF}.mk
+	@${MKDIR} "${OBJECTDIR}/media" 
+	@${RM} ${OBJECTDIR}/media/down-icon.o.d 
+	@${RM} ${OBJECTDIR}/media/down-icon.o 
+	@${FIXDEPS} "${OBJECTDIR}/media/down-icon.o.d" $(SILENT) -rsi ${MP_CC_DIR}../  -c ${MP_CC}  $(MP_EXTRA_CC_PRE)  -g -x c -c -mprocessor=$(MP_PROCESSOR_OPTION)  -MMD -MF "${OBJECTDIR}/media/down-icon.o.d" -o ${OBJECTDIR}/media/down-icon.o media/down-icon.c    -DXPRJ_default=$(CND_CONF)  -legacy-libc  $(COMPARISON_BUILD)  -O6
+	
+${OBJECTDIR}/media/help-icon.o: media/help-icon.c  nbproject/Makefile-${CND_CONF}.mk
+	@${MKDIR} "${OBJECTDIR}/media" 
+	@${RM} ${OBJECTDIR}/media/help-icon.o.d 
+	@${RM} ${OBJECTDIR}/media/help-icon.o 
+	@${FIXDEPS} "${OBJECTDIR}/media/help-icon.o.d" $(SILENT) -rsi ${MP_CC_DIR}../  -c ${MP_CC}  $(MP_EXTRA_CC_PRE)  -g -x c -c -mprocessor=$(MP_PROCESSOR_OPTION)  -MMD -MF "${OBJECTDIR}/media/help-icon.o.d" -o ${OBJECTDIR}/media/help-icon.o media/help-icon.c    -DXPRJ_default=$(CND_CONF)  -legacy-libc  $(COMPARISON_BUILD)  -O6
+	
+${OBJECTDIR}/media/home-icon-highlight.o: media/home-icon-highlight.c  nbproject/Makefile-${CND_CONF}.mk
+	@${MKDIR} "${OBJECTDIR}/media" 
+	@${RM} ${OBJECTDIR}/media/home-icon-highlight.o.d 
+	@${RM} ${OBJECTDIR}/media/home-icon-highlight.o 
+	@${FIXDEPS} "${OBJECTDIR}/media/home-icon-highlight.o.d" $(SILENT) -rsi ${MP_CC_DIR}../  -c ${MP_CC}  $(MP_EXTRA_CC_PRE)  -g -x c -c -mprocessor=$(MP_PROCESSOR_OPTION)  -MMD -MF "${OBJECTDIR}/media/home-icon-highlight.o.d" -o ${OBJECTDIR}/media/home-icon-highlight.o media/home-icon-highlight.c    -DXPRJ_default=$(CND_CONF)  -legacy-libc  $(COMPARISON_BUILD)  -O6
+	
+${OBJECTDIR}/media/home-icon.o: media/home-icon.c  nbproject/Makefile-${CND_CONF}.mk
+	@${MKDIR} "${OBJECTDIR}/media" 
+	@${RM} ${OBJECTDIR}/media/home-icon.o.d 
+	@${RM} ${OBJECTDIR}/media/home-icon.o 
+	@${FIXDEPS} "${OBJECTDIR}/media/home-icon.o.d" $(SILENT) -rsi ${MP_CC_DIR}../  -c ${MP_CC}  $(MP_EXTRA_CC_PRE)  -g -x c -c -mprocessor=$(MP_PROCESSOR_OPTION)  -MMD -MF "${OBJECTDIR}/media/home-icon.o.d" -o ${OBJECTDIR}/media/home-icon.o media/home-icon.c    -DXPRJ_default=$(CND_CONF)  -legacy-libc  $(COMPARISON_BUILD)  -O6
+	
+${OBJECTDIR}/media/trash-icon.o: media/trash-icon.c  nbproject/Makefile-${CND_CONF}.mk
+	@${MKDIR} "${OBJECTDIR}/media" 
+	@${RM} ${OBJECTDIR}/media/trash-icon.o.d 
+	@${RM} ${OBJECTDIR}/media/trash-icon.o 
+	@${FIXDEPS} "${OBJECTDIR}/media/trash-icon.o.d" $(SILENT) -rsi ${MP_CC_DIR}../  -c ${MP_CC}  $(MP_EXTRA_CC_PRE)  -g -x c -c -mprocessor=$(MP_PROCESSOR_OPTION)  -MMD -MF "${OBJECTDIR}/media/trash-icon.o.d" -o ${OBJECTDIR}/media/trash-icon.o media/trash-icon.c    -DXPRJ_default=$(CND_CONF)  -legacy-libc  $(COMPARISON_BUILD)  -O6
+	
+${OBJECTDIR}/media/up-icon-highlight.o: media/up-icon-highlight.c  nbproject/Makefile-${CND_CONF}.mk
+	@${MKDIR} "${OBJECTDIR}/media" 
+	@${RM} ${OBJECTDIR}/media/up-icon-highlight.o.d 
+	@${RM} ${OBJECTDIR}/media/up-icon-highlight.o 
+	@${FIXDEPS} "${OBJECTDIR}/media/up-icon-highlight.o.d" $(SILENT) -rsi ${MP_CC_DIR}../  -c ${MP_CC}  $(MP_EXTRA_CC_PRE)  -g -x c -c -mprocessor=$(MP_PROCESSOR_OPTION)  -MMD -MF "${OBJECTDIR}/media/up-icon-highlight.o.d" -o ${OBJECTDIR}/media/up-icon-highlight.o media/up-icon-highlight.c    -DXPRJ_default=$(CND_CONF)  -legacy-libc  $(COMPARISON_BUILD)  -O6
+	
+${OBJECTDIR}/media/up-icon.o: media/up-icon.c  nbproject/Makefile-${CND_CONF}.mk
+	@${MKDIR} "${OBJECTDIR}/media" 
+	@${RM} ${OBJECTDIR}/media/up-icon.o.d 
+	@${RM} ${OBJECTDIR}/media/up-icon.o 
+	@${FIXDEPS} "${OBJECTDIR}/media/up-icon.o.d" $(SILENT) -rsi ${MP_CC_DIR}../  -c ${MP_CC}  $(MP_EXTRA_CC_PRE)  -g -x c -c -mprocessor=$(MP_PROCESSOR_OPTION)  -MMD -MF "${OBJECTDIR}/media/up-icon.o.d" -o ${OBJECTDIR}/media/up-icon.o media/up-icon.c    -DXPRJ_default=$(CND_CONF)  -legacy-libc  $(COMPARISON_BUILD)  -O6
+	
+${OBJECTDIR}/media/wheel-illustration.o: media/wheel-illustration.c  nbproject/Makefile-${CND_CONF}.mk
+	@${MKDIR} "${OBJECTDIR}/media" 
+	@${RM} ${OBJECTDIR}/media/wheel-illustration.o.d 
+	@${RM} ${OBJECTDIR}/media/wheel-illustration.o 
+	@${FIXDEPS} "${OBJECTDIR}/media/wheel-illustration.o.d" $(SILENT) -rsi ${MP_CC_DIR}../  -c ${MP_CC}  $(MP_EXTRA_CC_PRE)  -g -x c -c -mprocessor=$(MP_PROCESSOR_OPTION)  -MMD -MF "${OBJECTDIR}/media/wheel-illustration.o.d" -o ${OBJECTDIR}/media/wheel-illustration.o media/wheel-illustration.c    -DXPRJ_default=$(CND_CONF)  -legacy-libc  $(COMPARISON_BUILD)  -O6
+	
 ${OBJECTDIR}/main.o: main.c  nbproject/Makefile-${CND_CONF}.mk
 	@${MKDIR} "${OBJECTDIR}" 
 	@${RM} ${OBJECTDIR}/main.o.d 
@@ -160,12 +304,6 @@ ${OBJECTDIR}/glcdfont.o: glcdfont.c  nbproject/Makefile-${CND_CONF}.mk
 	@${RM} ${OBJECTDIR}/glcdfont.o.d 
 	@${RM} ${OBJECTDIR}/glcdfont.o 
 	@${FIXDEPS} "${OBJECTDIR}/glcdfont.o.d" $(SILENT) -rsi ${MP_CC_DIR}../  -c ${MP_CC}  $(MP_EXTRA_CC_PRE)  -g -x c -c -mprocessor=$(MP_PROCESSOR_OPTION)  -MMD -MF "${OBJECTDIR}/glcdfont.o.d" -o ${OBJECTDIR}/glcdfont.o glcdfont.c    -DXPRJ_default=$(CND_CONF)  -legacy-libc  $(COMPARISON_BUILD)  -O6
-	
-${OBJECTDIR}/axiom-logo.o: axiom-logo.c  nbproject/Makefile-${CND_CONF}.mk
-	@${MKDIR} "${OBJECTDIR}" 
-	@${RM} ${OBJECTDIR}/axiom-logo.o.d 
-	@${RM} ${OBJECTDIR}/axiom-logo.o 
-	@${FIXDEPS} "${OBJECTDIR}/axiom-logo.o.d" $(SILENT) -rsi ${MP_CC_DIR}../  -c ${MP_CC}  $(MP_EXTRA_CC_PRE)  -g -x c -c -mprocessor=$(MP_PROCESSOR_OPTION)  -MMD -MF "${OBJECTDIR}/axiom-logo.o.d" -o ${OBJECTDIR}/axiom-logo.o axiom-logo.c    -DXPRJ_default=$(CND_CONF)  -legacy-libc  $(COMPARISON_BUILD)  -O6
 	
 ${OBJECTDIR}/menu.o: menu.c  nbproject/Makefile-${CND_CONF}.mk
 	@${MKDIR} "${OBJECTDIR}" 
@@ -190,6 +328,12 @@ ${OBJECTDIR}/page.o: page.c  nbproject/Makefile-${CND_CONF}.mk
 	@${RM} ${OBJECTDIR}/page.o.d 
 	@${RM} ${OBJECTDIR}/page.o 
 	@${FIXDEPS} "${OBJECTDIR}/page.o.d" $(SILENT) -rsi ${MP_CC_DIR}../  -c ${MP_CC}  $(MP_EXTRA_CC_PRE)  -g -x c -c -mprocessor=$(MP_PROCESSOR_OPTION)  -MMD -MF "${OBJECTDIR}/page.o.d" -o ${OBJECTDIR}/page.o page.c    -DXPRJ_default=$(CND_CONF)  -legacy-libc  $(COMPARISON_BUILD)  -O6
+	
+${OBJECTDIR}/page_wb.o: page_wb.c  nbproject/Makefile-${CND_CONF}.mk
+	@${MKDIR} "${OBJECTDIR}" 
+	@${RM} ${OBJECTDIR}/page_wb.o.d 
+	@${RM} ${OBJECTDIR}/page_wb.o 
+	@${FIXDEPS} "${OBJECTDIR}/page_wb.o.d" $(SILENT) -rsi ${MP_CC_DIR}../  -c ${MP_CC}  $(MP_EXTRA_CC_PRE)  -g -x c -c -mprocessor=$(MP_PROCESSOR_OPTION)  -MMD -MF "${OBJECTDIR}/page_wb.o.d" -o ${OBJECTDIR}/page_wb.o page_wb.c    -DXPRJ_default=$(CND_CONF)  -legacy-libc  $(COMPARISON_BUILD)  -O6
 	
 endif
 

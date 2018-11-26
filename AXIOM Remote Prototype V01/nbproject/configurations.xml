@@ -19,13 +19,27 @@
     <logicalFolder name="SourceFiles"
                    displayName="Source Files"
                    projectFiles="true">
+      <logicalFolder name="f1" displayName="icons" projectFiles="true">
+        <itemPath>media/axiom-logo.c</itemPath>
+        <itemPath>media/back-icon-highlight.c</itemPath>
+        <itemPath>media/back-icon.c</itemPath>
+        <itemPath>media/down-icon-highlight.c</itemPath>
+        <itemPath>media/down-icon.c</itemPath>
+        <itemPath>media/help-icon.c</itemPath>
+        <itemPath>media/home-icon-highlight.c</itemPath>
+        <itemPath>media/home-icon.c</itemPath>
+        <itemPath>media/trash-icon.c</itemPath>
+        <itemPath>media/up-icon-highlight.c</itemPath>
+        <itemPath>media/up-icon.c</itemPath>
+        <itemPath>media/wheel-illustration.c</itemPath>
+      </logicalFolder>
       <itemPath>main.c</itemPath>
       <itemPath>glcdfont.c</itemPath>
-      <itemPath>axiom-logo.c</itemPath>
       <itemPath>menu.c</itemPath>
       <itemPath>utility.c</itemPath>
       <itemPath>draw.c</itemPath>
       <itemPath>page.c</itemPath>
+      <itemPath>page_wb.c</itemPath>
     </logicalFolder>
     <logicalFolder name="ExternalFiles"
                    displayName="Important Files"
@@ -33,6 +47,11 @@
       <itemPath>Makefile</itemPath>
     </logicalFolder>
   </logicalFolder>
+  <sourceRootList>
+    <Elem>icons</Elem>
+    <Elem>../../../.icons</Elem>
+    <Elem>media</Elem>
+  </sourceRootList>
   <projectmakefile>Makefile</projectmakefile>
   <confs>
     <conf name="default" type="2">

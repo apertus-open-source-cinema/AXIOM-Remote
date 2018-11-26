@@ -1487,11 +1487,7 @@ int main(void) {
             int8_t diff = data[0] - qe[0];
             knob_event_handler(E1_rot, diff);
 
-            if (_parameter_menu_active) {
-                _parameter_selection_index += diff;
-                _parameter_selection_index = limit_range(_parameter_selection_index, 0, get_current_item_choice_count() - 1);
-
-            } /*else {
+            /*else {
                 _menu_selection_index += diff;
                 _menu_selection_index = limit_range(_menu_selection_index, 0, get_current_menu_item_count() - 1);
             }*/

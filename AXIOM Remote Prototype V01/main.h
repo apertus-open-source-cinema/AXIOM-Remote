@@ -62,7 +62,7 @@ typedef struct {
     bool highlighted;
     bool(*action_ptr)(); //function pointer to the action when that menu entry is clicked
     char* (*current_value_ptr)(); //function pointer to return the current value
-    drop_down_choice_t choices[30];
+    drop_down_choice_t choices[5]; // array holding the discreet choices for this particular option
     uint8_t choice_count;
 } menu_item_t;
 
@@ -90,7 +90,6 @@ typedef struct {
     bool highlighted;
     enum _item_type_t item_type;
     enum _page_id_t link_to_subpage;
-    //uint8_t value;
     char value[32];
     bool(*action_ptr)(); //function pointer to the action when page item is clicked
     char* (*current_value_ptr)(); //function pointer to return the current value

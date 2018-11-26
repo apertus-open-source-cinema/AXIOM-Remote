@@ -75,8 +75,8 @@ bool menu_item_test_action() {
 }
 
  */
-char * menu_item_test_get_current_value(menu_item_t this) {
-    return this.choices[this.value].label;
+char * menu_item_test_get_current_value(uint8_t menu, uint8_t menu_selection_index) {
+    return _main_menu[menu].menu_item[menu_selection_index].choices[_main_menu[menu].menu_item[menu_selection_index].value].label;
 }
 
 void draw_menu_item(uint16_t x, uint16_t y, uint8_t menu_index, uint8_t menu_main_item_index) {
@@ -93,9 +93,12 @@ void draw_menu_item(uint16_t x, uint16_t y, uint8_t menu_index, uint8_t menu_mai
     if (_main_menu[menu_index].menu_item[menu_main_item_index].type == submenu) {
         sprintf(value, ">");
     } else {
-        sprintf(value, "%d", _main_menu[menu_index].menu_item[menu_main_item_index].value);
-        //sprintf(value, "%d", (*_main_menu[menu_index].menu_item[menu_main_item_index].current_value_ptr)(_main_menu[menu_index].menu_item[menu_main_item_index]));
-
+        if (_main_menu[menu_index].menu_item[menu_main_item_index].current_value_ptr != NULL) {
+            strcpy(value, (*_main_menu[menu_index].menu_item[menu_main_item_index].current_value_ptr)(menu_index, menu_main_item_index));
+            //sprintf(value, "%s", (*_main_menu[menu_index].menu_item[menu_main_item_index].current_value_ptr)(menu_index, menu_main_item_index));
+        } else {
+            sprintf(value, "%d", _main_menu[menu_index].menu_item[menu_main_item_index].value);
+        }
     }
 
     // is the current line highlighted and not disabled?
@@ -274,7 +277,7 @@ void init_menus() {
     _main_menu[menu_main].menu_item[j].highlighted = false;
     strcpy(_main_menu[menu_main].menu_item[j].label, "Fun");
     _main_menu[menu_main].menu_item[j].type = dropdown;
-    //_main_menu[menu_main].menu_item[j].current_value_ptr = &menu_item_test_get_current_value;
+    _main_menu[menu_main].menu_item[j].current_value_ptr = &menu_item_test_get_current_value;
     _main_menu[menu_main].menu_item[j].choices[0].value = 0;
     strcpy(_main_menu[menu_main].menu_item[j].choices[0].label, "Off");
     _main_menu[menu_main].menu_item[j].choices[1].value = 1;
@@ -287,7 +290,7 @@ void init_menus() {
     _main_menu[menu_main].menu_item[j].highlighted = false;
     strcpy(_main_menu[menu_main].menu_item[j].label, "Fun Level");
     _main_menu[menu_main].menu_item[j].type = dropdown;
-    //_main_menu[menu_main].menu_item[j].current_value_ptr = &menu_item_test_get_current_value;
+    _main_menu[menu_main].menu_item[j].current_value_ptr = &menu_item_test_get_current_value;
     _main_menu[menu_main].menu_item[j].choices[0].value = 0;
     strcpy(_main_menu[menu_main].menu_item[j].choices[0].label, "Low");
     _main_menu[menu_main].menu_item[j].choices[1].value = 1;
@@ -334,15 +337,7 @@ void init_menus() {
     j = 0;
     strcpy(_main_menu[menu_submenu1].label, "Submenu 1");
     _main_menu[menu_submenu1].menu_id = menu_submenu1;
-    _main_menu[menu_submenu1].menu_item[j].disabled = false;
-    _main_menu[menu_submenu1].menu_item[j].hidden = false;
-    _main_menu[menu_main].menu_item[j].selected = false;
-    _main_menu[menu_main].menu_item[j].highlighted = false;
-    strcpy(_main_menu[menu_submenu1].menu_item[j].label, "Back");
-    _main_menu[menu_submenu1].menu_item[j].type = submenu;
-    _main_menu[menu_submenu1].menu_item[j].link_to_submenu = menu_main;
-    //_main_menu[menu_submenu1].menu_item[j].current_value_ptr = &menu_item_test_get_current_value;
-    j++;
+
     _main_menu[menu_submenu1].menu_item[j].disabled = false;
     _main_menu[menu_submenu1].menu_item[j].hidden = false;
     _main_menu[menu_submenu1].menu_item[j].selected = false;
@@ -360,7 +355,34 @@ void init_menus() {
     //_main_menu[menu_submenu1].menu_item[j].current_value_ptr = &menu_item_test_get_current_value;
     _main_menu[menu_submenu1].menu_items_count = j + 1;
 
-    _main_menu_count = 3; // "none" menu is first so always add 1 to number of menus
+    j = 0;
+    strcpy(_main_menu[menu_submenu2].label, "Submenu 2");
+    _main_menu[menu_submenu2].menu_id = menu_submenu2;
+
+    _main_menu[menu_submenu2].menu_item[j].disabled = false;
+    _main_menu[menu_submenu2].menu_item[j].hidden = false;
+    _main_menu[menu_submenu2].menu_item[j].selected = false;
+    _main_menu[menu_submenu2].menu_item[j].highlighted = false;
+    strcpy(_main_menu[menu_submenu2].menu_item[j].label, "Submenu 2 Item 1");
+    _main_menu[menu_submenu2].menu_item[j].type = readonly;
+    j++;
+    _main_menu[menu_submenu2].menu_item[j].disabled = false;
+    _main_menu[menu_submenu2].menu_item[j].hidden = false;
+    _main_menu[menu_submenu2].menu_item[j].selected = false;
+    _main_menu[menu_submenu2].menu_item[j].highlighted = false;
+    strcpy(_main_menu[menu_submenu2].menu_item[j].label, "Submenu 2 Item 2");
+    _main_menu[menu_submenu2].menu_item[j].type = readonly;
+    j++;
+    _main_menu[menu_submenu2].menu_item[j].disabled = false;
+    _main_menu[menu_submenu2].menu_item[j].hidden = false;
+    _main_menu[menu_submenu2].menu_item[j].selected = false;
+    _main_menu[menu_submenu2].menu_item[j].highlighted = false;
+    strcpy(_main_menu[menu_submenu2].menu_item[j].label, "Submenu 2 Item 3");
+    _main_menu[menu_submenu2].menu_item[j].type = readonly;
+
+    _main_menu[menu_submenu2].menu_items_count = j + 1;
+
+    _main_menu_count = 4; // "none" menu is first so always add 1 to number of menus
 
 
     //left side icons
@@ -375,7 +397,7 @@ void init_menus() {
 
     strcpy(menu_breadcrumbs, "Menu");
 
-    unselect_all_menu_items();
+    unselect_all_menu_items(_current_menu);
     _main_menu[menu_main].menu_item[_menu_selection_index].selected = true;
 }
 
@@ -435,9 +457,10 @@ void draw_parameter_menu(uint16_t x, uint16_t y, uint8_t main_menu_index, uint8_
     // handle the case that there are more parameter options than fit in the height of the LCD
 
     // draw menu borders
-    fill_rect(x, y - 31 - 2, width, height, _menu_background_color);
-    drawRect(x + 1, y - 31 + 1, width - 2, height - 2, _menu_text_color);
+    fill_rect(x, y - 28 - 2, width, height, _menu_background_color);
+    drawRect(x + 1, y - 28 + 1, width - 2, height - 2, _menu_text_color);
 
+    // draw dropdown options
     for (i = 0; i < _main_menu[main_menu_index].menu_item[main_menu_item_index].choice_count; i++) {
         char draw_label[32];
         strcpy(draw_label, _main_menu[main_menu_index].menu_item[main_menu_item_index].choices[i].label);
@@ -539,24 +562,41 @@ void draw_menu() {
     }
 }
 
-void unselect_all_menu_items() {
-    uint8_t a;
-    for (a = 0; a < _main_menu_count; a++) {
-        uint8_t b;
-        for (b = 0; b < _main_menu[a].menu_items_count; b++) {
-            _main_menu[a].menu_item[b].selected = false;
-        }
+void unselect_all_menu_items(enum _menu_id_t current_menu) {
+    uint8_t b;
+    for (b = 0; b < _main_menu[current_menu].menu_items_count; b++) {
+        _main_menu[current_menu].menu_item[b].selected = false;
     }
 }
 
-void unhighlight_all_menu_items() {
-    uint8_t a;
-    for (a = 0; a < _main_menu_count; a++) {
-        uint8_t b;
-        for (b = 0; b < _main_menu[a].menu_items_count; b++) {
-            _main_menu[a].menu_item[b].highlighted = false;
-        }
+void unhighlight_all_menu_items(enum _menu_id_t current_menu) {
+    uint8_t b;
+    for (b = 0; b < _main_menu[current_menu].menu_items_count; b++) {
+        _main_menu[current_menu].menu_item[b].highlighted = false;
     }
+
+}
+
+void navigate_to_menu(enum _menu_id_t target_menu) {
+    //navigate into submenu
+    _current_menu = target_menu;
+
+    //reset cursor to first item in list;
+    _menu_selection_index = 0;
+
+    //highlight the first item in the menu
+    unselect_all_menu_items(_current_menu);
+    _main_menu[target_menu].menu_item[_menu_selection_index].selected = true;
+
+    //update bread crumbs
+
+    if (target_menu != menu_main) {
+        strcpy(menu_breadcrumbs, "Menu > ");
+        strcat(menu_breadcrumbs, _main_menu[target_menu].label);
+    } else {
+        strcpy(menu_breadcrumbs, "Menu");
+    }
+    return;
 }
 
 void main_menu_button_release_handler(ButtonID button_index) {
@@ -565,7 +605,7 @@ void main_menu_button_release_handler(ButtonID button_index) {
 
         //go back to home page
         _current_page = page_home;
-        _current_menu = menu_none;
+        navigate_to_menu(menu_none);
 
     }
     if (button_index == P8) {
@@ -574,13 +614,13 @@ void main_menu_button_release_handler(ButtonID button_index) {
         // if we are in the main menu we go back to the home page
         if (_current_menu == menu_main) {
             _current_page = page_home;
-            _current_menu = menu_none;
+            navigate_to_menu(menu_none);
         } else { // if we are in any submenu we go back to the main menu
-            _current_menu = menu_main;
+            navigate_to_menu(menu_main);
         }
     }
     if (button_index == E1) {
-        unhighlight_all_menu_items();
+        unhighlight_all_menu_items(_current_menu);
 
         uint8_t a;
         for (a = 0; a < _main_menu_count; a++) {
@@ -594,19 +634,7 @@ void main_menu_button_release_handler(ButtonID button_index) {
                 // is the current item linking into a submenu?
                 if (_main_menu[a].menu_item[_menu_selection_index].type == submenu) {
                     // navigate into submenu
-                    _current_menu = _main_menu[a].menu_item[_menu_selection_index].link_to_submenu;
-
-                    // reset cursor to first item in list;
-                    _menu_selection_index = 0;
-
-                    //highlight the first item in the submenu
-                    unselect_all_menu_items();
-                    _main_menu[a].menu_item[_menu_selection_index].selected = true;
-
-                    //update bread crumbs
-                    strcpy(menu_breadcrumbs, "Menu > ");
-                    strcat(menu_breadcrumbs, _main_menu[a].menu_item[_menu_selection_index].label);
-                    return;
+                    navigate_to_menu(_main_menu[a].menu_item[_menu_selection_index].link_to_submenu);
                 }
 
                 // is the current item supposed to show a drop-down menu?
@@ -624,7 +652,6 @@ void main_menu_button_release_handler(ButtonID button_index) {
                     //close parameter menu
                     _parameter_menu_active = 0;
                 }
-
             }
         }
     }
@@ -638,11 +665,17 @@ void main_menu_button_press_handler(ButtonID button_index) {
         back_icon_highlighted = true;
     }
     if (button_index == E1) {
-        unhighlight_all_menu_items();
-        uint8_t a;
-        for (a = 0; a < _main_menu_count; a++) {
-            if (_main_menu[a].menu_id == _current_menu) {
-                _main_menu[a].menu_item[_menu_selection_index].highlighted = true;
+        if (_parameter_menu_active) {
+            // a parameter menu is currently active
+
+        } else {
+            // we are in a normal menu structure
+            unhighlight_all_menu_items(_current_menu);
+            uint8_t a;
+            for (a = 0; a < _main_menu_count; a++) {
+                if (_main_menu[a].menu_id == _current_menu) {
+                    _main_menu[a].menu_item[_menu_selection_index].highlighted = true;
+                }
             }
         }
     }
@@ -650,16 +683,21 @@ void main_menu_button_press_handler(ButtonID button_index) {
 
 void main_menu_knob_handler(ButtonID button_index, int8_t diff) {
     if (button_index == E1_rot) {
-        _menu_selection_index += diff;
-        _menu_selection_index = limit_range(_menu_selection_index, 0, _main_menu[menu_main].menu_items_count - 1);
+        if (_parameter_menu_active) {
+            _parameter_selection_index += diff;
+            _parameter_selection_index = limit_range(_parameter_selection_index, 0, get_current_item_choice_count() - 1);
 
-        unhighlight_all_menu_items();
-        unselect_all_menu_items();
+        } else {
+            uint8_t a;
+            for (a = 0; a < _main_menu_count; a++) {
+                if (_main_menu[a].menu_id == _current_menu) {
+                    _menu_selection_index += diff;
+                    _menu_selection_index = limit_range(_menu_selection_index, 0, _main_menu[_current_menu].menu_items_count - 1);
 
-        uint8_t a;
-        for (a = 0; a < _main_menu_count; a++) {
-            if (_main_menu[a].menu_id == _current_menu) {
-                _main_menu[a].menu_item[_menu_selection_index].selected = true;
+                    unhighlight_all_menu_items(_current_menu);
+                    unselect_all_menu_items(_current_menu);
+                    _main_menu[a].menu_item[_menu_selection_index].selected = true;
+                }
             }
         }
     }
