@@ -1187,19 +1187,7 @@ void init_lcd() {
  */
 
 void btn_E2_released() {
-    // to emulate the back button currently
-    if (_current_menu == menu_submenu1) {
-        _current_menu = menu_main;
-        _menu_selection_index = 0;
-        strcpy(menu_breadcrumbs, "Menu");
-    } else if (_current_menu == menu_submenu2) {
-        _current_menu = menu_main;
-        _menu_selection_index = 1;
-        strcpy(menu_breadcrumbs, "Menu");
-    } else if (_parameter_menu_active) {
 
-        _parameter_menu_active = 0;
-    }
 }
 
 //void draw_menu_item (uint16_t x, uint16_t y, char* label, char* value, bool selected, bool highlighted){
@@ -1214,15 +1202,12 @@ void knob_event_handler(ButtonID button_event, int8_t value) {
         wb_page_knob_handler(button_event, value);
     }
     if (_current_menu != menu_none) {
-
         main_menu_knob_handler(button_event, value);
     }
     draw_lcd();
 }
 
 void button_event_handler(ButtonID button_event, bool pressed) {
-    // TODO: handle the 3 state-events a button can be in: up, down and down and up again already
-
     if (_current_page == page_home) {
         if (pressed) {
             main_page_button_press_handler(button_event);

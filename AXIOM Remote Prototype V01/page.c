@@ -263,6 +263,21 @@ void update_pages() {
     sprintf(_main_page[page_home].page_item[5].value, "%dK", _white_balance.white_balance_options[_white_balance.white_balance_selection_index].Kelvin);
 }
 
+void navigate_to_page(enum _page_id_t target_page) {
+
+    // menu transition animation
+    if (target_page == page_home) {
+        // main menu is perceived as top/root level on the left so we need to push current menu towards right
+        start_framebuffer_transition(push_right, 60);
+    } else {
+        // sub menus are perceived as lower hierarchy right of the main menu so we need to push current menu towards left
+        start_framebuffer_transition(push_left, 60);
+    }
+
+    _current_page = target_page;
+    navigate_to_menu(menu_none);
+}
+
 void main_page_button_press_handler(ButtonID button_index) {
     if (button_index == P1) {
         _main_page[page_home].page_item[0].highlighted = true;

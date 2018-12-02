@@ -434,9 +434,16 @@ void wb_page_button_release_handler(ButtonID button_index) {
         _main_page[page_wb].page_item[4].highlighted = false;
     }
     if (button_index == P6) {
+        // turn off button highlight
         _main_page[page_wb].page_item[5].highlighted = false;
+
+        // set the highlighted white balance
         _white_balance.white_balance_selection_index = _wb_menu_highlight_index;
+
+        // update the new white balance value on the home page
         update_pages();
+
+        // navigate to home page
         _current_page = page_home;
     }
     if (button_index == P7) {

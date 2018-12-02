@@ -47,8 +47,13 @@ enum _menu_id_t {
 };
 enum _menu_id_t _current_menu;
 
+enum _page_id_t {
+    page_none, page_home, page_wb
+};
+enum _page_id_t _current_page;
+
 typedef enum {
-    submenu, readonly, numeric, dropdown
+    submenu, pagelink, backlink, readonly, numeric, dropdown
 } menu_item_type_t;
 
 typedef struct {
@@ -56,6 +61,7 @@ typedef struct {
     bool disabled;
     bool hidden;
     enum _menu_id_t link_to_submenu;
+    enum _page_id_t link_to_page;
     menu_item_type_t type;
     uint8_t value;
     bool selected;
@@ -71,14 +77,10 @@ typedef struct {
     enum _menu_id_t menu_id;
     menu_item_t menu_item[32];
     uint8_t menu_items_count;
+    uint8_t menu_selection_index;
 } menu_t;
 
 extern uint8_t _main_menu_count;
-
-enum _page_id_t {
-    page_none, page_home, page_wb
-};
-enum _page_id_t _current_page;
 
 enum _item_type_t {
     value_and_label, button
