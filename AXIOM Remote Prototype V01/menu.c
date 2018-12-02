@@ -634,6 +634,10 @@ void navigate_to_menu(enum _menu_id_t target_menu) {
     } else {
         strcpy(menu_breadcrumbs, "Menu");
     }
+
+    if (_current_page != page_none) {
+        _current_page = page_none;
+    }
 }
 
 void main_menu_button_release_handler(ButtonID button_index) {

@@ -428,7 +428,8 @@ void wb_page_button_release_handler(ButtonID button_index) {
     }
     if (button_index == P4) {
         _main_page[page_wb].page_item[3].highlighted = false;
-        _current_page = page_home;
+
+        navigate_to_page(page_home, push_down);
     }
     if (button_index == P5) {
         _main_page[page_wb].page_item[4].highlighted = false;
@@ -444,15 +445,19 @@ void wb_page_button_release_handler(ButtonID button_index) {
         update_pages();
 
         // navigate to home page
-        _current_page = page_home;
+        navigate_to_page(page_home, push_down);
     }
     if (button_index == P7) {
-        _current_page = page_home;
+
         _main_page[page_wb].page_item[6].highlighted = false;
+
+        navigate_to_page(page_home, push_down);
     }
     if (button_index == P8) {
-        _current_page = page_home;
+
         _main_page[page_wb].page_item[7].highlighted = false;
+
+        navigate_to_page(page_home, push_down);
     }
     if (button_index == P9) {
         _main_page[page_wb].page_item[8].highlighted = false;
@@ -472,10 +477,10 @@ void wb_page_button_release_handler(ButtonID button_index) {
         _main_page[page_wb].page_item[11].highlighted = false;
     }
     if (button_index == E1) {
-
         _white_balance.white_balance_selection_index = _wb_menu_highlight_index;
+
         update_pages();
-        _current_page = page_home;
+        navigate_to_page(page_home, push_down);
     }
 }
 

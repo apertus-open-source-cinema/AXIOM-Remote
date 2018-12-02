@@ -263,19 +263,15 @@ void update_pages() {
     sprintf(_main_page[page_home].page_item[5].value, "%dK", _white_balance.white_balance_options[_white_balance.white_balance_selection_index].Kelvin);
 }
 
-void navigate_to_page(enum _page_id_t target_page) {
-
-    // menu transition animation
-    if (target_page == page_home) {
-        // main menu is perceived as top/root level on the left so we need to push current menu towards right
-        start_framebuffer_transition(push_right, 60);
-    } else {
-        // sub menus are perceived as lower hierarchy right of the main menu so we need to push current menu towards left
-        start_framebuffer_transition(push_left, 60);
-    }
+void navigate_to_page(enum _page_id_t target_page, enum transition_animation animation) {
+    // transition animation
+    start_framebuffer_transition(animation, 60);
 
     _current_page = target_page;
-    navigate_to_menu(menu_none);
+    
+    if (_current_menu != menu_none) {
+        navigate_to_menu(menu_none);
+    }
 }
 
 void main_page_button_press_handler(ButtonID button_index) {
@@ -310,18 +306,17 @@ void main_page_button_release_handler(ButtonID button_index) {
         _main_page[page_home].page_item[2].highlighted = false;
     }
     if (button_index == P4) {
-        _current_page = page_none;
-        //_current_menu = menu_main;
-        navigate_to_menu(menu_main);
         _main_page[page_home].page_item[3].highlighted = false;
+
+        navigate_to_menu(menu_main);
     }
     if (button_index == P5) {
         _main_page[page_home].page_item[4].highlighted = false;
     }
     if (button_index == P6) {
         _main_page[page_home].page_item[5].highlighted = false;
-        _current_page = _main_page[page_home].page_item[5].link_to_subpage;
-        _current_menu = menu_none;
+
+        navigate_to_page(_main_page[page_home].page_item[5].link_to_subpage, push_up);
     }
 }
 

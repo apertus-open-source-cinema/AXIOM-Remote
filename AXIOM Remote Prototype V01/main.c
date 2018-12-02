@@ -751,6 +751,33 @@ void displayFramebuffer() {
                 }
             }
         }
+        if (_transition_animation_type == push_up) {
+
+            uint16_t offset = (float) (_transition_counter) / (float) (255) * _height;
+
+            for (x = 0; x < _width; x++) {
+                for (y = 0; y < _height; y++) {
+                    if (y <= offset) {
+                        lcd_pmp_wr(_transition_framebuffer[x][y + (_height - offset)]);
+                    } else {
+                        lcd_pmp_wr(_framebuffer[x][y - offset]);
+                    }
+                }
+            }
+        }
+        if (_transition_animation_type == push_down) {
+            uint16_t offset = fabs(((float) (_transition_counter) / (float) (255) - 1) * _height);
+
+            for (x = 0; x < _width; x++) {
+                for (y = 0; y < _height; y++) {
+                    if (y > offset) {
+                        lcd_pmp_wr(_transition_framebuffer[x][y - offset]);
+                    } else {
+                        lcd_pmp_wr(_framebuffer[x][y + (_height - offset)]);
+                    }
+                }
+            }
+        }
 
         _transition_counter -= _transition_animation_speed;
     } else {
@@ -1202,6 +1229,7 @@ void knob_event_handler(ButtonID button_event, int8_t value) {
         wb_page_knob_handler(button_event, value);
     }
     if (_current_menu != menu_none) {
+
         main_menu_knob_handler(button_event, value);
     }
     draw_lcd();
