@@ -268,9 +268,9 @@ void navigate_to_page(enum _page_id_t target_page, enum transition_animation ani
     start_framebuffer_transition(animation, 60);
 
     _current_page = target_page;
-    
+
     if (_current_menu != menu_none) {
-        navigate_to_menu(menu_none);
+        _current_menu = menu_none; //navigate_to_menu(menu_none);
     }
 }
 
