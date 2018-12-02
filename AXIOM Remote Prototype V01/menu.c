@@ -578,8 +578,18 @@ void unhighlight_all_menu_items(enum _menu_id_t current_menu) {
 }
 
 void navigate_to_menu(enum _menu_id_t target_menu) {
+    //start_framebuffer_transition(push_right, 60);
+
+    if (target_menu == menu_main) {
+        // main menu is perceived as top/root level on the left so we need to push towards right
+        start_framebuffer_transition(push_right, 60);
+    } else {
+        // sub menus are perceived as lower hierarchy right of the main menu so we need to push towards left
+        start_framebuffer_transition(push_left, 60);
+    }
     //navigate into submenu
     _current_menu = target_menu;
+
 
     //reset cursor to first item in list;
     _menu_selection_index = 0;
@@ -596,6 +606,7 @@ void navigate_to_menu(enum _menu_id_t target_menu) {
     } else {
         strcpy(menu_breadcrumbs, "Menu");
     }
+
     return;
 }
 

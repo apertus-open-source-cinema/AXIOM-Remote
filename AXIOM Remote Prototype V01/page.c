@@ -252,6 +252,11 @@ void init_pages() {
 
     //_current_page = page_home;
     _page_count = 2;
+
+
+    _transition_active = false;
+    _transition_counter = 0;
+    _transition_animation_type = push_left;
 }
 
 void update_pages() {

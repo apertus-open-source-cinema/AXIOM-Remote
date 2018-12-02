@@ -633,12 +633,22 @@ void draw_lcd() {
     }
 }
 
-void clearFramebuffer(uint16_t color) {
+void clear_framebuffer(uint16_t color) {
     uint16_t x;
     uint8_t y;
     for (x = 0; x < _width; x++) {
         for (y = 0; y < _height; y++) {
             _framebuffer[x][y] = color;
+        }
+    }
+}
+
+void clear_transition_framebuffer(uint16_t color) {
+    uint16_t x;
+    uint8_t y;
+    for (x = 0; x < _width; x++) {
+        for (y = 0; y < _height; y++) {
+            _transition_framebuffer[x][y] = color;
         }
     }
 }
@@ -661,15 +671,113 @@ void displayFramebuffer() {
     uint16_t x;
     uint8_t y;
 
-    for (x = 0; x < _width; x++) {
-        for (y = 0; y < _height; y++) {
-            //for (y=_height; y>0; y--) { // we flip y axis so the origin in in the lower left corner
-            lcd_pmp_wr(_framebuffer[x][y]);
+    // transition animations
+    if (_transition_active) {
+        if (_transition_counter <= _transition_animation_speed - 1) {
+            _transition_active = false;
+        }
+
+        if (_transition_animation_type == wipe_right) {
+
+            float ratio = fabs(((float) (_transition_counter) / 255) - 1);
+
+            for (x = 0; x < _width; x++) {
+                float horizontal_progress = (float) (x) / (float) (_width);
+
+                if (horizontal_progress < ratio) {
+                    for (y = 0; y < _height; y++) {
+                        lcd_pmp_wr(_framebuffer[x][y]);
+                    }
+                } else {
+                    for (y = 0; y < _height; y++) {
+                        lcd_pmp_wr(_transition_framebuffer[x][y]);
+                    }
+                }
+            }
+        }
+        if (_transition_animation_type == wipe_left) {
+
+            float ratio = ((float) (_transition_counter) / 255);
+
+            for (x = 0; x < _width; x++) {
+                float horizontal_progress = (float) (x) / (float) (_width);
+
+                if (horizontal_progress > ratio) {
+                    for (y = 0; y < _height; y++) {
+                        lcd_pmp_wr(_framebuffer[x][y]);
+                    }
+                } else {
+                    for (y = 0; y < _height; y++) {
+                        lcd_pmp_wr(_transition_framebuffer[x][y]);
+                    }
+                }
+            }
+        }
+        if (_transition_animation_type == push_left) {
+
+            uint16_t offset = (float) (_transition_counter) / (float) (255) * _width;
+
+            for (x = 0; x < _width; x++) {
+                if (x <= offset) {
+                    for (y = 0; y < _height; y++) {
+                        lcd_pmp_wr(_transition_framebuffer[x + (_width - offset)][y]);
+                    }
+                } else {
+                    for (y = 0; y < _height; y++) {
+                        lcd_pmp_wr(_framebuffer[x - offset][y]);
+                    }
+                }
+            }
+        }
+        if (_transition_animation_type == push_right) {
+
+            uint16_t offset = fabs((float) (_transition_counter) / (float) (255) - 1) * _width;
+
+            for (x = 0; x < _width; x++) {
+                //uint16_t horizontal_progress = (float) (x) / (float) (_width);
+
+                if (x > offset) {
+                    //if (((x - offset) < _width) && ((x - offset) >= 0)) {
+                    for (y = 0; y < _height; y++) {
+                        lcd_pmp_wr(_transition_framebuffer[x - offset][y]);
+                    }
+                    //}
+                } else {
+                    // if ((((x + (_width - offset)) >= 0) && (x + (_width - offset)) < _width)) {
+                    for (y = 0; y < _height; y++) {
+                        lcd_pmp_wr(_framebuffer[x + (_width - offset)][y]);
+                    }
+                    //}
+                }
+            }
+        }
+
+        _transition_counter -= _transition_animation_speed;
+    } else {
+        // no transition animation
+        for (x = 0; x < _width; x++) {
+            for (y = 0; y < _height; y++) {
+                //for (y=_height; y>0; y--) { // we flip y axis so the origin in in the lower left corner
+
+                lcd_pmp_wr(_framebuffer[x][y]);
+            }
         }
     }
 }
 
+void start_framebuffer_transition(enum transition_animation transition_animation_type, uint8_t speed) {
+    //copy the current content of the framebuffer to the _transition_framebuffer - we take a snapshot so to say
+
+    memcpy(_transition_framebuffer, _framebuffer, _height * _width * sizeof (uint16_t));
+
+    _transition_active = true;
+    _transition_counter = 255;
+    _transition_animation_speed = speed;
+    _transition_animation_type = transition_animation_type;
+}
+
 void init_WB() {
+
     uart2_str0("\n\rWB Init ... ");
     uint8_t i = 0;
 
@@ -846,6 +954,7 @@ void init_lcd() {
     PMADDR = 0x0000;
 
     if (0) { // init commands from manufacturer datasheet don't seem to make any difference
+
         lcd_pmp_cmd(0x01); //software reset
         delay_ms(5);
         lcd_pmp_cmd(0x28); //display off
@@ -1000,7 +1109,10 @@ void init_lcd() {
     _FreeSans24pt7b = FreeSans24pt7b;
 
     // Clear the image
-    clearFramebuffer(ILI9341_WHITE);
+    clear_framebuffer(ILI9341_WHITE);
+
+    // Clear the transition_frame buffer
+    clear_transition_framebuffer(ILI9341_WHITE);
 }
 
 /*void btn_E1_released() {
@@ -1085,6 +1197,7 @@ void btn_E2_released() {
         _menu_selection_index = 1;
         strcpy(menu_breadcrumbs, "Menu");
     } else if (_parameter_menu_active) {
+
         _parameter_menu_active = 0;
     }
 }
@@ -1092,6 +1205,7 @@ void btn_E2_released() {
 //void draw_menu_item (uint16_t x, uint16_t y, char* label, char* value, bool selected, bool highlighted){
 
 void updateFramebuffer() {
+
     draw_lcd();
 }
 
@@ -1100,6 +1214,7 @@ void knob_event_handler(ButtonID button_event, int8_t value) {
         wb_page_knob_handler(button_event, value);
     }
     if (_current_menu != menu_none) {
+
         main_menu_knob_handler(button_event, value);
     }
     draw_lcd();
@@ -1124,6 +1239,7 @@ void button_event_handler(ButtonID button_event, bool pressed) {
         if (pressed) {
             main_menu_button_press_handler(button_event);
         } else {
+
             main_menu_button_release_handler(button_event);
         }
     }

@@ -180,4 +180,18 @@ extern GFXfont _FreeSans24pt7b;
 // the central frame buffer that is written to the LCD
 uint16_t _framebuffer[_width][_height];
 
+//second frame buffer for rendering transition effects
+uint16_t _transition_framebuffer[_width][_height];
+uint8_t _transition_counter;
+bool _transition_active;
+uint8_t _transition_animation_speed;
+
+enum transition_animation {
+    push_left, push_right, wipe_left, wipe_right
+};
+
+enum transition_animation _transition_animation_type;
+
+
+
 #endif /* MAIN_H */
