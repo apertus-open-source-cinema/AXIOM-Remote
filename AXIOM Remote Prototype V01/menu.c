@@ -441,21 +441,20 @@ void init_menus() {
  * This typically looks like a kind of drop-down menu with several options to choose from
  * 
 
-    @param    x  location (attention: lower right corner)
-    @param    y  location (attention: lower right corner)
+    @param    x  location (attention: top right corner of menu_item that triggers the parameter menu)
+    @param    y  location (attention: top right corner of menu_item that triggers the parameter menu)
     @param    items[] the struct containing the different options to display
     @param    currentvalueindex which option (index) from the struct is the current setting
  */
 
 /**************************************************************************/
-//void draw_parameter_menu(uint16_t x, uint16_t y, menu_item_t menuitem) {
-
 void draw_parameter_menu(uint16_t x, uint16_t y, uint8_t main_menu_index, uint8_t main_menu_item_index) {
-
-    //
     uint16_t yoffset_label_from_base = 5;
 
-    //uint8_t choice_number = 2;//choice_count; //getCurrentParameterItemCount(); // why doesn't this work?: sizeof (items) / sizeof (*items); //
+    //debug
+    //fill_circle(x, y, 4, 0x03ff);
+
+    // calculate the parameter menu height based on the number of choices plus a bit of border margin
     uint16_t height = 2 + 2 + _main_menu[main_menu_index].menu_item[main_menu_item_index].choice_count * 30;
 
     //calculate the maximum width of the provided text options so we can define the menu width
@@ -468,31 +467,32 @@ void draw_parameter_menu(uint16_t x, uint16_t y, uint8_t main_menu_index, uint8_
             max_width = w1;
         }
     }
-    // add 25 pixel space to the widest label
+    // add 25 pixels to the widest label as margin
     uint16_t width = max_width + 25;
 
-    // alter x now that we know the width of the menu
-    // x and y define the top right corner here
+
+    // x and y provided to draw_parameter_menu originally define the top right corner
+    // now that we know the width of the menu shift the x coordinate towards the left edge
     x -= width;
 
-    //don't draw over the LCD edge
-    int16_t edge = (y + height) - _height;
-    if ((edge < 4) && (edge > 0)) {
-        height = _height - y;
-    }
+
+    //don't draw over the LCD edge -> move the parameter menu
+    int16_t edge = (y - 29 + height) - _height + 29;
 
     //if the menu would clip entire lines in the available height just shift it up as a whole
     if (edge > 4) {
         y -= edge - 3;
-        height = _height - y;
     }
 
-    // todo
-    // handle the case that there are more parameter options than fit in the height of the LCD
+    // todo:
+    // handle the case that there are more parameter options  than fit in the height of the LCD (7)
+
+    //debug
+    //fill_circle(x, y, 4, 0xff30);
 
     // draw menu borders
-    fill_rect(x, y - 28 - 2, width, height, _menu_background_color);
-    drawRect(x + 1, y - 28 + 1, width - 2, height - 2, _menu_text_color);
+    fill_rect(x, y - 28 - 1, width, height + 1, _menu_background_color);
+    drawRect(x + 1, y - 28 + 1, width - 2, height - 3, _menu_text_color);
 
     // draw dropdown options
     for (i = 0; i < _main_menu[main_menu_index].menu_item[main_menu_item_index].choice_count; i++) {
@@ -501,23 +501,26 @@ void draw_parameter_menu(uint16_t x, uint16_t y, uint8_t main_menu_index, uint8_
 
         if (i == _parameter_selection_index) {
             if (btn_E1_pressed) {
-                fill_rect(x + 2, _height - (y + 2 + i * 30), width - 4, 29, _menu_hightlighted_item_color);
-                draw_string(x + 12, _height - (y - yoffset_label_from_base + i * 30), draw_label, _menu_selected_text_color, _menu_selected_text_color, _FreeSans9pt7b, align_left, 0);
+                //highlight
+                fill_rect(x + 2, y + height - 29 - 1 - (i + 1) * 30, width - 4, 29, _menu_hightlighted_item_color);
+                draw_string(x + 12, y + height - 29 + yoffset_label_from_base - (i + 1) * 30, draw_label, _menu_selected_text_color, _menu_selected_text_color, _FreeSans9pt7b, align_left, 0);
             } else {
-                fill_rect(x + 2, _height - (y + 2 + i * 30), width - 4, 29, _menu_selected_item_color);
-                draw_string(x + 12, _height - (y - yoffset_label_from_base + i * 30), draw_label, _menu_selected_text_color, _menu_selected_text_color, _FreeSans9pt7b, align_left, 0);
+                //selected
+                fill_rect(x + 2, y + height - 29 - 1 - (i + 1) * 30, width - 4, 29, _menu_selected_item_color);
+                draw_string(x + 12, y + height - 29 + yoffset_label_from_base - (i + 1) * 30, draw_label, _menu_selected_text_color, _menu_selected_text_color, _FreeSans9pt7b, align_left, 0);
             }
         } else {
-            fill_rect(x + 2, _height - (y + 2 + i * 30), width - 4, 29, _menu_item_color);
-            draw_string(x + 12, _height - (y - yoffset_label_from_base + i * 30), draw_label, _menu_text_color, _menu_text_color, _FreeSans9pt7b, align_left, 0);
+            //normal
+            fill_rect(x + 2, y + height - 29 - 1 - (i + 1) * 30, width - 4, 29, _menu_item_color);
+            draw_string(x + 12, y + height - 29 + yoffset_label_from_base - (i + 1) * 30, draw_label, _menu_text_color, _menu_text_color, _FreeSans9pt7b, align_left, 0);
         }
 
-        // add a circle icon at beginning of the line and label of the current setting
+        // add a circle icon at beginning of the line of the currently set option
         if (i == _main_menu[main_menu_index].menu_item[main_menu_item_index].value) {
             if (i == _parameter_selection_index) {
-                fillCircle(x + 6, _height - (y - 13 + i * 30), 3, _menu_selected_text_color);
+                fill_circle(x + 6, y + height - 29 + 6 + yoffset_label_from_base - (i + 1) * 30, 3, _menu_selected_text_color);
             } else {
-                fillCircle(x + 6, _height - (y - 13 + i * 30), 3, _menu_text_color);
+                fill_circle(x + 6, y + height - 29 + 6 + yoffset_label_from_base - (i + 1) * 30, 3, _menu_text_color);
             }
         }
     }
@@ -530,10 +533,10 @@ void draw_menu() {
     //draw header background
     fill_rect(0, _height - 28, _width, 28, _menu_item_color);
 
-    //draw header breadcrumbs 
+    //draw header bread crumbs 
     draw_string(5, _height - 22, menu_breadcrumbs, _menu_text_color, _menu_text_color, _FreeSans9pt7b, align_left, 0);
 
-    //two separation lines
+    //two header separation lines
     drawLine(0, _height - 29, _width - 1, _height - 29, _menu_selected_item_color);
     drawLine(0, _height - 30, _width - 1, _height - 30, _menu_background_color);
 
@@ -558,7 +561,7 @@ void draw_menu() {
     }
 
 
-    // Draw Menu Items
+    // draw menu items
     uint8_t a;
     for (a = 0; a < _main_menu_count; a++) {
         if (_main_menu[a].menu_id == _current_menu) {
@@ -567,28 +570,48 @@ void draw_menu() {
             // this is the index of the 7 menu items drawn on screen currently
             int8_t display_selection_index = _main_menu[a].menu_selection_index - _menu_offset;
 
-            if (display_selection_index >= 7) {
-                _menu_offset += 1;
-            }
+
+            // the _menu_offset is added to the item index and defines which item is the first one shown on screen
+
+            //scrolling up from the first item 
             if (display_selection_index < 0) {
                 _menu_offset -= 1;
             }
 
-            int menu_items_count = _main_menu[a].menu_items_count; //sizeof (menuItemLabels) / sizeof *(menuItemLabels);
+            //scrolling down from the last item
+            if (display_selection_index >= 7) {
+                _menu_offset += 1;
+            }
 
+            // only up to 7 menu items fit on screen at once
+            int menu_items_count = _main_menu[a].menu_items_count;
             menu_items_count = limit_range(menu_items_count, 0, 7);
 
+            // draw up to 7 menu items
             for (i = 0; i < menu_items_count; i++) {
                 draw_menu_item(30, (_height - 29 - 30) - i * 30, a, i + _menu_offset);
             }
+
+            // draw scroll bar indicator only if there are 7 or more menu items 
             if (menu_items_count == 7) {
                 draw_scroll_indicator(menu_items_count, _main_menu[a].menu_items_count);
             }
 
             // draw parameter menu
             if (_parameter_menu_active != 0) {
-                uint16_t offset = (_height - 31)-(_parameter_menu_active - _menu_offset)*30 - 2;
-                draw_parameter_menu(304, offset, a, _parameter_menu_active);
+                //the drawing coordinates in this case are provided as top right corner of the menu item
+                //that triggers the parameter menu
+                //the width depends on the text length of the options
+                //the y coordinate may be shifted up or down if the choices would end up off screen
+                uint16_t offset = (_top - 30)-(_parameter_menu_active - _menu_offset)*30 - 2;
+
+                if (menu_items_count == 7) {
+                    // if there is a scrollbar
+                    draw_parameter_menu(_right - 16, offset, a, _parameter_menu_active);
+                } else {
+                    //if there is no scrollbar 
+                    draw_parameter_menu(_right, offset, a, _parameter_menu_active);
+                }
             }
         }
     }
@@ -644,13 +667,17 @@ void main_menu_button_release_handler(ButtonID button_index) {
     if (button_index == P7) {
         home_icon_highlighted = false;
 
+        _parameter_menu_active = false;
+
         //go back to home page
         navigate_to_page(page_home, push_left);
     }
     if (button_index == P8) {
         back_icon_highlighted = false;
-
-        if (_current_menu == menu_main) {
+        if (_parameter_menu_active) {
+            // if a parameter menu is shown close it
+            _parameter_menu_active = false;
+        } else if (_current_menu == menu_main) {
             // if we are in the main menu back means we go to the home page
             navigate_to_page(page_home, push_left);
         } else {

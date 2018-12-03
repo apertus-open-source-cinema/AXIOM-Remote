@@ -296,7 +296,7 @@ void fillCircleHelper(int16_t x0, int16_t y0, int16_t r, uint8_t cornername, int
  */
 
 /**************************************************************************/
-void fillCircle(int16_t x0, int16_t y0, int16_t r, uint16_t color) {
+void fill_circle(int16_t x0, int16_t y0, int16_t r, uint16_t color) {
     drawFastVLine(x0, y0 - r, 2 * r + 1, color);
     fillCircleHelper(x0, y0, r, 3, 0, color);
 }
