@@ -48,7 +48,7 @@ enum _menu_id_t {
 enum _menu_id_t _current_menu;
 
 enum _page_id_t {
-    page_none, page_home, page_wb
+    page_none, page_home, page_wb, page_wb_help
 };
 enum _page_id_t _current_page;
 

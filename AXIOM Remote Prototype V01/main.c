@@ -630,6 +630,8 @@ void draw_lcd() {
         draw_page();
     } else if (_current_page == page_wb) {
         draw_wb_page();
+    } else if (_current_page == page_wb_help) {
+        draw_wb_help_page();
     }
 }
 
@@ -1228,8 +1230,10 @@ void knob_event_handler(ButtonID button_event, int8_t value) {
     if (_current_page == page_wb) {
         wb_page_knob_handler(button_event, value);
     }
+    if (_current_page == page_wb_help) {
+        wb_help_page_knob_handler(button_event, value);
+    }
     if (_current_menu != menu_none) {
-
         main_menu_knob_handler(button_event, value);
     }
     draw_lcd();
@@ -1247,6 +1251,12 @@ void button_event_handler(ButtonID button_event, bool pressed) {
             wb_page_button_press_handler(button_event);
         } else {
             wb_page_button_release_handler(button_event);
+        }
+    } else if (_current_page == page_wb_help) {
+        if (pressed) {
+            wb_help_page_button_press_handler(button_event);
+        } else {
+            wb_help_page_button_release_handler(button_event);
         }
     } else if (_current_menu != menu_none) {
         if (pressed) {
@@ -1301,6 +1311,7 @@ int main(void) {
 
     //subpages
     init_wb_page();
+    init_wb_help_page();
 
     // start navigation
     _current_menu = menu_none;

@@ -96,7 +96,7 @@ void draw_wb_page_item(uint8_t screen_index) {
         y = 0;
     }
 
-    // handle item hightlighting
+    // handle item highlighting
     uint16_t page_item_label_color;
     uint16_t page_item_label_background_color;
     uint16_t page_item_value_background_color;
@@ -245,7 +245,7 @@ void draw_wb_option_item(uint16_t x, uint16_t y, uint8_t option_item_index, bool
 }
 /**************************************************************************/
 /*!
-    @brief    draw one page with its 6 page_items
+    @brief    draw the page
  */
 
 /**************************************************************************/
@@ -272,8 +272,8 @@ void draw_wb_page() {
     draw_string(5, _height - 30, _main_page[page_wb].label, _page_item_label_color, _page_item_label_color,
             _FreeSans18pt7b, align_left, 0);
 
-    //two separation lines
-    drawLine(0, _height - 34, _right, _top - 34, _page_item_highlight_color);
+    // separation line
+    draw_line(0, _height - 34, _right, _top - 34, _page_item_highlight_color);
 
 
 
@@ -470,6 +470,7 @@ void wb_page_button_release_handler(ButtonID button_index) {
     if (button_index == P11) {
         _main_page[page_wb].page_item[10].highlighted = false;
 
+        navigate_to_page(page_wb_help, push_left);
     }
     if (button_index == P12) {
         _wb_menu_highlight_index++;

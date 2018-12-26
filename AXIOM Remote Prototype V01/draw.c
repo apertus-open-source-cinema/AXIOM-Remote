@@ -52,7 +52,7 @@ void draw_pixel(int16_t x, int16_t y, uint16_t color) {
  */
 
 /**************************************************************************/
-void drawLine(int16_t x0, int16_t y0, int16_t x1, int16_t y1, uint16_t color) {
+void draw_line(int16_t x0, int16_t y0, int16_t x1, int16_t y1, uint16_t color) {
     int16_t steep = abs(y1 - y0) > abs(x1 - x0);
     if (steep) {
         _swap_int16_t(x0, y0);
@@ -102,7 +102,7 @@ void drawLine(int16_t x0, int16_t y0, int16_t x1, int16_t y1, uint16_t color) {
 
 /**************************************************************************/
 void drawFastVLine(int16_t x, int16_t y, int16_t h, uint16_t color) {
-    drawLine(x, y, x, (int16_t) y + h - 1, color);
+    draw_line(x, y, x, (int16_t) y + h - 1, color);
 }
 
 /**************************************************************************/
@@ -154,7 +154,7 @@ void fill_rect(int16_t x, int16_t y, int16_t w, int16_t h, uint16_t color) {
 
 /**************************************************************************/
 void drawFastHLine(int16_t x, int16_t y, int16_t w, uint16_t color) {
-    drawLine(x, y, x + w - 1, y, color);
+    draw_line(x, y, x + w - 1, y, color);
 }
 
 /**************************************************************************/
@@ -258,7 +258,7 @@ void drawCircleHelper(int16_t x0, int16_t y0, int16_t r, uint8_t cornername, uin
  */
 
 /**************************************************************************/
-void fillCircleHelper(int16_t x0, int16_t y0, int16_t r, uint8_t cornername, int16_t delta, uint16_t color) {
+void fill_circle_helper(int16_t x0, int16_t y0, int16_t r, uint8_t cornername, int16_t delta, uint16_t color) {
     int16_t f = 1 - r;
     int16_t ddF_x = 1;
     int16_t ddF_y = -2 * r;
@@ -298,7 +298,7 @@ void fillCircleHelper(int16_t x0, int16_t y0, int16_t r, uint8_t cornername, int
 /**************************************************************************/
 void fill_circle(int16_t x0, int16_t y0, int16_t r, uint16_t color) {
     drawFastVLine(x0, y0 - r, 2 * r + 1, color);
-    fillCircleHelper(x0, y0, r, 3, 0, color);
+    fill_circle_helper(x0, y0, r, 3, 0, color);
 }
 
 /**************************************************************************/
@@ -312,7 +312,7 @@ void fill_circle(int16_t x0, int16_t y0, int16_t r, uint16_t color) {
  */
 
 /**************************************************************************/
-void drawRect(int16_t x, int16_t y, int16_t w, int16_t h, uint16_t color) {
+void draw_rect(int16_t x, int16_t y, int16_t w, int16_t h, uint16_t color) {
     drawFastHLine(x, y, w, color);
     drawFastHLine(x, y + h - 1, w, color);
     drawFastVLine(x, y, h, color);
@@ -331,7 +331,7 @@ void drawRect(int16_t x, int16_t y, int16_t w, int16_t h, uint16_t color) {
  */
 
 /**************************************************************************/
-void drawRoundRect(int16_t x, int16_t y, int16_t w, int16_t h, int16_t r, uint16_t color) {
+void draw_round_rect(int16_t x, int16_t y, int16_t w, int16_t h, int16_t r, uint16_t color) {
     drawFastHLine(x + r, y, w - 2 * r, color); // Top
     drawFastHLine(x + r, y + h - 1, w - 2 * r, color); // Bottom
     drawFastVLine(x, y + r, h - 2 * r, color); // Left
@@ -360,8 +360,8 @@ void fill_round_rect(int16_t x, int16_t y, int16_t w, int16_t h, int16_t r, uint
     fill_rect(x + r, y, w - 2 * r, h, color);
 
     // draw four corners
-    fillCircleHelper(x + w - r - 1, y + r, r, 1, h - 2 * r - 1, color);
-    fillCircleHelper(x + r, y + r, r, 2, h - 2 * r - 1, color);
+    fill_circle_helper(x + w - r - 1, y + r, r, 1, h - 2 * r - 1, color);
+    fill_circle_helper(x + r, y + r, r, 2, h - 2 * r - 1, color);
 }
 
 /**************************************************************************/
@@ -609,9 +609,8 @@ uint16_t get_string_width(const char* str, GFXfont gfxFont) {
                 xo1 = xo;
                 first_letter = false;
             }
-
-            *str++;
         }
+        *str++;
     }
 
     // remove the gap after the last letter
@@ -663,6 +662,12 @@ void draw_string(int16_t x, int16_t y, char* text, uint16_t color, uint16_t bg, 
     uint8_t first = pgm_read_byte(&gfxFont.first);
     uint8_t last = pgm_read_byte(&gfxFont.last);
     uint8_t length = strlen(text);
+    bool newline = false;
+
+    /*char debug[32];
+    sprintf(debug, "length = %d", length);
+    debug_uart(text);
+    debug_uart(debug);*/
 
     _cursor_x = x;
     _cursor_y = y;
@@ -674,34 +679,92 @@ void draw_string(int16_t x, int16_t y, char* text, uint16_t color, uint16_t bg, 
         char c = text[i];
 
         if (c == 32) { // space " " character 
-            _cursor_x += 10;
-        }
+            GFXglyph *glyph = &(((GFXglyph *) pgm_read_pointer(&gfxFont.glyph))[32 - first]);
+            _cursor_x += (uint8_t) pgm_read_byte(&glyph->xAdvance);
+            newline = false;
 
-        if ((c >= first) && (c <= last)) {
+            // wrap text into new line: - check at every space character if next word will 
+            // still fit into textblockwidth if not advance to next line
+            if ((align == align_left) && (textblockwidth > 0)) {
+                uint16_t next_space = 0;
+                uint16_t j;
+
+                // find out where the next space or end of string is
+                for (j = 1; j < (length - i + 1); j++) {
+
+                    /*char debug5[32];
+                    sprintf(debug5, "text[%u + %u] = %c (%d)", i, j, text[i + j], text[i + j]);
+                    debug_uart(debug5);*/
+
+                    if ((text[i + j] == 32) || (text[i + j] == 0)) {
+                        next_space = j;
+
+
+                        /*char debug2[32];
+                        sprintf(debug2, "next_space = %u", next_space);
+                        debug_uart(debug2);*/
+
+                        break;
+                    }
+                }
+
+                //measure the width of the next word in pixels
+                uint16_t next_word_width = 0;
+                for (j = 1; j <= next_space - 1; j++) {
+                    GFXglyph *glyph = &(((GFXglyph *) pgm_read_pointer(&gfxFont.glyph))[text[i + j] - first]);
+                    next_word_width += (uint8_t) pgm_read_byte(&glyph->xAdvance);
+                }
+
+                // does the width of the next word already go outside the textblockwidth ?
+                if ((_cursor_x + next_word_width) > (x + textblockwidth)) {
+
+                    //debug
+                    draw_line(_cursor_x, _cursor_y - 3, _cursor_x + next_word_width, _cursor_y - 3, color);
+
+                    /*char debug3[32];
+                    sprintf(debug3, "next_word_width = %u", next_word_width);
+                    debug_uart(debug3);*/
+
+
+                    _cursor_x = x;
+                    _cursor_y -= gfxFont.yAdvance;
+                    newline = true;
+
+                }
+            }
+        } else
+            if (c == 10) { // "\n" (LF) line feed - new line character 
+            _cursor_x = x;
+            _cursor_y -= gfxFont.yAdvance;
+            newline = true;
+        } else if (c == 13) { // "\r" (CR) carriage return character 
+            _cursor_x = x;
+            _cursor_y -= gfxFont.yAdvance;
+            newline = true;
+        } else if ((c >= first) && (c <= last)) {
             GFXglyph *glyph = &(((GFXglyph *) pgm_read_pointer(&gfxFont.glyph))[c - first]);
             uint8_t w = pgm_read_byte(&glyph->width),
                     h = pgm_read_byte(&glyph->height);
             if ((w > 0) && (h > 0)) { // Is there an associated bitmap?
-                int16_t xo = (int8_t) pgm_read_byte(&glyph->xOffset); // sic
+                int16_t xo = (int8_t) pgm_read_byte(&glyph->xOffset);
 
-                if (i == 0) {
+                if ((i == 0) || newline) {
                     //first character doesn't need x offset
                     _cursor_x -= xo;
+                    newline = false;
                 }
 
                 if (align == align_left) {
-
                     drawChar(_cursor_x + xo, _cursor_y, c, color, bg, gfxFont);
-                    _cursor_x += (uint8_t) pgm_read_byte(&glyph->xAdvance);
                 }
                 if ((align == align_center) && (textblockwidth > 0)) {
                     drawChar(_cursor_x + xo - text_width / 2 + textblockwidth / 2, _cursor_y, c, color, bg, gfxFont);
-                    _cursor_x += (uint8_t) pgm_read_byte(&glyph->xAdvance);
                 }
                 if ((align == align_right) && (textblockwidth > 0)) {
                     drawChar(_cursor_x + xo + textblockwidth - text_width, _cursor_y, c, color, bg, gfxFont);
-                    _cursor_x += (uint8_t) pgm_read_byte(&glyph->xAdvance);
                 }
+
+                _cursor_x += (uint8_t) pgm_read_byte(&glyph->xAdvance);
             }
         }
     }
@@ -718,5 +781,10 @@ void draw_string(int16_t x, int16_t y, char* text, uint16_t color, uint16_t bg, 
         cursor_x += size * 6;          // Advance x one char
     }*/
 }
+
+/*void draw_text(int16_t x, int16_t y, char* text, uint16_t color, uint16_t bg, GFXfont gfxFont, textAlign align, uint16_t textblockwidth, uint16_t textblockheight) {
+
+}*/
+
 
 #endif /* DRAW_C */

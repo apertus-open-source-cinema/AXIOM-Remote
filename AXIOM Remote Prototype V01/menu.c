@@ -492,7 +492,7 @@ void draw_parameter_menu(uint16_t x, uint16_t y, uint8_t main_menu_index, uint8_
 
     // draw menu borders
     fill_rect(x, y - 28 - 1, width, height + 1, _menu_background_color);
-    drawRect(x + 1, y - 28 + 1, width - 2, height - 3, _menu_text_color);
+    draw_rect(x + 1, y - 28 + 1, width - 2, height - 3, _menu_text_color);
 
     // draw dropdown options
     for (i = 0; i < _main_menu[main_menu_index].menu_item[main_menu_item_index].choice_count; i++) {
@@ -537,8 +537,8 @@ void draw_menu() {
     draw_string(5, _height - 22, menu_breadcrumbs, _menu_text_color, _menu_text_color, _FreeSans9pt7b, align_left, 0);
 
     //two header separation lines
-    drawLine(0, _height - 29, _width - 1, _height - 29, _menu_selected_item_color);
-    drawLine(0, _height - 30, _width - 1, _height - 30, _menu_background_color);
+    draw_line(0, _height - 29, _width - 1, _height - 29, _menu_selected_item_color);
+    draw_line(0, _height - 30, _width - 1, _height - 30, _menu_background_color);
 
 
     //Side Icons
