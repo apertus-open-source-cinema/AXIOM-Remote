@@ -6,26 +6,72 @@
  * code partly based on Adafruit ILI9341 TFT Displays written by Limor "ladyada" Fried for Adafruit Industries.
  **
  **	This program is free software; you can redistribute it and/or modify
- **    	it under the terms of the GNU General Public License 2 as published 
+ ** it under the terms of the GNU General Public License 2 as published 
  **	by the Free Software Foundation.
  **
  **	Compile with -O6 for best experience
  */
 
+#ifndef MAIN_C
+#define MAIN_C
+
 #include <xc.h>
 #include <stdint.h>
 #include <stdbool.h>
-#include "glcdfont.c"
-#include "gfxfont.h"
 #include <string.h>
 #include <stdio.h>
+#include "definitions.h"
+#include "glcdfont.c"
+#include "gfxfont.h"
 #include "main.h"
 #include "FreeSans9pt7b.h"
-#include "axiom-logo.c"
-#include "definitions.h"
+#include "FreeSans12pt7b.h"
+#include "FreeSans18pt7b.h"
+#include "FreeSans24pt7b.h"
+//#include "axiom-logo.c"
+//#include "home-icon.c"
 #include "utility.c"
 #include "draw.c"
 #include "menu.c"
+
+
+#define DEBUGBUTTONS TRUE
+
+
+// DEVCFG0
+#pragma config BOOTISA = MIPS32
+#pragma config ICESEL = ICS_PGx1
+#pragma config FECCCON = OFF_UNLOCKED
+#pragma config FSLEEP = 0
+
+// DEVCFG1
+#pragma	config FDMTEN = OFF
+#pragma	config FWDTEN = OFF
+#pragma config POSCMOD = OFF
+#pragma config OSCIOFNC = ON
+#pragma config FSOSCEN = OFF
+#pragma config FNOSC = SPLL
+#pragma config FCKSM = CSECMD
+
+// DEVCFG2
+#pragma config FPLLICLK = PLL_FRC
+#pragma config FPLLIDIV = DIV_2
+#pragma config FPLLRNG = RANGE_5_10_MHZ
+#pragma config FPLLMULT = MUL_100
+#pragma config FPLLODIV = DIV_4
+#pragma config UPLLEN = OFF
+#pragma config UPLLFSEL = FREQ_24MHZ
+
+// DEVCFG3
+#pragma config USERID = 0xC0DE
+#pragma config FMIIEN = OFF
+#pragma config PGL1WAY = OFF
+#pragma config PMDL1WAY = OFF
+#pragma config IOL1WAY = OFF
+#pragma config FUSBIDIO = OFF
+
+// DEVCP0
+#pragma config CP = OFF
 
 
 // LCD text drawing cursor
@@ -34,11 +80,28 @@ uint16_t _cursor_y = 0;
 
 
 // LCD text drawing font
-GFXfont gfxFont;
+//GFXfont gfxFont;
+GFXfont _FreeSans9pt7b;
+GFXfont _FreeSans12pt7b;
+GFXfont _FreeSans18pt7b;
+GFXfont _FreeSans24pt7b;
+
 
 // AXIOM Remote buttons and knobs
 bool btn_E1_pressed = false;
 bool btn_E2_pressed = false;
+bool btn_P1_pressed = false;
+bool btn_P2_pressed = false;
+bool btn_P3_pressed = false;
+bool btn_P4_pressed = false;
+bool btn_P5_pressed = false;
+bool btn_P6_pressed = false;
+bool btn_P7_pressed = false;
+bool btn_P8_pressed = false;
+bool btn_P9_pressed = false;
+bool btn_P10_pressed = false;
+bool btn_P11_pressed = false;
+bool btn_P12_pressed = false;
 bool btn_S1_pos = false;
 bool btn_TS1_pos = false;
 bool btn_TS2_pos = false;
@@ -46,51 +109,11 @@ uint8_t E1_pos = 0;
 uint8_t E2_pos = 0;
 
 
-// the central frame buffer that is written to the LCD
-uint16_t _framebuffer[_width][_height];
+// Page related stuff
+//_page_id_t _current_page;
+page_t _main_page[3];
 
-
-// Menu related stuff
-uint8_t _menu_selection_index = 0; // index of the currently selected item in the menu
-
-
-//char menuItemLabels[10][20]; //Main Menu
-//char menuItemValuesText[10][10];
-//uint8_t menuItemValues[10];
-
-uint8_t _menu_offset = 0; // when scrolling the menu this is the offset for the items
-
-uint8_t _parameter_menu_active; // is a parameter menu currently visible (0 = no)
-uint8_t _parameter_selection_index; // index of the item currently selected in a parameter menu
-
-
-drop_down_choice_t mainMenuItem2Choices[2];
-drop_down_choice_t mainMenuItem3Choices[4];
-//uint8_t mainMenuItem2;
-//uint8_t mainMenuItem3;
-
-menu_item_t _menu_main_item[10];
-
-menu_item_t _menu_sub1_item[3];
-menu_item_t _menu_sub2_item[5];
-
-char menu_breadcrumbs[64];
-/*
-char submenu1_item_labels[5][20];
-char submenu2_item_labels[4][20];
-char submenu3_item_labels[3][20];
- */
-
-// Color Definitions
-uint16_t menu_item_color;
-uint16_t menu_dimmed_item_color;
-uint16_t _menu_disabled_item_color;
-uint16_t menu_selected_item_color;
-uint16_t _menu_hightlighted_item_color;
-uint16_t menu_background_color;
-uint16_t menu_text_color;
-uint16_t _menu_disabled_text_color;
-uint16_t _menu_selected_text_color;
+uint8_t _page_count;
 
 static inline
 void unlock(void) {
@@ -390,6 +413,14 @@ void uart2_str0(const char *str) {
         uart2_ch(*str++);
 }
 
+void debug_uart(char *str) {
+    while (*str) {
+        uart2_ch(*str++);
+    }
+    uart2_str0("\n");
+    uart2_str0("\r");
+}
+
 static inline
 void delay_us(unsigned cnt) {
     while (cnt--) {
@@ -399,14 +430,19 @@ void delay_us(unsigned cnt) {
     }
 }
 
-void __attribute__((vector(_UART2_RX_VECTOR), interrupt(IPL7SRS), nomips16)) uart2_isr(void) {
-    while (U2STAbits.URXDA) { // process buffer 
+void __attribute__((vector(_UART2_RX_VECTOR), interrupt(IPL7SRS), nomips16)) uart2_rx_isr(void) {
+    /*while (U2STAbits.URXDA) { // process buffer 
         char ch = U2RXREG;
 
         uart2_ch(ch); // echo back
-    }
+    }*/
 
     IFS4CLR = _IFS4_U2RXIF_MASK; // clear UART2 Rx IRQ
+}
+
+void __attribute__((vector(_UART2_TX_VECTOR), interrupt(IPL7SRS), nomips16)) uart2_tx_isr(void) {
+
+    IFS4CLR = _IFS4_U2TXIF_MASK; // clear UART2 TX IRQ
 }
 
 uint8_t i2c2_get(uint8_t idx) {
@@ -580,19 +616,41 @@ uint8_t read_command8(uint8_t command, uint8_t index) {
     return ret;
 }
 
-//doesnt work, extended command?
 void setLCDBacklight(uint8_t brightness) {
+    //doesnt work, extended command not supported by LCD driver?
+
     lcd_pmp_cmd(0x51);
     lcd_pmp_wr(brightness);
 }
 
+void draw_lcd() {
+    if (_current_menu != menu_none) {
+        draw_menu();
+    } else if (_current_page == page_home) {
+        draw_page();
+    } else if (_current_page == page_wb) {
+        draw_wb_page();
+    } else if (_current_page == page_wb_help) {
+        draw_wb_help_page();
+    }
+}
 
-void clearFramebuffer(uint16_t color) {
+void clear_framebuffer(uint16_t color) {
     uint16_t x;
     uint8_t y;
     for (x = 0; x < _width; x++) {
         for (y = 0; y < _height; y++) {
             _framebuffer[x][y] = color;
+        }
+    }
+}
+
+void clear_transition_framebuffer(uint16_t color) {
+    uint16_t x;
+    uint8_t y;
+    for (x = 0; x < _width; x++) {
+        for (y = 0; y < _height; y++) {
+            _transition_framebuffer[x][y] = color;
         }
     }
 }
@@ -615,15 +673,173 @@ void displayFramebuffer() {
     uint16_t x;
     uint8_t y;
 
-    for (x = 0; x < _width; x++) {
-        for (y = 0; y < _height; y++) {
-            //for (y=_height; y>0; y--) { // we flip y axis so the origin in in the lower left corner
-            lcd_pmp_wr(_framebuffer[x][y]);
+    // transition animations
+    if (_transition_active) {
+        if (_transition_counter <= _transition_animation_speed - 1) {
+            _transition_active = false;
+        }
+
+        if (_transition_animation_type == wipe_right) {
+
+            float ratio = fabs(((float) (_transition_counter) / 255) - 1);
+
+            for (x = 0; x < _width; x++) {
+                float horizontal_progress = (float) (x) / (float) (_width);
+
+                if (horizontal_progress < ratio) {
+                    for (y = 0; y < _height; y++) {
+                        lcd_pmp_wr(_framebuffer[x][y]);
+                    }
+                } else {
+                    for (y = 0; y < _height; y++) {
+                        lcd_pmp_wr(_transition_framebuffer[x][y]);
+                    }
+                }
+            }
+        }
+        if (_transition_animation_type == wipe_left) {
+
+            float ratio = ((float) (_transition_counter) / 255);
+
+            for (x = 0; x < _width; x++) {
+                float horizontal_progress = (float) (x) / (float) (_width);
+
+                if (horizontal_progress > ratio) {
+                    for (y = 0; y < _height; y++) {
+                        lcd_pmp_wr(_framebuffer[x][y]);
+                    }
+                } else {
+                    for (y = 0; y < _height; y++) {
+                        lcd_pmp_wr(_transition_framebuffer[x][y]);
+                    }
+                }
+            }
+        }
+        if (_transition_animation_type == push_left) {
+
+            uint16_t offset = (float) (_transition_counter) / (float) (255) * _width;
+
+            for (x = 0; x < _width; x++) {
+                if (x <= offset) {
+                    for (y = 0; y < _height; y++) {
+                        lcd_pmp_wr(_transition_framebuffer[x + (_width - offset)][y]);
+                    }
+                } else {
+                    for (y = 0; y < _height; y++) {
+                        lcd_pmp_wr(_framebuffer[x - offset][y]);
+                    }
+                }
+            }
+        }
+        if (_transition_animation_type == push_right) {
+
+            uint16_t offset = fabs((float) (_transition_counter) / (float) (255) - 1) * _width;
+
+            for (x = 0; x < _width; x++) {
+                //uint16_t horizontal_progress = (float) (x) / (float) (_width);
+
+                if (x > offset) {
+                    //if (((x - offset) < _width) && ((x - offset) >= 0)) {
+                    for (y = 0; y < _height; y++) {
+                        lcd_pmp_wr(_transition_framebuffer[x - offset][y]);
+                    }
+                    //}
+                } else {
+                    // if ((((x + (_width - offset)) >= 0) && (x + (_width - offset)) < _width)) {
+                    for (y = 0; y < _height; y++) {
+                        lcd_pmp_wr(_framebuffer[x + (_width - offset)][y]);
+                    }
+                    //}
+                }
+            }
+        }
+        if (_transition_animation_type == push_up) {
+
+            uint16_t offset = (float) (_transition_counter) / (float) (255) * _height;
+
+            for (x = 0; x < _width; x++) {
+                for (y = 0; y < _height; y++) {
+                    if (y <= offset) {
+                        lcd_pmp_wr(_transition_framebuffer[x][y + (_height - offset)]);
+                    } else {
+                        lcd_pmp_wr(_framebuffer[x][y - offset]);
+                    }
+                }
+            }
+        }
+        if (_transition_animation_type == push_down) {
+            uint16_t offset = fabs(((float) (_transition_counter) / (float) (255) - 1) * _height);
+
+            for (x = 0; x < _width; x++) {
+                for (y = 0; y < _height; y++) {
+                    if (y > offset) {
+                        lcd_pmp_wr(_transition_framebuffer[x][y - offset]);
+                    } else {
+                        lcd_pmp_wr(_framebuffer[x][y + (_height - offset)]);
+                    }
+                }
+            }
+        }
+
+        _transition_counter -= _transition_animation_speed;
+    } else {
+        // no transition animation
+        for (x = 0; x < _width; x++) {
+            for (y = 0; y < _height; y++) {
+                //for (y=_height; y>0; y--) { // we flip y axis so the origin in in the lower left corner
+
+                lcd_pmp_wr(_framebuffer[x][y]);
+            }
         }
     }
 }
 
-void lcd_init() {
+void start_framebuffer_transition(enum transition_animation transition_animation_type, uint8_t speed) {
+    //copy the current content of the framebuffer to the _transition_framebuffer - we take a snapshot so to say
+
+    memcpy(_transition_framebuffer, _framebuffer, _height * _width * sizeof (uint16_t));
+
+    _transition_active = true;
+    _transition_counter = 255;
+    _transition_animation_speed = speed;
+    _transition_animation_type = transition_animation_type;
+}
+
+void init_WB() {
+
+    uart2_str0("\n\rWB Init ... ");
+    uint8_t i = 0;
+
+    strcpy(_white_balance.white_balance_options[i].label, "Candles");
+    _white_balance.white_balance_options[i].Kelvin = 2000;
+    _white_balance.white_balance_options[i].ColorShift = 0;
+    i++;
+    strcpy(_white_balance.white_balance_options[i].label, "Tungsten");
+    _white_balance.white_balance_options[i].Kelvin = 3200;
+    _white_balance.white_balance_options[i].ColorShift = 0;
+    i++;
+    strcpy(_white_balance.white_balance_options[i].label, "Fluorescent");
+    _white_balance.white_balance_options[i].Kelvin = 4300;
+    _white_balance.white_balance_options[i].ColorShift = 0;
+    i++;
+    strcpy(_white_balance.white_balance_options[i].label, "Daylight");
+    _white_balance.white_balance_options[i].Kelvin = 5600;
+    _white_balance.white_balance_options[i].ColorShift = 0;
+    i++;
+    strcpy(_white_balance.white_balance_options[i].label, "Cloudy");
+    _white_balance.white_balance_options[i].Kelvin = 6500;
+    _white_balance.white_balance_options[i].ColorShift = 0;
+    i++;
+    strcpy(_white_balance.white_balance_options[i].label, "Shade");
+    _white_balance.white_balance_options[i].Kelvin = 7500;
+    _white_balance.white_balance_options[i].ColorShift = 0;
+
+    _white_balance.white_balance_options_count = i + 1;
+    _white_balance.white_balance_selection_index = 0;
+    uart2_str0("\n\rWB Init done ... ");
+}
+
+void init_lcd() {
     CFGEBIAbits.EBIPINEN = 0;
 
     PMCON = 0;
@@ -767,6 +983,7 @@ void lcd_init() {
     PMADDR = 0x0000;
 
     if (0) { // init commands from manufacturer datasheet don't seem to make any difference
+
         lcd_pmp_cmd(0x01); //software reset
         delay_ms(5);
         lcd_pmp_cmd(0x28); //display off
@@ -914,96 +1131,143 @@ void lcd_init() {
     lcd_pmp_wr(0x36);
     lcd_pmp_wr(0x0F);
 
-    gfxFont = FreeSans9pt7b;
+    //gfxFont = FreeSans9pt7b;
+    _FreeSans9pt7b = FreeSans9pt7b;
+    _FreeSans12pt7b = FreeSans12pt7b;
+    _FreeSans18pt7b = FreeSans18pt7b;
+    _FreeSans24pt7b = FreeSans24pt7b;
 
     // Clear the image
-    clearFramebuffer(ILI9341_WHITE);
+    clear_framebuffer(ILI9341_WHITE);
+
+    // Clear the transition_frame buffer
+    clear_transition_framebuffer(ILI9341_WHITE);
 }
 
-void btn_E1_released() {
-    // if this menu item has been disabled don't do anything
-    if (_menu_main_item[_menu_selection_index].disabled) {
-        return;
-    }
+/*void btn_E1_released() {
+    uint8_t a;
+    for (a = 0; a < _main_menu_count; a++) {
+        if (_main_menu[a].menu_id == _current_menu) {
 
-    if (_current_menu == Main) {
+            // if this menu item is disabled don't do anything
+            if (_main_menu[a].menu_item[_menu_selection_index].disabled) {
+                return;
+            }
 
-        // is the current item linking into a submenu?
-        if (_menu_main_item[_menu_selection_index].type == submenu) {
-            // navigate into submenu
-            _current_menu = _menu_main_item[_menu_selection_index].link_to_submenu;
+            // is the current item linking into a submenu?
+            if (_main_menu[a].menu_item[_menu_selection_index].type == submenu) {
+                // navigate into submenu
+                _current_menu = _main_menu[a].menu_item[_menu_selection_index].link_to_submenu;
 
-            // reset cursor to first item in list;
-            _menu_selection_index = 0;
+                // reset cursor to first item in list;
+                _menu_selection_index = 0;
 
-            //update bread crumbs
-            strcpy(menu_breadcrumbs, "Menu > ");
-            strcat(menu_breadcrumbs, _menu_main_item[_menu_selection_index].label);
-            return;
-        }
+                //update bread crumbs
+                strcpy(menu_breadcrumbs, "Menu > ");
+                strcat(menu_breadcrumbs, _main_menu[a].menu_item[_menu_selection_index].label);
+                return;
+            }
 
-        // is the current item supposed to show a drop-down menu?
-        if ((_menu_main_item[_menu_selection_index].type == dropdown) && (_parameter_menu_active == 0)) {
-            //open parameter menu
-            _parameter_menu_active = _menu_selection_index;
-            return;
-        }
+            // is the current item supposed to show a drop-down menu?
+            if ((_main_menu[a].menu_item[_menu_selection_index].type == dropdown) && (_parameter_menu_active == 0)) {
+                //open parameter menu
+                _parameter_menu_active = _menu_selection_index;
+                return;
+            }
 
-        // are we in a drop-down menu currently?
-        if ((_menu_main_item[_menu_selection_index].type == dropdown) && (_parameter_menu_active != 0)) {
-            // set new value
-            _menu_main_item[_menu_selection_index].value = _parameter_selection_index;
+            // are we in a drop-down menu currently?
+            if ((_main_menu[a].menu_item[_menu_selection_index].type == dropdown) && (_parameter_menu_active != 0)) {
+                // set new value
+                _main_menu[a].menu_item[_menu_selection_index].value = _parameter_selection_index;
 
-            //close parameter menu
-            _parameter_menu_active = 0;
-        }
-        /*
-                if ((menuSelectionIndex == 2) && (_parameter_menu_active == 0)) {
-                    _parameter_menu_active = 2;
-                } else if ((menuSelectionIndex == 2) && (_parameter_menu_active == 2)) {
-                    mainMenuItem2 = parameterSelectionIndex;
-                    _parameter_menu_active = 0;
-                }
-                if ((menuSelectionIndex == 5) && (_parameter_menu_active == 0)) {
-                    _parameter_menu_active = 5;
-                } else if ((menuSelectionIndex == 5) && (_parameter_menu_active == 5)) {
-                    mainMenuItem3 = parameterSelectionIndex;
-                    _parameter_menu_active = 0;
-                }*/
-    } else if (_current_menu == Submenu1) {
-        if (_menu_selection_index == 0) {
-            _current_menu = Main;
-            _menu_selection_index = 0;
-            strcpy(menu_breadcrumbs, "Menu");
-        }
-    } else if (_current_menu == Submenu2) {
-        if (_menu_selection_index == 0) {
-            _current_menu = Main;
-            _menu_selection_index = 1;
-            strcpy(menu_breadcrumbs, "Menu");
-        }
-    }
-}
+                //close parameter menu
+                _parameter_menu_active = 0;
+            }
+            /*
+                    if ((menuSelectionIndex == 2) && (_parameter_menu_active == 0)) {
+                        _parameter_menu_active = 2;
+                    } else if ((menuSelectionIndex == 2) && (_parameter_menu_active == 2)) {
+                        mainMenuItem2 = parameterSelectionIndex;
+                        _parameter_menu_active = 0;
+                    }
+                    if ((menuSelectionIndex == 5) && (_parameter_menu_active == 0)) {
+                        _parameter_menu_active = 5;
+                    } else if ((menuSelectionIndex == 5) && (_parameter_menu_active == 5)) {
+                        mainMenuItem3 = parameterSelectionIndex;
+                        _parameter_menu_active = 0;
+                    }*/
 
-void btn_E2_released() {
-    // to emulate the back button currently
-    if (_current_menu == Submenu1) {
+/*} else if (_current_menu == Submenu1) {
+    if (_menu_selection_index == 0) {
         _current_menu = Main;
         _menu_selection_index = 0;
         strcpy(menu_breadcrumbs, "Menu");
-    } else if (_current_menu == Submenu2) {
+    }
+} else if (_current_menu == Submenu2) {
+    if (_menu_selection_index == 0) {
         _current_menu = Main;
         _menu_selection_index = 1;
         strcpy(menu_breadcrumbs, "Menu");
-    } else if (_parameter_menu_active) {
-        _parameter_menu_active = 0;
     }
+}
+}
+}
+}
+ */
+
+void btn_E2_released() {
+
 }
 
 //void draw_menu_item (uint16_t x, uint16_t y, char* label, char* value, bool selected, bool highlighted){
 
 void updateFramebuffer() {
-    drawMenu(true);
+
+    draw_lcd();
+}
+
+void knob_event_handler(ButtonID button_event, int8_t value) {
+    if (_current_page == page_wb) {
+        wb_page_knob_handler(button_event, value);
+    }
+    if (_current_page == page_wb_help) {
+        wb_help_page_knob_handler(button_event, value);
+    }
+    if (_current_menu != menu_none) {
+        main_menu_knob_handler(button_event, value);
+    }
+    draw_lcd();
+}
+
+void button_event_handler(ButtonID button_event, bool pressed) {
+    if (_current_page == page_home) {
+        if (pressed) {
+            main_page_button_press_handler(button_event);
+        } else {
+            main_page_button_release_handler(button_event);
+        }
+    } else if (_current_page == page_wb) {
+        if (pressed) {
+            wb_page_button_press_handler(button_event);
+        } else {
+            wb_page_button_release_handler(button_event);
+        }
+    } else if (_current_page == page_wb_help) {
+        if (pressed) {
+            wb_help_page_button_press_handler(button_event);
+        } else {
+            wb_help_page_button_release_handler(button_event);
+        }
+    } else if (_current_menu != menu_none) {
+        if (pressed) {
+            main_menu_button_press_handler(button_event);
+        } else {
+
+            main_menu_button_release_handler(button_event);
+        }
+    }
+
+    draw_lcd();
 }
 
 int main(void) {
@@ -1038,9 +1302,20 @@ int main(void) {
     i2c3_setn(0x20, rgb, 4);
 
 
-    lcd_init();
+    init_lcd();
 
-    initMenu();
+    init_WB();
+
+    init_menus();
+    init_pages();
+
+    //subpages
+    init_wb_page();
+    init_wb_help_page();
+
+    // start navigation
+    _current_menu = menu_none;
+    _current_page = page_home;
 
     static uint16_t r = 0;
     static uint16_t g = 0;
@@ -1050,8 +1325,8 @@ int main(void) {
     static uint8_t data_status[16];
     static uint8_t qe[2];
 
-    drawMenu(true);
-
+    draw_lcd();
+    uart2_str0("\n\rfirst LCD draw done ... ");
 
     while (1) {
 
@@ -1065,112 +1340,278 @@ int main(void) {
          *  register 4 to 6 (i2c2_getn(0x04, data, 3) data[0], data[1], data[2]) contain the status registers of each button/knobs current state
          */
 
+
+        // each PIC8 handles a part of the buttons/switches
         i2c2_getn(0x00, data, 3);
+        i2c2_getn(0x04, data_status, 3);
+
         if (data[0] || data[1] || data[2]) {
-            //uart2_byte(data[0]);
-            //uart2_byte(data[1]);
-            //uart2_byte(data[2]);
-            //uart2_str0("-1\n\r");
+#ifdef DEBUGBUTTONS
+            uart2_str0("change: ");
+            uart2_byte(data[0]);
+            uart2_byte(data[1]);
+            uart2_byte(data[2]);
+            uart2_str0("\n\r");
+
+            uart2_str0("status: ");
+            uart2_byte(data_status[0]);
+            uart2_byte(data_status[1]);
+            uart2_byte(data_status[2]);
+            uart2_str0("\n\r");
+#endif
+
+            if (data[1] & 0x08) {
+                if (data_status[1] & 0x08) {
+                    button_event_handler(P1, false);
+                    //btn_P1_pressed = false;
+#ifdef DEBUGBUTTONS
+                    uart2_str0("P1 up\n\r");
+#endif
+                } else {
+                    button_event_handler(P1, true);
+#ifdef DEBUGBUTTONS
+                    uart2_str0("P1 down\n\r");
+#endif
+                    //btn_P1_pressed = true;
+                }
+            }
+
+            if (data[1] & 0x10) {
+                if (data_status[1] & 0x10) {
+#ifdef DEBUGBUTTONS
+                    uart2_str0("P2 up\n\r");
+#endif
+                    button_event_handler(P2, false);
+                } else {
+#ifdef DEBUGBUTTONS
+                    uart2_str0("P2 down\n\r");
+#endif
+                    button_event_handler(P2, true);
+                }
+            }
+
+            if (data[1] & 0x20) {
+                if (data_status[1] & 0x20) {
+#ifdef DEBUGBUTTONS
+                    uart2_str0("P3 up\n\r");
+#endif
+                    button_event_handler(P3, false);
+                } else {
+#ifdef DEBUGBUTTONS
+                    uart2_str0("P3 down\n\r");
+#endif
+                    button_event_handler(P3, true);
+                }
+            }
+
+            if (data[2] & 0x80) {
+                if (data_status[2] & 0x80) {
+                    button_event_handler(P4, false);
+#ifdef DEBUGBUTTONS
+                    uart2_str0("P4 up\n\r");
+#endif
+                } else {
+                    button_event_handler(P4, true);
+#ifdef DEBUGBUTTONS
+                    uart2_str0("P4 down\n\r");
+#endif
+                }
+            }
+
+            if (data[2] & 0x40) {
+                if (data_status[2] & 0x40) {
+#ifdef DEBUGBUTTONS
+                    uart2_str0("change: ");
+                    uart2_byte(data[0]);
+                    uart2_byte(data[1]);
+                    uart2_byte(data[2]);
+                    uart2_str0("\n\r");
+
+                    uart2_str0("status: ");
+                    uart2_byte(data_status[0]);
+                    uart2_byte(data_status[1]);
+                    uart2_byte(data_status[2]);
+                    uart2_str0("\n\r");
+                    uart2_str0("P5 up\n\r");
+#endif
+                    button_event_handler(P5, false);
+                } else {
+#ifdef DEBUGBUTTONS
+                    uart2_str0("P5 down\n\r");
+#endif
+                    button_event_handler(P5, true);
+                }
+            }
+
+            if (data[2] & 0x20) {
+                if (data_status[2] & 0x20) {
+#ifdef DEBUGBUTTONS
+                    uart2_str0("P6 up\n\r");
+#endif
+                    button_event_handler(P6, false);
+                } else {
+#ifdef DEBUGBUTTONS
+                    uart2_str0("P6 down\n\r");
+#endif
+                    button_event_handler(P6, true);
+                }
+            }
+
+            if (data[2] & 0x10) {
+                if (data_status[2] & 0x10) {
+#ifdef DEBUGBUTTONS
+                    uart2_str0("P7 up\n\r");
+#endif
+                    button_event_handler(P7, false);
+                } else {
+#ifdef DEBUGBUTTONS
+                    uart2_str0("P7 down\n\r");
+#endif
+                    button_event_handler(P7, true);
+                }
+            }
+
+            if (data[2] & 0x08) {
+                if (data_status[2] & 0x08) {
+#ifdef DEBUGBUTTONS
+                    uart2_str0("P8 up\n\r");
+#endif
+                    button_event_handler(P8, false);
+                } else {
+#ifdef DEBUGBUTTONS
+                    uart2_str0("P8 down\n\r");
+#endif
+                    button_event_handler(P8, true);
+                }
+            }
+
+            if (data[2] & 0x04) {
+                if (data_status[2] & 0x04) {
+#ifdef DEBUGBUTTONS
+                    uart2_str0("P9 up\n\r");
+#endif
+                    button_event_handler(P9, false);
+                } else {
+#ifdef DEBUGBUTTONS
+                    uart2_str0("P9 down\n\r");
+#endif
+                    button_event_handler(P9, true);
+                }
+            }
+
+            if (data[1] & 0x04) {
+                if (data_status[1] & 0x04) {
+#ifdef DEBUGBUTTONS
+                    uart2_str0("P10 up\n\r");
+#endif
+                    button_event_handler(P10, false);
+                } else {
+#ifdef DEBUGBUTTONS
+                    uart2_str0("P10 down\n\r");
+#endif
+                    button_event_handler(P10, true);
+                }
+            }
+
+            if (data[1] & 0x02) {
+                if (data_status[1] & 0x02) {
+#ifdef DEBUGBUTTONS
+                    uart2_str0("P11 up\n\r");
+#endif
+                    button_event_handler(P11, false);
+                } else {
+#ifdef DEBUGBUTTONS
+                    uart2_str0("P11 down\n\r");
+#endif
+                    button_event_handler(P11, true);
+                }
+            }
+
+            if (data[1] & 0x01) {
+                if (data_status[1] & 0x01) {
+#ifdef DEBUGBUTTONS
+                    uart2_str0("P12 up\n\r");
+#endif
+                    button_event_handler(P12, false);
+                } else {
+#ifdef DEBUGBUTTONS
+                    uart2_str0("P12 down\n\r");
+#endif
+                    button_event_handler(P12, true);
+                }
+            }
         }
 
+        // each PIC8 handles a part of the buttons/switches
         i2c3_getn(0x00, data, 3);
         i2c3_getn(0x04, data_status, 3);
 
         if ((data[0] & 0x3F) || data[1] || (data[2] & 0x1F)) {
-            //uart2_byte(data[0]);
-            //uart2_byte(data[1]);
-            //uart2_byte(data[2]);
+#ifdef DEBUGBUTTONS
+            uart2_str0("change: ");
+            uart2_byte(data[0]);
+            uart2_byte(data[1]);
+            uart2_byte(data[2]);
+            uart2_str0("\n\r");
 
-            //uart2_str0(" -2- ");
-
-            //uart2_byte(data_status[0]);
-            // uart2_byte(data_status[1]);
-            //uart2_byte(data_status[2]);
-
-            //uart2_str0("\n\r");
+            uart2_str0("status: ");
+            uart2_byte(data_status[0]);
+            uart2_byte(data_status[1]);
+            uart2_byte(data_status[2]);
+            uart2_str0("\n\r");
+#endif
 
             if (data[1] == 0x04) {
-                btn_TS1_pos = true;
+                //btn_TS1_pos = true;
                 //drawString(20, 200, "TS1: up  ", color565(0,0,0), color565(255,255,255), 1); 
             }
             if (data[1] == 0x08) {
-                btn_TS1_pos = false;
+                //btn_TS1_pos = false;
                 //drawString(20, 200, "TS1: down", color565(0,0,0), color565(255,255,255), 1); 
             }
             if (data[2] == 0x04) {
-                btn_TS2_pos = true;
-                lcd_pmp_wr(ILI9341_INVCTR);
-                lcd_pmp_wr(0x07);
-                drawString(20, 180, "TS2: up  ", color565(0, 0, 0), color565(255, 255, 255), 1, left, 0);
+                //btn_TS2_pos = true;
 
-                static uint32_t res = 0;
-                uart2_str0("\n\rRead Display Status ... ");
-
-                lcd_pmp_cmd(ILI9341_RDDST);
-                lcd_pmp_rd(); // previous
-                res = lcd_pmp_rd(); // 1p dummy
-                res = (res << 8) | lcd_pmp_rd(); // 2p [31:24]
-                res = (res << 8) | lcd_pmp_rd(); // 3p [23:16]
-                res = (res << 8) | lcd_pmp_rd(); // 4p [15:8]
-                res = (res << 8) | lcd_pmp_rdf(); // 5p [7:0]
-
-                uart2_long(res);
-
+                //drawString(20, 180, "TS2: up  ", color565(0, 0, 0), color565(255, 255, 255), 1, align_left, 0);
             }
             if (data[2] == 0x08) {
-                btn_TS2_pos = false;
-                //testing display invesions
-                //lcd_pmp_wr(ILI9341_INVCTR);
-                //lcd_pmp_wr(0x02);
-                drawString(20, 180, "TS2: down", color565(0, 0, 0), color565(255, 255, 255), 1, left, 0);
-
-                static uint32_t res = 0;
-                uart2_str0("\n\rRead Display Status ... ");
-
-                lcd_pmp_cmd(ILI9341_RDDST);
-                lcd_pmp_rd(); // previous
-                res = lcd_pmp_rd(); // 1p dummy
-                res = (res << 8) | lcd_pmp_rd(); // 2p [31:24]
-                res = (res << 8) | lcd_pmp_rd(); // 3p [23:16]
-                res = (res << 8) | lcd_pmp_rd(); // 4p [15:8]
-                res = (res << 8) | lcd_pmp_rdf(); // 5p [7:0]
-
-                uart2_long(res);
-
+                //btn_TS2_pos = false;
+                //drawString(20, 180, "TS2: down", color565(0, 0, 0), color565(255, 255, 255), 1, align_left, 0);
             }
             if (data_status[0] == 0xEF) {
-                btn_S1_pos = false;
+                //btn_S1_pos = false;
                 //drawString(20, 160, "S1: OFF", color565(0,0,0), color565(255,255,255), 1); 
             }
             if (data_status[0] == 0xF7) {
-                btn_S1_pos = true;
+                //btn_S1_pos = true;
                 //drawString(20, 160, "S1: ON ", color565(0,0,0), color565(255,255,255), 1); 
             }
 
-            if (data[0] == 0x20) {
-                if (!btn_E1_pressed) {
-                    //drawString(70, 120, "E1: down", color565(0,0,0), color565(255,255,255), 1); 
-                    btn_E1_pressed = true;
-                    drawMenu(false);
+            if (data[0] & 0x20) {
+                if (data_status[0] & 0x20) {
+                    button_event_handler(E1, false);
+#ifdef DEBUGBUTTONS
+                    uart2_str0("E1 up\n\r");
+#endif
                 } else {
-                    //drawString(70, 120, "E1: up  ", color565(0,0,0), color565(255,255,255), 1); 
-                    btn_E1_released();
-                    btn_E1_pressed = false;
-                    drawMenu(true);
+                    button_event_handler(E1, true);
+#ifdef DEBUGBUTTONS
+                    uart2_str0("E1 down\n\r");
+#endif
                 }
             }
-            if (data[2] == 0x10) {
-                if (!btn_E2_pressed) {
-                    //drawString(70, 140, "E2: down", color565(0,0,0), color565(255,255,255), 1); 
-                    btn_E2_pressed = true;
-                    updateFramebuffer();
+            if (data[2] & 0x10) {
+                if (data_status[2] & 0x10) {
+                    button_event_handler(E2, false);
+#ifdef DEBUGBUTTONS
+                    uart2_str0("E2 up\n\r");
+#endif
+
                 } else {
-                    //drawString(70, 140, "E2: up  ", color565(0,0,0), color565(255,255,255), 1); 
-
-                    btn_E2_released();
-                    drawMenu(true);
-
-                    btn_E2_pressed = false;
+                    button_event_handler(E2, true);
+#ifdef DEBUGBUTTONS
+                    uart2_str0("E2 down\n\r");
+#endif
                 }
             }
         }
@@ -1184,15 +1625,12 @@ int main(void) {
             //E1_pos = qe[0];
 
             int8_t diff = data[0] - qe[0];
+            knob_event_handler(E1_rot, diff);
 
-            if (_parameter_menu_active) {
-                _parameter_selection_index += diff;
-                _parameter_selection_index = LimitRange(_parameter_selection_index, 0, getCurrentParameterItemCount() - 1);
-
-            } else {
+            /*else {
                 _menu_selection_index += diff;
-                _menu_selection_index = LimitRange(_menu_selection_index, 0, get_current_menu_item_count() - 1);
-            }
+                _menu_selection_index = limit_range(_menu_selection_index, 0, get_current_menu_item_count() - 1);
+            }*/
 
             //char encoder1[30] = "000000000";
             // sprintf(encoder1, "E1 (%d): %d", diff, menuSelectionIndex);
@@ -1201,7 +1639,7 @@ int main(void) {
 
             qe[0] = data[0];
 
-            drawMenu(false);
+            //draw_lcd();
 
 
             //char encoder1[3] = "000";
@@ -1220,7 +1658,7 @@ int main(void) {
             E2_pos = qe[1];
 
             //menuItemValues[_menu_selection_index] += diff;
-            drawMenu(false);
+            draw_lcd();
 
             //char encoder1[3] = "000";
             //sprintf(encoder1, "E2: %d", qe[1]);
@@ -1302,6 +1740,8 @@ int main(void) {
 
         /* backlight on */
         LCD_BLT_O = 1;
+
+        //uart2_str0("\n\rfirst loop done ... ");
     }
 
     PMADDR = 0x8000;
@@ -1312,3 +1752,5 @@ int main(void) {
 
     return 0;
 }
+
+#endif /* MAIN_C */

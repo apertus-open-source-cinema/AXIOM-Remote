@@ -10,44 +10,8 @@
  **	Compile with -O6 for best experience
  */
 
-#ifndef DEFINITIONS
-#define DEFINITIONS
-
-	// DEVCFG0
-#pragma config BOOTISA = MIPS32
-#pragma config ICESEL = ICS_PGx1
-#pragma config FECCCON = OFF_UNLOCKED
-#pragma config FSLEEP = 0
-
-	// DEVCFG1
-#pragma	config FDMTEN = OFF
-#pragma	config FWDTEN = OFF
-#pragma config POSCMOD = OFF
-#pragma config OSCIOFNC = ON
-#pragma config FSOSCEN = OFF
-#pragma config FNOSC = SPLL
-#pragma config FCKSM = CSECMD
-
-	// DEVCFG2
-#pragma config FPLLICLK = PLL_FRC
-#pragma config FPLLIDIV = DIV_2
-#pragma config FPLLRNG = RANGE_5_10_MHZ
-#pragma config FPLLMULT = MUL_100
-#pragma config FPLLODIV = DIV_4
-#pragma config UPLLEN = OFF
-#pragma config UPLLFSEL = FREQ_24MHZ
-
-	// DEVCFG3
-#pragma config USERID = 0xC0DE
-#pragma config FMIIEN = OFF
-#pragma config PGL1WAY = OFF
-#pragma config PMDL1WAY = OFF
-#pragma config IOL1WAY = OFF
-#pragma config FUSBIDIO = OFF
-
-	// DEVCP0
-#pragma config CP = OFF
-
+#ifndef DEFINITIONS_H
+#define DEFINITIONS_H
 
 #define	MCU_16BIT
 
@@ -299,7 +263,9 @@
 
 #define _width 320
 #define _height 240
+#define _right 319
+#define _top 239
 
 #define	delay_ms(t) delay_us(1000*(t))
 
-#endif /* DEFINITIONS */
+#endif /* DEFINITIONS_H */

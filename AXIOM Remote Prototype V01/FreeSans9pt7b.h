@@ -97,6 +97,7 @@ const uint8_t FreeSans9pt7bBitmaps[] = {
   0x66, 0x67, 0x37, 0x66, 0x66, 0x66, 0xC0, 0x61, 0x24, 0x38 };
 
 const GFXglyph FreeSans9pt7bGlyphs[] = {
+//bitmapOffset width height xAdvance xOffset yOffset
   {     0,   0,   0,   5,    0,    1 },   // 0x20 ' '
   {     0,   2,  13,   6,    2,  -12 },   // 0x21 '!'
   {     4,   5,   4,   6,    1,  -12 },   // 0x22 '"'
