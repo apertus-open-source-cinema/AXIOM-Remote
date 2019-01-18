@@ -40,7 +40,12 @@ This is the most basic drawing function that puts one color pixel into the frame
 ### void draw_menu()
 in menu.c (https://github.com/apertus-open-source-cinema/AXIOM-Remote/blob/d8e71aba6b4d622804759e4bd52208523be7ca0f/AXIOM%20Remote%20Prototype%20V01/menu.c#L529)
 
-This function draws the entire menu into the framebuffer. It renders the menu header, side icons, menu items and scrollbar.
+This function draws the entire menu into the framebuffer. It renders the menu header (with breadcrumbs), side icons, menu items and scrollbar.
+
+### void draw_page()
+in page.c (https://github.com/apertus-open-source-cinema/AXIOM-Remote/blob/3906fd5cb76b287aae41864517cab496447eb3ce/AXIOM%20Remote%20Prototype%20V01/page.c#L160)
+
+Draws one page with up to 12 page_items (buttons).
 
 ## Interfacing with the East/West PIC16
 Two additional smaller PIC16 are used for handling push button, rotary encoder and LED IO.
