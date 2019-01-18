@@ -32,6 +32,11 @@ in main.c (https://github.com/apertus-open-source-cinema/AXIOM-Remote/blob/3fb50
 Transfers the content of the framebuffer (*_framebuffer[x][y]*) to the LCD - meaning a new picture is drawn/displayed.
 This function also deals with any transition animation effects (*_transition_active* & *_transition_animation_type*).
 
+### void draw_pixel(int16_t x, int16_t y, uint16_t color)
+in draw.c (https://github.com/apertus-open-source-cinema/AXIOM-Remote/blob/2ffbb82b26a225873fe662a5b175444faa97bacb/AXIOM%20Remote%20Prototype%20V01/draw.c#L34)
+
+This is the most basic drawing function that puts one color pixel into the framebuffer and is used in pretty much any other drawing function for rendering text, image or geometric shapes. This function deals with rotating the framebuffer (the LCD is meant to be used in portrait mode but we use it in landscape mode so that the origin 0,0 is in the lower left corner).
+
 ## Interfacing with the East/West PIC16
 Two additional smaller PIC16 are used for handling push button, rotary encoder and LED IO.
 
