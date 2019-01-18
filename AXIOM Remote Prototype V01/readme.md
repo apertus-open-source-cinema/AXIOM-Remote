@@ -37,6 +37,11 @@ in draw.c (https://github.com/apertus-open-source-cinema/AXIOM-Remote/blob/2ffbb
 
 This is the most basic drawing function that puts one color pixel into the framebuffer and is used in pretty much any other drawing function for rendering text, image or geometric shapes. This function deals with rotating the framebuffer (the LCD is meant to be used in portrait mode but we use it in landscape mode so that the origin 0,0 is in the lower left corner).
 
+### void draw_menu()
+in menu.c (https://github.com/apertus-open-source-cinema/AXIOM-Remote/blob/d8e71aba6b4d622804759e4bd52208523be7ca0f/AXIOM%20Remote%20Prototype%20V01/menu.c#L529)
+
+This function draws the entire menu into the framebuffer. It renders the menu header, side icons, menu items and scrollbar.
+
 ## Interfacing with the East/West PIC16
 Two additional smaller PIC16 are used for handling push button, rotary encoder and LED IO.
 
