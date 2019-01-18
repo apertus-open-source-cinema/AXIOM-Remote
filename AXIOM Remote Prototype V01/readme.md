@@ -24,6 +24,14 @@ for details see: LICENSE.txt
 * *page* -  a page refers to the display type where the 12 buttons around the TFT are utilized for navigation/operation. Each of the 6 page_items on screen is associated with one of the three buttons above or below the TFT. Pages could be seen like "desktops" on a PC with icons on them to click. (type: ```page_t```)
 * *page_item* - each item on a page can lead to another page or menu when clicked (type: ```page_item_t```)
 
+## Key functions
+
+### void displayFramebuffer()
+in main.c (https://github.com/apertus-open-source-cinema/AXIOM-Remote/blob/3fb507dd943ca3533536b8fae8b2233deeffb364/AXIOM%20Remote%20Prototype%20V01/main.c#L658)
+
+Transfers the content of the framebuffer (*_framebuffer[x][y]*) to the LCD - meaning a new picture is drawn/displayed.
+This function also deals with any transition animation effects (*_transition_active* & *_transition_animation_type*).
+
 ## Interfacing with the East/West PIC16
 Two additional smaller PIC16 are used for handling push button, rotary encoder and LED IO.
 
