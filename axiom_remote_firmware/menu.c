@@ -576,7 +576,7 @@ void draw_parameter_menu(uint16_t x, uint16_t y, uint8_t main_menu_index, uint8_
 void draw_menu() {
     //clear the screen
     fill_rect(0, 0, FRAMEBUFFER_WIDTH, FRAMEBUFFER_HEIGHT, menu_background_color);
-/*
+
     //draw header background
     fill_rect(0, FRAMEBUFFER_HEIGHT - 28, FRAMEBUFFER_WIDTH, 28, menu_item_color);
 
@@ -662,8 +662,6 @@ void draw_menu() {
             }
         }
     }
-
-    */
 }
 
 void unhighlight_all_menu_items(enum menu_id_t current_menu) {

@@ -19,7 +19,7 @@
 #define FRAMEBUFFER_WIDTH 320
 #define FRAMEBUFFER_HEIGHT 240
 
-static uint16_t framebuffer[FRAMEBUFFER_WIDTH][FRAMEBUFFER_HEIGHT];
+uint16_t framebuffer[FRAMEBUFFER_WIDTH][FRAMEBUFFER_HEIGHT];
 
 typedef enum menu_id_t 
 {

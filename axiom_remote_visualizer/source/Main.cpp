@@ -11,10 +11,10 @@ extern "C"
     #include "axiom_remote_firmware/menu.h"
     #include "axiom_remote_firmware/gfxfont.h"
 
-    #include "axiom_remote_firmware/FreeSans9pt7b.h"
-    #include "axiom_remote_firmware/FreeSans12pt7b.h"
-    #include "axiom_remote_firmware/FreeSans18pt7b.h"
-    #include "axiom_remote_firmware/FreeSans24pt7b.h"
+    #include "axiom_remote_firmware/fonts/FreeSans9pt7b.h"
+    #include "axiom_remote_firmware/fonts/FreeSans12pt7b.h"
+    #include "axiom_remote_firmware/fonts/FreeSans18pt7b.h"
+    #include "axiom_remote_firmware/fonts/FreeSans24pt7b.h"
 }
 
 void Shutdown(SDL_Window* win, SDL_Renderer* ren)
@@ -65,7 +65,7 @@ void Initialization(SDL_Window** win, SDL_Renderer** renderer)
 //    SDL_GLContext glContext = SDL_GL_CreateContext(*win);
 }
 
-uint8_t* frameBuffer = new uint8_t[FRAMEBUFFER_WIDTH * FRAMEBUFFER_HEIGHT * 3];
+static uint8_t* frameBuffer = new uint8_t[FRAMEBUFFER_WIDTH * FRAMEBUFFER_HEIGHT * 3];
 
 void RenderDisplay(uint8_t* frameBuffer, int width, int height)
 {
@@ -100,7 +100,7 @@ int main()
     _FreeSans24pt7b = FreeSans24pt7b;
 
     init_menus();
-    draw_menu();
+    //draw_menu();
 
     RenderDisplay(frameBuffer, FRAMEBUFFER_WIDTH, FRAMEBUFFER_HEIGHT);
 
