@@ -7,7 +7,7 @@ A universal remote control with rocker switches, buttons, dials and an LCD for m
 - Required packages: **CMake**, **SDL2**
 - Open terminal
 - **cd** into **/visualizer**
-- **mkdiur build**
+- **mkdir build**
 - **cd build**
 - **cmake ..**
 - **make -j4**
