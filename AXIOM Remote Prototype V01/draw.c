@@ -685,7 +685,7 @@ void draw_string(int16_t x, int16_t y, char* text, uint16_t color, uint16_t bg, 
 
             // wrap text into new line: - check at every space character if next word will 
             // still fit into textblockwidth if not advance to next line
-            if ((align == align_left) && (textblockwidth > 0)) {
+            if ((align == ALIGN_LEFT) && (textblockwidth > 0)) {
                 uint16_t next_space = 0;
                 uint16_t j;
 
@@ -754,13 +754,13 @@ void draw_string(int16_t x, int16_t y, char* text, uint16_t color, uint16_t bg, 
                     newline = false;
                 }
 
-                if (align == align_left) {
+                if (align == ALIGN_LEFT) {
                     drawChar(_cursor_x + xo, _cursor_y, c, color, bg, gfxFont);
                 }
-                if ((align == align_center) && (textblockwidth > 0)) {
+                if ((align == ALIGN_CENTER) && (textblockwidth > 0)) {
                     drawChar(_cursor_x + xo - text_width / 2 + textblockwidth / 2, _cursor_y, c, color, bg, gfxFont);
                 }
-                if ((align == align_right) && (textblockwidth > 0)) {
+                if ((align == ALIGN_RIGHT) && (textblockwidth > 0)) {
                     drawChar(_cursor_x + xo + textblockwidth - text_width, _cursor_y, c, color, bg, gfxFont);
                 }
 

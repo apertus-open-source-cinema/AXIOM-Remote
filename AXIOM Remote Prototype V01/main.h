@@ -43,24 +43,24 @@ typedef struct {
 } drop_down_choice_t;
 
 enum _menu_id_t {
-    menu_none, menu_main, menu_submenu1, menu_submenu2
+    MENU_NONE, MENU_MAIN, MENU_SUBMENU1, MENU_SUBMENU2
 };
 enum _menu_id_t _current_menu;
 
 enum _page_id_t {
-    page_none, page_home, page_wb, page_wb_help
+    PAGE_NONE, PAGE_HOME, PAGE_WB, PAGE_WB_HELP
 };
 enum _page_id_t _current_page;
 
 typedef enum {
-    submenu, pagelink, backlink, readonly, numeric, dropdown
+    SUBMENU, PAGELINK, BACKLINK, READONLY, NUMERIC, DROPDOWN
 } menu_item_type_t;
 
 typedef struct {
     char label[64];
     bool disabled;
     bool hidden;
-    enum _menu_id_t link_to_submenu;
+    enum _menu_id_t link_to_SUBMENU;
     enum _page_id_t link_to_page;
     menu_item_type_t type;
     uint8_t value;
@@ -115,11 +115,11 @@ extern page_t _main_page[3];
 extern uint8_t _page_count;
 
 typedef enum {
-    align_left, align_center, align_right
+    ALIGN_LEFT, ALIGN_CENTER, ALIGN_RIGHT
 } textAlign;
 
 typedef enum {
-    P1, P2, P3, P4, P5, P6, P7, P8, P9, P10, P11, P12, REC, PHOTO, E1, E2, S1, S2, E1_rot, E2_rot
+    P1, P2, P3, P4, P5, P6, P7, P8, P9, P10, P11, P12, REC, PHOTO, E1, E2, S1, S2, E1_ROT, E2_ROT
 } ButtonID;
 
 // AXIOM Remote buttons and knobs
@@ -153,7 +153,7 @@ white_balance _white_balance;
 //extern drop_down_choice_t mainMenuItem2Choices[2];
 //extern drop_down_choice_t mainMenuItem3Choices[4];
 
-//extern menu_item_t _menu_main_item[10];
+//extern menu_item_t _MENU_MAIN_item[10];
 
 //extern menu_item_t _menu_sub1_item[3];
 //extern menu_item_t _menu_sub2_item[5];
@@ -189,7 +189,7 @@ bool _transition_active;
 uint8_t _transition_animation_speed;
 
 enum transition_animation {
-    push_left, push_right, push_up, push_down, wipe_left, wipe_right
+    PUSH_LEFT, PUSH_RIGHT, PUSH_UP, PUSH_DOWN, WIPE_LEFT, WIPE_RIGHT
 };
 
 enum transition_animation _transition_animation_type;

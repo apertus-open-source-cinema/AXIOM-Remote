@@ -84,14 +84,14 @@ void draw_menu_item(uint16_t x, uint16_t y, uint8_t menu_index, uint8_t menu_mai
 
     char value[16];
 
-    if (_main_menu[menu_index].menu_item[menu_main_item_index].type == submenu) {
-        // submenu items are indicated by a ">" sign
+    if (_main_menu[menu_index].menu_item[menu_main_item_index].type == SUBMENU) {
+        // SUBMENU items are indicated by a ">" sign
         sprintf(value, ">");
-    } else if (_main_menu[menu_index].menu_item[menu_main_item_index].type == pagelink) {
+    } else if (_main_menu[menu_index].menu_item[menu_main_item_index].type == PAGELINK) {
         // page links have no value icon displayed 
         sprintf(value, "");
-    } else if (_main_menu[menu_index].menu_item[menu_main_item_index].type == backlink) {
-        // backlinks point to a menu higher in the menu hierarchy
+    } else if (_main_menu[menu_index].menu_item[menu_main_item_index].type == BACKLINK) {
+        // BACKLINKs point to a menu higher in the menu hierarchy
         sprintf(value, "");
     } else {
         if (_main_menu[menu_index].menu_item[menu_main_item_index].current_value_ptr != NULL) {
@@ -108,11 +108,11 @@ void draw_menu_item(uint16_t x, uint16_t y, uint8_t menu_index, uint8_t menu_mai
 
         //label
         draw_string(x + 5, y + yoffset_label_from_base, _main_menu[menu_index].menu_item[menu_main_item_index].label,
-                _menu_selected_text_color, _menu_selected_text_color, _FreeSans9pt7b, align_left, 0);
+                _menu_selected_text_color, _menu_selected_text_color, _FreeSans9pt7b, ALIGN_LEFT, 0);
 
         //value
         draw_string(x + 180, y + yoffset_label_from_base, value, _menu_selected_text_color,
-                _menu_selected_text_color, _FreeSans9pt7b, align_right, 80);
+                _menu_selected_text_color, _FreeSans9pt7b, ALIGN_RIGHT, 80);
         return;
     }
 
@@ -122,11 +122,11 @@ void draw_menu_item(uint16_t x, uint16_t y, uint8_t menu_index, uint8_t menu_mai
 
         //label
         draw_string(x + 5, y + yoffset_label_from_base, _main_menu[menu_index].menu_item[menu_main_item_index].label,
-                _menu_disabled_text_color, _menu_disabled_text_color, _FreeSans9pt7b, align_left, 0);
+                _menu_disabled_text_color, _menu_disabled_text_color, _FreeSans9pt7b, ALIGN_LEFT, 0);
 
         //value
         draw_string(x + 180, y + yoffset_label_from_base, value, _menu_disabled_text_color, _menu_disabled_text_color,
-                _FreeSans9pt7b, align_right, 80);
+                _FreeSans9pt7b, ALIGN_RIGHT, 80);
         return;
     }
 
@@ -136,11 +136,11 @@ void draw_menu_item(uint16_t x, uint16_t y, uint8_t menu_index, uint8_t menu_mai
 
         //label
         draw_string(x + 5, y + yoffset_label_from_base, _main_menu[menu_index].menu_item[menu_main_item_index].label,
-                _menu_text_color, _menu_text_color, _FreeSans9pt7b, align_left, 0);
+                _menu_text_color, _menu_text_color, _FreeSans9pt7b, ALIGN_LEFT, 0);
 
         //value
         draw_string(x + 180, y + yoffset_label_from_base, value, _menu_text_color, _menu_text_color,
-                _FreeSans9pt7b, align_right, 80);
+                _FreeSans9pt7b, ALIGN_RIGHT, 80);
         return;
     }
 
@@ -154,11 +154,11 @@ void draw_menu_item(uint16_t x, uint16_t y, uint8_t menu_index, uint8_t menu_mai
 
         //label
         draw_string(x + 5, y + yoffset_label_from_base, _main_menu[menu_index].menu_item[menu_main_item_index].label,
-                _menu_disabled_text_color, _menu_disabled_text_color, _FreeSans9pt7b, align_left, 0);
+                _menu_disabled_text_color, _menu_disabled_text_color, _FreeSans9pt7b, ALIGN_LEFT, 0);
 
         //value
         draw_string(x + 180, y + yoffset_label_from_base, value, _menu_disabled_text_color, _menu_disabled_text_color,
-                _FreeSans9pt7b, align_right, 80);
+                _FreeSans9pt7b, ALIGN_RIGHT, 80);
         return;
     }
 
@@ -168,11 +168,11 @@ void draw_menu_item(uint16_t x, uint16_t y, uint8_t menu_index, uint8_t menu_mai
 
         //label
         draw_string(x + 5, y + yoffset_label_from_base, _main_menu[menu_index].menu_item[menu_main_item_index].label,
-                _menu_disabled_text_color, _menu_disabled_text_color, _FreeSans9pt7b, align_left, 0);
+                _menu_disabled_text_color, _menu_disabled_text_color, _FreeSans9pt7b, ALIGN_LEFT, 0);
 
         //value
         draw_string(x + 180, y + yoffset_label_from_base, value, _menu_disabled_text_color, _menu_disabled_text_color,
-                _FreeSans9pt7b, align_right, 80);
+                _FreeSans9pt7b, ALIGN_RIGHT, 80);
         return;
     }
 
@@ -182,11 +182,11 @@ void draw_menu_item(uint16_t x, uint16_t y, uint8_t menu_index, uint8_t menu_mai
 
         //value
         draw_string(x + 5, y + yoffset_label_from_base, _main_menu[menu_index].menu_item[menu_main_item_index].label,
-                _menu_selected_text_color, _menu_selected_text_color, _FreeSans9pt7b, align_left, 0);
+                _menu_selected_text_color, _menu_selected_text_color, _FreeSans9pt7b, ALIGN_LEFT, 0);
 
         //label
         draw_string(x + 180, y + yoffset_label_from_base, value, _menu_selected_text_color, _menu_selected_text_color,
-                _FreeSans9pt7b, align_right, 80);
+                _FreeSans9pt7b, ALIGN_RIGHT, 80);
         return;
     }
 
@@ -195,11 +195,11 @@ void draw_menu_item(uint16_t x, uint16_t y, uint8_t menu_index, uint8_t menu_mai
 
     //label
     draw_string(x + 5, y + yoffset_label_from_base, _main_menu[menu_index].menu_item[menu_main_item_index].label,
-            _menu_text_color, _menu_text_color, _FreeSans9pt7b, align_left, 0);
+            _menu_text_color, _menu_text_color, _FreeSans9pt7b, ALIGN_LEFT, 0);
 
     //value
     draw_string(x + 180, y + yoffset_label_from_base, value, _menu_text_color, _menu_text_color,
-            _FreeSans9pt7b, align_right, 80);
+            _FreeSans9pt7b, ALIGN_RIGHT, 80);
 }
 
 void draw_scroll_indicator(uint8_t current_menu_item_screen_count, uint8_t current_menu_item_count) {
@@ -251,26 +251,26 @@ void init_menus() {
     _main_menu[menu_main].menu_item[j].selected = false;
     _main_menu[menu_main].menu_item[j].highlighted = false;
     strcpy(_main_menu[menu_main].menu_item[j].label, "Exit Menu");
-    _main_menu[menu_main].menu_item[j].type = pagelink;
-    _main_menu[menu_main].menu_item[j].link_to_page = page_home;
+    _main_menu[menu_main].menu_item[j].type = PAGELINK;
+    _main_menu[menu_main].menu_item[j].link_to_page = PAGE_HOME;
     //_main_menu[menu_main].menu_item[j].current_value_ptr = &menu_item_test_get_current_value;
     j++;
     _main_menu[menu_main].menu_item[j].disabled = false;
     _main_menu[menu_main].menu_item[j].hidden = false;
     _main_menu[menu_main].menu_item[j].selected = false;
     _main_menu[menu_main].menu_item[j].highlighted = false;
-    strcpy(_main_menu[menu_main].menu_item[j].label, "Submenu 1");
-    _main_menu[menu_main].menu_item[j].type = submenu;
-    _main_menu[menu_main].menu_item[j].link_to_submenu = menu_submenu1;
+    strcpy(_main_menu[menu_main].menu_item[j].label, "SUBMENU 1");
+    _main_menu[menu_main].menu_item[j].type = SUBMENU;
+    _main_menu[menu_main].menu_item[j].link_to_SUBMENU = MENU_SUBMENU1;
     //_main_menu[menu_main].menu_item[j].current_value_ptr = &menu_item_test_get_current_value;
     j++;
     _main_menu[menu_main].menu_item[j].disabled = false;
     _main_menu[menu_main].menu_item[j].hidden = false;
     _main_menu[menu_main].menu_item[j].selected = false;
     _main_menu[menu_main].menu_item[j].highlighted = false;
-    strcpy(_main_menu[menu_main].menu_item[j].label, "Submenu 2");
-    _main_menu[menu_main].menu_item[j].type = submenu;
-    _main_menu[menu_main].menu_item[j].link_to_submenu = menu_submenu2;
+    strcpy(_main_menu[menu_main].menu_item[j].label, "SUBMENU 2");
+    _main_menu[menu_main].menu_item[j].type = SUBMENU;
+    _main_menu[menu_main].menu_item[j].link_to_SUBMENU = MENU_SUBMENU2;
     //_main_menu[menu_main].menu_item[j].current_value_ptr = &menu_item_test_get_current_value;
     j++;
     _main_menu[menu_main].menu_item[j].disabled = true;
@@ -278,7 +278,7 @@ void init_menus() {
     _main_menu[menu_main].menu_item[j].selected = false;
     _main_menu[menu_main].menu_item[j].highlighted = false;
     strcpy(_main_menu[menu_main].menu_item[j].label, "Disabled Item");
-    _main_menu[menu_main].menu_item[j].type = submenu;
+    _main_menu[menu_main].menu_item[j].type = SUBMENU;
     //_main_menu[menu_main].menu_item[j].current_value_ptr = &menu_item_test_get_current_value;
     j++;
     _main_menu[menu_main].menu_item[j].disabled = false;
@@ -286,7 +286,7 @@ void init_menus() {
     _main_menu[menu_main].menu_item[j].selected = false;
     _main_menu[menu_main].menu_item[j].highlighted = false;
     strcpy(_main_menu[menu_main].menu_item[j].label, "Fun");
-    _main_menu[menu_main].menu_item[j].type = dropdown;
+    _main_menu[menu_main].menu_item[j].type = DROPDOWN;
     _main_menu[menu_main].menu_item[j].current_value_ptr = &menu_item_test_get_current_value;
     _main_menu[menu_main].menu_item[j].choices[0].value = 0;
     strcpy(_main_menu[menu_main].menu_item[j].choices[0].label, "Off");
@@ -299,7 +299,7 @@ void init_menus() {
     _main_menu[menu_main].menu_item[j].selected = false;
     _main_menu[menu_main].menu_item[j].highlighted = false;
     strcpy(_main_menu[menu_main].menu_item[j].label, "Fun Level");
-    _main_menu[menu_main].menu_item[j].type = dropdown;
+    _main_menu[menu_main].menu_item[j].type = DROPDOWN;
     _main_menu[menu_main].menu_item[j].current_value_ptr = &menu_item_test_get_current_value;
     _main_menu[menu_main].menu_item[j].choices[0].value = 0;
     strcpy(_main_menu[menu_main].menu_item[j].choices[0].label, "Low");
@@ -315,105 +315,105 @@ void init_menus() {
     _main_menu[menu_main].menu_item[j].hidden = false;
     _main_menu[menu_main].menu_item[j].selected = false;
     _main_menu[menu_main].menu_item[j].highlighted = false;
-    strcpy(_main_menu[menu_main].menu_item[j].label, "Readonly Item");
-    _main_menu[menu_main].menu_item[j].type = readonly;
+    strcpy(_main_menu[menu_main].menu_item[j].label, "READONLY Item");
+    _main_menu[menu_main].menu_item[j].type = READONLY;
     //_main_menu[menu_main].menu_item[j].current_value_ptr = &menu_item_test_get_current_value;
     j++;
     _main_menu[menu_main].menu_item[j].disabled = false;
     _main_menu[menu_main].menu_item[j].hidden = false;
     _main_menu[menu_main].menu_item[j].selected = false;
     _main_menu[menu_main].menu_item[j].highlighted = false;
-    strcpy(_main_menu[menu_main].menu_item[j].label, "Readonly Item");
-    _main_menu[menu_main].menu_item[j].type = readonly;
+    strcpy(_main_menu[menu_main].menu_item[j].label, "READONLY Item");
+    _main_menu[menu_main].menu_item[j].type = READONLY;
     //_main_menu[menu_main].menu_item[j].current_value_ptr = &menu_item_test_get_current_value;
     j++;
     _main_menu[menu_main].menu_item[j].disabled = false;
     _main_menu[menu_main].menu_item[j].hidden = false;
     _main_menu[menu_main].menu_item[j].selected = false;
     _main_menu[menu_main].menu_item[j].highlighted = false;
-    strcpy(_main_menu[menu_main].menu_item[j].label, "Readonly Item");
-    _main_menu[menu_main].menu_item[j].type = readonly;
+    strcpy(_main_menu[menu_main].menu_item[j].label, "READONLY Item");
+    _main_menu[menu_main].menu_item[j].type = READONLY;
     //_main_menu[menu_main].menu_item[j].current_value_ptr = &menu_item_test_get_current_value;
     j++;
     _main_menu[menu_main].menu_item[j].disabled = false;
     _main_menu[menu_main].menu_item[j].hidden = false;
     _main_menu[menu_main].menu_item[j].selected = false;
     _main_menu[menu_main].menu_item[j].highlighted = false;
-    strcpy(_main_menu[menu_main].menu_item[j].label, "Readonly Item");
-    _main_menu[menu_main].menu_item[j].type = readonly;
+    strcpy(_main_menu[menu_main].menu_item[j].label, "READONLY Item");
+    _main_menu[menu_main].menu_item[j].type = READONLY;
     //_main_menu[menu_main].menu_item[j].current_value_ptr = &menu_item_test_get_current_value;
 
     _main_menu[menu_main].menu_items_count = j + 1;
     _main_menu[menu_main].menu_selection_index = 0;
 
     j = 0;
-    strcpy(_main_menu[menu_submenu1].label, "Submenu 1");
-    _main_menu[menu_submenu1].menu_id = menu_submenu1;
+    strcpy(_main_menu[MENU_SUBMENU1].label, "SUBMENU 1");
+    _main_menu[MENU_SUBMENU1].menu_id = MENU_SUBMENU1;
 
-    _main_menu[menu_submenu1].menu_item[j].disabled = false;
-    _main_menu[menu_submenu1].menu_item[j].hidden = false;
-    _main_menu[menu_submenu1].menu_item[j].selected = false;
-    _main_menu[menu_submenu1].menu_item[j].highlighted = false;
-    strcpy(_main_menu[menu_submenu1].menu_item[j].label, "< Up");
-    _main_menu[menu_submenu1].menu_item[j].type = backlink;
-    _main_menu[menu_submenu1].menu_item[j].link_to_submenu = menu_main;
-    //_main_menu[menu_submenu1].menu_item[j].current_value_ptr = &menu_item_test_get_current_value;
+    _main_menu[MENU_SUBMENU1].menu_item[j].disabled = false;
+    _main_menu[MENU_SUBMENU1].menu_item[j].hidden = false;
+    _main_menu[MENU_SUBMENU1].menu_item[j].selected = false;
+    _main_menu[MENU_SUBMENU1].menu_item[j].highlighted = false;
+    strcpy(_main_menu[MENU_SUBMENU1].menu_item[j].label, "< Up");
+    _main_menu[MENU_SUBMENU1].menu_item[j].type = BACKLINK;
+    _main_menu[MENU_SUBMENU1].menu_item[j].link_to_SUBMENU = menu_main;
+    //_main_menu[MENU_SUBMENU1].menu_item[j].current_value_ptr = &menu_item_test_get_current_value;
     j++;
-    _main_menu[menu_submenu1].menu_item[j].disabled = false;
-    _main_menu[menu_submenu1].menu_item[j].hidden = false;
-    _main_menu[menu_submenu1].menu_item[j].selected = false;
-    _main_menu[menu_submenu1].menu_item[j].highlighted = false;
-    strcpy(_main_menu[menu_submenu1].menu_item[j].label, "Submenu 1 Item 1");
-    _main_menu[menu_submenu1].menu_item[j].type = readonly;
-    //_main_menu[menu_submenu1].menu_item[j].current_value_ptr = &menu_item_test_get_current_value;
+    _main_menu[MENU_SUBMENU1].menu_item[j].disabled = false;
+    _main_menu[MENU_SUBMENU1].menu_item[j].hidden = false;
+    _main_menu[MENU_SUBMENU1].menu_item[j].selected = false;
+    _main_menu[MENU_SUBMENU1].menu_item[j].highlighted = false;
+    strcpy(_main_menu[MENU_SUBMENU1].menu_item[j].label, "SUBMENU 1 Item 1");
+    _main_menu[MENU_SUBMENU1].menu_item[j].type = READONLY;
+    //_main_menu[MENU_SUBMENU1].menu_item[j].current_value_ptr = &menu_item_test_get_current_value;
     j++;
-    _main_menu[menu_submenu1].menu_item[j].disabled = false;
-    _main_menu[menu_submenu1].menu_item[j].hidden = false;
-    _main_menu[menu_submenu1].menu_item[j].selected = false;
-    _main_menu[menu_submenu1].menu_item[j].highlighted = false;
-    strcpy(_main_menu[menu_submenu1].menu_item[j].label, "Submenu 1 Item 2");
-    _main_menu[menu_submenu1].menu_item[j].type = readonly;
-    //_main_menu[menu_submenu1].menu_item[j].current_value_ptr = &menu_item_test_get_current_value;
+    _main_menu[MENU_SUBMENU1].menu_item[j].disabled = false;
+    _main_menu[MENU_SUBMENU1].menu_item[j].hidden = false;
+    _main_menu[MENU_SUBMENU1].menu_item[j].selected = false;
+    _main_menu[MENU_SUBMENU1].menu_item[j].highlighted = false;
+    strcpy(_main_menu[MENU_SUBMENU1].menu_item[j].label, "SUBMENU 1 Item 2");
+    _main_menu[MENU_SUBMENU1].menu_item[j].type = READONLY;
+    //_main_menu[MENU_SUBMENU1].menu_item[j].current_value_ptr = &menu_item_test_get_current_value;
 
-    _main_menu[menu_submenu1].menu_items_count = j + 1;
-    _main_menu[menu_submenu1].menu_selection_index = 0;
+    _main_menu[MENU_SUBMENU1].menu_items_count = j + 1;
+    _main_menu[MENU_SUBMENU1].menu_selection_index = 0;
 
     j = 0;
-    strcpy(_main_menu[menu_submenu2].label, "Submenu 2");
-    _main_menu[menu_submenu2].menu_id = menu_submenu2;
+    strcpy(_main_menu[MENU_SUBMENU2].label, "SUBMENU 2");
+    _main_menu[MENU_SUBMENU2].menu_id = MENU_SUBMENU2;
 
-    _main_menu[menu_submenu2].menu_item[j].disabled = false;
-    _main_menu[menu_submenu2].menu_item[j].hidden = false;
-    _main_menu[menu_submenu2].menu_item[j].selected = false;
-    _main_menu[menu_submenu2].menu_item[j].highlighted = false;
-    strcpy(_main_menu[menu_submenu2].menu_item[j].label, "< Up");
-    _main_menu[menu_submenu2].menu_item[j].type = backlink;
-    _main_menu[menu_submenu2].menu_item[j].link_to_submenu = menu_main;
-    //_main_menu[menu_submenu1].menu_item[j].current_value_ptr = &menu_item_test_get_current_value;
+    _main_menu[MENU_SUBMENU2].menu_item[j].disabled = false;
+    _main_menu[MENU_SUBMENU2].menu_item[j].hidden = false;
+    _main_menu[MENU_SUBMENU2].menu_item[j].selected = false;
+    _main_menu[MENU_SUBMENU2].menu_item[j].highlighted = false;
+    strcpy(_main_menu[MENU_SUBMENU2].menu_item[j].label, "< Up");
+    _main_menu[MENU_SUBMENU2].menu_item[j].type = BACKLINK;
+    _main_menu[MENU_SUBMENU2].menu_item[j].link_to_SUBMENU = menu_main;
+    //_main_menu[MENU_SUBMENU1].menu_item[j].current_value_ptr = &menu_item_test_get_current_value;
     j++;
-    _main_menu[menu_submenu2].menu_item[j].disabled = false;
-    _main_menu[menu_submenu2].menu_item[j].hidden = false;
-    _main_menu[menu_submenu2].menu_item[j].selected = false;
-    _main_menu[menu_submenu2].menu_item[j].highlighted = false;
-    strcpy(_main_menu[menu_submenu2].menu_item[j].label, "Submenu 2 Item 1");
-    _main_menu[menu_submenu2].menu_item[j].type = readonly;
+    _main_menu[MENU_SUBMENU2].menu_item[j].disabled = false;
+    _main_menu[MENU_SUBMENU2].menu_item[j].hidden = false;
+    _main_menu[MENU_SUBMENU2].menu_item[j].selected = false;
+    _main_menu[MENU_SUBMENU2].menu_item[j].highlighted = false;
+    strcpy(_main_menu[MENU_SUBMENU2].menu_item[j].label, "SUBMENU 2 Item 1");
+    _main_menu[MENU_SUBMENU2].menu_item[j].type = READONLY;
     j++;
-    _main_menu[menu_submenu2].menu_item[j].disabled = false;
-    _main_menu[menu_submenu2].menu_item[j].hidden = false;
-    _main_menu[menu_submenu2].menu_item[j].selected = false;
-    _main_menu[menu_submenu2].menu_item[j].highlighted = false;
-    strcpy(_main_menu[menu_submenu2].menu_item[j].label, "Submenu 2 Item 2");
-    _main_menu[menu_submenu2].menu_item[j].type = readonly;
+    _main_menu[MENU_SUBMENU2].menu_item[j].disabled = false;
+    _main_menu[MENU_SUBMENU2].menu_item[j].hidden = false;
+    _main_menu[MENU_SUBMENU2].menu_item[j].selected = false;
+    _main_menu[MENU_SUBMENU2].menu_item[j].highlighted = false;
+    strcpy(_main_menu[MENU_SUBMENU2].menu_item[j].label, "SUBMENU 2 Item 2");
+    _main_menu[MENU_SUBMENU2].menu_item[j].type = READONLY;
     j++;
-    _main_menu[menu_submenu2].menu_item[j].disabled = false;
-    _main_menu[menu_submenu2].menu_item[j].hidden = false;
-    _main_menu[menu_submenu2].menu_item[j].selected = false;
-    _main_menu[menu_submenu2].menu_item[j].highlighted = false;
-    strcpy(_main_menu[menu_submenu2].menu_item[j].label, "Submenu 2 Item 3");
-    _main_menu[menu_submenu2].menu_item[j].type = readonly;
+    _main_menu[MENU_SUBMENU2].menu_item[j].disabled = false;
+    _main_menu[MENU_SUBMENU2].menu_item[j].hidden = false;
+    _main_menu[MENU_SUBMENU2].menu_item[j].selected = false;
+    _main_menu[MENU_SUBMENU2].menu_item[j].highlighted = false;
+    strcpy(_main_menu[MENU_SUBMENU2].menu_item[j].label, "SUBMENU 2 Item 3");
+    _main_menu[MENU_SUBMENU2].menu_item[j].type = READONLY;
 
-    _main_menu[menu_submenu2].menu_items_count = j + 1;
-    _main_menu[menu_submenu2].menu_selection_index = 0;
+    _main_menu[MENU_SUBMENU2].menu_items_count = j + 1;
+    _main_menu[MENU_SUBMENU2].menu_selection_index = 0;
 
     _main_menu_count = 4; // "none" menu is first so always add 1 to number of menus
 
@@ -494,7 +494,7 @@ void draw_parameter_menu(uint16_t x, uint16_t y, uint8_t main_menu_index, uint8_
     fill_rect(x, y - 28 - 1, width, height + 1, _menu_background_color);
     draw_rect(x + 1, y - 28 + 1, width - 2, height - 3, _menu_text_color);
 
-    // draw dropdown options
+    // draw DROPDOWN options
     for (i = 0; i < _main_menu[main_menu_index].menu_item[main_menu_item_index].choice_count; i++) {
         char draw_label[32];
         strcpy(draw_label, _main_menu[main_menu_index].menu_item[main_menu_item_index].choices[i].label);
@@ -503,16 +503,16 @@ void draw_parameter_menu(uint16_t x, uint16_t y, uint8_t main_menu_index, uint8_
             if (btn_E1_pressed) {
                 //highlight
                 fill_rect(x + 2, y + height - 29 - 1 - (i + 1) * 30, width - 4, 29, _menu_hightlighted_item_color);
-                draw_string(x + 12, y + height - 29 + yoffset_label_from_base - (i + 1) * 30, draw_label, _menu_selected_text_color, _menu_selected_text_color, _FreeSans9pt7b, align_left, 0);
+                draw_string(x + 12, y + height - 29 + yoffset_label_from_base - (i + 1) * 30, draw_label, _menu_selected_text_color, _menu_selected_text_color, _FreeSans9pt7b, ALIGN_LEFT, 0);
             } else {
                 //selected
                 fill_rect(x + 2, y + height - 29 - 1 - (i + 1) * 30, width - 4, 29, _menu_selected_item_color);
-                draw_string(x + 12, y + height - 29 + yoffset_label_from_base - (i + 1) * 30, draw_label, _menu_selected_text_color, _menu_selected_text_color, _FreeSans9pt7b, align_left, 0);
+                draw_string(x + 12, y + height - 29 + yoffset_label_from_base - (i + 1) * 30, draw_label, _menu_selected_text_color, _menu_selected_text_color, _FreeSans9pt7b, ALIGN_LEFT, 0);
             }
         } else {
             //normal
             fill_rect(x + 2, y + height - 29 - 1 - (i + 1) * 30, width - 4, 29, _menu_item_color);
-            draw_string(x + 12, y + height - 29 + yoffset_label_from_base - (i + 1) * 30, draw_label, _menu_text_color, _menu_text_color, _FreeSans9pt7b, align_left, 0);
+            draw_string(x + 12, y + height - 29 + yoffset_label_from_base - (i + 1) * 30, draw_label, _menu_text_color, _menu_text_color, _FreeSans9pt7b, ALIGN_LEFT, 0);
         }
 
         // add a circle icon at beginning of the line of the currently set option
@@ -534,7 +534,7 @@ void draw_menu() {
     fill_rect(0, _height - 28, _width, 28, _menu_item_color);
 
     //draw header bread crumbs 
-    draw_string(5, _height - 22, menu_breadcrumbs, _menu_text_color, _menu_text_color, _FreeSans9pt7b, align_left, 0);
+    draw_string(5, _height - 22, menu_breadcrumbs, _menu_text_color, _menu_text_color, _FreeSans9pt7b, ALIGN_LEFT, 0);
 
     //two header separation lines
     draw_line(0, _height - 29, _width - 1, _height - 29, _menu_selected_item_color);
@@ -637,13 +637,13 @@ void navigate_to_menu(enum _menu_id_t target_menu) {
     // menu transition animation
     if (target_menu == menu_main) {
         // main menu is perceived as top/root level on the left so we need to push current menu towards right
-        start_framebuffer_transition(push_right, 60);
+        start_framebuffer_transition(PUSH_RIGHT, 60);
     } else {
         // sub menus are perceived as lower hierarchy right of the main menu so we need to push current menu towards left
-        start_framebuffer_transition(push_left, 60);
+        start_framebuffer_transition(PUSH_LEFT, 60);
     }
 
-    //navigate into submenu
+    //navigate into SUBMENU
     _current_menu = target_menu;
 
     //highlight the first item in the menu
@@ -658,8 +658,8 @@ void navigate_to_menu(enum _menu_id_t target_menu) {
         strcpy(menu_breadcrumbs, "Menu");
     }
 
-    if (_current_page != page_none) {
-        _current_page = page_none;
+    if (_current_page != PAGE_NONE) {
+        _current_page = PAGE_NONE;
     }
 }
 
@@ -670,7 +670,7 @@ void main_menu_button_release_handler(ButtonID button_index) {
         _parameter_menu_active = false;
 
         //go back to home page
-        navigate_to_page(page_home, push_left);
+        navigate_to_page(PAGE_HOME, PUSH_LEFT);
     }
     if (button_index == P8) {
         back_icon_highlighted = false;
@@ -679,9 +679,9 @@ void main_menu_button_release_handler(ButtonID button_index) {
             _parameter_menu_active = false;
         } else if (_current_menu == menu_main) {
             // if we are in the main menu back means we go to the home page
-            navigate_to_page(page_home, push_left);
+            navigate_to_page(PAGE_HOME, PUSH_LEFT);
         } else {
-            // if we are in any submenu back means we go to the main menu
+            // if we are in any SUBMENU back means we go to the main menu
             navigate_to_menu(menu_main);
         }
     }
@@ -697,29 +697,29 @@ void main_menu_button_release_handler(ButtonID button_index) {
                     return;
                 }
 
-                // is the current item linking into a submenu?
-                if ((_main_menu[a].menu_item[_main_menu[a].menu_selection_index].type == submenu) || (_main_menu[a].menu_item[_main_menu[a].menu_selection_index].type == backlink)) {
-                    // navigate into submenu
-                    navigate_to_menu(_main_menu[a].menu_item[_main_menu[a].menu_selection_index].link_to_submenu);
+                // is the current item linking into a SUBMENU?
+                if ((_main_menu[a].menu_item[_main_menu[a].menu_selection_index].type == SUBMENU) || (_main_menu[a].menu_item[_main_menu[a].menu_selection_index].type == BACKLINK)) {
+                    // navigate into SUBMENU
+                    navigate_to_menu(_main_menu[a].menu_item[_main_menu[a].menu_selection_index].link_to_SUBMENU);
                     return;
                 }
 
                 // is the current item linking to a page
-                if (_main_menu[a].menu_item[_main_menu[a].menu_selection_index].type == pagelink) {
+                if (_main_menu[a].menu_item[_main_menu[a].menu_selection_index].type == PAGELINK) {
                     // navigate to page
-                    navigate_to_page(_main_menu[a].menu_item[_main_menu[a].menu_selection_index].link_to_page, push_left);
+                    navigate_to_page(_main_menu[a].menu_item[_main_menu[a].menu_selection_index].link_to_page, PUSH_LEFT);
                     return;
                 }
 
                 // is the current item supposed to show a drop-down menu?
-                if ((_main_menu[a].menu_item[_main_menu[a].menu_selection_index].type == dropdown) && (_parameter_menu_active == 0)) {
+                if ((_main_menu[a].menu_item[_main_menu[a].menu_selection_index].type == DROPDOWN) && (_parameter_menu_active == 0)) {
                     //open parameter menu
                     _parameter_menu_active = _main_menu[a].menu_selection_index;
                     return;
                 }
 
                 // are we in a drop-down menu currently?
-                if ((_main_menu[a].menu_item[_main_menu[a].menu_selection_index].type == dropdown) && (_parameter_menu_active != 0)) {
+                if ((_main_menu[a].menu_item[_main_menu[a].menu_selection_index].type == DROPDOWN) && (_parameter_menu_active != 0)) {
                     // set new value
                     _main_menu[a].menu_item[_main_menu[a].menu_selection_index].value = _parameter_selection_index;
 
@@ -756,7 +756,7 @@ void main_menu_button_press_handler(ButtonID button_index) {
 }
 
 void main_menu_knob_handler(ButtonID button_index, int8_t diff) {
-    if (button_index == E1_rot) {
+    if (button_index == E1_ROT) {
         // are we inside a parameter menu?
         if (_parameter_menu_active) {
             _parameter_selection_index += diff;

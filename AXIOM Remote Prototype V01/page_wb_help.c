@@ -56,14 +56,14 @@ void draw_wb_help_page_side_items() {
     //left side
 
     //Home Icon
-    if (_main_page[page_wb].page_item[6].highlighted) {
+    if (_main_page[PAGE_WB].page_item[6].highlighted) {
         drawRGBBitmap(0, 158, (uint16_t*) (home_icon_highlight.pixel_data), home_icon_highlight.width, home_icon_highlight.height);
     } else {
         drawRGBBitmap(0, 158, (uint16_t*) (home_icon.pixel_data), home_icon.width, home_icon.height);
     }
 
     // Back Icon
-    if (_main_page[page_wb].page_item[7].highlighted) {
+    if (_main_page[PAGE_WB].page_item[7].highlighted) {
         drawRGBBitmap(0, 108, (uint16_t*) (back_icon_highlight.pixel_data), back_icon_highlight.width, back_icon_highlight.height);
     } else {
         drawRGBBitmap(0, 108, (uint16_t*) (back_icon.pixel_data), back_icon.width, back_icon.height);
@@ -86,7 +86,7 @@ void draw_wb_help_page() {
 
     // Draw header
     draw_string(5, _height - 30, "White Balance Help", _help_page_text_color, _help_page_text_color,
-            _FreeSans12pt7b, align_left, 0);
+            _FreeSans12pt7b, ALIGN_LEFT, 0);
 
     //separation line
     draw_line(0, _top - 34, _right, _top - 34, color565(255, 128, 0));
@@ -102,7 +102,7 @@ void draw_wb_help_page() {
 
     //draw content
     draw_string(30 + 6, _top - 30 - 25 + _help_page_scroll_index, _wb_help_text, _help_page_text_color, _help_page_text_color,
-            _FreeSans9pt7b, align_left, _width - 36 - 20 - _wrap_tester);
+            _FreeSans9pt7b, ALIGN_LEFT, _width - 36 - 20 - _wrap_tester);
 
     /*uint8_t length = string_len("This is a very long text with many letters ahahaha - its so incredible  lonmg.asdasd.");
     char debug[32];
@@ -126,28 +126,28 @@ void init_wb_help_page() {
 
 void wb_help_page_button_press_handler(ButtonID button_index) {
     if (button_index == P7) {
-        _main_page[page_wb].page_item[6].highlighted = true;
+        _main_page[PAGE_WB].page_item[6].highlighted = true;
     }
     if (button_index == P8) {
-        _main_page[page_wb].page_item[7].highlighted = true;
+        _main_page[PAGE_WB].page_item[7].highlighted = true;
     }
 }
 
 void wb_help_page_button_release_handler(ButtonID button_index) {
     if (button_index == P7) {
-        _main_page[page_wb].page_item[6].highlighted = false;
+        _main_page[PAGE_WB].page_item[6].highlighted = false;
 
-        navigate_to_page(page_home, push_right);
+        navigate_to_page(PAGE_HOME, PUSH_RIGHT);
     }
     if (button_index == P8) {
-        _main_page[page_wb].page_item[7].highlighted = false;
+        _main_page[PAGE_WB].page_item[7].highlighted = false;
 
-        navigate_to_page(page_wb, push_right);
+        navigate_to_page(PAGE_WB, PUSH_RIGHT);
     }
 }
 
 void wb_help_page_knob_handler(ButtonID button_index, int8_t diff) {
-    if (button_index == E1_rot) {
+    if (button_index == E1_ROT) {
         _wrap_tester += diff;
         //_wrap_tester = limit_range(_wrap_tester, 0, 200);
 

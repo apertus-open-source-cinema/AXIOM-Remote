@@ -626,11 +626,11 @@ void setLCDBacklight(uint8_t brightness) {
 void draw_lcd() {
     if (_current_menu != menu_none) {
         draw_menu();
-    } else if (_current_page == page_home) {
+    } else if (_current_page == PAGE_HOME) {
         draw_page();
-    } else if (_current_page == page_wb) {
+    } else if (_current_page == PAGE_WB) {
         draw_wb_page();
-    } else if (_current_page == page_wb_help) {
+    } else if (_current_page == PAGE_WB_HELP) {
         draw_wb_help_page();
     }
 }
@@ -679,7 +679,7 @@ void displayFramebuffer() {
             _transition_active = false;
         }
 
-        if (_transition_animation_type == wipe_right) {
+        if (_transition_animation_type == WIPE_RIGHT) {
 
             float ratio = fabs(((float) (_transition_counter) / 255) - 1);
 
@@ -697,7 +697,7 @@ void displayFramebuffer() {
                 }
             }
         }
-        if (_transition_animation_type == wipe_left) {
+        if (_transition_animation_type == WIPE_LEFT) {
 
             float ratio = ((float) (_transition_counter) / 255);
 
@@ -715,7 +715,7 @@ void displayFramebuffer() {
                 }
             }
         }
-        if (_transition_animation_type == push_left) {
+        if (_transition_animation_type == PUSH_LEFT) {
 
             uint16_t offset = (float) (_transition_counter) / (float) (255) * _width;
 
@@ -731,7 +731,7 @@ void displayFramebuffer() {
                 }
             }
         }
-        if (_transition_animation_type == push_right) {
+        if (_transition_animation_type == PUSH_RIGHT) {
 
             uint16_t offset = fabs((float) (_transition_counter) / (float) (255) - 1) * _width;
 
@@ -753,7 +753,7 @@ void displayFramebuffer() {
                 }
             }
         }
-        if (_transition_animation_type == push_up) {
+        if (_transition_animation_type == PUSH_UP) {
 
             uint16_t offset = (float) (_transition_counter) / (float) (255) * _height;
 
@@ -767,7 +767,7 @@ void displayFramebuffer() {
                 }
             }
         }
-        if (_transition_animation_type == push_down) {
+        if (_transition_animation_type == PUSH_DOWN) {
             uint16_t offset = fabs(((float) (_transition_counter) / (float) (255) - 1) * _height);
 
             for (x = 0; x < _width; x++) {
@@ -1154,10 +1154,10 @@ void init_lcd() {
                 return;
             }
 
-            // is the current item linking into a submenu?
-            if (_main_menu[a].menu_item[_menu_selection_index].type == submenu) {
-                // navigate into submenu
-                _current_menu = _main_menu[a].menu_item[_menu_selection_index].link_to_submenu;
+            // is the current item linking into a SUBMENU?
+            if (_main_menu[a].menu_item[_menu_selection_index].type == SUBMENU) {
+                // navigate into SUBMENU
+                _current_menu = _main_menu[a].menu_item[_menu_selection_index].link_to_SUBMENU;
 
                 // reset cursor to first item in list;
                 _menu_selection_index = 0;
@@ -1169,14 +1169,14 @@ void init_lcd() {
             }
 
             // is the current item supposed to show a drop-down menu?
-            if ((_main_menu[a].menu_item[_menu_selection_index].type == dropdown) && (_parameter_menu_active == 0)) {
+            if ((_main_menu[a].menu_item[_menu_selection_index].type == DROPDOWN) && (_parameter_menu_active == 0)) {
                 //open parameter menu
                 _parameter_menu_active = _menu_selection_index;
                 return;
             }
 
             // are we in a drop-down menu currently?
-            if ((_main_menu[a].menu_item[_menu_selection_index].type == dropdown) && (_parameter_menu_active != 0)) {
+            if ((_main_menu[a].menu_item[_menu_selection_index].type == DROPDOWN) && (_parameter_menu_active != 0)) {
                 // set new value
                 _main_menu[a].menu_item[_menu_selection_index].value = _parameter_selection_index;
 
@@ -1197,13 +1197,13 @@ void init_lcd() {
                         _parameter_menu_active = 0;
                     }*/
 
-/*} else if (_current_menu == Submenu1) {
+/*} else if (_current_menu == SUBMENU1) {
     if (_menu_selection_index == 0) {
         _current_menu = Main;
         _menu_selection_index = 0;
         strcpy(menu_breadcrumbs, "Menu");
     }
-} else if (_current_menu == Submenu2) {
+} else if (_current_menu == SUBMENU2) {
     if (_menu_selection_index == 0) {
         _current_menu = Main;
         _menu_selection_index = 1;
@@ -1227,10 +1227,10 @@ void updateFramebuffer() {
 }
 
 void knob_event_handler(ButtonID button_event, int8_t value) {
-    if (_current_page == page_wb) {
+    if (_current_page == PAGE_WB) {
         wb_page_knob_handler(button_event, value);
     }
-    if (_current_page == page_wb_help) {
+    if (_current_page == PAGE_WB_HELP) {
         wb_help_page_knob_handler(button_event, value);
     }
     if (_current_menu != menu_none) {
@@ -1240,19 +1240,19 @@ void knob_event_handler(ButtonID button_event, int8_t value) {
 }
 
 void button_event_handler(ButtonID button_event, bool pressed) {
-    if (_current_page == page_home) {
+    if (_current_page == PAGE_HOME) {
         if (pressed) {
             main_page_button_press_handler(button_event);
         } else {
             main_page_button_release_handler(button_event);
         }
-    } else if (_current_page == page_wb) {
+    } else if (_current_page == PAGE_WB) {
         if (pressed) {
             wb_page_button_press_handler(button_event);
         } else {
             wb_page_button_release_handler(button_event);
         }
-    } else if (_current_page == page_wb_help) {
+    } else if (_current_page == PAGE_WB_HELP) {
         if (pressed) {
             wb_help_page_button_press_handler(button_event);
         } else {
@@ -1315,7 +1315,7 @@ int main(void) {
 
     // start navigation
     _current_menu = menu_none;
-    _current_page = page_home;
+    _current_page = PAGE_HOME;
 
     static uint16_t r = 0;
     static uint16_t g = 0;
@@ -1572,11 +1572,11 @@ int main(void) {
             if (data[2] == 0x04) {
                 //btn_TS2_pos = true;
 
-                //drawString(20, 180, "TS2: up  ", color565(0, 0, 0), color565(255, 255, 255), 1, align_left, 0);
+                //drawString(20, 180, "TS2: up  ", color565(0, 0, 0), color565(255, 255, 255), 1, ALIGN_LEFT, 0);
             }
             if (data[2] == 0x08) {
                 //btn_TS2_pos = false;
-                //drawString(20, 180, "TS2: down", color565(0, 0, 0), color565(255, 255, 255), 1, align_left, 0);
+                //drawString(20, 180, "TS2: down", color565(0, 0, 0), color565(255, 255, 255), 1, ALIGN_LEFT, 0);
             }
             if (data_status[0] == 0xEF) {
                 //btn_S1_pos = false;
@@ -1625,7 +1625,7 @@ int main(void) {
             //E1_pos = qe[0];
 
             int8_t diff = data[0] - qe[0];
-            knob_event_handler(E1_rot, diff);
+            knob_event_handler(E1_ROT, diff);
 
             /*else {
                 _menu_selection_index += diff;
