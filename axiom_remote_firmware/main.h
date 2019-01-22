@@ -37,10 +37,7 @@ extern uint8_t _menu_offset; // when scrolling the menu this is the offset for t
 extern uint8_t _parameter_menu_active; // is a parameter menu currently visible (0 = no)
 extern uint8_t _parameter_selection_index; // index of the item currently selected in a parameter menu
 
-typedef struct {
-    char label[32];
-    uint8_t value;
-} drop_down_choice_t;
+
 
 enum _menu_id_t {
     menu_none, menu_main, menu_submenu1, menu_submenu2
@@ -52,35 +49,8 @@ enum _page_id_t {
 };
 enum _page_id_t _current_page;
 
-typedef enum {
-    submenu, pagelink, backlink, readonly, numeric, dropdown
-} menu_item_type_t;
 
-typedef struct {
-    char label[64];
-    bool disabled;
-    bool hidden;
-    enum _menu_id_t link_to_submenu;
-    enum _page_id_t link_to_page;
-    menu_item_type_t type;
-    uint8_t value;
-    bool selected;
-    bool highlighted;
-    bool(*action_ptr)(); //function pointer to the action when that menu entry is clicked
-    char* (*current_value_ptr)(); //function pointer to return the current value
-    drop_down_choice_t choices[5]; // array holding the discreet choices for this particular option
-    uint8_t choice_count;
-} menu_item_t;
 
-typedef struct {
-    char label[32];
-    enum _menu_id_t menu_id;
-    menu_item_t menu_item[32];
-    uint8_t menu_items_count;
-    uint8_t menu_selection_index;
-} menu_t;
-
-extern uint8_t _main_menu_count;
 
 enum _item_type_t {
     value_and_label, button
@@ -180,10 +150,10 @@ extern GFXfont _FreeSans18pt7b;
 extern GFXfont _FreeSans24pt7b;
 
 // the central frame buffer that is written to the LCD
-uint16_t _framebuffer[_width][_height];
+uint16_t _framebuffer[framebuffer_width][_height];
 
 //second frame buffer for rendering transition effects
-uint16_t _transition_framebuffer[_width][_height];
+uint16_t _transition_framebuffer[framebuffer_width][_height];
 uint8_t _transition_counter;
 bool _transition_active;
 uint8_t _transition_animation_speed;

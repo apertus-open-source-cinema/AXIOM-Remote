@@ -13,11 +13,11 @@
 
 #include <stdint.h>
 #include <stdbool.h>
+#include <string.h>
+
+#include "globals.h"
 #include "glcdfont.c"
 #include "gfxfont.h"
-#include <string.h>
-#include "definitions.h"
-#include "main.h"
 
 #ifndef DRAW_C
 #define DRAW_C
@@ -33,9 +33,9 @@
 /**************************************************************************/
 void draw_pixel(int16_t x, int16_t y, uint16_t color) {
     //prevent drawing outside of bounds
-    if ((x >= 0) && (x < _width) && (y >= 0) && (y < _height)) {
+    if ((x >= 0) && (x < FRAMEBUFFER_WIDTH) && (y >= 0) && (y < FRAMEBUFFER_HEIGHT)) {
         //origin shall be at the lower left corner so we mirror y axis
-        _framebuffer[x][_height - y] = color;
+        framebuffer[x][FRAMEBUFFER_HEIGHT - y] = color;
     } else {
         //uart2_str0("draw attempt outside bounds\n\r");
     }
@@ -131,8 +131,8 @@ void fill_rect(int16_t x, int16_t y, int16_t w, int16_t h, uint16_t color) {
     }
 
     // Clip right/bottom
-    if(x2 >= _width)  w = _width  - x;
-    if(y2 >= _height) h = _height - y;
+    if(x2 >= FRAMEBUFFER_WIDTH)  w = FRAMEBUFFER_WIDTH  - x;
+    if(y2 >= FRAMEBUFFER_HEIGHT) h = FRAMEBUFFER_HEIGHT - y;
 
     int32_t len = (int32_t)w * h;
     setAddrWindow(x, y, w, h);
@@ -460,8 +460,8 @@ void drawRGBBitmap(int16_t x, int16_t y, const uint16_t *pcolors, int16_t w, int
     h = temp;
 
     int16_t x2, y2; // Lower-right coord
-    if ((x >= _width) || // Off-edge right
-            (y >= _height) || // " top
+    if ((x >= FRAMEBUFFER_WIDTH) || // Off-edge right
+            (y >= FRAMEBUFFER_HEIGHT) || // " top
             ((x2 = (x + w - 1)) < 0) || // " left
             ((y2 = (y + h - 1)) < 0)) return; // " bottom
 
@@ -483,13 +483,13 @@ void drawRGBBitmap(int16_t x, int16_t y, const uint16_t *pcolors, int16_t w, int
     }
 
     // Clip right
-    if (x2 >= _width) {
-        w = _width - x;
+    if (x2 >= FRAMEBUFFER_WIDTH) {
+        w = FRAMEBUFFER_WIDTH - x;
     }
 
     // Clip bottom
-    if (y2 >= _height) {
-        h = _height - y;
+    if (y2 >= FRAMEBUFFER_HEIGHT) {
+        h = FRAMEBUFFER_HEIGHT - y;
     }
 
     uint16_t draw_x;
@@ -497,9 +497,9 @@ void drawRGBBitmap(int16_t x, int16_t y, const uint16_t *pcolors, int16_t w, int
 
     for (draw_x = 0; draw_x < w; draw_x++) {
         for (draw_y = 0; draw_y < h; draw_y++) {
-            //drawPixel(draw_y+y, _height-x+w+draw_x, *pcolors++);
+            //drawPixel(draw_y+y, FRAMEBUFFER_HEIGHT-x+w+draw_x, *pcolors++);
             draw_pixel(x + draw_y, y + w - draw_x, *pcolors++);
-            //drawPixel(draw_y+x, _height-y+w+draw_x, *pcolors++);
+            //drawPixel(draw_y+x, FRAMEBUFFER_HEIGHT-y+w+draw_x, *pcolors++);
         }
     }
 }
@@ -539,7 +539,7 @@ void getCharBounds(char c, int16_t *x, int16_t *y, int16_t *minx, int16_t *miny,
                     xa = pgm_read_byte(&glyph->xAdvance);
             int8_t xo = pgm_read_byte(&glyph->xOffset),
                     yo = pgm_read_byte(&glyph->yOffset);
-            if (wrap && ((*x + (((int16_t) xo + gw) * textsize)) > _width)) {
+            if (wrap && ((*x + (((int16_t) xo + gw) * textsize)) > FRAMEBUFFER_WIDTH)) {
                 *x = 0; // Reset x to zero, advance y by one line
                 *y += textsize * (uint8_t) pgm_read_byte(&gfxFont.yAdvance);
             }
@@ -587,7 +587,7 @@ uint16_t get_char_xoffset(const char c, GFXfont gfxFont) {
  */
 
 /**************************************************************************/
-uint16_t get_string_width(const char* str, GFXfont gfxFont) {
+uint16_t get_stringframebuffer_width(const char* str, GFXfont gfxFont) {
     uint16_t width = 0;
     uint8_t gap;
     uint8_t xo1;
@@ -643,7 +643,7 @@ void get_text_bounds(char *str, int16_t x, int16_t y, int16_t *x1, int16_t *y1, 
     *y1 = y;
     *w = *h = 0;
 
-    int16_t minx = _width, miny = _height, maxx = -1, maxy = -1;
+    int16_t minx = FRAMEBUFFER_WIDTH, miny = FRAMEBUFFER_HEIGHT, maxx = -1, maxy = -1;
 
     while ((c = *str++))
         getCharBounds(c, &x, &y, &minx, &miny, &maxx, &maxy, 1, gfxfont);
@@ -658,7 +658,7 @@ void get_text_bounds(char *str, int16_t x, int16_t y, int16_t *x1, int16_t *y1, 
     }
 }
 
-void draw_string(int16_t x, int16_t y, char* text, uint16_t color, uint16_t bg, GFXfont gfxFont, textAlign align, uint16_t textblockwidth) {
+void draw_string(int16_t x, int16_t y, char* text, uint16_t color, uint16_t bg, GFXfont gfxFont, text_align align, uint16_t textblockwidth) {
     uint8_t first = pgm_read_byte(&gfxFont.first);
     uint8_t last = pgm_read_byte(&gfxFont.last);
     uint8_t length = strlen(text);
@@ -672,7 +672,7 @@ void draw_string(int16_t x, int16_t y, char* text, uint16_t color, uint16_t bg, 
     _cursor_x = x;
     _cursor_y = y;
 
-    uint16_t text_width = get_string_width(text, gfxFont);
+    uint16_t textframebuffer_width = get_stringframebuffer_width(text, gfxFont);
 
     uint8_t i;
     for (i = 0; i < length; i++) {
@@ -680,12 +680,12 @@ void draw_string(int16_t x, int16_t y, char* text, uint16_t color, uint16_t bg, 
 
         if (c == 32) { // space " " character 
             GFXglyph *glyph = &(((GFXglyph *) pgm_read_pointer(&gfxFont.glyph))[32 - first]);
-            _cursor_x += (uint8_t) pgm_read_byte(&glyph->xAdvance);
+            _cursor_x += glyph->xAdvance;//(uint8_t) pgm_read_byte(&glyph->xAdvance);
             newline = false;
 
             // wrap text into new line: - check at every space character if next word will 
             // still fit into textblockwidth if not advance to next line
-            if ((align == align_left) && (textblockwidth > 0)) {
+            if ((align == TEXT_ALIGN_LEFT) && (textblockwidth > 0)) {
                 uint16_t next_space = 0;
                 uint16_t j;
 
@@ -709,20 +709,20 @@ void draw_string(int16_t x, int16_t y, char* text, uint16_t color, uint16_t bg, 
                 }
 
                 //measure the width of the next word in pixels
-                uint16_t next_word_width = 0;
+                uint16_t next_wordframebuffer_width = 0;
                 for (j = 1; j <= next_space - 1; j++) {
                     GFXglyph *glyph = &(((GFXglyph *) pgm_read_pointer(&gfxFont.glyph))[text[i + j] - first]);
-                    next_word_width += (uint8_t) pgm_read_byte(&glyph->xAdvance);
+                    next_wordframebuffer_width += (uint8_t) pgm_read_byte(&glyph->xAdvance);
                 }
 
                 // does the width of the next word already go outside the textblockwidth ?
-                if ((_cursor_x + next_word_width) > (x + textblockwidth)) {
+                if ((_cursor_x + next_wordframebuffer_width) > (x + textblockwidth)) {
 
                     //debug
-                    draw_line(_cursor_x, _cursor_y - 3, _cursor_x + next_word_width, _cursor_y - 3, color);
+                    draw_line(_cursor_x, _cursor_y - 3, _cursor_x + next_wordframebuffer_width, _cursor_y - 3, color);
 
                     /*char debug3[32];
-                    sprintf(debug3, "next_word_width = %u", next_word_width);
+                    sprintf(debug3, "next_wordframebuffer_width = %u", next_wordframebuffer_width);
                     debug_uart(debug3);*/
 
 
@@ -754,14 +754,14 @@ void draw_string(int16_t x, int16_t y, char* text, uint16_t color, uint16_t bg, 
                     newline = false;
                 }
 
-                if (align == align_left) {
+                if (align == TEXT_ALIGN_LEFT) {
                     drawChar(_cursor_x + xo, _cursor_y, c, color, bg, gfxFont);
                 }
-                if ((align == align_center) && (textblockwidth > 0)) {
-                    drawChar(_cursor_x + xo - text_width / 2 + textblockwidth / 2, _cursor_y, c, color, bg, gfxFont);
+                if ((align == TEXT_ALIGN_CENTER) && (textblockwidth > 0)) {
+                    drawChar(_cursor_x + xo - textframebuffer_width / 2 + textblockwidth / 2, _cursor_y, c, color, bg, gfxFont);
                 }
-                if ((align == align_right) && (textblockwidth > 0)) {
-                    drawChar(_cursor_x + xo + textblockwidth - text_width, _cursor_y, c, color, bg, gfxFont);
+                if ((align == TEXT_ALIGN_RIGHT) && (textblockwidth > 0)) {
+                    drawChar(_cursor_x + xo + textblockwidth - textframebuffer_width, _cursor_y, c, color, bg, gfxFont);
                 }
 
                 _cursor_x += (uint8_t) pgm_read_byte(&glyph->xAdvance);
@@ -773,7 +773,7 @@ void draw_string(int16_t x, int16_t y, char* text, uint16_t color, uint16_t bg, 
         cursor_x  = 0;                     // Reset x to zero,
         cursor_y += size * 8;          // advance y one line
     } else if(c != '\r') {                 // Ignore carriage returns
-        if(wrap && ((cursor_x + size * 6) > _width)) { // Off right?
+        if(wrap && ((cursor_x + size * 6) > FRAMEBUFFER_WIDTH)) { // Off right?
             cursor_x  = 0;                 // Reset x to zero,
             cursor_y += size * 8;      // advance y one line
         }

@@ -11,7 +11,6 @@
  **	Compile with -O6 for best experience
  */
 
-#include <xc.h>
 #include <stdint.h>
 #include <stdbool.h>
 #include <stdio.h>
@@ -43,13 +42,13 @@ void draw_wb_help_scroll_indicator(uint8_t line, uint8_t total_lines) {
     uint8_t scrollbaroffset = ((total_lines - line) - _menu_offset) * ((srollbar_max_height - scrollbarheight) / (total_lines - line));
 
     //Background
-    fill_rect(_width - 16, 0, 16, _height - 30, _help_page_background_color);
+    fill_rect(framebuffer_width - 16, 0, 16, _height - 30, _help_page_background_color);
 
     //Thin Line
-    fill_rect(_width - 9, 0, 4, _height - 30, _help_page_text_color);
+    fill_rect(framebuffer_width - 9, 0, 4, _height - 30, _help_page_text_color);
 
     //Thick Line
-    fill_rect(_width - 13, scrollbaroffset, 12, scrollbarheight, _help_page_text_color);
+    fill_rect(framebuffer_width - 13, scrollbaroffset, 12, scrollbarheight, _help_page_text_color);
 }
 
 void draw_wb_help_page_side_items() {
@@ -79,10 +78,10 @@ void draw_wb_help_page_side_items() {
 /**************************************************************************/
 void draw_wb_help_page() {
     //clear the screen
-    fill_rect(0, 0, _width, _height, _help_page_background_color);
+    fill_rect(0, 0, framebuffer_width, _height, _help_page_background_color);
 
     //draw header background
-    //fill_rect(0, _top - 28, _width, 28, _help_page_text_color);
+    //fill_rect(0, _top - 28, framebuffer_width, 28, _help_page_text_color);
 
     // Draw header
     draw_string(5, _height - 30, "White Balance Help", _help_page_text_color, _help_page_text_color,
@@ -98,11 +97,11 @@ void draw_wb_help_page() {
     draw_wb_help_scroll_indicator(_help_page_scroll_index, 10);
 
     //debug
-    draw_rect(30 + 6, 5, _width - 36 - 20 - _wrap_tester, 200, color565(255, 0, 0));
+    draw_rect(30 + 6, 5, framebuffer_width - 36 - 20 - _wrap_tester, 200, color565(255, 0, 0));
 
     //draw content
     draw_string(30 + 6, _top - 30 - 25 + _help_page_scroll_index, _wb_help_text, _help_page_text_color, _help_page_text_color,
-            _FreeSans9pt7b, align_left, _width - 36 - 20 - _wrap_tester);
+            _FreeSans9pt7b, align_left, framebuffer_width - 36 - 20 - _wrap_tester);
 
     /*uint8_t length = string_len("This is a very long text with many letters ahahaha - its so incredible  lonmg.asdasd.");
     char debug[32];

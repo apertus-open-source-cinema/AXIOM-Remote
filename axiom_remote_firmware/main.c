@@ -15,7 +15,6 @@
 #ifndef MAIN_C
 #define MAIN_C
 
-#include <xc.h>
 #include <stdint.h>
 #include <stdbool.h>
 #include <string.h>
@@ -638,7 +637,7 @@ void draw_lcd() {
 void clear_framebuffer(uint16_t color) {
     uint16_t x;
     uint8_t y;
-    for (x = 0; x < _width; x++) {
+    for (x = 0; x < framebuffer_width; x++) {
         for (y = 0; y < _height; y++) {
             _framebuffer[x][y] = color;
         }
@@ -648,7 +647,7 @@ void clear_framebuffer(uint16_t color) {
 void clear_transition_framebuffer(uint16_t color) {
     uint16_t x;
     uint8_t y;
-    for (x = 0; x < _width; x++) {
+    for (x = 0; x < framebuffer_width; x++) {
         for (y = 0; y < _height; y++) {
             _transition_framebuffer[x][y] = color;
         }
@@ -683,8 +682,8 @@ void displayFramebuffer() {
 
             float ratio = fabs(((float) (_transition_counter) / 255) - 1);
 
-            for (x = 0; x < _width; x++) {
-                float horizontal_progress = (float) (x) / (float) (_width);
+            for (x = 0; x < framebuffer_width; x++) {
+                float horizontal_progress = (float) (x) / (float) (framebuffer_width);
 
                 if (horizontal_progress < ratio) {
                     for (y = 0; y < _height; y++) {
@@ -701,8 +700,8 @@ void displayFramebuffer() {
 
             float ratio = ((float) (_transition_counter) / 255);
 
-            for (x = 0; x < _width; x++) {
-                float horizontal_progress = (float) (x) / (float) (_width);
+            for (x = 0; x < framebuffer_width; x++) {
+                float horizontal_progress = (float) (x) / (float) (framebuffer_width);
 
                 if (horizontal_progress > ratio) {
                     for (y = 0; y < _height; y++) {
@@ -717,12 +716,12 @@ void displayFramebuffer() {
         }
         if (_transition_animation_type == push_left) {
 
-            uint16_t offset = (float) (_transition_counter) / (float) (255) * _width;
+            uint16_t offset = (float) (_transition_counter) / (float) (255) * framebuffer_width;
 
-            for (x = 0; x < _width; x++) {
+            for (x = 0; x < framebuffer_width; x++) {
                 if (x <= offset) {
                     for (y = 0; y < _height; y++) {
-                        lcd_pmp_wr(_transition_framebuffer[x + (_width - offset)][y]);
+                        lcd_pmp_wr(_transition_framebuffer[x + (framebuffer_width - offset)][y]);
                     }
                 } else {
                     for (y = 0; y < _height; y++) {
@@ -733,21 +732,21 @@ void displayFramebuffer() {
         }
         if (_transition_animation_type == push_right) {
 
-            uint16_t offset = fabs((float) (_transition_counter) / (float) (255) - 1) * _width;
+            uint16_t offset = fabs((float) (_transition_counter) / (float) (255) - 1) * framebuffer_width;
 
-            for (x = 0; x < _width; x++) {
-                //uint16_t horizontal_progress = (float) (x) / (float) (_width);
+            for (x = 0; x < framebuffer_width; x++) {
+                //uint16_t horizontal_progress = (float) (x) / (float) (framebuffer_width);
 
                 if (x > offset) {
-                    //if (((x - offset) < _width) && ((x - offset) >= 0)) {
+                    //if (((x - offset) < framebuffer_width) && ((x - offset) >= 0)) {
                     for (y = 0; y < _height; y++) {
                         lcd_pmp_wr(_transition_framebuffer[x - offset][y]);
                     }
                     //}
                 } else {
-                    // if ((((x + (_width - offset)) >= 0) && (x + (_width - offset)) < _width)) {
+                    // if ((((x + (framebuffer_width - offset)) >= 0) && (x + (framebuffer_width - offset)) < framebuffer_width)) {
                     for (y = 0; y < _height; y++) {
-                        lcd_pmp_wr(_framebuffer[x + (_width - offset)][y]);
+                        lcd_pmp_wr(_framebuffer[x + (framebuffer_width - offset)][y]);
                     }
                     //}
                 }
@@ -757,7 +756,7 @@ void displayFramebuffer() {
 
             uint16_t offset = (float) (_transition_counter) / (float) (255) * _height;
 
-            for (x = 0; x < _width; x++) {
+            for (x = 0; x < framebuffer_width; x++) {
                 for (y = 0; y < _height; y++) {
                     if (y <= offset) {
                         lcd_pmp_wr(_transition_framebuffer[x][y + (_height - offset)]);
@@ -770,7 +769,7 @@ void displayFramebuffer() {
         if (_transition_animation_type == push_down) {
             uint16_t offset = fabs(((float) (_transition_counter) / (float) (255) - 1) * _height);
 
-            for (x = 0; x < _width; x++) {
+            for (x = 0; x < framebuffer_width; x++) {
                 for (y = 0; y < _height; y++) {
                     if (y > offset) {
                         lcd_pmp_wr(_transition_framebuffer[x][y - offset]);
@@ -784,7 +783,7 @@ void displayFramebuffer() {
         _transition_counter -= _transition_animation_speed;
     } else {
         // no transition animation
-        for (x = 0; x < _width; x++) {
+        for (x = 0; x < framebuffer_width; x++) {
             for (y = 0; y < _height; y++) {
                 //for (y=_height; y>0; y--) { // we flip y axis so the origin in in the lower left corner
 
@@ -797,7 +796,7 @@ void displayFramebuffer() {
 void start_framebuffer_transition(enum transition_animation transition_animation_type, uint8_t speed) {
     //copy the current content of the framebuffer to the _transition_framebuffer - we take a snapshot so to say
 
-    memcpy(_transition_framebuffer, _framebuffer, _height * _width * sizeof (uint16_t));
+    memcpy(_transition_framebuffer, _framebuffer, _height * framebuffer_width * sizeof (uint16_t));
 
     _transition_active = true;
     _transition_counter = 255;
@@ -1664,7 +1663,7 @@ int main(void) {
             //sprintf(encoder1, "E2: %d", qe[1]);
             //drawString(20, 140, encoder1, color565(0,0,0), color565(255,255,255), 1); 
         }
-        /*fillRect(0, 0, _width, _height, menuBackgroundColor);
+        /*fillRect(0, 0, framebuffer_width, _height, menuBackgroundColor);
         drawLine(20, 140, 200, 140, color565(128, 128, 128));
         drawString(20, 140, "This is a long sentence.", color565(0,0,0), color565(255,255,255), 1); */
 

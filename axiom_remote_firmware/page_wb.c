@@ -11,7 +11,6 @@
  **	Compile with -O6 for best experience
  */
 
-#include <xc.h>
 #include <stdint.h>
 #include <stdbool.h>
 #include <stdio.h>
@@ -37,7 +36,7 @@ uint16_t _page_options_background_color;
 uint16_t _button_primary_background_color;
 uint16_t _button_background_color;
 uint16_t _button_hightlight_background_color;
-uint16_t _page_item_width;
+uint16_t _page_itemframebuffer_width;
 uint8_t _padding_side;
 uint8_t _padding_elements;
 uint8_t _page_item_label_height;
@@ -76,11 +75,11 @@ void draw_wb_page_item(uint8_t screen_index) {
         y = _top - page_item_height;
     }
     if (screen_index == 1) {
-        x = _padding_side + _padding_elements + _page_item_width;
+        x = _padding_side + _padding_elements + _page_itemframebuffer_width;
         y = _top - page_item_height;
     }
     if (screen_index == 2) {
-        x = _padding_side + 2 * _padding_elements + 2 * _page_item_width;
+        x = _padding_side + 2 * _padding_elements + 2 * _page_itemframebuffer_width;
         y = _top - page_item_height;
     }
     if (screen_index == 3) {
@@ -88,11 +87,11 @@ void draw_wb_page_item(uint8_t screen_index) {
         y = 0;
     }
     if (screen_index == 4) {
-        x = _padding_side + _padding_elements + _page_item_width;
+        x = _padding_side + _padding_elements + _page_itemframebuffer_width;
         y = 0;
     }
     if (screen_index == 5) {
-        x = _padding_side + 2 * _padding_elements + 2 * _page_item_width;
+        x = _padding_side + 2 * _padding_elements + 2 * _page_itemframebuffer_width;
         y = 0;
     }
 
@@ -117,47 +116,47 @@ void draw_wb_page_item(uint8_t screen_index) {
         // 3 top items
 
         if (_main_page[page_wb].page_item[screen_index].item_type == button) {
-            fill_round_rect(x, y + 2 + _button_height, _page_item_width, _button_height, 3, page_item_label_background_color);
+            fill_round_rect(x, y + 2 + _button_height, _page_itemframebuffer_width, _button_height, 3, page_item_label_background_color);
             draw_string(x, y + 9 + _button_height, _main_page[page_wb].page_item[screen_index].label,
                     page_item_label_color, page_item_label_color,
-                    _FreeSans12pt7b, align_center, _page_item_width);
+                    _FreeSans12pt7b, align_center, _page_itemframebuffer_width);
         }
         if (_main_page[page_wb].page_item[screen_index].item_type == value_and_label) {
             // draw label
-            fill_round_rect(x, y + _page_item_value_height, _page_item_width, _page_item_label_height, 3,
+            fill_round_rect(x, y + _page_item_value_height, _page_itemframebuffer_width, _page_item_label_height, 3,
                     page_item_label_background_color);
-            fill_rect(x, y + _page_item_value_height, _page_item_width, 3, 3, page_item_label_background_color);
+            fill_rect(x, y + _page_item_value_height, _page_itemframebuffer_width, 3, 3, page_item_label_background_color);
             draw_string(x, y + _page_item_value_height + 7, _main_page[page_wb].page_item[screen_index].label,
                     page_item_label_color, page_item_value_color,
-                    _FreeSans9pt7b, align_center, _page_item_width);
+                    _FreeSans9pt7b, align_center, _page_itemframebuffer_width);
 
             // draw value
-            fill_round_rect(x, y, _page_item_width, _page_item_value_height, 3, page_item_value_background_color);
-            fill_rect(x, y + _page_item_value_height - 3, _page_item_width, 3, page_item_value_background_color);
+            fill_round_rect(x, y, _page_itemframebuffer_width, _page_item_value_height, 3, page_item_value_background_color);
+            fill_rect(x, y + _page_item_value_height - 3, _page_itemframebuffer_width, 3, page_item_value_background_color);
             draw_string(x, y + 10, _main_page[page_wb].page_item[screen_index].value, page_item_value_color, page_item_value_color,
-                    _FreeSans12pt7b, align_center, _page_item_width);
+                    _FreeSans12pt7b, align_center, _page_itemframebuffer_width);
         }
     } else {
         // 3 bottom items
 
         if (_main_page[page_wb].page_item[screen_index].item_type == button) {
-            fill_round_rect(x, y + 2, _page_item_width, _button_height, 3, page_item_label_background_color);
+            fill_round_rect(x, y + 2, _page_itemframebuffer_width, _button_height, 3, page_item_label_background_color);
             draw_string(x, y + 9, _main_page[page_wb].page_item[screen_index].label, page_item_label_color, page_item_label_color,
-                    _FreeSans12pt7b, align_center, _page_item_width);
+                    _FreeSans12pt7b, align_center, _page_itemframebuffer_width);
         }
         if (_main_page[page_wb].page_item[screen_index].item_type == value_and_label) {
             // draw label
 
-            fill_round_rect(x, y + 1, _page_item_width, _page_item_label_height, 3, page_item_label_background_color);
-            fill_rect(x, y + _page_item_label_height - 3, _page_item_width, 3, 3, page_item_label_background_color);
+            fill_round_rect(x, y + 1, _page_itemframebuffer_width, _page_item_label_height, 3, page_item_label_background_color);
+            fill_rect(x, y + _page_item_label_height - 3, _page_itemframebuffer_width, 3, 3, page_item_label_background_color);
             draw_string(x, y + 7, _main_page[page_wb].page_item[screen_index].label, page_item_label_color, page_item_label_color,
-                    _FreeSans9pt7b, align_center, _page_item_width);
+                    _FreeSans9pt7b, align_center, _page_itemframebuffer_width);
 
             // draw value
-            fill_round_rect(x, y + _page_item_label_height, _page_item_width, _page_item_value_height, 3, page_item_value_background_color);
-            fill_rect(x, y + _page_item_label_height, _page_item_width, 3, page_item_value_background_color);
+            fill_round_rect(x, y + _page_item_label_height, _page_itemframebuffer_width, _page_item_value_height, 3, page_item_value_background_color);
+            fill_rect(x, y + _page_item_label_height, _page_itemframebuffer_width, 3, page_item_value_background_color);
             draw_string(x, y + _page_item_label_height + 6, _main_page[page_wb].page_item[screen_index].value, page_item_value_color, page_item_value_color,
-                    _FreeSans12pt7b, align_center, _page_item_width);
+                    _FreeSans12pt7b, align_center, _page_itemframebuffer_width);
         }
     }
 }
@@ -190,23 +189,23 @@ void draw_wb_page_side_items() {
 
     // Up Icon
     if (_main_page[page_wb].page_item[9].highlighted) {
-        drawRGBBitmap(_width - 1 - up_icon_highlight.width, 158, (uint16_t*) (up_icon_highlight.pixel_data), up_icon_highlight.width, up_icon_highlight.height);
+        drawRGBBitmap(framebuffer_width - 1 - up_icon_highlight.width, 158, (uint16_t*) (up_icon_highlight.pixel_data), up_icon_highlight.width, up_icon_highlight.height);
     } else {
-        drawRGBBitmap(_width - 1 - up_icon.width, 158, (uint16_t*) (up_icon.pixel_data), up_icon.width, up_icon.height);
+        drawRGBBitmap(framebuffer_width - 1 - up_icon.width, 158, (uint16_t*) (up_icon.pixel_data), up_icon.width, up_icon.height);
     }
 
     // Help Icon
     if (_main_page[page_wb].page_item[10].highlighted) {
-        //drawRGBBitmap(_width - 1 - down_icon_highlight.width, 108, (uint16_t*) (down_icon_highlight.pixel_data), down_icon_highlight.width, up_icon_highlight.height);
+        //drawRGBBitmap(framebuffer_width - 1 - down_icon_highlight.width, 108, (uint16_t*) (down_icon_highlight.pixel_data), down_icon_highlight.width, up_icon_highlight.height);
     } else {
-        drawRGBBitmap(_width - 1 - help_icon.width, 108, (uint16_t*) (help_icon.pixel_data), help_icon.width, help_icon.height);
+        drawRGBBitmap(framebuffer_width - 1 - help_icon.width, 108, (uint16_t*) (help_icon.pixel_data), help_icon.width, help_icon.height);
     }
 
     // Down Icon
     if (_main_page[page_wb].page_item[11].highlighted) {
-        drawRGBBitmap(_width - 1 - down_icon_highlight.width, 58, (uint16_t*) (down_icon_highlight.pixel_data), down_icon_highlight.width, up_icon_highlight.height);
+        drawRGBBitmap(framebuffer_width - 1 - down_icon_highlight.width, 58, (uint16_t*) (down_icon_highlight.pixel_data), down_icon_highlight.width, up_icon_highlight.height);
     } else {
-        drawRGBBitmap(_width - 1 - down_icon.width, 58, (uint16_t*) (down_icon.pixel_data), down_icon.width, down_icon.height);
+        drawRGBBitmap(framebuffer_width - 1 - down_icon.width, 58, (uint16_t*) (down_icon.pixel_data), down_icon.width, down_icon.height);
     }
 }
 
@@ -220,7 +219,7 @@ void draw_wb_option_item(uint16_t x, uint16_t y, uint8_t option_item_index, bool
 
     // is the current line selected (cursor)?
     if (selected) {
-        fill_rect(x, y, _width - x - 28, 29, _page_item_highlight_color);
+        fill_rect(x, y, framebuffer_width - x - 28, 29, _page_item_highlight_color);
 
         draw_string(x + 5, y + yoffset_label_from_base, _white_balance.white_balance_options[option_item_index].label,
                 _page_item_label_color, _page_item_label_color, _FreeSans9pt7b, align_left, 0);
@@ -234,7 +233,7 @@ void draw_wb_option_item(uint16_t x, uint16_t y, uint8_t option_item_index, bool
     }
 
     //draw the option item normally
-    //fill_rect(x, y, _width, 29, _page_item_value_background_color);
+    //fill_rect(x, y, framebuffer_width, 29, _page_item_value_background_color);
     draw_string(x + 5, y + yoffset_label_from_base, _white_balance.white_balance_options[option_item_index].label,
             _page_item_value_color, _page_item_value_color, _FreeSans9pt7b, align_left, 0);
     char value_string[32];
@@ -251,7 +250,7 @@ void draw_wb_option_item(uint16_t x, uint16_t y, uint8_t option_item_index, bool
 /**************************************************************************/
 void draw_wb_page() {
     //clear the screen
-    fill_rect(0, 0, _width, _height, _page_background_color);
+    fill_rect(0, 0, framebuffer_width, _height, _page_background_color);
 
 
     //draw page items
@@ -265,7 +264,7 @@ void draw_wb_page() {
     uint16_t page_item_height = _page_item_label_height + _page_item_value_height;
     uint16_t available_height = _height - 2 * _button_height - 8;
 
-    fill_rect(0, _button_height + 4, _width, available_height, _page_options_background_color);
+    fill_rect(0, _button_height + 4, framebuffer_width, available_height, _page_options_background_color);
 
 
     // Draw header
@@ -326,7 +325,7 @@ void init_wb_page() {
     _button_height = 30;
     _padding_side = 8;
     _padding_elements = 11;
-    _page_item_width = 94;
+    _page_itemframebuffer_width = 94;
     //_page_item_height = 75;
     _page_item_label_height = 25;
     _page_item_value_height = 40;

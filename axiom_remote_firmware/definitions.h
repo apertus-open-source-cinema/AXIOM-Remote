@@ -13,6 +13,8 @@
 #ifndef DEFINITIONS_H
 #define DEFINITIONS_H
 
+#include <xc.h>
+
 #define	MCU_16BIT
 
 
@@ -261,7 +263,7 @@
 
 #define array_len(a)    (sizeof(a)/sizeof(a[0]))
 
-#define _width 320
+#define framebuffer_width 320
 #define _height 240
 #define _right 319
 #define _top 239
