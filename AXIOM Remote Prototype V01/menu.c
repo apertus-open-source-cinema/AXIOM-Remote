@@ -14,7 +14,6 @@
 #ifndef MENU_C
 #define MENU_C
 
-#include <xc.h>
 #include <stdint.h>
 #include <stdbool.h>
 #include <stdio.h>

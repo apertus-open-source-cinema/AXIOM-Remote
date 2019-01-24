@@ -15,7 +15,6 @@
 #ifndef MAIN_C
 #define MAIN_C
 
-#include <xc.h>
 #include <stdint.h>
 #include <stdbool.h>
 #include <string.h>
