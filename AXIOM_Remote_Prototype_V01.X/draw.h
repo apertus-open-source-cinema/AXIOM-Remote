@@ -22,6 +22,7 @@
 void drawRGBBitmap(int16_t x, int16_t y, const uint16_t *pcolors, int16_t w, int16_t h);
 void draw_string(int16_t x, int16_t y, char* text, uint16_t color, uint16_t bg, GFXfont gfxFont, text_align align, uint16_t textblockwidth);
 void fill_rect(int16_t x, int16_t y, int16_t w, int16_t h, uint16_t color);
+void fill_circle_helper(int16_t x0, int16_t y0, int16_t r, uint8_t cornername, int16_t delta, uint16_t color);
 
 #endif //DRAW_H
 
