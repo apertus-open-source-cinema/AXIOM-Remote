@@ -112,9 +112,9 @@ uint8_t E2_pos = 0;
 
 // Page related stuff
 //_page_id_t _current_page;
-page_t _main_page[3];
+page_t main_page[3];
 
-uint8_t _page_count;
+uint8_t page_count;
 
 static inline
 void unlock(void) {

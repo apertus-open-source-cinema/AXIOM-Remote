@@ -58,14 +58,14 @@ void draw_wb_help_page_side_items() {
     //left side
 
     //Home Icon
-    if (_main_page[PAGE_WB].page_item[6].highlighted) {
+    if (main_page[PAGE_WB].page_item[6].highlighted) {
         drawRGBBitmap(0, 158, (uint16_t*) (home_icon_highlight.pixel_data), home_icon_highlight.width, home_icon_highlight.height);
     } else {
         drawRGBBitmap(0, 158, (uint16_t*) (home_icon.pixel_data), home_icon.width, home_icon.height);
     }
 
     // Back Icon
-    if (_main_page[PAGE_WB].page_item[7].highlighted) {
+    if (main_page[PAGE_WB].page_item[7].highlighted) {
         drawRGBBitmap(0, 108, (uint16_t*) (back_icon_highlight.pixel_data), back_icon_highlight.width, back_icon_highlight.height);
     } else {
         drawRGBBitmap(0, 108, (uint16_t*) (back_icon.pixel_data), back_icon.width, back_icon.height);
@@ -128,21 +128,21 @@ void init_wb_help_page() {
 
 void wb_help_page_button_press_handler(ButtonID button_index) {
     if (button_index == P7) {
-        _main_page[PAGE_WB].page_item[6].highlighted = true;
+        main_page[PAGE_WB].page_item[6].highlighted = true;
     }
     if (button_index == P8) {
-        _main_page[PAGE_WB].page_item[7].highlighted = true;
+        main_page[PAGE_WB].page_item[7].highlighted = true;
     }
 }
 
 void wb_help_page_button_release_handler(ButtonID button_index) {
     if (button_index == P7) {
-        _main_page[PAGE_WB].page_item[6].highlighted = false;
+        main_page[PAGE_WB].page_item[6].highlighted = false;
 
         navigate_to_page(PAGE_HOME, PUSH_RIGHT);
     }
     if (button_index == P8) {
-        _main_page[PAGE_WB].page_item[7].highlighted = false;
+        main_page[PAGE_WB].page_item[7].highlighted = false;
 
         navigate_to_page(PAGE_WB, PUSH_RIGHT);
     }

@@ -159,9 +159,9 @@ typedef struct {
 
 extern uint8_t _main_menu_count;
 
-extern page_t _main_page[3];
+extern page_t main_page[3];
 
-extern uint8_t _page_count;
+uint8_t page_count;
 
 // AXIOM Remote buttons and knobs
 extern bool btn_E1_pressed;

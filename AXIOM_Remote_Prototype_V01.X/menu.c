@@ -639,10 +639,12 @@ void navigate_to_menu(enum menu_id_t target_menu) {
     // menu transition animation
     if (target_menu == MENU_MAIN) {
         // main menu is perceived as top/root level on the left so we need to push current menu towards right
-        startframebuffer_transition(PUSH_RIGHT, 60);
+        // TODO: enable again when function has been moved
+        //startframebuffer_transition(PUSH_RIGHT, 60);
     } else {
         // sub menus are perceived as lower hierarchy right of the main menu so we need to push current menu towards left
-        startframebuffer_transition(PUSH_LEFT, 60);
+        // TODO: enable again when function has been moved
+        //startframebuffer_transition(PUSH_LEFT, 60);
     }
 
     //navigate into SUBMENU
