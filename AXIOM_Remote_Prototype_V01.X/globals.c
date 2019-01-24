@@ -1,15 +1,3 @@
-/*	AXIOM Remote
- **
- **	Copyright (C) 2018 Sebastian Pichelhofer
- * 
- **
- **	This program is free software; you can redistribute it and/or modify
- **    	it under the terms of the GNU General Public License 2 as published 
- **	by the Free Software Foundation.
- **
- **	Compile with -O6 for best experience
- */
-
 #include "globals.h"
 
 //#include "FreeSans9pt7b.h"
@@ -38,8 +26,12 @@ enum page_id_t current_page = PAGE_HOME;
 page_t main_page[3];
 
 bool btn_E1_pressed = false;
+bool btn_P7_pressed = false;
+bool btn_P8_pressed = false;
+
+uint8_t menu_offset = 0;
 
 uint16_t _cursor_x = 0;
 uint16_t _cursor_y = 0;
 
-
+white_balance white_balance_parameter;

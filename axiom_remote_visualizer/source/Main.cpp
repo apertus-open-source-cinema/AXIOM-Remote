@@ -4,17 +4,25 @@
 #include <thread>
 
 #include <SDL2/SDL.h>
+#include <SDL2/SDL_image.h>
+
+#include <GL/gl.h>
+
+#include "VirtualUI.h"
 
 extern "C"
 {
-    #include "axiom_remote_firmware/globals.h"
-    #include "axiom_remote_firmware/menu.h"
-    #include "axiom_remote_firmware/gfxfont.h"
+#include "AXIOM_Remote_Prototype_V01.X/globals.h"
+#include "AXIOM_Remote_Prototype_V01.X/menu.h"
+#include "AXIOM_Remote_Prototype_V01.X/page.h"
+#include "AXIOM_Remote_Prototype_V01.X/page_wb.h"
+#include "AXIOM_Remote_Prototype_V01.X/page_wb_help.h"
+#include "AXIOM_Remote_Prototype_V01.X/gfxfont.h"
 
-    #include "axiom_remote_firmware/fonts/FreeSans9pt7b.h"
-    #include "axiom_remote_firmware/fonts/FreeSans12pt7b.h"
-    #include "axiom_remote_firmware/fonts/FreeSans18pt7b.h"
-    #include "axiom_remote_firmware/fonts/FreeSans24pt7b.h"
+#include "AXIOM_Remote_Prototype_V01.X/fonts/FreeSans9pt7b.h"
+#include "AXIOM_Remote_Prototype_V01.X/fonts/FreeSans12pt7b.h"
+#include "AXIOM_Remote_Prototype_V01.X/fonts/FreeSans18pt7b.h"
+#include "AXIOM_Remote_Prototype_V01.X/fonts/FreeSans24pt7b.h"
 }
 
 void Shutdown(SDL_Window* win, SDL_Renderer* ren)
@@ -40,7 +48,7 @@ void Initialization(SDL_Window** win, SDL_Renderer** renderer)
         std::cout << "SDL could not initialize! SDL_Error: " << SDL_GetError() << std::endl;
     }
 
-    *win = SDL_CreateWindow("Hello World!", 100, 100, 640, 480, SDL_WINDOW_OPENGL);
+    *win = SDL_CreateWindow("AXIOM Remote Visualizer", 100, 100, 800, 480, SDL_WINDOW_OPENGL);
     if (*win == nullptr)
     {
         std::cout << "SDL_CreateWindow Error: " << SDL_GetError() << std::endl;
@@ -57,20 +65,27 @@ void Initialization(SDL_Window** win, SDL_Renderer** renderer)
         exit(2);
     }
 
-//    SDL_GL_SetAttribute(SDL_GL_CONTEXT_PROFILE_MASK, SDL_GL_CONTEXT_PROFILE_CORE);
-//    SDL_GL_SetAttribute(SDL_GL_CONTEXT_MAJOR_VERSION, 3);
-//    SDL_GL_SetAttribute(SDL_GL_CONTEXT_MINOR_VERSION, 3);
-//    SDL_GL_SetAttribute(SDL_GL_DOUBLEBUFFER, 1);
+    //    SDL_GL_SetAttribute(SDL_GL_CONTEXT_PROFILE_MASK, SDL_GL_CONTEXT_PROFILE_CORE);
+    //    SDL_GL_SetAttribute(SDL_GL_CONTEXT_MAJOR_VERSION, 3);
+    //    SDL_GL_SetAttribute(SDL_GL_CONTEXT_MINOR_VERSION, 3);
+    //    SDL_GL_SetAttribute(SDL_GL_DOUBLEBUFFER, 1);
 
-//    SDL_GLContext glContext = SDL_GL_CreateContext(*win);
+    //    SDL_GLContext glContext = SDL_GL_CreateContext(*win);
 }
 
 static uint8_t* frameBuffer = new uint8_t[FRAMEBUFFER_WIDTH * FRAMEBUFFER_HEIGHT * 3];
 
 void RenderDisplay(uint8_t* frameBuffer, int width, int height)
 {
-    draw_menu();
-    //draw_page();
+    if (current_menu != MENU_NONE) {
+        draw_menu();
+    } else if (current_page == PAGE_HOME) {
+        draw_page();
+    } else if (current_page == PAGE_WB) {
+        draw_wb_page();
+    } else if (current_page == PAGE_WB_HELP) {
+        draw_wb_help_page();
+    }
 
     unsigned int j = 0;
     for(int yIndex = 0; yIndex < height; ++yIndex)
@@ -90,37 +105,54 @@ int main()
 {
     std::cout<<"AXIOM Remote Visualizer" << std::endl;
 
-    SDL_Window* window;
-    SDL_Renderer* renderer;
-    Initialization(&window, &renderer);
-
     _FreeSans9pt7b = FreeSans9pt7b;
     _FreeSans12pt7b = FreeSans12pt7b;
     _FreeSans18pt7b = FreeSans18pt7b;
     _FreeSans24pt7b = FreeSans24pt7b;
 
+    SDL_Window* window;
+    SDL_Renderer* renderer;
+    Initialization(&window, &renderer);
+
+    ImGui::CreateContext();
+    ImGuiIO& io = ImGui::GetIO(); (void)io;
+
+    SDL_GLContext gl_context = SDL_GL_CreateContext(window);
+    ImGui_ImplSDL2_InitForOpenGL(window, gl_context);
+    ImGui_ImplOpenGL2_Init();
+
     init_menus();
+    init_pages();
     //draw_menu();
 
-    RenderDisplay(frameBuffer, FRAMEBUFFER_WIDTH, FRAMEBUFFER_HEIGHT);
-
-    uint32_t rmask = 0x000000ff;
-    uint32_t gmask = 0x0000ff00;
-    uint32_t bmask = 0x00ff0000;
-    uint32_t amask = 0xff000000;
-
-    SDL_Surface* surface;
-    SDL_Texture* texture;
-    surface = SDL_CreateRGBSurfaceFrom(frameBuffer, FRAMEBUFFER_WIDTH, FRAMEBUFFER_HEIGHT, 24, 3 * FRAMEBUFFER_WIDTH, rmask, gmask, bmask, amask);
-    texture = SDL_CreateTexture(renderer, SDL_PIXELFORMAT_RGB24, SDL_TEXTUREACCESS_STREAMING, FRAMEBUFFER_WIDTH, FRAMEBUFFER_HEIGHT);
+    SDL_Texture* texture = SDL_CreateTexture(renderer, SDL_PIXELFORMAT_RGB24, SDL_TEXTUREACCESS_STREAMING, FRAMEBUFFER_WIDTH, FRAMEBUFFER_HEIGHT);
     void* textureData;
     int pitch = 0;
 
     SDL_Rect texture_rect;
-    texture_rect.x = 30;  //the x coordinate
-    texture_rect.y = 30; // the y coordinate
+    texture_rect.x = 400;  //the x coordinate
+    texture_rect.y = 120; // the y coordinate
     texture_rect.w = FRAMEBUFFER_WIDTH; //the width of the texture
     texture_rect.h = FRAMEBUFFER_HEIGHT; //the height of the texture
+
+    unsigned int knobTextureID = 0;
+    SDL_Surface* surface = IMG_Load("knob_clean.png");
+    glGenTextures(1, &knobTextureID);
+    glBindTexture(GL_TEXTURE_2D, knobTextureID);
+
+    int Mode = GL_RGB;
+    if(surface->format->BytesPerPixel == 4)
+    {
+        Mode = GL_RGBA;
+    }
+
+    glTexImage2D(GL_TEXTURE_2D, 0, Mode, surface->w, surface->h, 0, Mode, GL_UNSIGNED_BYTE, surface->pixels);
+
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+    //knob_tex = SDL_CreateTextureFromSurface(ren, surface);
+
+    glBindTexture(GL_TEXTURE_2D, 0);
 
     SDL_SetRenderDrawColor(renderer, 0, 60, 80, 255);
 
@@ -129,13 +161,15 @@ int main()
     SDL_Event events;
     while ( appIsRunning )
     {
-        if(SDL_PollEvent(&events))
+        while(SDL_PollEvent(&events))
         {
-            if(events.type == SDL_QUIT || (events.type == SDL_KEYDOWN && events.key.keysym.sym == SDLK_ESCAPE))
+            if((events.type == SDL_WINDOWEVENT && events.window.event == SDL_WINDOWEVENT_CLOSE) || (events.type == SDL_KEYDOWN && events.key.keysym.sym == SDLK_ESCAPE))
             {
                 appIsRunning = false;
             }
         }
+
+        RenderUI(window, reinterpret_cast<ImTextureID>(knobTextureID));
 
         SDL_RenderClear(renderer);
         RenderDisplay(frameBuffer, FRAMEBUFFER_WIDTH, FRAMEBUFFER_HEIGHT);
@@ -143,6 +177,9 @@ int main()
         SDL_LockTexture( texture, nullptr, &textureData, &pitch);
         memcpy(textureData, frameBuffer, FRAMEBUFFER_WIDTH * FRAMEBUFFER_HEIGHT * 3);
         SDL_UnlockTexture( texture );
+
+
+        ImGui_ImplOpenGL2_RenderDrawData(ImGui::GetDrawData());
 
         SDL_RenderCopy(renderer, texture, nullptr, &texture_rect);
         SDL_RenderPresent(renderer); //updates the renderer
