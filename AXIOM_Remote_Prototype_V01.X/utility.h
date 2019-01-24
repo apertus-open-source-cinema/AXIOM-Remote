@@ -19,7 +19,7 @@
 #include <stdio.h>
 
 
-int8_t limit_range(int8_t in, int8_t min, int8_t max) {
+static inline int8_t limit_range(int8_t in, int8_t min, int8_t max) {
     if (in >= max) {
         return max;
     }
@@ -40,7 +40,7 @@ int8_t limit_range(int8_t in, int8_t min, int8_t max) {
  */
 
 /**************************************************************************/
-uint16_t color565(uint8_t red, uint8_t green, uint8_t blue) {
+static inline uint16_t color565(uint8_t red, uint8_t green, uint8_t blue) {
     return ((red & 0xF8) << 8) | ((green & 0xFC) << 3) | ((blue & 0xF8) >> 3);
 }
 
