@@ -14,6 +14,7 @@
 #define DRAW_H
 
 #include <inttypes.h>
+#include "globals.h"
 
 //void drawChar(int16_t x, int16_t y, unsigned char c, uint16_t color, uint16_t bg, GFXfont gfxFont);
 //uint16_t get_string_width(const char* str, GFXfont gfxFont);

@@ -18,7 +18,7 @@
 #include <stdio.h>
 #include <string.h>
 
-//#include "main.h"
+#include "main.h"
 #include "draw.h"
 #include "globals.h"
 #include "utility.h"
