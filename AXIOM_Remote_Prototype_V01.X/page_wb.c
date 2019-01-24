@@ -11,13 +11,14 @@
  **	Compile with -O6 for best experience
  */
 
-#include <stdint.h>
-#include <stdbool.h>
+#include "page_wb.h"
+
 #include <stdio.h>
 #include <string.h>
 
 //#include "main.h"
-#include "definitions.h"
+//#include "definitions.h"
+//#include "draw.h"
 #include "globals.h"
 #include "utility.h"
 #include "media/media.h"
@@ -128,7 +129,7 @@ void draw_wb_page_item(uint8_t screen_index) {
             // draw label
             fill_round_rect(x, y + _page_item_value_height, _page_item_width, _page_item_label_height, 3,
                     page_item_label_background_color);
-            fill_rect(x, y + _page_item_value_height, _page_item_width, 3, 3, page_item_label_background_color);
+            fill_rect(x, y + _page_item_value_height, _page_item_width, 3, page_item_label_background_color);
             draw_string(x, y + _page_item_value_height + 7, main_page[PAGE_WB].page_item[screen_index].label,
                     page_item_label_color, page_item_value_color,
                     _FreeSans9pt7b, TEXT_ALIGN_CENTER, _page_item_width);
@@ -151,7 +152,7 @@ void draw_wb_page_item(uint8_t screen_index) {
             // draw label
 
             fill_round_rect(x, y + 1, _page_item_width, _page_item_label_height, 3, page_item_label_background_color);
-            fill_rect(x, y + _page_item_label_height - 3, _page_item_width, 3, 3, page_item_label_background_color);
+            fill_rect(x, y + _page_item_label_height - 3, _page_item_width, 3, page_item_label_background_color);
             draw_string(x, y + 7, main_page[PAGE_WB].page_item[screen_index].label, page_item_label_color, page_item_label_color,
                     _FreeSans9pt7b, TEXT_ALIGN_CENTER, _page_item_width);
 

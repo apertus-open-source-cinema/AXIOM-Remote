@@ -163,9 +163,11 @@ extern page_t main_page[3];
 
 uint8_t page_count;
 
-// AXIOM Remote buttons and knobs
+// Buttons and knobs
 extern bool btn_E1_pressed;
 extern bool btn_E2_pressed;
+extern bool btn_P7_pressed;
+extern bool btn_P8_pressed;
 extern bool btn_S1_pos;
 extern bool btn_TS1_pos;
 extern bool btn_TS2_pos;

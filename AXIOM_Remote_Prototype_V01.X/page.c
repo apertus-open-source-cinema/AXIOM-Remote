@@ -11,10 +11,12 @@
  **	Compile with -O6 for best experience
  */
 
+#include "page.h"
+
 #include <stdio.h>
 #include <string.h>
 
-#include "globals.h"
+//#include "globals.h"
 #include "utility.h"
 
 #ifndef PAGE_C
