@@ -37,7 +37,7 @@ void draw_pixel(int16_t x, int16_t y, uint16_t color) {
     //prevent drawing outside of bounds
     if ((x >= 0) && (x < FRAMEBUFFER_WIDTH) && (y >= 0) && (y < FRAMEBUFFER_HEIGHT)) {
         //origin shall be at the lower left corner so we mirror y axis
-        _framebuffer[x][FRAMEBUFFER_HEIGHT - y] = color;
+        framebuffer[x][FRAMEBUFFER_HEIGHT - y] = color;
     } else {
         //uart2_str0("draw attempt outside bounds\n\r");
     }

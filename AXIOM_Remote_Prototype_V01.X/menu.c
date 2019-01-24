@@ -18,10 +18,12 @@
 #include <stdio.h>
 #include <string.h>
 
-#include "main.h"
+//#include "main.h"
 #include "draw.h"
 #include "globals.h"
 #include "utility.h"
+
+#include "media/media.h"
 
 // Menu related stuff
 //uint8_t _menu_selection_index = 0; // index of the currently selected item in the menu
@@ -637,10 +639,10 @@ void navigate_to_menu(enum menu_id_t target_menu) {
     // menu transition animation
     if (target_menu == MENU_MAIN) {
         // main menu is perceived as top/root level on the left so we need to push current menu towards right
-        start_framebuffer_transition(PUSH_RIGHT, 60);
+        startframebuffer_transition(PUSH_RIGHT, 60);
     } else {
         // sub menus are perceived as lower hierarchy right of the main menu so we need to push current menu towards left
-        start_framebuffer_transition(PUSH_LEFT, 60);
+        startframebuffer_transition(PUSH_LEFT, 60);
     }
 
     //navigate into SUBMENU

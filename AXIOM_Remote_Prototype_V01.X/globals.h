@@ -102,10 +102,10 @@ extern bool btn_E1_pressed;
 #define FRAMEBUFFER_TOP 239
 
 // the central frame buffer that is written to the LCD
-uint16_t _framebuffer[FRAMEBUFFER_WIDTH][FRAMEBUFFER_HEIGHT];
+uint16_t framebuffer[FRAMEBUFFER_WIDTH][FRAMEBUFFER_HEIGHT];
 
 //second frame buffer for rendering transition effects
-uint16_t _transition_framebuffer[FRAMEBUFFER_WIDTH][FRAMEBUFFER_HEIGHT];
+uint16_t _transitionframebuffer[FRAMEBUFFER_WIDTH][FRAMEBUFFER_HEIGHT];
 uint8_t _transition_counter;
 bool _transition_active;
 uint8_t _transition_animation_speed;

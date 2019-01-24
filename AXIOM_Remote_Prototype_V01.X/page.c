@@ -262,7 +262,7 @@ void update_pages() {
 
 void navigate_to_page(enum page_id_t target_page, enum transition_animation animation) {
     // transition animation
-    start_framebuffer_transition(animation, 60);
+    startframebuffer_transition(animation, 60);
 
     current_page = target_page;
 

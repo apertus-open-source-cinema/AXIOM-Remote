@@ -12,8 +12,9 @@
 
 #ifndef MAIN_H
 #define MAIN_H
-
+/*
 #include "definitions.h"
+
 #include "gfxfont.h"
 #include "media/trash-icon.c"
 #include "media/help-icon.c"
@@ -25,7 +26,7 @@
 #include "media/up-icon-highlight.c"
 #include "media/down-icon.c"
 #include "media/down-icon-highlight.c"
-#include "media/wheel-illustration.c"
+#include "media/wheel-illustration.c"*/
 
 
 //extern uint8_t _menu_selection_index;
