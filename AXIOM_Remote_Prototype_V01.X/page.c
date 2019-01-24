@@ -11,12 +11,9 @@
  **	Compile with -O6 for best experience
  */
 
-#include <stdint.h>
-#include <stdbool.h>
 #include <stdio.h>
 #include <string.h>
-//#include "main.h"
-#include "definitions.h"
+
 #include "globals.h"
 #include "utility.h"
 

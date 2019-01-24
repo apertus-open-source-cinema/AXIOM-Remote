@@ -13,12 +13,13 @@
 
 #include <stdint.h>
 #include <stdbool.h>
+#include <string.h>
+
 #include "glcdfont.c"
 #include "gfxfont.h"
-#include <string.h>
-#include "definitions.h"
+//#include "definitions.h"
 #include "globals.h"
-#include "main.h"
+//#include "main.h"
 
 #ifndef DRAW_C
 #define DRAW_C
