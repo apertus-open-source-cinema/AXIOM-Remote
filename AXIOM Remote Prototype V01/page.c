@@ -11,14 +11,14 @@
  **	Compile with -O6 for best experience
  */
 
-#include <xc.h>
 #include <stdint.h>
 #include <stdbool.h>
 #include <stdio.h>
 #include <string.h>
-#include "main.h"
+//#include "main.h"
 #include "definitions.h"
-#include "utility.c"
+#include "globals.h"
+#include "utility.h"
 
 #ifndef PAGE_C
 #define PAGE_C
@@ -62,15 +62,15 @@ void draw_page_item(uint8_t screen_index) {
     uint16_t x, y;
     if (screen_index == 0) {
         x = _padding_side;
-        y = _height - page_item_height;
+        y = FRAMEBUFFER_HEIGHT - page_item_height;
     }
     if (screen_index == 1) {
         x = _padding_side + _padding_elements + _page_item_width;
-        y = _height - page_item_height;
+        y = FRAMEBUFFER_HEIGHT - page_item_height;
     }
     if (screen_index == 2) {
         x = _padding_side + 2 * _padding_elements + 2 * _page_item_width;
-        y = _height - page_item_height;
+        y = FRAMEBUFFER_HEIGHT - page_item_height;
     }
     if (screen_index == 3) {
         x = _padding_side;
@@ -105,48 +105,48 @@ void draw_page_item(uint8_t screen_index) {
     if (screen_index < 3) {
         // 3 top items
 
-        if (_main_page[PAGE_HOME].page_item[screen_index].item_type == button) {
-            fill_round_rect(x, y + 2 + _button_height, _page_item_width, _button_height, 3, page_item_label_background_color);
-            draw_string(x, y + 9 + _button_height, _main_page[PAGE_HOME].page_item[screen_index].label,
+        if (_main_page[PAGE_HOME].page_item[screen_index].item_type == BUTTON) {
+            fill_round_rect(x, y + 2 + button_height, _page_item_width, button_height, 3, page_item_label_background_color);
+            draw_string(x, y + 9 + button_height, _main_page[PAGE_HOME].page_item[screen_index].label,
                     page_item_label_color, page_item_label_color,
-                    _FreeSans12pt7b, ALIGN_CENTER, _page_item_width);
+                    _FreeSans12pt7b, TEXT_ALIGN_CENTER, _page_item_width);
         }
-        if (_main_page[PAGE_HOME].page_item[screen_index].item_type == value_and_label) {
+        if (_main_page[PAGE_HOME].page_item[screen_index].item_type == VALUE_AND_LABEL) {
             // draw label
             fill_round_rect(x, y + _page_item_value_height, _page_item_width, _page_item_label_height, 3,
                     page_item_label_background_color);
             fill_rect(x, y + _page_item_value_height, _page_item_width, 3, 3, page_item_label_background_color);
             draw_string(x, y + _page_item_value_height + 7, _main_page[PAGE_HOME].page_item[screen_index].label,
                     page_item_label_color, page_item_value_color,
-                    _FreeSans9pt7b, ALIGN_CENTER, _page_item_width);
+                    _FreeSans9pt7b, TEXT_ALIGN_CENTER, _page_item_width);
 
             // draw value
             fill_round_rect(x, y, _page_item_width, _page_item_value_height, 3, page_item_value_background_color);
             fill_rect(x, y + _page_item_value_height - 3, _page_item_width, 3, page_item_value_background_color);
             draw_string(x, y + 10, _main_page[PAGE_HOME].page_item[screen_index].value, page_item_value_color, page_item_value_color,
-                    _FreeSans12pt7b, ALIGN_CENTER, _page_item_width);
+                    _FreeSans12pt7b, TEXT_ALIGN_CENTER, _page_item_width);
         }
     } else {
         // 3 bottom items
 
-        if (_main_page[PAGE_HOME].page_item[screen_index].item_type == button) {
-            fill_round_rect(x, y + 2, _page_item_width, _button_height, 3, page_item_label_background_color);
+        if (_main_page[PAGE_HOME].page_item[screen_index].item_type == BUTTON) {
+            fill_round_rect(x, y + 2, _page_item_width, button_height, 3, page_item_label_background_color);
             draw_string(x, y + 9, _main_page[PAGE_HOME].page_item[screen_index].label, page_item_label_color, page_item_label_color,
-                    _FreeSans12pt7b, ALIGN_CENTER, _page_item_width);
+                    _FreeSans12pt7b, TEXT_ALIGN_CENTER, _page_item_width);
         }
-        if (_main_page[PAGE_HOME].page_item[screen_index].item_type == value_and_label) {
+        if (_main_page[PAGE_HOME].page_item[screen_index].item_type == VALUE_AND_LABEL) {
             // draw label
 
             fill_round_rect(x, y + 1, _page_item_width, _page_item_label_height, 3, page_item_label_background_color);
             fill_rect(x, y + _page_item_label_height - 3, _page_item_width, 3, 3, page_item_label_background_color);
             draw_string(x, y + 7, _main_page[PAGE_HOME].page_item[screen_index].label, page_item_label_color, page_item_label_color,
-                    _FreeSans9pt7b, ALIGN_CENTER, _page_item_width);
+                    _FreeSans9pt7b, TEXT_ALIGN_CENTER, _page_item_width);
 
             // draw value
             fill_round_rect(x, y + _page_item_label_height, _page_item_width, _page_item_value_height, 3, page_item_value_background_color);
             fill_rect(x, y + _page_item_label_height, _page_item_width, 3, page_item_value_background_color);
             draw_string(x, y + _page_item_label_height + 6, _main_page[PAGE_HOME].page_item[screen_index].value, page_item_value_color, page_item_value_color,
-                    _FreeSans12pt7b, ALIGN_CENTER, _page_item_width);
+                    _FreeSans12pt7b, TEXT_ALIGN_CENTER, _page_item_width);
         }
     }
 }
@@ -159,11 +159,11 @@ void draw_page_item(uint8_t screen_index) {
 /**************************************************************************/
 void draw_page() {
     //clear the screen
-    fill_rect(0, 0, _width, _height, _page_background_color);
+    fill_rect(0, 0, FRAMEBUFFER_WIDTH, FRAMEBUFFER_HEIGHT, _page_background_color);
 
     uint8_t a;
     for (a = 0; a < _page_count; a++) {
-        if (_main_page[a].page_id == _current_page) {
+        if (_main_page[a].page_id == current_page) {
             uint8_t i;
             for (i = 0; i < _main_page[a].page_items_count; i++) {
                 draw_page_item(i);
@@ -215,30 +215,30 @@ void init_pages() {
     strcpy(_main_page[PAGE_HOME].page_item[j].label, "FPS");
     strcpy(_main_page[PAGE_HOME].page_item[j].value, "...");
     _main_page[PAGE_HOME].page_item[j].highlighted = false;
-    _main_page[PAGE_HOME].page_item[j].item_type = value_and_label;
+    _main_page[PAGE_HOME].page_item[j].item_type = VALUE_AND_LABEL;
     j++;
     _main_page[PAGE_HOME].page_item[j].disabled = false;
     strcpy(_main_page[PAGE_HOME].page_item[j].label, "Item 2");
     strcpy(_main_page[PAGE_HOME].page_item[j].value, "...");
     _main_page[PAGE_HOME].page_item[j].highlighted = false;
-    _main_page[PAGE_HOME].page_item[j].item_type = value_and_label;
+    _main_page[PAGE_HOME].page_item[j].item_type = VALUE_AND_LABEL;
     j++;
     _main_page[PAGE_HOME].page_item[j].disabled = false;
     strcpy(_main_page[PAGE_HOME].page_item[j].label, "Shutter");
     strcpy(_main_page[PAGE_HOME].page_item[j].value, "...");
     _main_page[PAGE_HOME].page_item[j].highlighted = false;
-    _main_page[PAGE_HOME].page_item[j].item_type = value_and_label;
+    _main_page[PAGE_HOME].page_item[j].item_type = VALUE_AND_LABEL;
     j++;
     _main_page[PAGE_HOME].page_item[j].disabled = false;
     strcpy(_main_page[PAGE_HOME].page_item[j].label, "MENU");
     _main_page[PAGE_HOME].page_item[j].highlighted = false;
-    _main_page[PAGE_HOME].page_item[j].item_type = button;
+    _main_page[PAGE_HOME].page_item[j].item_type = BUTTON;
     j++;
     _main_page[PAGE_HOME].page_item[j].disabled = false;
     strcpy(_main_page[PAGE_HOME].page_item[j].label, "Item 5");
     strcpy(_main_page[PAGE_HOME].page_item[j].value, "...");
     _main_page[PAGE_HOME].page_item[j].highlighted = false;
-    _main_page[PAGE_HOME].page_item[j].item_type = value_and_label;
+    _main_page[PAGE_HOME].page_item[j].item_type = VALUE_AND_LABEL;
     j++;
     _main_page[PAGE_HOME].page_item[j].disabled = false;
     strcpy(_main_page[PAGE_HOME].page_item[j].label, "WB");
@@ -246,7 +246,7 @@ void init_pages() {
     _main_page[PAGE_HOME].page_item[j].link_to_subpage = PAGE_WB;
     _main_page[PAGE_HOME].page_item[j].fontsize = _FreeSans12pt7b;
     _main_page[PAGE_HOME].page_item[j].highlighted = false;
-    _main_page[PAGE_HOME].page_item[j].item_type = value_and_label;
+    _main_page[PAGE_HOME].page_item[j].item_type = VALUE_AND_LABEL;
 
     _main_page[PAGE_HOME].page_items_count = j + 1;
 
@@ -256,64 +256,64 @@ void init_pages() {
 
     _transition_active = false;
     _transition_counter = 0;
-    _transition_animation_type = PUSH_LEFT;
+    transition_animation_type = PUSH_LEFT;
 }
 
 void update_pages() {
     sprintf(_main_page[PAGE_HOME].page_item[5].value, "%dK", _white_balance.white_balance_options[_white_balance.white_balance_selection_index].Kelvin);
 }
 
-void navigate_to_page(enum _page_id_t target_page, enum transition_animation animation) {
+void navigate_to_page(enum page_id_t target_page, enum transition_animation animation) {
     // transition animation
     start_framebuffer_transition(animation, 60);
 
-    _current_page = target_page;
+    current_page = target_page;
 
-    if (_current_menu != menu_none) {
-        _current_menu = menu_none; //navigate_to_menu(menu_none);
+    if (current_menu != MENU_NONE) {
+        current_menu = MENU_NONE; //navigate_to_menu(menu_none);
     }
 }
 
-void main_page_button_press_handler(ButtonID button_index) {
-    if (button_index == P1) {
+void main_page_button_press_handler(ButtonID BUTTON_index) {
+    if (BUTTON_index == P1) {
         _main_page[PAGE_HOME].page_item[0].highlighted = true;
     }
-    if (button_index == P2) {
+    if (BUTTON_index == P2) {
         _main_page[PAGE_HOME].page_item[1].highlighted = true;
     }
-    if (button_index == P3) {
+    if (BUTTON_index == P3) {
         _main_page[PAGE_HOME].page_item[2].highlighted = true;
     }
-    if (button_index == P4) {
+    if (BUTTON_index == P4) {
         _main_page[PAGE_HOME].page_item[3].highlighted = true;
     }
-    if (button_index == P5) {
+    if (BUTTON_index == P5) {
         _main_page[PAGE_HOME].page_item[4].highlighted = true;
     }
-    if (button_index == P6) {
+    if (BUTTON_index == P6) {
         _main_page[PAGE_HOME].page_item[5].highlighted = true;
     }
 }
 
-void main_page_button_release_handler(ButtonID button_index) {
-    if (button_index == P1) {
+void main_page_button_release_handler(ButtonID BUTTON_index) {
+    if (BUTTON_index == P1) {
         _main_page[PAGE_HOME].page_item[0].highlighted = false;
     }
-    if (button_index == P2) {
+    if (BUTTON_index == P2) {
         _main_page[PAGE_HOME].page_item[1].highlighted = false;
     }
-    if (button_index == P3) {
+    if (BUTTON_index == P3) {
         _main_page[PAGE_HOME].page_item[2].highlighted = false;
     }
-    if (button_index == P4) {
+    if (BUTTON_index == P4) {
         _main_page[PAGE_HOME].page_item[3].highlighted = false;
 
-        navigate_to_menu(menu_main);
+        navigate_to_menu(MENU_MAIN);
     }
-    if (button_index == P5) {
+    if (BUTTON_index == P5) {
         _main_page[PAGE_HOME].page_item[4].highlighted = false;
     }
-    if (button_index == P6) {
+    if (BUTTON_index == P6) {
         _main_page[PAGE_HOME].page_item[5].highlighted = false;
 
         navigate_to_page(_main_page[PAGE_HOME].page_item[5].link_to_subpage, PUSH_UP);

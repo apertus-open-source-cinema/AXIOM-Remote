@@ -17,6 +17,7 @@
 #include "gfxfont.h"
 #include <string.h>
 #include "definitions.h"
+#include "globals.h"
 #include "main.h"
 
 #ifndef DRAW_C
@@ -33,9 +34,9 @@
 /**************************************************************************/
 void draw_pixel(int16_t x, int16_t y, uint16_t color) {
     //prevent drawing outside of bounds
-    if ((x >= 0) && (x < _width) && (y >= 0) && (y < _height)) {
+    if ((x >= 0) && (x < FRAMEBUFFER_WIDTH) && (y >= 0) && (y < FRAMEBUFFER_HEIGHT)) {
         //origin shall be at the lower left corner so we mirror y axis
-        _framebuffer[x][_height - y] = color;
+        _framebuffer[x][FRAMEBUFFER_HEIGHT - y] = color;
     } else {
         //uart2_str0("draw attempt outside bounds\n\r");
     }
@@ -460,8 +461,8 @@ void drawRGBBitmap(int16_t x, int16_t y, const uint16_t *pcolors, int16_t w, int
     h = temp;
 
     int16_t x2, y2; // Lower-right coord
-    if ((x >= _width) || // Off-edge right
-            (y >= _height) || // " top
+    if ((x >= FRAMEBUFFER_WIDTH) || // Off-edge right
+            (y >= FRAMEBUFFER_HEIGHT) || // " top
             ((x2 = (x + w - 1)) < 0) || // " left
             ((y2 = (y + h - 1)) < 0)) return; // " bottom
 
@@ -483,13 +484,13 @@ void drawRGBBitmap(int16_t x, int16_t y, const uint16_t *pcolors, int16_t w, int
     }
 
     // Clip right
-    if (x2 >= _width) {
-        w = _width - x;
+    if (x2 >= FRAMEBUFFER_WIDTH) {
+        w = FRAMEBUFFER_WIDTH - x;
     }
 
     // Clip bottom
-    if (y2 >= _height) {
-        h = _height - y;
+    if (y2 >= FRAMEBUFFER_HEIGHT) {
+        h = FRAMEBUFFER_HEIGHT - y;
     }
 
     uint16_t draw_x;
@@ -539,7 +540,7 @@ void getCharBounds(char c, int16_t *x, int16_t *y, int16_t *minx, int16_t *miny,
                     xa = pgm_read_byte(&glyph->xAdvance);
             int8_t xo = pgm_read_byte(&glyph->xOffset),
                     yo = pgm_read_byte(&glyph->yOffset);
-            if (wrap && ((*x + (((int16_t) xo + gw) * textsize)) > _width)) {
+            if (wrap && ((*x + (((int16_t) xo + gw) * textsize)) > FRAMEBUFFER_WIDTH)) {
                 *x = 0; // Reset x to zero, advance y by one line
                 *y += textsize * (uint8_t) pgm_read_byte(&gfxFont.yAdvance);
             }
@@ -643,7 +644,7 @@ void get_text_bounds(char *str, int16_t x, int16_t y, int16_t *x1, int16_t *y1, 
     *y1 = y;
     *w = *h = 0;
 
-    int16_t minx = _width, miny = _height, maxx = -1, maxy = -1;
+    int16_t minx = FRAMEBUFFER_WIDTH, miny = FRAMEBUFFER_HEIGHT, maxx = -1, maxy = -1;
 
     while ((c = *str++))
         getCharBounds(c, &x, &y, &minx, &miny, &maxx, &maxy, 1, gfxfont);
@@ -658,7 +659,7 @@ void get_text_bounds(char *str, int16_t x, int16_t y, int16_t *x1, int16_t *y1, 
     }
 }
 
-void draw_string(int16_t x, int16_t y, char* text, uint16_t color, uint16_t bg, GFXfont gfxFont, textAlign align, uint16_t textblockwidth) {
+void draw_string(int16_t x, int16_t y, char* text, uint16_t color, uint16_t bg, GFXfont gfxFont, text_align align, uint16_t textblockwidth) {
     uint8_t first = pgm_read_byte(&gfxFont.first);
     uint8_t last = pgm_read_byte(&gfxFont.last);
     uint8_t length = strlen(text);
@@ -685,7 +686,7 @@ void draw_string(int16_t x, int16_t y, char* text, uint16_t color, uint16_t bg, 
 
             // wrap text into new line: - check at every space character if next word will 
             // still fit into textblockwidth if not advance to next line
-            if ((align == ALIGN_LEFT) && (textblockwidth > 0)) {
+            if ((align == TEXT_ALIGN_LEFT) && (textblockwidth > 0)) {
                 uint16_t next_space = 0;
                 uint16_t j;
 
@@ -754,13 +755,13 @@ void draw_string(int16_t x, int16_t y, char* text, uint16_t color, uint16_t bg, 
                     newline = false;
                 }
 
-                if (align == ALIGN_LEFT) {
+                if (align == TEXT_ALIGN_LEFT) {
                     drawChar(_cursor_x + xo, _cursor_y, c, color, bg, gfxFont);
                 }
-                if ((align == ALIGN_CENTER) && (textblockwidth > 0)) {
+                if ((align == TEXT_ALIGN_CENTER) && (textblockwidth > 0)) {
                     drawChar(_cursor_x + xo - text_width / 2 + textblockwidth / 2, _cursor_y, c, color, bg, gfxFont);
                 }
-                if ((align == ALIGN_RIGHT) && (textblockwidth > 0)) {
+                if ((align == TEXT_ALIGN_RIGHT) && (textblockwidth > 0)) {
                     drawChar(_cursor_x + xo + textblockwidth - text_width, _cursor_y, c, color, bg, gfxFont);
                 }
 

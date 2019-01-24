@@ -11,14 +11,14 @@
  **	Compile with -O6 for best experience
  */
 
-#include <xc.h>
 #include <stdint.h>
 #include <stdbool.h>
 #include <stdio.h>
 #include <string.h>
 #include "main.h"
 #include "definitions.h"
-#include "utility.c"
+#include "globals.h"
+#include "utility.h"
 
 
 //#include "main.c"
@@ -73,15 +73,15 @@ void draw_wb_page_item(uint8_t screen_index) {
     uint16_t x, y;
     if (screen_index == 0) {
         x = _padding_side;
-        y = _top - page_item_height;
+        y = FRAMEBUFFER_TOP - page_item_height;
     }
     if (screen_index == 1) {
         x = _padding_side + _padding_elements + _page_item_width;
-        y = _top - page_item_height;
+        y = FRAMEBUFFER_TOP - page_item_height;
     }
     if (screen_index == 2) {
         x = _padding_side + 2 * _padding_elements + 2 * _page_item_width;
-        y = _top - page_item_height;
+        y = FRAMEBUFFER_TOP - page_item_height;
     }
     if (screen_index == 3) {
         x = _padding_side;
@@ -116,48 +116,48 @@ void draw_wb_page_item(uint8_t screen_index) {
     if (screen_index < 3) {
         // 3 top items
 
-        if (_main_page[PAGE_WB].page_item[screen_index].item_type == button) {
-            fill_round_rect(x, y + 2 + _button_height, _page_item_width, _button_height, 3, page_item_label_background_color);
-            draw_string(x, y + 9 + _button_height, _main_page[PAGE_WB].page_item[screen_index].label,
+        if (_main_page[PAGE_WB].page_item[screen_index].item_type == BUTTON) {
+            fill_round_rect(x, y + 2 + button_height, _page_item_width, button_height, 3, page_item_label_background_color);
+            draw_string(x, y + 9 + button_height, _main_page[PAGE_WB].page_item[screen_index].label,
                     page_item_label_color, page_item_label_color,
-                    _FreeSans12pt7b, ALIGN_CENTER, _page_item_width);
+                    _FreeSans12pt7b, TEXT_ALIGN_CENTER, _page_item_width);
         }
-        if (_main_page[PAGE_WB].page_item[screen_index].item_type == value_and_label) {
+        if (_main_page[PAGE_WB].page_item[screen_index].item_type == VALUE_AND_LABEL) {
             // draw label
             fill_round_rect(x, y + _page_item_value_height, _page_item_width, _page_item_label_height, 3,
                     page_item_label_background_color);
             fill_rect(x, y + _page_item_value_height, _page_item_width, 3, 3, page_item_label_background_color);
             draw_string(x, y + _page_item_value_height + 7, _main_page[PAGE_WB].page_item[screen_index].label,
                     page_item_label_color, page_item_value_color,
-                    _FreeSans9pt7b, ALIGN_CENTER, _page_item_width);
+                    _FreeSans9pt7b, TEXT_ALIGN_CENTER, _page_item_width);
 
             // draw value
             fill_round_rect(x, y, _page_item_width, _page_item_value_height, 3, page_item_value_background_color);
             fill_rect(x, y + _page_item_value_height - 3, _page_item_width, 3, page_item_value_background_color);
             draw_string(x, y + 10, _main_page[PAGE_WB].page_item[screen_index].value, page_item_value_color, page_item_value_color,
-                    _FreeSans12pt7b, ALIGN_CENTER, _page_item_width);
+                    _FreeSans12pt7b, TEXT_ALIGN_CENTER, _page_item_width);
         }
     } else {
         // 3 bottom items
 
-        if (_main_page[PAGE_WB].page_item[screen_index].item_type == button) {
-            fill_round_rect(x, y + 2, _page_item_width, _button_height, 3, page_item_label_background_color);
+        if (_main_page[PAGE_WB].page_item[screen_index].item_type == BUTTON) {
+            fill_round_rect(x, y + 2, _page_item_width, button_height, 3, page_item_label_background_color);
             draw_string(x, y + 9, _main_page[PAGE_WB].page_item[screen_index].label, page_item_label_color, page_item_label_color,
-                    _FreeSans12pt7b, ALIGN_CENTER, _page_item_width);
+                    _FreeSans12pt7b, TEXT_ALIGN_CENTER, _page_item_width);
         }
-        if (_main_page[PAGE_WB].page_item[screen_index].item_type == value_and_label) {
+        if (_main_page[PAGE_WB].page_item[screen_index].item_type == VALUE_AND_LABEL) {
             // draw label
 
             fill_round_rect(x, y + 1, _page_item_width, _page_item_label_height, 3, page_item_label_background_color);
             fill_rect(x, y + _page_item_label_height - 3, _page_item_width, 3, 3, page_item_label_background_color);
             draw_string(x, y + 7, _main_page[PAGE_WB].page_item[screen_index].label, page_item_label_color, page_item_label_color,
-                    _FreeSans9pt7b, ALIGN_CENTER, _page_item_width);
+                    _FreeSans9pt7b, TEXT_ALIGN_CENTER, _page_item_width);
 
             // draw value
             fill_round_rect(x, y + _page_item_label_height, _page_item_width, _page_item_value_height, 3, page_item_value_background_color);
             fill_rect(x, y + _page_item_label_height, _page_item_width, 3, page_item_value_background_color);
             draw_string(x, y + _page_item_label_height + 6, _main_page[PAGE_WB].page_item[screen_index].value, page_item_value_color, page_item_value_color,
-                    _FreeSans12pt7b, ALIGN_CENTER, _page_item_width);
+                    _FreeSans12pt7b, TEXT_ALIGN_CENTER, _page_item_width);
         }
     }
 }
@@ -190,23 +190,23 @@ void draw_wb_page_side_items() {
 
     // Up Icon
     if (_main_page[PAGE_WB].page_item[9].highlighted) {
-        drawRGBBitmap(_width - 1 - up_icon_highlight.width, 158, (uint16_t*) (up_icon_highlight.pixel_data), up_icon_highlight.width, up_icon_highlight.height);
+        drawRGBBitmap(FRAMEBUFFER_WIDTH - 1 - up_icon_highlight.width, 158, (uint16_t*) (up_icon_highlight.pixel_data), up_icon_highlight.width, up_icon_highlight.height);
     } else {
-        drawRGBBitmap(_width - 1 - up_icon.width, 158, (uint16_t*) (up_icon.pixel_data), up_icon.width, up_icon.height);
+        drawRGBBitmap(FRAMEBUFFER_WIDTH - 1 - up_icon.width, 158, (uint16_t*) (up_icon.pixel_data), up_icon.width, up_icon.height);
     }
 
     // Help Icon
     if (_main_page[PAGE_WB].page_item[10].highlighted) {
         //drawRGBBitmap(_width - 1 - down_icon_highlight.width, 108, (uint16_t*) (down_icon_highlight.pixel_data), down_icon_highlight.width, up_icon_highlight.height);
     } else {
-        drawRGBBitmap(_width - 1 - help_icon.width, 108, (uint16_t*) (help_icon.pixel_data), help_icon.width, help_icon.height);
+        drawRGBBitmap(FRAMEBUFFER_WIDTH - 1 - help_icon.width, 108, (uint16_t*) (help_icon.pixel_data), help_icon.width, help_icon.height);
     }
 
     // Down Icon
     if (_main_page[PAGE_WB].page_item[11].highlighted) {
-        drawRGBBitmap(_width - 1 - down_icon_highlight.width, 58, (uint16_t*) (down_icon_highlight.pixel_data), down_icon_highlight.width, up_icon_highlight.height);
+        drawRGBBitmap(FRAMEBUFFER_WIDTH - 1 - down_icon_highlight.width, 58, (uint16_t*) (down_icon_highlight.pixel_data), down_icon_highlight.width, up_icon_highlight.height);
     } else {
-        drawRGBBitmap(_width - 1 - down_icon.width, 58, (uint16_t*) (down_icon.pixel_data), down_icon.width, down_icon.height);
+        drawRGBBitmap(FRAMEBUFFER_WIDTH - 1 - down_icon.width, 58, (uint16_t*) (down_icon.pixel_data), down_icon.width, down_icon.height);
     }
 }
 
@@ -220,15 +220,15 @@ void draw_wb_option_item(uint16_t x, uint16_t y, uint8_t option_item_index, bool
 
     // is the current line selected (cursor)?
     if (selected) {
-        fill_rect(x, y, _width - x - 28, 29, _page_item_highlight_color);
+        fill_rect(x, y, FRAMEBUFFER_WIDTH - x - 28, 29, _page_item_highlight_color);
 
         draw_string(x + 5, y + yoffset_label_from_base, _white_balance.white_balance_options[option_item_index].label,
-                _page_item_label_color, _page_item_label_color, _FreeSans9pt7b, ALIGN_LEFT, 0);
+                _page_item_label_color, _page_item_label_color, _FreeSans9pt7b, TEXT_ALIGN_LEFT, 0);
 
         char value_string[8];
         sprintf(value_string, "%dK", _white_balance.white_balance_options[option_item_index].Kelvin);
         draw_string(x + 5 + 120, y + yoffset_label_from_base, value_string,
-                _page_item_label_color, _page_item_label_color, _FreeSans9pt7b, ALIGN_LEFT, 0);
+                _page_item_label_color, _page_item_label_color, _FreeSans9pt7b, TEXT_ALIGN_LEFT, 0);
         //draw_string(x + 210, y + yoffset_label_from_base, value, _menu_selected_text_color, _menu_selected_text_color, _FreeSans9pt7b, ALIGN_RIGHT, 80);
         return;
     }
@@ -236,11 +236,11 @@ void draw_wb_option_item(uint16_t x, uint16_t y, uint8_t option_item_index, bool
     //draw the option item normally
     //fill_rect(x, y, _width, 29, _page_item_value_background_color);
     draw_string(x + 5, y + yoffset_label_from_base, _white_balance.white_balance_options[option_item_index].label,
-            _page_item_value_color, _page_item_value_color, _FreeSans9pt7b, ALIGN_LEFT, 0);
+            _page_item_value_color, _page_item_value_color, _FreeSans9pt7b, TEXT_ALIGN_LEFT, 0);
     char value_string[32];
     sprintf(value_string, "%dK", _white_balance.white_balance_options[option_item_index].Kelvin);
     draw_string(x + 5 + 120, y + yoffset_label_from_base, value_string,
-            _page_item_value_color, _page_item_value_color, _FreeSans9pt7b, ALIGN_LEFT, 0);
+            _page_item_value_color, _page_item_value_color, _FreeSans9pt7b, TEXT_ALIGN_LEFT, 0);
     //draw_string(x + 210, y + yoffset_label_from_base, value, menu_text_color, menu_text_color, _FreeSans9pt7b, ALIGN_RIGHT, 80);
 }
 /**************************************************************************/
@@ -251,7 +251,7 @@ void draw_wb_option_item(uint16_t x, uint16_t y, uint8_t option_item_index, bool
 /**************************************************************************/
 void draw_wb_page() {
     //clear the screen
-    fill_rect(0, 0, _width, _height, _page_background_color);
+    fill_rect(0, 0, FRAMEBUFFER_WIDTH, FRAMEBUFFER_HEIGHT, _page_background_color);
 
 
     //draw page items
@@ -263,17 +263,17 @@ void draw_wb_page() {
 
     // draw options area
     uint16_t page_item_height = _page_item_label_height + _page_item_value_height;
-    uint16_t available_height = _height - 2 * _button_height - 8;
+    uint16_t available_height = FRAMEBUFFER_HEIGHT - 2 * button_height - 8;
 
-    fill_rect(0, _button_height + 4, _width, available_height, _page_options_background_color);
+    fill_rect(0, button_height + 4, FRAMEBUFFER_WIDTH, available_height, _page_options_background_color);
 
 
     // Draw header
-    draw_string(5, _height - 30, _main_page[PAGE_WB].label, _page_item_label_color, _page_item_label_color,
-            _FreeSans18pt7b, ALIGN_LEFT, 0);
+    draw_string(5, FRAMEBUFFER_HEIGHT - 30, _main_page[PAGE_WB].label, _page_item_label_color, _page_item_label_color,
+            _FreeSans18pt7b, TEXT_ALIGN_LEFT, 0);
 
     // separation line
-    draw_line(0, _height - 34, _right, _top - 34, _page_item_highlight_color);
+    draw_line(0, FRAMEBUFFER_HEIGHT - 34, FRAMEBUFFER_RIGHT, FRAMEBUFFER_TOP - 34, _page_item_highlight_color);
 
 
 
@@ -283,18 +283,18 @@ void draw_wb_page() {
 
     //draw option items
     if (_wb_menu_highlight_index > 1)
-        draw_wb_option_item(110, _button_height + 2 + available_height - 38, _wb_menu_highlight_index - 2, false);
+        draw_wb_option_item(110, button_height + 2 + available_height - 38, _wb_menu_highlight_index - 2, false);
 
     if (_wb_menu_highlight_index > 0)
-        draw_wb_option_item(110, _button_height + 2 + available_height - 38 - (1 * 30), _wb_menu_highlight_index - 1, false);
+        draw_wb_option_item(110, button_height + 2 + available_height - 38 - (1 * 30), _wb_menu_highlight_index - 1, false);
 
-    draw_wb_option_item(110, _button_height + 2 + available_height - 38 - (2 * 30), _wb_menu_highlight_index, true);
+    draw_wb_option_item(110, button_height + 2 + available_height - 38 - (2 * 30), _wb_menu_highlight_index, true);
 
     if (_wb_menu_highlight_index < _white_balance.white_balance_options_count - 1)
-        draw_wb_option_item(110, _button_height + 2 + available_height - 38 - (3 * 30), _wb_menu_highlight_index + 1, false);
+        draw_wb_option_item(110, button_height + 2 + available_height - 38 - (3 * 30), _wb_menu_highlight_index + 1, false);
 
     if (_wb_menu_highlight_index < _white_balance.white_balance_options_count - 2)
-        draw_wb_option_item(110, _button_height + 2 + available_height - 38 - (4 * 30), _wb_menu_highlight_index + 2, false);
+        draw_wb_option_item(110, button_height + 2 + available_height - 38 - (4 * 30), _wb_menu_highlight_index + 2, false);
 
 
     // draw side icons
@@ -323,7 +323,7 @@ void init_wb_page() {
 
 
     // dimensions
-    _button_height = 30;
+    button_height = 30;
     _padding_side = 8;
     _padding_elements = 11;
     _page_item_width = 94;
@@ -344,21 +344,21 @@ void init_wb_page() {
     _main_page[PAGE_WB].page_item[j].disabled = false;
     strcpy(_main_page[PAGE_WB].page_item[j].label, "Cancel");
     _main_page[PAGE_WB].page_item[j].highlighted = false;
-    _main_page[PAGE_WB].page_item[j].item_type = button;
+    _main_page[PAGE_WB].page_item[j].item_type = BUTTON;
     _main_page[PAGE_WB].page_item[j].text_color = _page_item_value_color;
     _main_page[PAGE_WB].page_item[j].background_color = _button_background_color;
     j++;
     _main_page[PAGE_WB].page_item[j].disabled = false;
     strcpy(_main_page[PAGE_WB].page_item[j].label, "Add");
     _main_page[PAGE_WB].page_item[j].highlighted = false;
-    _main_page[PAGE_WB].page_item[j].item_type = button;
+    _main_page[PAGE_WB].page_item[j].item_type = BUTTON;
     _main_page[PAGE_WB].page_item[j].text_color = _page_item_value_color;
     _main_page[PAGE_WB].page_item[j].background_color = _button_background_color;
     j++;
     _main_page[PAGE_WB].page_item[j].disabled = false;
     strcpy(_main_page[PAGE_WB].page_item[j].label, "Set");
     _main_page[PAGE_WB].page_item[j].highlighted = false;
-    _main_page[PAGE_WB].page_item[j].item_type = button;
+    _main_page[PAGE_WB].page_item[j].item_type = BUTTON;
     _main_page[PAGE_WB].page_item[j].text_color = _page_item_value_color;
     _main_page[PAGE_WB].page_item[j].background_color = _button_primary_background_color;
 
@@ -368,7 +368,7 @@ void init_wb_page() {
     _main_page[PAGE_WB].page_item[j].disabled = false;
     strcpy(_main_page[PAGE_WB].page_item[j].label, "Home");
     _main_page[PAGE_WB].page_item[j].highlighted = false;
-    _main_page[PAGE_WB].page_item[j].item_type = button;
+    _main_page[PAGE_WB].page_item[j].item_type = BUTTON;
     _main_page[PAGE_WB].page_item[j].text_color = _page_item_value_color;
     _main_page[PAGE_WB].page_item[j].background_color = _button_primary_background_color;
 

@@ -13,6 +13,8 @@
 #ifndef DEFINITIONS_H
 #define DEFINITIONS_H
 
+#include <xc.h>
+
 #define	MCU_16BIT
 
 
@@ -246,26 +248,10 @@
 #define ILI9341_GREENYELLOW 0xAFE5      ///< 173, 255,  47
 #define ILI9341_PINK        0xFC18      ///< 255, 128, 192
 
-#ifndef _swap_int16_t
-#define _swap_int16_t(a, b) { int16_t t = a; a = b; b = t; }
-#endif
-
 #define lcd_pmp_wr16(s)         lcd_pmp_wr((s) >> 8); lcd_pmp_wr(s)
 #define lcd_pmp_wr32(l)         lcd_pmp_wr((l) >> 24); lcd_pmp_wr((l) >> 16); lcd_pmp_wr((l) >> 8); lcd_pmp_wr(l)
 
-#define pgm_read_byte(addr) (*(const unsigned char *)(addr))
-#define pgm_read_16bit(addr) (*(uint16_t)(addr))
-#define pgm_read_word(addr) (*(const unsigned short *)(addr))
-#define pgm_read_dword(addr) (*(const unsigned long *)(addr))
-#define pgm_read_pointer(addr) ((void *)pgm_read_dword(addr))
-
 #define array_len(a)    (sizeof(a)/sizeof(a[0]))
 
-#define _width 320
-#define _height 240
-#define _right 319
-#define _top 239
-
 #define	delay_ms(t) delay_us(1000*(t))
-
 #endif /* DEFINITIONS_H */
