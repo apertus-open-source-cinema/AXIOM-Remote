@@ -3,7 +3,7 @@ The AXIOM Remote Visualizer is a tool to emulate the actual code running on the 
 
 # Building
 
-* Install required packages: CMake, libsdl2-dev
+* Install required packages: CMake, libsdl2-dev, libsdl2-image-dev
 * Open terminal
 * cd into /axiom_remote_visualizer
 * mkdir build
