@@ -213,7 +213,8 @@ void draw_wb_page_side_items() {
 
 void draw_wb_option_item(uint16_t x, uint16_t y, uint8_t option_item_index, bool selected) {
     // don't draw empty items
-    if (white_balance.white_balance_options[option_item_index].label == NULL) {
+    if (white_balance_parameter.white_balance_options[option_item_index].label == NULL) {
+
         return;
     }
 
@@ -223,11 +224,11 @@ void draw_wb_option_item(uint16_t x, uint16_t y, uint8_t option_item_index, bool
     if (selected) {
         fill_rect(x, y, FRAMEBUFFER_WIDTH - x - 28, 29, page_item_highlight_color);
 
-        draw_string(x + 5, y + yoffset_label_from_base, white_balance.white_balance_options[option_item_index].label,
+        draw_string(x + 5, y + yoffset_label_from_base, white_balance_parameter.white_balance_options[option_item_index].label,
                 page_item_label_color, page_item_label_color, FreeSans9pt7b, TEXT_ALIGN_LEFT, 0);
 
         char value_string[8];
-        sprintf(value_string, "%dK", white_balance.white_balance_options[option_item_index].Kelvin);
+        sprintf(value_string, "%dK", white_balance_parameter.white_balance_options[option_item_index].Kelvin);
         draw_string(x + 5 + 120, y + yoffset_label_from_base, value_string,
                 page_item_label_color, page_item_label_color, FreeSans9pt7b, TEXT_ALIGN_LEFT, 0);
         //draw_string(x + 210, y + yoffset_label_from_base, value, _menu_selected_text_color, _menu_selected_text_color, _FreeSans9pt7b, ALIGN_RIGHT, 80);
@@ -236,10 +237,10 @@ void draw_wb_option_item(uint16_t x, uint16_t y, uint8_t option_item_index, bool
 
     //draw the option item normally
     //fill_rect(x, y, _width, 29, _page_item_value_background_color);
-    draw_string(x + 5, y + yoffset_label_from_base, white_balance.white_balance_options[option_item_index].label,
+    draw_string(x + 5, y + yoffset_label_from_base, white_balance_parameter.white_balance_options[option_item_index].label,
             page_item_value_color, page_item_value_color, FreeSans9pt7b, TEXT_ALIGN_LEFT, 0);
     char value_string[32];
-    sprintf(value_string, "%dK", white_balance.white_balance_options[option_item_index].Kelvin);
+    sprintf(value_string, "%dK", white_balance_parameter.white_balance_options[option_item_index].Kelvin);
     draw_string(x + 5 + 120, y + yoffset_label_from_base, value_string,
             page_item_value_color, page_item_value_color, FreeSans9pt7b, TEXT_ALIGN_LEFT, 0);
     //draw_string(x + 210, y + yoffset_label_from_base, value, menu_text_color, menu_text_color, _FreeSans9pt7b, ALIGN_RIGHT, 80);
@@ -291,10 +292,10 @@ void draw_wb_page() {
 
     draw_wb_option_item(110, button_height + 2 + available_height - 38 - (2 * 30), wb_menu_highlight_index, true);
 
-    if (wb_menu_highlight_index < white_balance.white_balance_options_count - 1)
+    if (wb_menu_highlight_index < white_balance_parameter.white_balance_options_count - 1)
         draw_wb_option_item(110, button_height + 2 + available_height - 38 - (3 * 30), wb_menu_highlight_index + 1, false);
 
-    if (wb_menu_highlight_index < white_balance.white_balance_options_count - 2)
+    if (wb_menu_highlight_index < white_balance_parameter.white_balance_options_count - 2)
         draw_wb_option_item(110, button_height + 2 + available_height - 38 - (4 * 30), wb_menu_highlight_index + 2, false);
 
 
@@ -440,7 +441,7 @@ void wb_page_button_release_handler(ButtonID button_index) {
         main_page[PAGE_WB].page_item[5].highlighted = false;
 
         // set the highlighted white balance
-        white_balance.white_balance_selection_index = wb_menu_highlight_index;
+        white_balance_parameter.white_balance_selection_index = wb_menu_highlight_index;
 
         // update the new white balance value on the home page
         update_pages();
@@ -464,8 +465,10 @@ void wb_page_button_release_handler(ButtonID button_index) {
         main_page[PAGE_WB].page_item[8].highlighted = false;
     }
     if (button_index == P10) {
+
         wb_menu_highlight_index--;
-        wb_menu_highlight_index = limit_range(wb_menu_highlight_index, 0, white_balance.white_balance_options_count - 1);
+        wb_menu_highlight_index = limit_range(wb_menu_highlight_index, 0, white_balance_parameter.white_balance_options_count - 1);
+
         main_page[PAGE_WB].page_item[9].highlighted = false;
     }
     if (button_index == P11) {
@@ -474,12 +477,13 @@ void wb_page_button_release_handler(ButtonID button_index) {
         navigate_to_page(PAGE_WB_HELP, TRANSITION_PUSH_LEFT);
     }
     if (button_index == P12) {
+
         wb_menu_highlight_index++;
-        wb_menu_highlight_index = limit_range(wb_menu_highlight_index, 0, white_balance.white_balance_options_count - 1);
+        wb_menu_highlight_index = limit_range(wb_menu_highlight_index, 0, white_balance_parameter.white_balance_options_count - 1);
         main_page[PAGE_WB].page_item[11].highlighted = false;
     }
     if (button_index == E1) {
-        white_balance.white_balance_selection_index = wb_menu_highlight_index;
+        white_balance_parameter.white_balance_selection_index = wb_menu_highlight_index;
 
         update_pages();
         navigate_to_page(PAGE_HOME, TRANSITION_PUSH_DOWN);
@@ -489,9 +493,8 @@ void wb_page_button_release_handler(ButtonID button_index) {
 void wb_page_knob_handler(ButtonID button_index, int8_t diff) {
     if (button_index == E1_ROT) {
         wb_menu_highlight_index += diff;
-        wb_menu_highlight_index = limit_range(wb_menu_highlight_index, 0, white_balance.white_balance_options_count - 1);
+        wb_menu_highlight_index = limit_range(wb_menu_highlight_index, 0, white_balance_parameter.white_balance_options_count - 1);
     }
 }
-
 
 #endif /* PAGE_WB_C */

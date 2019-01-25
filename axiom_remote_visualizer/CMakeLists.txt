@@ -25,5 +25,8 @@ list(REMOVE_ITEM IMGUI_SOURCES ${CMAKE_CURRENT_SOURCE_DIR}/../3rdParty/imgui/img
 
 SET(VISUALIZER_SOURCES ./source/Main.cpp ./source/imgui_modules/imgui_impl_sdl.cpp ./source/imgui_modules/imgui_impl_opengl2.cpp)
 
+# Copy image folder to build folder
+file(COPY images DESTINATION ${CMAKE_BINARY_DIR})
+
 ADD_EXECUTABLE(${PROJECT_NAME} ${VISUALIZER_SOURCES} ${AXIOM_REMOTE_SOURCES} ${IMGUI_SOURCES}) #${IMGUI_SDL_SOURCES})
 TARGET_LINK_LIBRARIES(${PROJECT_NAME} ${SDL2_LIBRARIES} SDL2_image GL)

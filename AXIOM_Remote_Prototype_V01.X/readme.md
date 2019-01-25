@@ -24,29 +24,6 @@ for details see: LICENSE.txt
 * *page* -  a page refers to the display type where the 12 buttons around the TFT are utilized for navigation/operation. Each of the 6 page_items on screen is associated with one of the three buttons above or below the TFT. Pages could be seen like "desktops" on a PC with icons on them to click. (type: ```page_t```)
 * *page_item* - each item on a page can lead to another page or menu when clicked (type: ```page_item_t```)
 
-## Key functions
-
-### void displayFramebuffer()
-in main.c (https://github.com/apertus-open-source-cinema/AXIOM-Remote/blob/3fb507dd943ca3533536b8fae8b2233deeffb364/AXIOM%20Remote%20Prototype%20V01/main.c#L658)
-
-Transfers the content of the framebuffer (*_framebuffer[x][y]*) to the LCD - meaning a new picture is drawn/displayed.
-This function also deals with any transition animation effects (*_transition_active* & *_transition_animation_type*).
-
-### void draw_pixel(int16_t x, int16_t y, uint16_t color)
-in draw.c (https://github.com/apertus-open-source-cinema/AXIOM-Remote/blob/2ffbb82b26a225873fe662a5b175444faa97bacb/AXIOM%20Remote%20Prototype%20V01/draw.c#L34)
-
-This is the most basic drawing function that puts one color pixel into the framebuffer and is used in pretty much any other drawing function for rendering text, image or geometric shapes. This function deals with rotating the framebuffer (the LCD is meant to be used in portrait mode but we use it in landscape mode so that the origin 0,0 is in the lower left corner).
-
-### void draw_menu()
-in menu.c (https://github.com/apertus-open-source-cinema/AXIOM-Remote/blob/d8e71aba6b4d622804759e4bd52208523be7ca0f/AXIOM%20Remote%20Prototype%20V01/menu.c#L529)
-
-This function draws the entire menu into the framebuffer. It renders the menu header (with breadcrumbs), side icons, menu items and scrollbar.
-
-### void draw_page()
-in page.c (https://github.com/apertus-open-source-cinema/AXIOM-Remote/blob/3906fd5cb76b287aae41864517cab496447eb3ce/AXIOM%20Remote%20Prototype%20V01/page.c#L160)
-
-Draws one page with up to 12 page_items (buttons).
-
 ## Interfacing with the East/West PIC16
 Two additional smaller PIC16 are used for handling push button, rotary encoder and LED IO.
 

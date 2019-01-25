@@ -1,4 +1,3 @@
-
 /*	AXIOM Remote
  **
  **	Copyright (C) 2018 Sebastian Pichelhofer
@@ -17,15 +16,11 @@
 //#include <stdbool.h>
 #include <stdio.h>
 #include <string.h>
-
-//#include "main.h"
-//#include "definitions.h"
 #include "globals.h"
 #include "utility.h"
 #include "media/media.h"
 
-#ifndef PAGE_WB_HELP_C
-#define PAGE_WB_HELP_C
+#include "media/media.h"
 
 uint16_t help_page_text_color;
 uint16_t help_page_background_color;
@@ -54,6 +49,7 @@ void draw_wb_help_scroll_indicator(uint8_t line, uint8_t total_lines) {
 
     //Thick Line
     fill_rect(FRAMEBUFFER_WIDTH - 13, scrollbaroffset, 12, scrollbarheight, help_page_text_color);
+
 }
 
 void draw_wb_help_page_side_items() {
@@ -86,7 +82,7 @@ void draw_wb_help_page() {
     fill_rect(0, 0, FRAMEBUFFER_WIDTH, FRAMEBUFFER_HEIGHT, help_page_background_color);
 
     //draw header background
-    //fill_rect(0, _top - 28, _width, 28, _help_page_text_color);
+    //fill_rect(0, FRAMEBUFFER_TOP - 28, FRAMEBUFFER_WIDTH, 28,help_page_text_color);
 
     // Draw header
     draw_string(5, FRAMEBUFFER_HEIGHT - 30, "White Balance Help", help_page_text_color, help_page_text_color,
@@ -151,14 +147,11 @@ void wb_help_page_button_release_handler(ButtonID button_index) {
 }
 
 void wb_help_page_knob_handler(ButtonID button_index, int8_t diff) {
-    if (button_index == E1_ROT) {
+    if (button_index == E1_pos) {
         wrap_tester += diff;
-        //_wrap_tester = limit_range(_wrap_tester, 0, 200);
+        //wrap_tester = limit_range(wrap_tester, 0, 200);
 
         //_help_page_scroll_index += diff;
         //_help_page_scroll_index = limit_range(_help_page_scroll_index, 0, 100);
     }
 }
-
-
-#endif /* PAGE_WB_HELP_C */

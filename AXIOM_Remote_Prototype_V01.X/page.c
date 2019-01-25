@@ -241,7 +241,7 @@ void init_pages() {
     j++;
     main_page[PAGE_HOME].page_item[j].disabled = false;
     strcpy(main_page[PAGE_HOME].page_item[j].label, "WB");
-    sprintf(main_page[PAGE_HOME].page_item[j].value, "%dK", white_balance.white_balance_options[white_balance.white_balance_selection_index].Kelvin);
+    sprintf(main_page[PAGE_HOME].page_item[j].value, "%dK", white_balance_parameter.white_balance_options[white_balance_parameter.white_balance_selection_index].Kelvin);
     main_page[PAGE_HOME].page_item[j].link_to_subpage = PAGE_WB;
     main_page[PAGE_HOME].page_item[j].fontsize = FreeSans12pt7b;
     main_page[PAGE_HOME].page_item[j].highlighted = false;
@@ -252,14 +252,13 @@ void init_pages() {
     //_current_page = PAGE_HOME;
     page_count = 2;
 
-
-    _transition_active = false;
-    _transition_counter = 0;
+    transition_active = false;
+    transition_counter = 0;
     transition_animation_type = TRANSITION_PUSH_LEFT;
 }
 
 void update_pages() {
-    sprintf(main_page[PAGE_HOME].page_item[5].value, "%dK", white_balance.white_balance_options[white_balance.white_balance_selection_index].Kelvin);
+    sprintf(main_page[PAGE_HOME].page_item[5].value, "%dK", white_balance_parameter.white_balance_options[white_balance_parameter.white_balance_selection_index].Kelvin);
 }
 
 void navigate_to_page(enum page_id_t target_page, enum transition_animation animation) {
