@@ -674,7 +674,7 @@ void main_menu_button_release_handler(ButtonID button_index) {
         _parameter_menu_active = false;
 
         //go back to home page
-        navigate_to_page(PAGE_HOME, PUSH_LEFT);
+        navigate_to_page(PAGE_HOME, TRANSITION_PUSH_LEFT);
     }
     if (button_index == P8) {
         back_icon_highlighted = false;
@@ -683,7 +683,7 @@ void main_menu_button_release_handler(ButtonID button_index) {
             _parameter_menu_active = false;
         } else if (current_menu == MENU_MAIN) {
             // if we are in the main menu back means we go to the home page
-            navigate_to_page(PAGE_HOME, PUSH_LEFT);
+            navigate_to_page(PAGE_HOME, TRANSITION_PUSH_LEFT);
         } else {
             // if we are in any SUBMENU back means we go to the main menu
             navigate_to_menu(MENU_MAIN);
@@ -711,7 +711,7 @@ void main_menu_button_release_handler(ButtonID button_index) {
                 // is the current item linking to a page
                 if (_main_menu[a].menu_item[_main_menu[a].menu_selection_index].type == PAGELINK) {
                     // navigate to page
-                    navigate_to_page(_main_menu[a].menu_item[_main_menu[a].menu_selection_index].link_to_page, PUSH_LEFT);
+                    navigate_to_page(_main_menu[a].menu_item[_main_menu[a].menu_selection_index].link_to_page, TRANSITION_PUSH_LEFT);
                     return;
                 }
 

@@ -680,7 +680,7 @@ void displayFramebuffer() {
             _transition_active = false;
         }
 
-        if (transition_animation_type == WIPE_RIGHT) {
+        if (transition_animation_type == TRANSITION_WIPE_RIGHT) {
 
             float ratio = fabs(((float) (_transition_counter) / 255) - 1);
 
@@ -698,7 +698,7 @@ void displayFramebuffer() {
                 }
             }
         }
-        if (transition_animation_type == WIPE_LEFT) {
+        if (transition_animation_type == TRANSITION_WIPE_LEFT) {
 
             float ratio = ((float) (_transition_counter) / 255);
 
@@ -716,7 +716,7 @@ void displayFramebuffer() {
                 }
             }
         }
-        if (transition_animation_type == PUSH_LEFT) {
+        if (transition_animation_type == TRANSITION_PUSH_LEFT) {
 
             uint16_t offset = (float) (_transition_counter) / (float) (255) * FRAMEBUFFER_WIDTH;
 
@@ -732,7 +732,7 @@ void displayFramebuffer() {
                 }
             }
         }
-        if (transition_animation_type == PUSH_RIGHT) {
+        if (transition_animation_type == TRANSITION_PUSH_RIGHT) {
 
             uint16_t offset = fabs((float) (_transition_counter) / (float) (255) - 1) * FRAMEBUFFER_WIDTH;
 
@@ -754,7 +754,7 @@ void displayFramebuffer() {
                 }
             }
         }
-        if (transition_animation_type == PUSH_UP) {
+        if (transition_animation_type == TRANSITION_PUSH_UP) {
 
             uint16_t offset = (float) (_transition_counter) / (float) (255) * FRAMEBUFFER_HEIGHT;
 
@@ -768,7 +768,7 @@ void displayFramebuffer() {
                 }
             }
         }
-        if (transition_animation_type == PUSH_DOWN) {
+        if (transition_animation_type == TRANSITION_PUSH_DOWN) {
             uint16_t offset = fabs(((float) (_transition_counter) / (float) (255) - 1) * FRAMEBUFFER_HEIGHT);
 
             for (x = 0; x < FRAMEBUFFER_WIDTH; x++) {

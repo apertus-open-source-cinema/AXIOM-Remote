@@ -255,7 +255,7 @@ void init_pages() {
 
     _transition_active = false;
     _transition_counter = 0;
-    transition_animation_type = PUSH_LEFT;
+    transition_animation_type = TRANSITION_PUSH_LEFT;
 }
 
 void update_pages() {
@@ -316,7 +316,7 @@ void main_page_button_release_handler(ButtonID BUTTON_index) {
     if (BUTTON_index == P6) {
         main_page[PAGE_HOME].page_item[5].highlighted = false;
 
-        navigate_to_page(main_page[PAGE_HOME].page_item[5].link_to_subpage, PUSH_UP);
+        navigate_to_page(main_page[PAGE_HOME].page_item[5].link_to_subpage, TRANSITION_PUSH_UP);
     }
 }
 

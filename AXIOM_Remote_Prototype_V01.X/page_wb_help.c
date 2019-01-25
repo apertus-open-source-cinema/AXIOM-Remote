@@ -141,12 +141,12 @@ void wb_help_page_button_release_handler(ButtonID button_index) {
     if (button_index == P7) {
         main_page[PAGE_WB].page_item[6].highlighted = false;
 
-        navigate_to_page(PAGE_HOME, PUSH_RIGHT);
+        navigate_to_page(PAGE_HOME, TRANSITION_PUSH_RIGHT);
     }
     if (button_index == P8) {
         main_page[PAGE_WB].page_item[7].highlighted = false;
 
-        navigate_to_page(PAGE_WB, PUSH_RIGHT);
+        navigate_to_page(PAGE_WB, TRANSITION_PUSH_RIGHT);
     }
 }
 

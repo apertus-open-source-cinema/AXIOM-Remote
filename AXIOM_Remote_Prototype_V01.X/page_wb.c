@@ -432,7 +432,7 @@ void wb_page_button_release_handler(ButtonID button_index) {
     if (button_index == P4) {
         main_page[PAGE_WB].page_item[3].highlighted = false;
 
-        navigate_to_page(PAGE_HOME, PUSH_DOWN);
+        navigate_to_page(PAGE_HOME, TRANSITION_PUSH_DOWN);
     }
     if (button_index == P5) {
         main_page[PAGE_WB].page_item[4].highlighted = false;
@@ -448,19 +448,19 @@ void wb_page_button_release_handler(ButtonID button_index) {
         update_pages();
 
         // navigate to home page
-        navigate_to_page(PAGE_HOME, PUSH_DOWN);
+        navigate_to_page(PAGE_HOME, TRANSITION_PUSH_DOWN);
     }
     if (button_index == P7) {
 
         main_page[PAGE_WB].page_item[6].highlighted = false;
 
-        navigate_to_page(PAGE_HOME, PUSH_DOWN);
+        navigate_to_page(PAGE_HOME, TRANSITION_PUSH_DOWN);
     }
     if (button_index == P8) {
 
         main_page[PAGE_WB].page_item[7].highlighted = false;
 
-        navigate_to_page(PAGE_HOME, PUSH_DOWN);
+        navigate_to_page(PAGE_HOME, TRANSITION_PUSH_DOWN);
     }
     if (button_index == P9) {
         main_page[PAGE_WB].page_item[8].highlighted = false;
@@ -473,7 +473,7 @@ void wb_page_button_release_handler(ButtonID button_index) {
     if (button_index == P11) {
         main_page[PAGE_WB].page_item[10].highlighted = false;
 
-        navigate_to_page(PAGE_WB_HELP, PUSH_LEFT);
+        navigate_to_page(PAGE_WB_HELP, TRANSITION_PUSH_LEFT);
     }
     if (button_index == P12) {
         _wb_menu_highlight_index++;
@@ -484,7 +484,7 @@ void wb_page_button_release_handler(ButtonID button_index) {
         _white_balance.white_balance_selection_index = _wb_menu_highlight_index;
 
         update_pages();
-        navigate_to_page(PAGE_HOME, PUSH_DOWN);
+        navigate_to_page(PAGE_HOME, TRANSITION_PUSH_DOWN);
     }
 }
 

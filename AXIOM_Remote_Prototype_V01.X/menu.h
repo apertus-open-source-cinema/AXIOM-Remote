@@ -19,5 +19,7 @@ void draw_menu();
 void main_menu_button_press_handler(ButtonID button_index);
 void main_menu_button_release_handler(ButtonID button_index);
 
+void unselect_all_menu_items(enum menu_id_t current_menu);
+
 #endif //MENU_H
 

@@ -111,7 +111,7 @@ bool _transition_active;
 uint8_t _transition_animation_speed;
 
 enum transition_animation {
-    PUSH_LEFT, PUSH_RIGHT, PUSH_UP, PUSH_DOWN, WIPE_LEFT, WIPE_RIGHT
+    TRANSITION_PUSH_LEFT, TRANSITION_PUSH_RIGHT, TRANSITION_PUSH_UP, TRANSITION_PUSH_DOWN, TRANSITION_WIPE_LEFT, TRANSITION_WIPE_RIGHT
 };
 
 enum transition_animation transition_animation_type;
