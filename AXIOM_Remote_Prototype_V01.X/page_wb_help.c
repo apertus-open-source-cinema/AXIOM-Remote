@@ -9,15 +9,16 @@
  **
  **	Compile with -O6 for best experience
  */
+
 #include "page_wb_help.h"
 
-#include <stdint.h>
-#include <stdbool.h>
+//#include <stdint.h>
+//#include <stdbool.h>
 #include <stdio.h>
 #include <string.h>
-
 #include "globals.h"
 #include "utility.h"
+#include "media/media.h"
 
 #include "media/media.h"
 
@@ -31,7 +32,7 @@ int8_t wrap_tester;
 
 void draw_wb_help_scroll_indicator(uint8_t line, uint8_t total_lines) {
     // maximum height is the screen without header area
-    uint8_t srollbar_max_height = _height - 30;
+    uint8_t srollbar_max_height = FRAMEBUFFER_HEIGHT - 30;
 
     // height of the scroll indicator is defined by the ratio of number of items on screen vs total number of item. 
     // if there are 7 items on screen of total 14 items the scroll indicator shall be 50% of the scrollbar height
@@ -41,10 +42,10 @@ void draw_wb_help_scroll_indicator(uint8_t line, uint8_t total_lines) {
     uint8_t scrollbaroffset = ((total_lines - line) - menu_offset) * ((srollbar_max_height - scrollbarheight) / (total_lines - line));
 
     //Background
-    fill_rect(FRAMEBUFFER_WIDTH - 16, 0, 16, _height - 30,help_page_background_color);
+    fill_rect(FRAMEBUFFER_WIDTH - 16, 0, 16, FRAMEBUFFER_HEIGHT - 30,help_page_background_color);
 
     //Thin Line
-    fill_rect(FRAMEBUFFER_WIDTH - 9, 0, 4, _height - 30,help_page_text_color);
+    fill_rect(FRAMEBUFFER_WIDTH - 9, 0, 4, FRAMEBUFFER_HEIGHT - 30,help_page_text_color);
 
     //Thick Line
     fill_rect(FRAMEBUFFER_WIDTH - 13, scrollbaroffset, 12, scrollbarheight,help_page_text_color);
@@ -77,17 +78,17 @@ void draw_wb_help_page_side_items() {
 /**************************************************************************/
 void draw_wb_help_page() {
     //clear the screen
-    fill_rect(0, 0, FRAMEBUFFER_WIDTH, _height,help_page_background_color);
+    fill_rect(0, 0, FRAMEBUFFER_WIDTH, FRAMEBUFFER_HEIGHT,help_page_background_color);
 
     //draw header background
-    //fill_rect(0, _top - 28, FRAMEBUFFER_WIDTH, 28,help_page_text_color);
+    //fill_rect(0, FRAMEBUFFER_TOP - 28, FRAMEBUFFER_WIDTH, 28,help_page_text_color);
 
     // Draw header
-    draw_string(5, _height - 30, "White Balance Help",help_page_text_color,help_page_text_color,
+    draw_string(5, FRAMEBUFFER_HEIGHT - 30, "White Balance Help",help_page_text_color,help_page_text_color,
             _FreeSans12pt7b, TEXT_ALIGN_LEFT, 0);
 
     //separation line
-    draw_line(0, _top - 34, _right, _top - 34, color565(255, 128, 0));
+    draw_line(0, FRAMEBUFFER_TOP - 34, FRAMEBUFFER_RIGHT, FRAMEBUFFER_TOP - 34, color565(255, 128, 0));
 
     // draw side icons
     draw_wb_help_page_side_items();
@@ -99,7 +100,7 @@ void draw_wb_help_page() {
     draw_rect(30 + 6, 5, FRAMEBUFFER_WIDTH - 36 - 20 - wrap_tester, 200, color565(255, 0, 0));
 
     //draw content
-    draw_string(30 + 6, _top - 30 - 25 +help_page_scroll_index, wb_help_text,help_page_text_color,help_page_text_color,
+    draw_string(30 + 6, FRAMEBUFFER_TOP - 30 - 25 +help_page_scroll_index, wb_help_text,help_page_text_color,help_page_text_color,
             _FreeSans9pt7b, TEXT_ALIGN_LEFT, FRAMEBUFFER_WIDTH - 36 - 20 - wrap_tester);
 
     /*uint8_t length = string_len("This is a very long text with many letters ahahaha - its so incredible  lonmg.asdasd.");
@@ -145,7 +146,7 @@ void wb_help_page_button_release_handler(ButtonID button_index) {
 }
 
 void wb_help_page_knob_handler(ButtonID button_index, int8_t diff) {
-    if (button_index == E1_rot) {
+    if (button_index == E1_pos) {
         wrap_tester += diff;
         //wrap_tester = limit_range(wrap_tester, 0, 200);
 

@@ -17,54 +17,19 @@
 #include <string.h>
 
 //#include "main.h"
+#include "draw.h"
 #include "globals.h"
 #include "draw.h"
 #include "utility.h"
 
 #include "media/media.h"
 
-// Menu related stuff
-typedef enum menu_item_type_t
-{
-    MENU_ITEM_TYPE_SUBMENU, MENU_ITEM_TYPE_PAGELINK, MENU_ITEM_TYPE_BACKLINK, MENU_ITEM_TYPE_READONLY, MENU_ITEM_TYPE_NUMERIC, MENU_ITEM_TYPE_DROPDOWN
-} menu_item_type_t;
-
-typedef struct drop_down_choice_t
-{
-    char label[32];
-    uint8_t value;
-} drop_down_choice_t;
-
-typedef struct {
-    char label[64];
-    bool disabled;
-    bool hidden;
-    enum menu_id_t link_to_submenu;
-    enum page_id_t link_to_page;
-    menu_item_type_t type;
-    uint8_t value;
-    bool selected;
-    bool highlighted;
-    bool(*action_ptr)(void); //function pointer to the action when that menu entry is clicked
-    char* (*current_value_ptr)(void); //function pointer to return the current value
-    drop_down_choice_t choices[5]; // array holding the discreet choices for this particular option
-    uint8_t choice_count;
-} MENU_ITEM_TYPE_t;
-
-typedef struct {
-    char label[32];
-    enum menu_id_t menu_id;
-    MENU_ITEM_TYPE_t menu_item[32];
-    uint8_t menu_items_count;
-    uint8_t menu_selection_index;
-} menu_t;
-
 //uint8_t _menu_selection_index = 0; // index of the currently selected item in the menu
 static uint8_t _menu_offset = 0; // when scrolling the menu this is the offset for the items
 static uint8_t _parameter_menu_active; // is a parameter menu currently visible (0 = no)
 static uint8_t _parameter_selection_index; // index of the item currently selected in a parameter menu
-menu_t main_menu[5];
-static uint8_t main_menu_count;
+static menu_t main_menu[5];
+uint8_t main_menu_count;
 static char menu_breadcrumbs[64];
 
 //page_t _side_icons;
@@ -649,14 +614,14 @@ void draw_menu() {
                 //that triggers the parameter menu
                 //the width depends on the text length of the options
                 //the y coordinate may be shifted up or down if the choices would end up off screen
-                uint16_t offset = (_top - 30)-(_parameter_menu_active - _menu_offset)*30 - 2;
+                uint16_t offset = (FRAMEBUFFER_TOP - 30)-(_parameter_menu_active - _menu_offset)*30 - 2;
 
                 if (menu_items_count == 7) {
                     // if there is a scrollbar
-                    draw_parameter_menu(_right - 16, offset, a, _parameter_menu_active);
+                    draw_parameter_menu(FRAMEBUFFER_RIGHT - 16, offset, a, _parameter_menu_active);
                 } else {
                     //if there is no scrollbar 
-                    draw_parameter_menu(_right, offset, a, _parameter_menu_active);
+                    draw_parameter_menu(FRAMEBUFFER_RIGHT, offset, a, _parameter_menu_active);
                 }
             }
         }
@@ -794,7 +759,7 @@ void main_menu_button_press_handler(ButtonID button_index) {
 }
 
 void main_menu_knob_handler(ButtonID button_index, int8_t diff) {
-    if (button_index == E1_rot) {
+    if (button_index == E1_pos) {
         // are we inside a parameter menu?
         if (_parameter_menu_active) {
             _parameter_selection_index += diff;
