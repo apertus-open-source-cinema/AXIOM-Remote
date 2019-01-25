@@ -76,16 +76,16 @@
 
 
 // LCD text drawing cursor
-uint16_t _cursor_x = 0;
-uint16_t _cursor_y = 0;
+//uint16_t _cursor_x = 0;
+//uint16_t _cursor_y = 0;
 
 
 // LCD text drawing font
 //GFXfont gfxFont;
-GFXfont _FreeSans9pt7b;
-GFXfont _FreeSans12pt7b;
-GFXfont _FreeSans18pt7b;
-GFXfont _FreeSans24pt7b;
+GFXfont FreeSans9pt7b;
+GFXfont FreeSans12pt7b;
+GFXfont FreeSans18pt7b;
+GFXfont FreeSans24pt7b;
 
 
 // AXIOM Remote buttons and knobs
@@ -811,32 +811,32 @@ void init_WB() {
     uart2_str0("\n\rWB Init ... ");
     uint8_t i = 0;
 
-    strcpy(_white_balance.white_balance_options[i].label, "Candles");
-    _white_balance.white_balance_options[i].Kelvin = 2000;
-    _white_balance.white_balance_options[i].ColorShift = 0;
+    strcpy(white_balance.white_balance_options[i].label, "Candles");
+    white_balance.white_balance_options[i].Kelvin = 2000;
+    white_balance.white_balance_options[i].ColorShift = 0;
     i++;
-    strcpy(_white_balance.white_balance_options[i].label, "Tungsten");
-    _white_balance.white_balance_options[i].Kelvin = 3200;
-    _white_balance.white_balance_options[i].ColorShift = 0;
+    strcpy(white_balance.white_balance_options[i].label, "Tungsten");
+    white_balance.white_balance_options[i].Kelvin = 3200;
+    white_balance.white_balance_options[i].ColorShift = 0;
     i++;
-    strcpy(_white_balance.white_balance_options[i].label, "Fluorescent");
-    _white_balance.white_balance_options[i].Kelvin = 4300;
-    _white_balance.white_balance_options[i].ColorShift = 0;
+    strcpy(white_balance.white_balance_options[i].label, "Fluorescent");
+    white_balance.white_balance_options[i].Kelvin = 4300;
+    white_balance.white_balance_options[i].ColorShift = 0;
     i++;
-    strcpy(_white_balance.white_balance_options[i].label, "Daylight");
-    _white_balance.white_balance_options[i].Kelvin = 5600;
-    _white_balance.white_balance_options[i].ColorShift = 0;
+    strcpy(white_balance.white_balance_options[i].label, "Daylight");
+    white_balance.white_balance_options[i].Kelvin = 5600;
+    white_balance.white_balance_options[i].ColorShift = 0;
     i++;
-    strcpy(_white_balance.white_balance_options[i].label, "Cloudy");
-    _white_balance.white_balance_options[i].Kelvin = 6500;
-    _white_balance.white_balance_options[i].ColorShift = 0;
+    strcpy(white_balance.white_balance_options[i].label, "Cloudy");
+    white_balance.white_balance_options[i].Kelvin = 6500;
+    white_balance.white_balance_options[i].ColorShift = 0;
     i++;
-    strcpy(_white_balance.white_balance_options[i].label, "Shade");
-    _white_balance.white_balance_options[i].Kelvin = 7500;
-    _white_balance.white_balance_options[i].ColorShift = 0;
+    strcpy(white_balance.white_balance_options[i].label, "Shade");
+    white_balance.white_balance_options[i].Kelvin = 7500;
+    white_balance.white_balance_options[i].ColorShift = 0;
 
-    _white_balance.white_balance_options_count = i + 1;
-    _white_balance.white_balance_selection_index = 0;
+    white_balance.white_balance_options_count = i + 1;
+    white_balance.white_balance_selection_index = 0;
     uart2_str0("\n\rWB Init done ... ");
 }
 
@@ -1133,10 +1133,10 @@ void init_lcd() {
     lcd_pmp_wr(0x0F);
 
     //gfxFont = FreeSans9pt7b;
-    _FreeSans9pt7b = FreeSans9pt7b;
-    _FreeSans12pt7b = FreeSans12pt7b;
-    _FreeSans18pt7b = FreeSans18pt7b;
-    _FreeSans24pt7b = FreeSans24pt7b;
+    FreeSans9pt7b = FreeSans9pt7b;
+    FreeSans12pt7b = FreeSans12pt7b;
+    FreeSans18pt7b = FreeSans18pt7b;
+    FreeSans24pt7b = FreeSans24pt7b;
 
     // Clear the image
     clearframebuffer(ILI9341_WHITE);

@@ -91,7 +91,7 @@ typedef struct {
     uint8_t white_balance_selection_index;
 } white_balance;
 
-white_balance _white_balance;
+white_balance white_balance;
 
 
 extern bool btn_E1_pressed;
@@ -117,10 +117,10 @@ enum transition_animation {
 enum transition_animation transition_animation_type;
 
 
-extern uint8_t _menu_offset; // when scrolling the menu this is the offset for the items
+extern uint8_t menu_offset; // when scrolling the menu this is the offset for the items
 
-extern uint8_t _parameter_menu_active; // is a parameter menu currently visible (0 = no)
-extern uint8_t _parameter_selection_index; // index of the item currently selected in a parameter menu
+extern uint8_t parameter_menu_active; // is a parameter menu currently visible (0 = no)
+extern uint8_t parameter_selection_index; // index of the item currently selected in a parameter menu
 
 typedef struct {
     char label[32];
@@ -157,7 +157,7 @@ typedef struct {
     uint8_t menu_selection_index;
 } menu_t;
 
-extern uint8_t _main_menu_count;
+extern uint8_t main_menu_count;
 
 extern page_t main_page[3];
 
@@ -176,10 +176,10 @@ extern uint8_t E2_pos;
 
 
 //Fonts
-extern GFXfont _FreeSans9pt7b;
-extern GFXfont _FreeSans12pt7b;
-extern GFXfont _FreeSans18pt7b;
-extern GFXfont _FreeSans24pt7b;
+extern GFXfont FreeSans9pt7b;
+extern GFXfont FreeSans12pt7b;
+extern GFXfont FreeSans18pt7b;
+extern GFXfont FreeSans24pt7b;
 
 // The position of the text drawing caret (cursor))
 extern uint16_t _cursor_x;
