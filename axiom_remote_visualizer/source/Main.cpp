@@ -136,7 +136,7 @@ int main()
     texture_rect.h = FRAMEBUFFER_HEIGHT; //the height of the texture
 
     unsigned int knobTextureID = 0;
-    SDL_Surface* surface = IMG_Load("knob_clean.png");
+    SDL_Surface* surface = IMG_Load("images/knob_clean.png");
     glGenTextures(1, &knobTextureID);
     glBindTexture(GL_TEXTURE_2D, knobTextureID);
 

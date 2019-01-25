@@ -91,7 +91,7 @@ typedef struct {
     uint8_t white_balance_selection_index;
 } white_balance;
 
-white_balance _white_balance;
+white_balance white_balance_parameter;
 
 
 extern bool btn_E1_pressed;
@@ -105,10 +105,10 @@ extern bool btn_E1_pressed;
 uint16_t framebuffer[FRAMEBUFFER_WIDTH][FRAMEBUFFER_HEIGHT];
 
 //second frame buffer for rendering transition effects
-uint16_t _transitionframebuffer[FRAMEBUFFER_WIDTH][FRAMEBUFFER_HEIGHT];
-uint8_t _transition_counter;
-bool _transition_active;
-uint8_t _transition_animation_speed;
+uint16_t transition_framebuffer[FRAMEBUFFER_WIDTH][FRAMEBUFFER_HEIGHT];
+uint8_t transition_counter;
+bool transition_active;
+uint8_t transition_animation_speed;
 
 enum transition_animation {
     TRANSITION_PUSH_LEFT, TRANSITION_PUSH_RIGHT, TRANSITION_PUSH_UP, TRANSITION_PUSH_DOWN, TRANSITION_WIPE_LEFT, TRANSITION_WIPE_RIGHT
@@ -116,28 +116,25 @@ enum transition_animation {
 
 enum transition_animation transition_animation_type;
 
+extern uint8_t menu_offset; // when scrolling the menu this is the offset for the items
 
-extern uint8_t _menu_offset; // when scrolling the menu this is the offset for the items
-
-extern uint8_t _parameter_menu_active; // is a parameter menu currently visible (0 = no)
-extern uint8_t _parameter_selection_index; // index of the item currently selected in a parameter menu
+extern uint8_t parameter_menu_active; // is a parameter menu currently visible (0 = no)
+extern uint8_t parameter_selection_index; // index of the item currently selected in a parameter menu
 
 typedef struct {
     char label[32];
     uint8_t value;
 } drop_down_choice_t;
 
-
-
 typedef enum {
-    SUBMENU, PAGELINK, BACKLINK, READONLY, NUMERIC, DROPDOWN
+    MENU_ITEM_TYPE_SUBMENU, MENU_ITEM_TYPE_PAGELINK, MENU_ITEM_TYPE_BACKLINK, MENU_ITEM_TYPE_READONLY, MENU_ITEM_TYPE_NUMERIC, MENU_ITEM_TYPE_DROPDOWN
 } menu_item_type_t;
 
 typedef struct {
     char label[64];
     bool disabled;
     bool hidden;
-    enum menu_id_t link_to_SUBMENU;
+    enum menu_id_t link_to_submenu;
     enum page_id_t link_to_page;
     menu_item_type_t type;
     uint8_t value;
@@ -157,7 +154,7 @@ typedef struct {
     uint8_t menu_selection_index;
 } menu_t;
 
-extern uint8_t _main_menu_count;
+extern uint8_t main_menu_count;
 
 extern page_t main_page[3];
 
@@ -182,8 +179,8 @@ extern GFXfont _FreeSans18pt7b;
 extern GFXfont _FreeSans24pt7b;
 
 // The position of the text drawing caret (cursor))
-extern uint16_t _cursor_x;
-extern uint16_t _cursor_y;
+extern uint16_t cursor_x;
+extern uint16_t cursor_y;
 
 #endif //GLOBALS_H
 
