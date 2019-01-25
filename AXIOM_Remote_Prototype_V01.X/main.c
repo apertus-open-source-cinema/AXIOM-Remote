@@ -19,19 +19,21 @@
 #include <stdbool.h>
 #include <string.h>
 #include <stdio.h>
+#include <math.h>
 #include "definitions.h"
-#include "glcdfont.c"
+#include "globals.h"
+#include "glcdfont.c"// TODO get rid of c file include
 #include "gfxfont.h"
 #include "main.h"
-#include "FreeSans9pt7b.h"
-#include "FreeSans12pt7b.h"
-#include "FreeSans18pt7b.h"
-#include "FreeSans24pt7b.h"
+#include "fonts/FreeSans9pt7b.h"
+#include "fonts/FreeSans12pt7b.h"
+#include "fonts/FreeSans18pt7b.h"
+#include "fonts/FreeSans24pt7b.h"
 //#include "axiom-logo.c"
 //#include "home-icon.c"
-#include "utility.c"
-#include "draw.c"
-#include "menu.c"
+#include "utility.h"
+#include "draw.c" // TODO get rid of c file include
+#include "menu.c" // TODO get rid of c file include
 
 
 #define DEBUGBUTTONS TRUE
@@ -110,9 +112,9 @@ uint8_t E2_pos = 0;
 
 // Page related stuff
 //_page_id_t _current_page;
-page_t _main_page[3];
+page_t main_page[3];
 
-uint8_t _page_count;
+uint8_t page_count;
 
 static inline
 void unlock(void) {
@@ -623,33 +625,33 @@ void setLCDBacklight(uint8_t brightness) {
 }
 
 void draw_lcd() {
-    if (_current_menu != menu_none) {
+    if (current_menu != MENU_NONE) {
         draw_menu();
-    } else if (_current_page == page_home) {
+    } else if (current_page == PAGE_HOME) {
         draw_page();
-    } else if (_current_page == page_wb) {
+    } else if (current_page == PAGE_WB) {
         draw_wb_page();
-    } else if (_current_page == page_wb_help) {
+    } else if (current_page == PAGE_WB_HELP) {
         draw_wb_help_page();
     }
 }
 
-void clear_framebuffer(uint16_t color) {
+void clearframebuffer(uint16_t color) {
     uint16_t x;
     uint8_t y;
-    for (x = 0; x < framebuffer_width; x++) {
-        for (y = 0; y < _height; y++) {
-            _framebuffer[x][y] = color;
+    for (x = 0; x < FRAMEBUFFER_WIDTH; x++) {
+        for (y = 0; y < FRAMEBUFFER_HEIGHT; y++) {
+            framebuffer[x][y] = color;
         }
     }
 }
 
-void clear_transition_framebuffer(uint16_t color) {
+void clear_transitionframebuffer(uint16_t color) {
     uint16_t x;
     uint8_t y;
-    for (x = 0; x < framebuffer_width; x++) {
-        for (y = 0; y < _height; y++) {
-            _transition_framebuffer[x][y] = color;
+    for (x = 0; x < FRAMEBUFFER_WIDTH; x++) {
+        for (y = 0; y < FRAMEBUFFER_HEIGHT; y++) {
+            _transitionframebuffer[x][y] = color;
         }
     }
 }
@@ -678,103 +680,103 @@ void displayFramebuffer() {
             _transition_active = false;
         }
 
-        if (_transition_animation_type == wipe_right) {
+        if (transition_animation_type == TRANSITION_WIPE_RIGHT) {
 
             float ratio = fabs(((float) (_transition_counter) / 255) - 1);
 
-            for (x = 0; x < framebuffer_width; x++) {
-                float horizontal_progress = (float) (x) / (float) (framebuffer_width);
+            for (x = 0; x < FRAMEBUFFER_WIDTH; x++) {
+                float horizontal_progress = (float) (x) / (float) (FRAMEBUFFER_WIDTH);
 
                 if (horizontal_progress < ratio) {
-                    for (y = 0; y < _height; y++) {
-                        lcd_pmp_wr(_framebuffer[x][y]);
+                    for (y = 0; y < FRAMEBUFFER_HEIGHT; y++) {
+                        lcd_pmp_wr(framebuffer[x][y]);
                     }
                 } else {
-                    for (y = 0; y < _height; y++) {
-                        lcd_pmp_wr(_transition_framebuffer[x][y]);
+                    for (y = 0; y < FRAMEBUFFER_HEIGHT; y++) {
+                        lcd_pmp_wr(_transitionframebuffer[x][y]);
                     }
                 }
             }
         }
-        if (_transition_animation_type == wipe_left) {
+        if (transition_animation_type == TRANSITION_WIPE_LEFT) {
 
             float ratio = ((float) (_transition_counter) / 255);
 
-            for (x = 0; x < framebuffer_width; x++) {
-                float horizontal_progress = (float) (x) / (float) (framebuffer_width);
+            for (x = 0; x < FRAMEBUFFER_WIDTH; x++) {
+                float horizontal_progress = (float) (x) / (float) (FRAMEBUFFER_WIDTH);
 
                 if (horizontal_progress > ratio) {
-                    for (y = 0; y < _height; y++) {
-                        lcd_pmp_wr(_framebuffer[x][y]);
+                    for (y = 0; y < FRAMEBUFFER_HEIGHT; y++) {
+                        lcd_pmp_wr(framebuffer[x][y]);
                     }
                 } else {
-                    for (y = 0; y < _height; y++) {
-                        lcd_pmp_wr(_transition_framebuffer[x][y]);
+                    for (y = 0; y < FRAMEBUFFER_HEIGHT; y++) {
+                        lcd_pmp_wr(_transitionframebuffer[x][y]);
                     }
                 }
             }
         }
-        if (_transition_animation_type == push_left) {
+        if (transition_animation_type == TRANSITION_PUSH_LEFT) {
 
-            uint16_t offset = (float) (_transition_counter) / (float) (255) * framebuffer_width;
+            uint16_t offset = (float) (_transition_counter) / (float) (255) * FRAMEBUFFER_WIDTH;
 
-            for (x = 0; x < framebuffer_width; x++) {
+            for (x = 0; x < FRAMEBUFFER_WIDTH; x++) {
                 if (x <= offset) {
-                    for (y = 0; y < _height; y++) {
-                        lcd_pmp_wr(_transition_framebuffer[x + (framebuffer_width - offset)][y]);
+                    for (y = 0; y < FRAMEBUFFER_HEIGHT; y++) {
+                        lcd_pmp_wr(_transitionframebuffer[x + (FRAMEBUFFER_WIDTH - offset)][y]);
                     }
                 } else {
-                    for (y = 0; y < _height; y++) {
-                        lcd_pmp_wr(_framebuffer[x - offset][y]);
+                    for (y = 0; y < FRAMEBUFFER_HEIGHT; y++) {
+                        lcd_pmp_wr(framebuffer[x - offset][y]);
                     }
                 }
             }
         }
-        if (_transition_animation_type == push_right) {
+        if (transition_animation_type == TRANSITION_PUSH_RIGHT) {
 
-            uint16_t offset = fabs((float) (_transition_counter) / (float) (255) - 1) * framebuffer_width;
+            uint16_t offset = fabs((float) (_transition_counter) / (float) (255) - 1) * FRAMEBUFFER_WIDTH;
 
-            for (x = 0; x < framebuffer_width; x++) {
-                //uint16_t horizontal_progress = (float) (x) / (float) (framebuffer_width);
+            for (x = 0; x < FRAMEBUFFER_WIDTH; x++) {
+                //uint16_t horizontal_progress = (float) (x) / (float) (_width);
 
                 if (x > offset) {
-                    //if (((x - offset) < framebuffer_width) && ((x - offset) >= 0)) {
-                    for (y = 0; y < _height; y++) {
-                        lcd_pmp_wr(_transition_framebuffer[x - offset][y]);
+                    //if (((x - offset) < _width) && ((x - offset) >= 0)) {
+                    for (y = 0; y < FRAMEBUFFER_HEIGHT; y++) {
+                        lcd_pmp_wr(_transitionframebuffer[x - offset][y]);
                     }
                     //}
                 } else {
-                    // if ((((x + (framebuffer_width - offset)) >= 0) && (x + (framebuffer_width - offset)) < framebuffer_width)) {
-                    for (y = 0; y < _height; y++) {
-                        lcd_pmp_wr(_framebuffer[x + (framebuffer_width - offset)][y]);
+                    // if ((((x + (_width - offset)) >= 0) && (x + (_width - offset)) < _width)) {
+                    for (y = 0; y < FRAMEBUFFER_HEIGHT; y++) {
+                        lcd_pmp_wr(framebuffer[x + (FRAMEBUFFER_WIDTH - offset)][y]);
                     }
                     //}
                 }
             }
         }
-        if (_transition_animation_type == push_up) {
+        if (transition_animation_type == TRANSITION_PUSH_UP) {
 
-            uint16_t offset = (float) (_transition_counter) / (float) (255) * _height;
+            uint16_t offset = (float) (_transition_counter) / (float) (255) * FRAMEBUFFER_HEIGHT;
 
-            for (x = 0; x < framebuffer_width; x++) {
-                for (y = 0; y < _height; y++) {
+            for (x = 0; x < FRAMEBUFFER_WIDTH; x++) {
+                for (y = 0; y < FRAMEBUFFER_HEIGHT; y++) {
                     if (y <= offset) {
-                        lcd_pmp_wr(_transition_framebuffer[x][y + (_height - offset)]);
+                        lcd_pmp_wr(_transitionframebuffer[x][y + (FRAMEBUFFER_HEIGHT - offset)]);
                     } else {
-                        lcd_pmp_wr(_framebuffer[x][y - offset]);
+                        lcd_pmp_wr(framebuffer[x][y - offset]);
                     }
                 }
             }
         }
-        if (_transition_animation_type == push_down) {
-            uint16_t offset = fabs(((float) (_transition_counter) / (float) (255) - 1) * _height);
+        if (transition_animation_type == TRANSITION_PUSH_DOWN) {
+            uint16_t offset = fabs(((float) (_transition_counter) / (float) (255) - 1) * FRAMEBUFFER_HEIGHT);
 
-            for (x = 0; x < framebuffer_width; x++) {
-                for (y = 0; y < _height; y++) {
+            for (x = 0; x < FRAMEBUFFER_WIDTH; x++) {
+                for (y = 0; y < FRAMEBUFFER_HEIGHT; y++) {
                     if (y > offset) {
-                        lcd_pmp_wr(_transition_framebuffer[x][y - offset]);
+                        lcd_pmp_wr(_transitionframebuffer[x][y - offset]);
                     } else {
-                        lcd_pmp_wr(_framebuffer[x][y + (_height - offset)]);
+                        lcd_pmp_wr(framebuffer[x][y + (FRAMEBUFFER_HEIGHT - offset)]);
                     }
                 }
             }
@@ -783,25 +785,25 @@ void displayFramebuffer() {
         _transition_counter -= _transition_animation_speed;
     } else {
         // no transition animation
-        for (x = 0; x < framebuffer_width; x++) {
-            for (y = 0; y < _height; y++) {
+        for (x = 0; x < FRAMEBUFFER_WIDTH; x++) {
+            for (y = 0; y < FRAMEBUFFER_HEIGHT; y++) {
                 //for (y=_height; y>0; y--) { // we flip y axis so the origin in in the lower left corner
 
-                lcd_pmp_wr(_framebuffer[x][y]);
+                lcd_pmp_wr(framebuffer[x][y]);
             }
         }
     }
 }
 
-void start_framebuffer_transition(enum transition_animation transition_animation_type, uint8_t speed) {
-    //copy the current content of the framebuffer to the _transition_framebuffer - we take a snapshot so to say
+void startframebuffer_transition(enum transition_animation transition_animation_type, uint8_t speed) {
+    //copy the current content of the framebuffer to the _transitionframebuffer - we take a snapshot so to say
 
-    memcpy(_transition_framebuffer, _framebuffer, _height * framebuffer_width * sizeof (uint16_t));
+    memcpy(_transitionframebuffer, framebuffer, FRAMEBUFFER_HEIGHT * FRAMEBUFFER_WIDTH * sizeof (uint16_t));
 
     _transition_active = true;
     _transition_counter = 255;
     _transition_animation_speed = speed;
-    _transition_animation_type = transition_animation_type;
+    transition_animation_type = transition_animation_type;
 }
 
 void init_WB() {
@@ -1137,10 +1139,10 @@ void init_lcd() {
     _FreeSans24pt7b = FreeSans24pt7b;
 
     // Clear the image
-    clear_framebuffer(ILI9341_WHITE);
+    clearframebuffer(ILI9341_WHITE);
 
     // Clear the transition_frame buffer
-    clear_transition_framebuffer(ILI9341_WHITE);
+    clear_transitionframebuffer(ILI9341_WHITE);
 }
 
 /*void btn_E1_released() {
@@ -1153,10 +1155,10 @@ void init_lcd() {
                 return;
             }
 
-            // is the current item linking into a submenu?
-            if (_main_menu[a].menu_item[_menu_selection_index].type == submenu) {
-                // navigate into submenu
-                _current_menu = _main_menu[a].menu_item[_menu_selection_index].link_to_submenu;
+            // is the current item linking into a SUBMENU?
+            if (_main_menu[a].menu_item[_menu_selection_index].type == SUBMENU) {
+                // navigate into SUBMENU
+                _current_menu = _main_menu[a].menu_item[_menu_selection_index].link_to_SUBMENU;
 
                 // reset cursor to first item in list;
                 _menu_selection_index = 0;
@@ -1168,14 +1170,14 @@ void init_lcd() {
             }
 
             // is the current item supposed to show a drop-down menu?
-            if ((_main_menu[a].menu_item[_menu_selection_index].type == dropdown) && (_parameter_menu_active == 0)) {
+            if ((_main_menu[a].menu_item[_menu_selection_index].type == DROPDOWN) && (_parameter_menu_active == 0)) {
                 //open parameter menu
                 _parameter_menu_active = _menu_selection_index;
                 return;
             }
 
             // are we in a drop-down menu currently?
-            if ((_main_menu[a].menu_item[_menu_selection_index].type == dropdown) && (_parameter_menu_active != 0)) {
+            if ((_main_menu[a].menu_item[_menu_selection_index].type == DROPDOWN) && (_parameter_menu_active != 0)) {
                 // set new value
                 _main_menu[a].menu_item[_menu_selection_index].value = _parameter_selection_index;
 
@@ -1196,13 +1198,13 @@ void init_lcd() {
                         _parameter_menu_active = 0;
                     }*/
 
-/*} else if (_current_menu == Submenu1) {
+/*} else if (_current_menu == SUBMENU1) {
     if (_menu_selection_index == 0) {
         _current_menu = Main;
         _menu_selection_index = 0;
         strcpy(menu_breadcrumbs, "Menu");
     }
-} else if (_current_menu == Submenu2) {
+} else if (_current_menu == SUBMENU2) {
     if (_menu_selection_index == 0) {
         _current_menu = Main;
         _menu_selection_index = 1;
@@ -1226,38 +1228,38 @@ void updateFramebuffer() {
 }
 
 void knob_event_handler(ButtonID button_event, int8_t value) {
-    if (_current_page == page_wb) {
+    if (current_page == PAGE_WB) {
         wb_page_knob_handler(button_event, value);
     }
-    if (_current_page == page_wb_help) {
+    if (current_page == PAGE_WB_HELP) {
         wb_help_page_knob_handler(button_event, value);
     }
-    if (_current_menu != menu_none) {
+    if (current_menu != MENU_NONE) {
         main_menu_knob_handler(button_event, value);
     }
     draw_lcd();
 }
 
 void button_event_handler(ButtonID button_event, bool pressed) {
-    if (_current_page == page_home) {
+    if (current_page == PAGE_HOME) {
         if (pressed) {
             main_page_button_press_handler(button_event);
         } else {
             main_page_button_release_handler(button_event);
         }
-    } else if (_current_page == page_wb) {
+    } else if (current_page == PAGE_WB) {
         if (pressed) {
             wb_page_button_press_handler(button_event);
         } else {
             wb_page_button_release_handler(button_event);
         }
-    } else if (_current_page == page_wb_help) {
+    } else if (current_page == PAGE_WB_HELP) {
         if (pressed) {
             wb_help_page_button_press_handler(button_event);
         } else {
             wb_help_page_button_release_handler(button_event);
         }
-    } else if (_current_menu != menu_none) {
+    } else if (current_menu != MENU_NONE) {
         if (pressed) {
             main_menu_button_press_handler(button_event);
         } else {
@@ -1313,8 +1315,8 @@ int main(void) {
     init_wb_help_page();
 
     // start navigation
-    _current_menu = menu_none;
-    _current_page = page_home;
+    current_menu = MENU_NONE;
+    current_page = PAGE_HOME;
 
     static uint16_t r = 0;
     static uint16_t g = 0;
@@ -1571,11 +1573,11 @@ int main(void) {
             if (data[2] == 0x04) {
                 //btn_TS2_pos = true;
 
-                //drawString(20, 180, "TS2: up  ", color565(0, 0, 0), color565(255, 255, 255), 1, align_left, 0);
+                //drawString(20, 180, "TS2: up  ", color565(0, 0, 0), color565(255, 255, 255), 1, ALIGN_LEFT, 0);
             }
             if (data[2] == 0x08) {
                 //btn_TS2_pos = false;
-                //drawString(20, 180, "TS2: down", color565(0, 0, 0), color565(255, 255, 255), 1, align_left, 0);
+                //drawString(20, 180, "TS2: down", color565(0, 0, 0), color565(255, 255, 255), 1, ALIGN_LEFT, 0);
             }
             if (data_status[0] == 0xEF) {
                 //btn_S1_pos = false;
@@ -1624,7 +1626,7 @@ int main(void) {
             //E1_pos = qe[0];
 
             int8_t diff = data[0] - qe[0];
-            knob_event_handler(E1_rot, diff);
+            knob_event_handler(E1_ROT, diff);
 
             /*else {
                 _menu_selection_index += diff;
@@ -1663,7 +1665,7 @@ int main(void) {
             //sprintf(encoder1, "E2: %d", qe[1]);
             //drawString(20, 140, encoder1, color565(0,0,0), color565(255,255,255), 1); 
         }
-        /*fillRect(0, 0, framebuffer_width, _height, menuBackgroundColor);
+        /*fillRect(0, 0, _width, _height, menuBackgroundColor);
         drawLine(20, 140, 200, 140, color565(128, 128, 128));
         drawString(20, 140, "This is a long sentence.", color565(0,0,0), color565(255,255,255), 1); */
 

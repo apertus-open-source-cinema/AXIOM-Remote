@@ -502,8 +502,8 @@ void drawRGBBitmap(int16_t x, int16_t y, const uint16_t *pcolors, int16_t w, int
 }
 
 void setCursor(int16_t x, int16_t y) {
-    _cursor_x = x;
-    _cursor_y = y;
+    cursor_x = x;
+    cursor_y = y;
 }
 
 /**************************************************************************/
@@ -666,8 +666,8 @@ void draw_string(int16_t x, int16_t y, char* text, uint16_t color, uint16_t bg, 
     debug_uart(text);
     debug_uart(debug);*/
 
-    _cursor_x = x;
-    _cursor_y = y;
+    cursor_x = x;
+    cursor_y = y;
 
     uint16_t textframebuffer_width = get_stringframebuffer_width(text, gfxFont);
 
@@ -677,7 +677,7 @@ void draw_string(int16_t x, int16_t y, char* text, uint16_t color, uint16_t bg, 
 
         if (c == 32) { // space " " character 
             GFXglyph *glyph = &(((GFXglyph *) pgm_read_pointer(&gfxFont.glyph))[32 - first]);
-            _cursor_x += glyph->xAdvance;//(uint8_t) pgm_read_byte(&glyph->xAdvance);
+            cursor_x += glyph->xAdvance;//(uint8_t) pgm_read_byte(&glyph->xAdvance);
             newline = false;
 
             // wrap text into new line: - check at every space character if next word will 
@@ -713,30 +713,30 @@ void draw_string(int16_t x, int16_t y, char* text, uint16_t color, uint16_t bg, 
                 }
 
                 // does the width of the next word already go outside the textblockwidth ?
-                if ((_cursor_x + next_wordframebuffer_width) > (x + textblockwidth)) {
+                if ((cursor_x + next_wordframebuffer_width) > (x + textblockwidth)) {
 
                     //debug
-                    draw_line(_cursor_x, _cursor_y - 3, _cursor_x + next_wordframebuffer_width, _cursor_y - 3, color);
+                    draw_line(cursor_x, cursor_y - 3, cursor_x + next_wordframebuffer_width, cursor_y - 3, color);
 
                     /*char debug3[32];
                     sprintf(debug3, "next_wordframebuffer_width = %u", next_wordframebuffer_width);
                     debug_uart(debug3);*/
 
 
-                    _cursor_x = x;
-                    _cursor_y -= gfxFont.yAdvance;
+                    cursor_x = x;
+                    cursor_y -= gfxFont.yAdvance;
                     newline = true;
 
                 }
             }
         } else
             if (c == 10) { // "\n" (LF) line feed - new line character 
-            _cursor_x = x;
-            _cursor_y -= gfxFont.yAdvance;
+            cursor_x = x;
+            cursor_y -= gfxFont.yAdvance;
             newline = true;
         } else if (c == 13) { // "\r" (CR) carriage return character 
-            _cursor_x = x;
-            _cursor_y -= gfxFont.yAdvance;
+            cursor_x = x;
+            cursor_y -= gfxFont.yAdvance;
             newline = true;
         } else if ((c >= first) && (c <= last)) {
             GFXglyph *glyph = &(((GFXglyph *) pgm_read_pointer(&gfxFont.glyph))[c - first]);
@@ -747,21 +747,21 @@ void draw_string(int16_t x, int16_t y, char* text, uint16_t color, uint16_t bg, 
 
                 if ((i == 0) || newline) {
                     //first character doesn't need x offset
-                    _cursor_x -= xo;
+                    cursor_x -= xo;
                     newline = false;
                 }
 
                 if (align == TEXT_ALIGN_LEFT) {
-                    drawChar(_cursor_x + xo, _cursor_y, c, color, bg, gfxFont);
+                    drawChar(cursor_x + xo, cursor_y, c, color, bg, gfxFont);
                 }
                 if ((align == TEXT_ALIGN_CENTER) && (textblockwidth > 0)) {
-                    drawChar(_cursor_x + xo - textframebuffer_width / 2 + textblockwidth / 2, _cursor_y, c, color, bg, gfxFont);
+                    drawChar(cursor_x + xo - textframebuffer_width / 2 + textblockwidth / 2, cursor_y, c, color, bg, gfxFont);
                 }
                 if ((align == TEXT_ALIGN_RIGHT) && (textblockwidth > 0)) {
-                    drawChar(_cursor_x + xo + textblockwidth - textframebuffer_width, _cursor_y, c, color, bg, gfxFont);
+                    drawChar(cursor_x + xo + textblockwidth - textframebuffer_width, cursor_y, c, color, bg, gfxFont);
                 }
 
-                _cursor_x += (uint8_t) pgm_read_byte(&glyph->xAdvance);
+                cursor_x += (uint8_t) pgm_read_byte(&glyph->xAdvance);
             }
         }
     }
@@ -786,7 +786,7 @@ void draw_string(int16_t x, int16_t y, char* text, uint16_t color, uint16_t bg, 
 void start_framebuffer_transition(enum transition_animation transition_animation_type, uint8_t speed) {
     //copy the current content of the framebuffer to the _transition_framebuffer - we take a snapshot so to say
 
-    memcpy(transition_framebuffer, framebuffer, _height * _width * sizeof (uint16_t));
+    memcpy(transition_framebuffer, framebuffer, FRAMEBUFFER_HEIGHT * FRAMEBUFFER_WIDTH * sizeof (uint16_t));
 
     transition_active = true;
     transition_counter = 255;
