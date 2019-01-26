@@ -135,8 +135,4 @@ extern GFXfont _FreeSans18pt7b;
 extern GFXfont _FreeSans24pt7b;*/
 
 
-
-
-
-
 #endif /* MAIN_H */

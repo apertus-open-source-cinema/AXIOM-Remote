@@ -112,7 +112,7 @@ enum transition_animation {
 
 enum transition_animation transition_animation_type;
 
-uint8_t menu_offset; // when scrolling the menu this is the offset for the items
+extern uint8_t menu_offset; // when scrolling the menu this is the offset for the items
 
 uint8_t parameter_menu_active; // is a parameter menu currently visible (0 = no)
 uint8_t parameter_selection_index; // index of the item currently selected in a parameter menu
