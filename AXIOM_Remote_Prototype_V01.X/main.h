@@ -28,18 +28,16 @@
 #include "media/down-icon-highlight.c"
 #include "media/wheel-illustration.c"*/
 
-extern uint16_t _cursor_x;
-extern uint16_t _cursor_y;
+/*extern uint16_t _cursor_x;
+extern uint16_t _cursor_y;*/
 
-extern enum _menu_id_t _current_menu;
+//extern enum _menu_id_t _current_menu;
 
-extern uint8_t _menu_offset; // when scrolling the menu this is the offset for the items
+//extern uint8_t _menu_offset; // when scrolling the menu this is the offset for the items
 
-extern uint8_t _parameter_menu_active; // is a parameter menu currently visible (0 = no)
-extern uint8_t _parameter_selection_index; // index of the item currently selected in a parameter menu
-
-
-
+//extern uint8_t _parameter_menu_active; // is a parameter menu currently visible (0 = no)
+//extern uint8_t _parameter_selection_index; // index of the item currently selected in a parameter menu
+/*
 enum _menu_id_t {
     menu_none, menu_main, menu_submenu1, menu_submenu2
 };
@@ -49,9 +47,6 @@ enum _page_id_t {
     page_none, page_home, page_wb, page_wb_help
 };
 enum _page_id_t _current_page;
-
-
-
 
 enum _item_type_t {
     value_and_label, button
@@ -81,29 +76,18 @@ typedef struct {
 
 uint8_t _button_height;
 
-extern page_t _main_page[3];
+extern page_t _main_page[3];*/
 
-extern uint8_t _page_count;
+//extern uint8_t _page_count;
 
-typedef enum {
-    align_left, align_center, align_right
-} textAlign;
 
+/*
 typedef enum {
     P1, P2, P3, P4, P5, P6, P7, P8, P9, P10, P11, P12, REC, PHOTO, E1, E2, S1, S2, E1_rot, E2_rot
-} ButtonID;
-
-// AXIOM Remote buttons and knobs
-extern bool btn_E1_pressed;
-extern bool btn_E2_pressed;
-extern bool btn_S1_pos;
-extern bool btn_TS1_pos;
-extern bool btn_TS2_pos;
-extern uint8_t E1_pos;
-extern uint8_t E2_pos;
+} ButtonID;*/
 
 // White Balance related
-
+/*
 typedef struct {
     char label[32];
     uint16_t Kelvin;
@@ -114,10 +98,10 @@ typedef struct {
     wb_option_t white_balance_options[16];
     uint8_t white_balance_options_count;
     uint8_t white_balance_selection_index;
-} white_balance;
+} white_balance_t;
 
-white_balance _white_balance;
-
+white_balance_t white_balance;
+ */
 
 //extern uint8_t _menu_selection_index;
 
@@ -143,27 +127,15 @@ extern uint16_t menu_background_color;
 extern uint16_t menu_text_color;
 extern uint16_t _menu_disabled_text_color;
 extern uint16_t _menu_selected_text_color;*/
-
+/*
 //extern GFXfont gfxFont;
 extern GFXfont _FreeSans9pt7b;
 extern GFXfont _FreeSans12pt7b;
 extern GFXfont _FreeSans18pt7b;
-extern GFXfont _FreeSans24pt7b;
+extern GFXfont _FreeSans24pt7b;*/
 
-// the central frame buffer that is written to the LCD
-uint16_t _framebuffer[framebuffer_width][_height];
 
-//second frame buffer for rendering transition effects
-uint16_t _transition_framebuffer[framebuffer_width][_height];
-uint8_t _transition_counter;
-bool _transition_active;
-uint8_t _transition_animation_speed;
 
-enum transition_animation {
-    push_left, push_right, push_up, push_down, wipe_left, wipe_right
-};
-
-enum transition_animation _transition_animation_type;
 
 
 

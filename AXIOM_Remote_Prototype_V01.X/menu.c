@@ -24,11 +24,11 @@
 
 #include "media/media.h"
 
-static uint8_t menu_offset = 0; // when scrolling the menu this is the offset for the items
-static uint8_t parameter_menu_active; // is a parameter menu currently visible (0 = no)
-static uint8_t parameter_selection_index; // index of the item currently selected in a parameter menu
+//static uint8_t menu_offset = 0; // when scrolling the menu this is the offset for the items
+//static uint8_t parameter_menu_active; // is a parameter menu currently visible (0 = no)
+//static uint8_t parameter_selection_index; // index of the item currently selected in a parameter menu
 static menu_t main_menu[5];
-uint8_t main_menu_count;
+//uint8_t main_menu_count;
 static char menu_breadcrumbs[64];
 
 //page_t _side_icons;
@@ -110,25 +110,25 @@ void draw_menu_item(uint16_t x, uint16_t y, uint8_t menu_index, uint8_t menu_mai
 
         //label
         draw_string(x + 5, y + yoffset_label_from_base, main_menu[menu_index].menu_item[menu_main_item_index].label,
-                menu_selected_text_color, menu_selected_text_color, FreeSans9pt7b, TEXT_ALIGN_LEFT, 0);
+                menu_selected_text_color, menu_selected_text_color, _FreeSans9pt7b, TEXT_ALIGN_LEFT, 0);
 
         //value
         draw_string(x + 180, y + yoffset_label_from_base, value, menu_selected_text_color,
-                menu_selected_text_color, FreeSans9pt7b, TEXT_ALIGN_RIGHT, 80);
+                menu_selected_text_color, _FreeSans9pt7b, TEXT_ALIGN_RIGHT, 80);
         return;
     }
 
     // is a parameter menu active currently and the item is disabled?
-    if (_parameter_menu_active && main_menu[menu_index].menu_item[menu_main_item_index].disabled) {
+    if (parameter_menu_active && main_menu[menu_index].menu_item[menu_main_item_index].disabled) {
         fill_rect(x, y, FRAMEBUFFER_WIDTH - x, 29, menu_dimmed_item_color);
 
         //label
         draw_string(x + 5, y + yoffset_label_from_base, main_menu[menu_index].menu_item[menu_main_item_index].label,
-                menu_disabled_text_color, menu_disabled_text_color, FreeSans9pt7b, TEXT_ALIGN_LEFT, 0);
+                menu_disabled_text_color, menu_disabled_text_color, _FreeSans9pt7b, TEXT_ALIGN_LEFT, 0);
 
         //value
         draw_string(x + 180, y + yoffset_label_from_base, value, menu_disabled_text_color, menu_disabled_text_color,
-                FreeSans9pt7b, TEXT_ALIGN_RIGHT, 80);
+                _FreeSans9pt7b, TEXT_ALIGN_RIGHT, 80);
         return;
     }
 
@@ -138,11 +138,11 @@ void draw_menu_item(uint16_t x, uint16_t y, uint8_t menu_index, uint8_t menu_mai
 
         //label
         draw_string(x + 5, y + yoffset_label_from_base, main_menu[menu_index].menu_item[menu_main_item_index].label,
-                menu_text_color, menu_text_color, FreeSans9pt7b, TEXT_ALIGN_LEFT, 0);
+                menu_text_color, menu_text_color, _FreeSans9pt7b, TEXT_ALIGN_LEFT, 0);
 
         //value
         draw_string(x + 180, y + yoffset_label_from_base, value, menu_text_color, menu_text_color,
-                FreeSans9pt7b, TEXT_ALIGN_RIGHT, 80);
+                _FreeSans9pt7b, TEXT_ALIGN_RIGHT, 80);
         return;
     }
 
@@ -156,11 +156,11 @@ void draw_menu_item(uint16_t x, uint16_t y, uint8_t menu_index, uint8_t menu_mai
 
         //label
         draw_string(x + 5, y + yoffset_label_from_base, main_menu[menu_index].menu_item[menu_main_item_index].label,
-                menu_disabled_text_color, menu_disabled_text_color, FreeSans9pt7b, TEXT_ALIGN_LEFT, 0);
+                menu_disabled_text_color, menu_disabled_text_color, _FreeSans9pt7b, TEXT_ALIGN_LEFT, 0);
 
         //value
         draw_string(x + 180, y + yoffset_label_from_base, value, menu_disabled_text_color, menu_disabled_text_color,
-                FreeSans9pt7b, TEXT_ALIGN_RIGHT, 80);
+                _FreeSans9pt7b, TEXT_ALIGN_RIGHT, 80);
         return;
     }
 
@@ -170,11 +170,11 @@ void draw_menu_item(uint16_t x, uint16_t y, uint8_t menu_index, uint8_t menu_mai
 
         //label
         draw_string(x + 5, y + yoffset_label_from_base, main_menu[menu_index].menu_item[menu_main_item_index].label,
-                menu_disabled_text_color, menu_disabled_text_color, FreeSans9pt7b, TEXT_ALIGN_LEFT, 0);
+                menu_disabled_text_color, menu_disabled_text_color, _FreeSans9pt7b, TEXT_ALIGN_LEFT, 0);
 
         //value
         draw_string(x + 180, y + yoffset_label_from_base, value, menu_disabled_text_color, menu_disabled_text_color,
-                FreeSans9pt7b, TEXT_ALIGN_RIGHT, 80);
+                _FreeSans9pt7b, TEXT_ALIGN_RIGHT, 80);
         return;
     }
 
@@ -184,11 +184,11 @@ void draw_menu_item(uint16_t x, uint16_t y, uint8_t menu_index, uint8_t menu_mai
 
         //value
         draw_string(x + 5, y + yoffset_label_from_base, main_menu[menu_index].menu_item[menu_main_item_index].label,
-                menu_selected_text_color, menu_selected_text_color, FreeSans9pt7b, TEXT_ALIGN_LEFT, 0);
+                menu_selected_text_color, menu_selected_text_color, _FreeSans9pt7b, TEXT_ALIGN_LEFT, 0);
 
         //label
         draw_string(x + 180, y + yoffset_label_from_base, value, menu_selected_text_color, menu_selected_text_color,
-                FreeSans9pt7b, TEXT_ALIGN_RIGHT, 80);
+                _FreeSans9pt7b, TEXT_ALIGN_RIGHT, 80);
         return;
     }
 
@@ -197,11 +197,11 @@ void draw_menu_item(uint16_t x, uint16_t y, uint8_t menu_index, uint8_t menu_mai
 
     //label
     draw_string(x + 5, y + yoffset_label_from_base, main_menu[menu_index].menu_item[menu_main_item_index].label,
-            menu_text_color, menu_text_color, FreeSans9pt7b, TEXT_ALIGN_LEFT, 0);
+            menu_text_color, menu_text_color, _FreeSans9pt7b, TEXT_ALIGN_LEFT, 0);
 
     //value
     draw_string(x + 180, y + yoffset_label_from_base, value, menu_text_color, menu_text_color,
-            FreeSans9pt7b, TEXT_ALIGN_RIGHT, 80);
+            _FreeSans9pt7b, TEXT_ALIGN_RIGHT, 80);
 }
 
 void draw_scroll_indicator(uint8_t current_menu_item_screen_count, uint8_t current_menu_item_count) {
@@ -226,15 +226,6 @@ void draw_scroll_indicator(uint8_t current_menu_item_screen_count, uint8_t curre
     //Thick Line
     fill_rect(FRAMEBUFFER_WIDTH - 13, scrollbaroffset, 12, scrollbarheight, menu_text_color);
 }
-
-void unselect_all_menu_items(enum menu_id_t current_menu) {
-    uint8_t b;
-    for (b = 0; b < main_menu[current_menu].menu_items_count; b++) {
-        main_menu[current_menu].menu_item[b].selected = false;
-    }
-    //main_menu[current_menu].menu_selection_index = 0;
-}
-
 
 /**************************************************************************/
 /*!
@@ -472,7 +463,7 @@ void draw_parameter_menu(uint16_t x, uint16_t y, uint8_t main_menu_index, uint8_
     uint8_t i;
     for (i = 0; i < main_menu[main_menu_index].menu_item[main_menu_item_index].choice_count; i++) {
         uint16_t x1, y1, w1, h1;
-        get_text_bounds(main_menu[main_menu_index].menu_item[main_menu_item_index].choices[i].label, x, y, &x1, &y1, &w1, &h1, FreeSans9pt7b);
+        get_text_bounds(main_menu[main_menu_index].menu_item[main_menu_item_index].choices[i].label, x, y, &x1, &y1, &w1, &h1, _FreeSans9pt7b);
         if (w1 > max_width) {
             max_width = w1;
         }
@@ -513,11 +504,11 @@ void draw_parameter_menu(uint16_t x, uint16_t y, uint8_t main_menu_index, uint8_
             if (btn_E1_pressed) {
                 //highlight
                 fill_rect(x + 2, y + height - 29 - 1 - (i + 1) * 30, width - 4, 29, menu_hightlighted_item_color);
-                draw_string(x + 12, y + height - 29 + yoffset_label_from_base - (i + 1) * 30, draw_label, menu_selected_text_color, menu_selected_text_color, FreeSans9pt7b, TEXT_ALIGN_LEFT, 0);
+                draw_string(x + 12, y + height - 29 + yoffset_label_from_base - (i + 1) * 30, draw_label, menu_selected_text_color, menu_selected_text_color, _FreeSans9pt7b, TEXT_ALIGN_LEFT, 0);
             } else {
                 //selected
                 fill_rect(x + 2, y + height - 29 - 1 - (i + 1) * 30, width - 4, 29, menu_selected_item_color);
-                draw_string(x + 12, y + height - 29 + yoffset_label_from_base - (i + 1) * 30, draw_label, menu_selected_text_color, menu_selected_text_color, FreeSans9pt7b, TEXT_ALIGN_LEFT, 0);
+                draw_string(x + 12, y + height - 29 + yoffset_label_from_base - (i + 1) * 30, draw_label, menu_selected_text_color, menu_selected_text_color, _FreeSans9pt7b, TEXT_ALIGN_LEFT, 0);
             }
         } else {
             //normal
@@ -527,7 +518,7 @@ void draw_parameter_menu(uint16_t x, uint16_t y, uint8_t main_menu_index, uint8_
 
         // add a circle icon at beginning of the line of the currently set option
         if (i == main_menu[main_menu_index].menu_item[main_menu_item_index].value) {
-            if (i == _parameter_selection_index) {
+            if (i == parameter_selection_index) {
                 fill_circle(x + 6, y + height - 29 + 6 + yoffset_label_from_base - (i + 1) * 30, 3, menu_selected_text_color);
             } else {
                 fill_circle(x + 6, y + height - 29 + 6 + yoffset_label_from_base - (i + 1) * 30, 3, menu_text_color);
@@ -544,7 +535,7 @@ void draw_menu() {
     fill_rect(0, FRAMEBUFFER_HEIGHT - 28, FRAMEBUFFER_WIDTH, 28, menu_item_color);
 
     //draw header bread crumbs 
-    draw_string(5, FRAMEBUFFER_HEIGHT - 22, menu_breadcrumbs, menu_text_color, menu_text_color, FreeSans9pt7b, TEXT_ALIGN_LEFT, 0);
+    draw_string(5, FRAMEBUFFER_HEIGHT - 22, menu_breadcrumbs, menu_text_color, menu_text_color, _FreeSans9pt7b, TEXT_ALIGN_LEFT, 0);
 
     //two header separation lines
     draw_line(0, FRAMEBUFFER_HEIGHT - 29, FRAMEBUFFER_WIDTH - 1, FRAMEBUFFER_HEIGHT - 29, menu_selected_text_color);
@@ -723,16 +714,16 @@ void main_menu_button_release_handler(ButtonID button_index) {
                 }
 
                 // is the current item supposed to show a drop-down menu?
-                if ((main_menu[a].menu_item[main_menu[a].menu_selection_index].type == MENU_ITEM_TYPE_DROPDOWN) && (_parameter_menu_active == 0)) {
+                if ((main_menu[a].menu_item[main_menu[a].menu_selection_index].type == MENU_ITEM_TYPE_DROPDOWN) && (parameter_menu_active == 0)) {
                     //open parameter menu
-                    _parameter_menu_active = main_menu[a].menu_selection_index;
+                    parameter_menu_active = main_menu[a].menu_selection_index;
                     return;
                 }
 
                 // are we in a drop-down menu currently?
-                if ((main_menu[a].menu_item[main_menu[a].menu_selection_index].type == MENU_ITEM_TYPE_DROPDOWN) && (_parameter_menu_active != 0)) {
+                if ((main_menu[a].menu_item[main_menu[a].menu_selection_index].type == MENU_ITEM_TYPE_DROPDOWN) && (parameter_menu_active != 0)) {
                     // set new value
-                    main_menu[a].menu_item[main_menu[a].menu_selection_index].value = _parameter_selection_index;
+                    main_menu[a].menu_item[main_menu[a].menu_selection_index].value = parameter_selection_index;
 
                     //close parameter menu
                     parameter_menu_active = 0;

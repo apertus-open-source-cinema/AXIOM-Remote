@@ -24,7 +24,7 @@
 #include "globals.h"
 #include "glcdfont.c"// TODO get rid of c file include
 #include "gfxfont.h"
-#include "main.h"
+//#include "main.h"
 #include "fonts/FreeSans9pt7b.h"
 #include "fonts/FreeSans12pt7b.h"
 #include "fonts/FreeSans18pt7b.h"
@@ -82,10 +82,10 @@
 
 // LCD text drawing font
 //GFXfont gfxFont;
-GFXfont FreeSans9pt7b;
-GFXfont FreeSans12pt7b;
-GFXfont FreeSans18pt7b;
-GFXfont FreeSans24pt7b;
+GFXfont _FreeSans9pt7b;
+GFXfont _FreeSans12pt7b;
+GFXfont _FreeSans18pt7b;
+GFXfont _FreeSans24pt7b;
 
 
 // AXIOM Remote buttons and knobs
@@ -112,7 +112,7 @@ uint8_t E2_pos = 0;
 
 // Page related stuff
 //_page_id_t _current_page;
-page_t main_page[3];
+//page_t main_page[3];
 
 uint8_t page_count;
 
@@ -651,7 +651,7 @@ void clear_transitionframebuffer(uint16_t color) {
     uint8_t y;
     for (x = 0; x < FRAMEBUFFER_WIDTH; x++) {
         for (y = 0; y < FRAMEBUFFER_HEIGHT; y++) {
-            _transitionframebuffer[x][y] = color;
+            transition_framebuffer[x][y] = color;
         }
     }
 }
@@ -675,14 +675,14 @@ void displayFramebuffer() {
     uint8_t y;
 
     // transition animations
-    if (_transition_active) {
-        if (_transition_counter <= _transition_animation_speed - 1) {
-            _transition_active = false;
+    if (transition_active) {
+        if (transition_counter <= transition_animation_speed - 1) {
+            transition_active = false;
         }
 
         if (transition_animation_type == TRANSITION_WIPE_RIGHT) {
 
-            float ratio = fabs(((float) (_transition_counter) / 255) - 1);
+            float ratio = fabs(((float) (transition_counter) / 255) - 1);
 
             for (x = 0; x < FRAMEBUFFER_WIDTH; x++) {
                 float horizontal_progress = (float) (x) / (float) (FRAMEBUFFER_WIDTH);
@@ -693,14 +693,14 @@ void displayFramebuffer() {
                     }
                 } else {
                     for (y = 0; y < FRAMEBUFFER_HEIGHT; y++) {
-                        lcd_pmp_wr(_transitionframebuffer[x][y]);
+                        lcd_pmp_wr(transition_framebuffer[x][y]);
                     }
                 }
             }
         }
         if (transition_animation_type == TRANSITION_WIPE_LEFT) {
 
-            float ratio = ((float) (_transition_counter) / 255);
+            float ratio = ((float) (transition_counter) / 255);
 
             for (x = 0; x < FRAMEBUFFER_WIDTH; x++) {
                 float horizontal_progress = (float) (x) / (float) (FRAMEBUFFER_WIDTH);
@@ -711,19 +711,19 @@ void displayFramebuffer() {
                     }
                 } else {
                     for (y = 0; y < FRAMEBUFFER_HEIGHT; y++) {
-                        lcd_pmp_wr(_transitionframebuffer[x][y]);
+                        lcd_pmp_wr(transition_framebuffer[x][y]);
                     }
                 }
             }
         }
         if (transition_animation_type == TRANSITION_PUSH_LEFT) {
 
-            uint16_t offset = (float) (_transition_counter) / (float) (255) * FRAMEBUFFER_WIDTH;
+            uint16_t offset = (float) (transition_counter) / (float) (255) * FRAMEBUFFER_WIDTH;
 
             for (x = 0; x < FRAMEBUFFER_WIDTH; x++) {
                 if (x <= offset) {
                     for (y = 0; y < FRAMEBUFFER_HEIGHT; y++) {
-                        lcd_pmp_wr(_transitionframebuffer[x + (FRAMEBUFFER_WIDTH - offset)][y]);
+                        lcd_pmp_wr(transition_framebuffer[x + (FRAMEBUFFER_WIDTH - offset)][y]);
                     }
                 } else {
                     for (y = 0; y < FRAMEBUFFER_HEIGHT; y++) {
@@ -734,7 +734,7 @@ void displayFramebuffer() {
         }
         if (transition_animation_type == TRANSITION_PUSH_RIGHT) {
 
-            uint16_t offset = fabs((float) (_transition_counter) / (float) (255) - 1) * FRAMEBUFFER_WIDTH;
+            uint16_t offset = fabs((float) (transition_counter) / (float) (255) - 1) * FRAMEBUFFER_WIDTH;
 
             for (x = 0; x < FRAMEBUFFER_WIDTH; x++) {
                 //uint16_t horizontal_progress = (float) (x) / (float) (_width);
@@ -742,7 +742,7 @@ void displayFramebuffer() {
                 if (x > offset) {
                     //if (((x - offset) < _width) && ((x - offset) >= 0)) {
                     for (y = 0; y < FRAMEBUFFER_HEIGHT; y++) {
-                        lcd_pmp_wr(_transitionframebuffer[x - offset][y]);
+                        lcd_pmp_wr(transition_framebuffer[x - offset][y]);
                     }
                     //}
                 } else {
@@ -756,12 +756,12 @@ void displayFramebuffer() {
         }
         if (transition_animation_type == TRANSITION_PUSH_UP) {
 
-            uint16_t offset = (float) (_transition_counter) / (float) (255) * FRAMEBUFFER_HEIGHT;
+            uint16_t offset = (float) (transition_counter) / (float) (255) * FRAMEBUFFER_HEIGHT;
 
             for (x = 0; x < FRAMEBUFFER_WIDTH; x++) {
                 for (y = 0; y < FRAMEBUFFER_HEIGHT; y++) {
                     if (y <= offset) {
-                        lcd_pmp_wr(_transitionframebuffer[x][y + (FRAMEBUFFER_HEIGHT - offset)]);
+                        lcd_pmp_wr(transition_framebuffer[x][y + (FRAMEBUFFER_HEIGHT - offset)]);
                     } else {
                         lcd_pmp_wr(framebuffer[x][y - offset]);
                     }
@@ -769,12 +769,12 @@ void displayFramebuffer() {
             }
         }
         if (transition_animation_type == TRANSITION_PUSH_DOWN) {
-            uint16_t offset = fabs(((float) (_transition_counter) / (float) (255) - 1) * FRAMEBUFFER_HEIGHT);
+            uint16_t offset = fabs(((float) (transition_counter) / (float) (255) - 1) * FRAMEBUFFER_HEIGHT);
 
             for (x = 0; x < FRAMEBUFFER_WIDTH; x++) {
                 for (y = 0; y < FRAMEBUFFER_HEIGHT; y++) {
                     if (y > offset) {
-                        lcd_pmp_wr(_transitionframebuffer[x][y - offset]);
+                        lcd_pmp_wr(transition_framebuffer[x][y - offset]);
                     } else {
                         lcd_pmp_wr(framebuffer[x][y + (FRAMEBUFFER_HEIGHT - offset)]);
                     }
@@ -782,7 +782,7 @@ void displayFramebuffer() {
             }
         }
 
-        _transition_counter -= _transition_animation_speed;
+        transition_counter -= transition_animation_speed;
     } else {
         // no transition animation
         for (x = 0; x < FRAMEBUFFER_WIDTH; x++) {
@@ -798,11 +798,11 @@ void displayFramebuffer() {
 void startframebuffer_transition(enum transition_animation transition_animation_type, uint8_t speed) {
     //copy the current content of the framebuffer to the _transitionframebuffer - we take a snapshot so to say
 
-    memcpy(_transitionframebuffer, framebuffer, FRAMEBUFFER_HEIGHT * FRAMEBUFFER_WIDTH * sizeof (uint16_t));
+    memcpy(transition_framebuffer, framebuffer, FRAMEBUFFER_HEIGHT * FRAMEBUFFER_WIDTH * sizeof (uint16_t));
 
-    _transition_active = true;
-    _transition_counter = 255;
-    _transition_animation_speed = speed;
+    transition_active = true;
+    transition_counter = 255;
+    transition_animation_speed = speed;
     transition_animation_type = transition_animation_type;
 }
 
@@ -811,32 +811,32 @@ void init_WB() {
     uart2_str0("\n\rWB Init ... ");
     uint8_t i = 0;
 
-    strcpy(white_balance.white_balance_options[i].label, "Candles");
-    white_balance.white_balance_options[i].Kelvin = 2000;
-    white_balance.white_balance_options[i].ColorShift = 0;
+    strcpy(white_balance_parameter.white_balance_options[i].label, "Candles");
+    white_balance_parameter.white_balance_options[i].Kelvin = 2000;
+    white_balance_parameter.white_balance_options[i].ColorShift = 0;
     i++;
-    strcpy(white_balance.white_balance_options[i].label, "Tungsten");
-    white_balance.white_balance_options[i].Kelvin = 3200;
-    white_balance.white_balance_options[i].ColorShift = 0;
+    strcpy(white_balance_parameter.white_balance_options[i].label, "Tungsten");
+    white_balance_parameter.white_balance_options[i].Kelvin = 3200;
+    white_balance_parameter.white_balance_options[i].ColorShift = 0;
     i++;
-    strcpy(white_balance.white_balance_options[i].label, "Fluorescent");
-    white_balance.white_balance_options[i].Kelvin = 4300;
-    white_balance.white_balance_options[i].ColorShift = 0;
+    strcpy(white_balance_parameter.white_balance_options[i].label, "Fluorescent");
+    white_balance_parameter.white_balance_options[i].Kelvin = 4300;
+    white_balance_parameter.white_balance_options[i].ColorShift = 0;
     i++;
-    strcpy(white_balance.white_balance_options[i].label, "Daylight");
-    white_balance.white_balance_options[i].Kelvin = 5600;
-    white_balance.white_balance_options[i].ColorShift = 0;
+    strcpy(white_balance_parameter.white_balance_options[i].label, "Daylight");
+    white_balance_parameter.white_balance_options[i].Kelvin = 5600;
+    white_balance_parameter.white_balance_options[i].ColorShift = 0;
     i++;
-    strcpy(white_balance.white_balance_options[i].label, "Cloudy");
-    white_balance.white_balance_options[i].Kelvin = 6500;
-    white_balance.white_balance_options[i].ColorShift = 0;
+    strcpy(white_balance_parameter.white_balance_options[i].label, "Cloudy");
+    white_balance_parameter.white_balance_options[i].Kelvin = 6500;
+    white_balance_parameter.white_balance_options[i].ColorShift = 0;
     i++;
-    strcpy(white_balance.white_balance_options[i].label, "Shade");
-    white_balance.white_balance_options[i].Kelvin = 7500;
-    white_balance.white_balance_options[i].ColorShift = 0;
+    strcpy(white_balance_parameter.white_balance_options[i].label, "Shade");
+    white_balance_parameter.white_balance_options[i].Kelvin = 7500;
+    white_balance_parameter.white_balance_options[i].ColorShift = 0;
 
-    white_balance.white_balance_options_count = i + 1;
-    white_balance.white_balance_selection_index = 0;
+    white_balance_parameter.white_balance_options_count = i + 1;
+    white_balance_parameter.white_balance_selection_index = 0;
     uart2_str0("\n\rWB Init done ... ");
 }
 
@@ -1133,10 +1133,10 @@ void init_lcd() {
     lcd_pmp_wr(0x0F);
 
     //gfxFont = FreeSans9pt7b;
-    FreeSans9pt7b = FreeSans9pt7b;
-    FreeSans12pt7b = FreeSans12pt7b;
-    FreeSans18pt7b = FreeSans18pt7b;
-    FreeSans24pt7b = FreeSans24pt7b;
+    _FreeSans9pt7b = FreeSans9pt7b;
+    _FreeSans12pt7b = FreeSans12pt7b;
+    _FreeSans18pt7b = FreeSans18pt7b;
+    _FreeSans24pt7b = FreeSans24pt7b;
 
     // Clear the image
     clearframebuffer(ILI9341_WHITE);

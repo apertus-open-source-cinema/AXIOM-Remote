@@ -13,7 +13,7 @@
 #include "globals.h"
 
 GFXfont FreeSans9pt7b;
-GFXfont FreeSans12pt7b;
+GFXfont _FreeSans12pt7b;
 GFXfont FreeSans18pt7b;
 GFXfont FreeSans24pt7b;
 
@@ -37,3 +37,5 @@ uint16_t cursor_x = 0;
 uint16_t cursor_y = 0;
 
 uint8_t menu_offset = 0;
+uint8_t parameter_menu_active;
+
