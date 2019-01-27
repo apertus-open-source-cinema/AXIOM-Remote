@@ -10,9 +10,9 @@ CND_CONF=default
 CND_DISTDIR=dist
 TMPDIR=build/${CND_CONF}/${IMAGE_TYPE}/tmp-packaging
 TMPDIRNAME=tmp-packaging
-OUTPUT_PATH=dist/${CND_CONF}/${IMAGE_TYPE}/AXIOM_Remote_Prototype_V01.${IMAGE_TYPE}.${OUTPUT_SUFFIX}
-OUTPUT_BASENAME=AXIOM_Remote_Prototype_V01.${IMAGE_TYPE}.${OUTPUT_SUFFIX}
-PACKAGE_TOP_DIR=axiomremoteprototypev01/
+OUTPUT_PATH=dist/${CND_CONF}/${IMAGE_TYPE}/AXIOM_Remote_Prototype_V01.X.${IMAGE_TYPE}.${OUTPUT_SUFFIX}
+OUTPUT_BASENAME=AXIOM_Remote_Prototype_V01.X.${IMAGE_TYPE}.${OUTPUT_SUFFIX}
+PACKAGE_TOP_DIR=axiomremoteprototypev01.x/
 
 # Functions
 function checkReturnCode
@@ -57,15 +57,15 @@ mkdir -p ${TMPDIR}
 
 # Copy files and create directories and links
 cd "${TOP}"
-makeDirectory ${TMPDIR}/axiomremoteprototypev01/bin
+makeDirectory ${TMPDIR}/axiomremoteprototypev01.x/bin
 copyFileToTmpDir "${OUTPUT_PATH}" "${TMPDIR}/${PACKAGE_TOP_DIR}bin/${OUTPUT_BASENAME}" 0755
 
 
 # Generate tar file
 cd "${TOP}"
-rm -f ${CND_DISTDIR}/${CND_CONF}/package/axiomremoteprototypev01.tar
+rm -f ${CND_DISTDIR}/${CND_CONF}/package/axiomremoteprototypev01.x.tar
 cd ${TMPDIR}
-tar -vcf ../../../../${CND_DISTDIR}/${CND_CONF}/package/axiomremoteprototypev01.tar *
+tar -vcf ../../../../${CND_DISTDIR}/${CND_CONF}/package/axiomremoteprototypev01.x.tar *
 checkReturnCode
 
 # Cleanup

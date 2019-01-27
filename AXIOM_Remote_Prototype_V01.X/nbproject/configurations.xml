@@ -4,13 +4,23 @@
     <logicalFolder name="HeaderFiles"
                    displayName="Header Files"
                    projectFiles="true">
+      <logicalFolder name="fonts" displayName="fonts" projectFiles="true">
+        <itemPath>fonts/FreeSans12pt7b.h</itemPath>
+        <itemPath>fonts/FreeSans18pt7b.h</itemPath>
+        <itemPath>fonts/FreeSans24pt7b.h</itemPath>
+        <itemPath>fonts/FreeSans9pt7b.h</itemPath>
+      </logicalFolder>
       <itemPath>gfxfont.h</itemPath>
       <itemPath>main.h</itemPath>
       <itemPath>definitions.h</itemPath>
-      <itemPath>FreeSans9pt7b.h</itemPath>
-      <itemPath>FreeSans12pt7b.h</itemPath>
-      <itemPath>FreeSans18pt7b.h</itemPath>
-      <itemPath>FreeSans24pt7b.h</itemPath>
+      <itemPath>utility.h</itemPath>
+      <itemPath>globals.h</itemPath>
+      <itemPath>menu.h</itemPath>
+      <itemPath>media/media.h</itemPath>
+      <itemPath>draw.h</itemPath>
+      <itemPath>page.h</itemPath>
+      <itemPath>page_wb.h</itemPath>
+      <itemPath>page_wb_help.h</itemPath>
     </logicalFolder>
     <logicalFolder name="LinkerScript"
                    displayName="Linker Files"
@@ -36,11 +46,11 @@
       <itemPath>main.c</itemPath>
       <itemPath>glcdfont.c</itemPath>
       <itemPath>menu.c</itemPath>
-      <itemPath>utility.c</itemPath>
       <itemPath>draw.c</itemPath>
       <itemPath>page.c</itemPath>
       <itemPath>page_wb.c</itemPath>
       <itemPath>page_wb_help.c</itemPath>
+      <itemPath>globals.c</itemPath>
     </logicalFolder>
     <logicalFolder name="ExternalFiles"
                    displayName="Important Files"
@@ -52,6 +62,7 @@
     <Elem>icons</Elem>
     <Elem>../../../.icons</Elem>
     <Elem>media</Elem>
+    <Elem>fonts</Elem>
   </sourceRootList>
   <projectmakefile>Makefile</projectmakefile>
   <confs>

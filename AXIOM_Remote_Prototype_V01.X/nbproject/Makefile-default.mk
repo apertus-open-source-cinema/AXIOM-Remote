@@ -30,12 +30,12 @@ ifeq ($(TYPE_IMAGE), DEBUG_RUN)
 IMAGE_TYPE=debug
 OUTPUT_SUFFIX=elf
 DEBUGGABLE_SUFFIX=elf
-FINAL_IMAGE=dist/${CND_CONF}/${IMAGE_TYPE}/AXIOM_Remote_Prototype_V01.${IMAGE_TYPE}.${OUTPUT_SUFFIX}
+FINAL_IMAGE=dist/${CND_CONF}/${IMAGE_TYPE}/AXIOM_Remote_Prototype_V01.X.${IMAGE_TYPE}.${OUTPUT_SUFFIX}
 else
 IMAGE_TYPE=production
 OUTPUT_SUFFIX=hex
 DEBUGGABLE_SUFFIX=elf
-FINAL_IMAGE=dist/${CND_CONF}/${IMAGE_TYPE}/AXIOM_Remote_Prototype_V01.${IMAGE_TYPE}.${OUTPUT_SUFFIX}
+FINAL_IMAGE=dist/${CND_CONF}/${IMAGE_TYPE}/AXIOM_Remote_Prototype_V01.X.${IMAGE_TYPE}.${OUTPUT_SUFFIX}
 endif
 
 ifeq ($(COMPARE_BUILD), true)
@@ -57,17 +57,17 @@ OBJECTDIR=build/${CND_CONF}/${IMAGE_TYPE}
 DISTDIR=dist/${CND_CONF}/${IMAGE_TYPE}
 
 # Source Files Quoted if spaced
-SOURCEFILES_QUOTED_IF_SPACED=media/axiom-logo.c media/back-icon-highlight.c media/back-icon.c media/down-icon-highlight.c media/down-icon.c media/help-icon.c media/home-icon-highlight.c media/home-icon.c media/trash-icon.c media/up-icon-highlight.c media/up-icon.c media/wheel-illustration.c main.c glcdfont.c menu.c utility.c draw.c page.c page_wb.c page_wb_help.c
+SOURCEFILES_QUOTED_IF_SPACED=media/axiom-logo.c media/back-icon-highlight.c media/back-icon.c media/down-icon-highlight.c media/down-icon.c media/help-icon.c media/home-icon-highlight.c media/home-icon.c media/trash-icon.c media/up-icon-highlight.c media/up-icon.c media/wheel-illustration.c main.c glcdfont.c menu.c draw.c page.c page_wb.c page_wb_help.c globals.c
 
 # Object Files Quoted if spaced
-OBJECTFILES_QUOTED_IF_SPACED=${OBJECTDIR}/media/axiom-logo.o ${OBJECTDIR}/media/back-icon-highlight.o ${OBJECTDIR}/media/back-icon.o ${OBJECTDIR}/media/down-icon-highlight.o ${OBJECTDIR}/media/down-icon.o ${OBJECTDIR}/media/help-icon.o ${OBJECTDIR}/media/home-icon-highlight.o ${OBJECTDIR}/media/home-icon.o ${OBJECTDIR}/media/trash-icon.o ${OBJECTDIR}/media/up-icon-highlight.o ${OBJECTDIR}/media/up-icon.o ${OBJECTDIR}/media/wheel-illustration.o ${OBJECTDIR}/main.o ${OBJECTDIR}/glcdfont.o ${OBJECTDIR}/menu.o ${OBJECTDIR}/utility.o ${OBJECTDIR}/draw.o ${OBJECTDIR}/page.o ${OBJECTDIR}/page_wb.o ${OBJECTDIR}/page_wb_help.o
-POSSIBLE_DEPFILES=${OBJECTDIR}/media/axiom-logo.o.d ${OBJECTDIR}/media/back-icon-highlight.o.d ${OBJECTDIR}/media/back-icon.o.d ${OBJECTDIR}/media/down-icon-highlight.o.d ${OBJECTDIR}/media/down-icon.o.d ${OBJECTDIR}/media/help-icon.o.d ${OBJECTDIR}/media/home-icon-highlight.o.d ${OBJECTDIR}/media/home-icon.o.d ${OBJECTDIR}/media/trash-icon.o.d ${OBJECTDIR}/media/up-icon-highlight.o.d ${OBJECTDIR}/media/up-icon.o.d ${OBJECTDIR}/media/wheel-illustration.o.d ${OBJECTDIR}/main.o.d ${OBJECTDIR}/glcdfont.o.d ${OBJECTDIR}/menu.o.d ${OBJECTDIR}/utility.o.d ${OBJECTDIR}/draw.o.d ${OBJECTDIR}/page.o.d ${OBJECTDIR}/page_wb.o.d ${OBJECTDIR}/page_wb_help.o.d
+OBJECTFILES_QUOTED_IF_SPACED=${OBJECTDIR}/media/axiom-logo.o ${OBJECTDIR}/media/back-icon-highlight.o ${OBJECTDIR}/media/back-icon.o ${OBJECTDIR}/media/down-icon-highlight.o ${OBJECTDIR}/media/down-icon.o ${OBJECTDIR}/media/help-icon.o ${OBJECTDIR}/media/home-icon-highlight.o ${OBJECTDIR}/media/home-icon.o ${OBJECTDIR}/media/trash-icon.o ${OBJECTDIR}/media/up-icon-highlight.o ${OBJECTDIR}/media/up-icon.o ${OBJECTDIR}/media/wheel-illustration.o ${OBJECTDIR}/main.o ${OBJECTDIR}/glcdfont.o ${OBJECTDIR}/menu.o ${OBJECTDIR}/draw.o ${OBJECTDIR}/page.o ${OBJECTDIR}/page_wb.o ${OBJECTDIR}/page_wb_help.o ${OBJECTDIR}/globals.o
+POSSIBLE_DEPFILES=${OBJECTDIR}/media/axiom-logo.o.d ${OBJECTDIR}/media/back-icon-highlight.o.d ${OBJECTDIR}/media/back-icon.o.d ${OBJECTDIR}/media/down-icon-highlight.o.d ${OBJECTDIR}/media/down-icon.o.d ${OBJECTDIR}/media/help-icon.o.d ${OBJECTDIR}/media/home-icon-highlight.o.d ${OBJECTDIR}/media/home-icon.o.d ${OBJECTDIR}/media/trash-icon.o.d ${OBJECTDIR}/media/up-icon-highlight.o.d ${OBJECTDIR}/media/up-icon.o.d ${OBJECTDIR}/media/wheel-illustration.o.d ${OBJECTDIR}/main.o.d ${OBJECTDIR}/glcdfont.o.d ${OBJECTDIR}/menu.o.d ${OBJECTDIR}/draw.o.d ${OBJECTDIR}/page.o.d ${OBJECTDIR}/page_wb.o.d ${OBJECTDIR}/page_wb_help.o.d ${OBJECTDIR}/globals.o.d
 
 # Object Files
-OBJECTFILES=${OBJECTDIR}/media/axiom-logo.o ${OBJECTDIR}/media/back-icon-highlight.o ${OBJECTDIR}/media/back-icon.o ${OBJECTDIR}/media/down-icon-highlight.o ${OBJECTDIR}/media/down-icon.o ${OBJECTDIR}/media/help-icon.o ${OBJECTDIR}/media/home-icon-highlight.o ${OBJECTDIR}/media/home-icon.o ${OBJECTDIR}/media/trash-icon.o ${OBJECTDIR}/media/up-icon-highlight.o ${OBJECTDIR}/media/up-icon.o ${OBJECTDIR}/media/wheel-illustration.o ${OBJECTDIR}/main.o ${OBJECTDIR}/glcdfont.o ${OBJECTDIR}/menu.o ${OBJECTDIR}/utility.o ${OBJECTDIR}/draw.o ${OBJECTDIR}/page.o ${OBJECTDIR}/page_wb.o ${OBJECTDIR}/page_wb_help.o
+OBJECTFILES=${OBJECTDIR}/media/axiom-logo.o ${OBJECTDIR}/media/back-icon-highlight.o ${OBJECTDIR}/media/back-icon.o ${OBJECTDIR}/media/down-icon-highlight.o ${OBJECTDIR}/media/down-icon.o ${OBJECTDIR}/media/help-icon.o ${OBJECTDIR}/media/home-icon-highlight.o ${OBJECTDIR}/media/home-icon.o ${OBJECTDIR}/media/trash-icon.o ${OBJECTDIR}/media/up-icon-highlight.o ${OBJECTDIR}/media/up-icon.o ${OBJECTDIR}/media/wheel-illustration.o ${OBJECTDIR}/main.o ${OBJECTDIR}/glcdfont.o ${OBJECTDIR}/menu.o ${OBJECTDIR}/draw.o ${OBJECTDIR}/page.o ${OBJECTDIR}/page_wb.o ${OBJECTDIR}/page_wb_help.o ${OBJECTDIR}/globals.o
 
 # Source Files
-SOURCEFILES=media/axiom-logo.c media/back-icon-highlight.c media/back-icon.c media/down-icon-highlight.c media/down-icon.c media/help-icon.c media/home-icon-highlight.c media/home-icon.c media/trash-icon.c media/up-icon-highlight.c media/up-icon.c media/wheel-illustration.c main.c glcdfont.c menu.c utility.c draw.c page.c page_wb.c page_wb_help.c
+SOURCEFILES=media/axiom-logo.c media/back-icon-highlight.c media/back-icon.c media/down-icon-highlight.c media/down-icon.c media/help-icon.c media/home-icon-highlight.c media/home-icon.c media/trash-icon.c media/up-icon-highlight.c media/up-icon.c media/wheel-illustration.c main.c glcdfont.c menu.c draw.c page.c page_wb.c page_wb_help.c globals.c
 
 
 CFLAGS=
@@ -87,7 +87,7 @@ FIXDEPS=fixDeps
 ifneq ($(INFORMATION_MESSAGE), )
 	@echo $(INFORMATION_MESSAGE)
 endif
-	${MAKE}  -f nbproject/Makefile-default.mk dist/${CND_CONF}/${IMAGE_TYPE}/AXIOM_Remote_Prototype_V01.${IMAGE_TYPE}.${OUTPUT_SUFFIX}
+	${MAKE}  -f nbproject/Makefile-default.mk dist/${CND_CONF}/${IMAGE_TYPE}/AXIOM_Remote_Prototype_V01.X.${IMAGE_TYPE}.${OUTPUT_SUFFIX}
 
 MP_PROCESSOR_OPTION=32MZ2048ECG100
 MP_LINKER_FILE_OPTION=
@@ -196,12 +196,6 @@ ${OBJECTDIR}/menu.o: menu.c  nbproject/Makefile-${CND_CONF}.mk
 	@${RM} ${OBJECTDIR}/menu.o 
 	@${FIXDEPS} "${OBJECTDIR}/menu.o.d" $(SILENT) -rsi ${MP_CC_DIR}../  -c ${MP_CC}  $(MP_EXTRA_CC_PRE) -g -D__DEBUG -DPICkit3PlatformTool=1  -fframe-base-loclist  -x c -c -mprocessor=$(MP_PROCESSOR_OPTION)  -MMD -MF "${OBJECTDIR}/menu.o.d" -o ${OBJECTDIR}/menu.o menu.c    -DXPRJ_default=$(CND_CONF)  -legacy-libc  $(COMPARISON_BUILD)  -O6
 	
-${OBJECTDIR}/utility.o: utility.c  nbproject/Makefile-${CND_CONF}.mk
-	@${MKDIR} "${OBJECTDIR}" 
-	@${RM} ${OBJECTDIR}/utility.o.d 
-	@${RM} ${OBJECTDIR}/utility.o 
-	@${FIXDEPS} "${OBJECTDIR}/utility.o.d" $(SILENT) -rsi ${MP_CC_DIR}../  -c ${MP_CC}  $(MP_EXTRA_CC_PRE) -g -D__DEBUG -DPICkit3PlatformTool=1  -fframe-base-loclist  -x c -c -mprocessor=$(MP_PROCESSOR_OPTION)  -MMD -MF "${OBJECTDIR}/utility.o.d" -o ${OBJECTDIR}/utility.o utility.c    -DXPRJ_default=$(CND_CONF)  -legacy-libc  $(COMPARISON_BUILD)  -O6
-	
 ${OBJECTDIR}/draw.o: draw.c  nbproject/Makefile-${CND_CONF}.mk
 	@${MKDIR} "${OBJECTDIR}" 
 	@${RM} ${OBJECTDIR}/draw.o.d 
@@ -225,6 +219,12 @@ ${OBJECTDIR}/page_wb_help.o: page_wb_help.c  nbproject/Makefile-${CND_CONF}.mk
 	@${RM} ${OBJECTDIR}/page_wb_help.o.d 
 	@${RM} ${OBJECTDIR}/page_wb_help.o 
 	@${FIXDEPS} "${OBJECTDIR}/page_wb_help.o.d" $(SILENT) -rsi ${MP_CC_DIR}../  -c ${MP_CC}  $(MP_EXTRA_CC_PRE) -g -D__DEBUG -DPICkit3PlatformTool=1  -fframe-base-loclist  -x c -c -mprocessor=$(MP_PROCESSOR_OPTION)  -MMD -MF "${OBJECTDIR}/page_wb_help.o.d" -o ${OBJECTDIR}/page_wb_help.o page_wb_help.c    -DXPRJ_default=$(CND_CONF)  -legacy-libc  $(COMPARISON_BUILD)  -O6
+	
+${OBJECTDIR}/globals.o: globals.c  nbproject/Makefile-${CND_CONF}.mk
+	@${MKDIR} "${OBJECTDIR}" 
+	@${RM} ${OBJECTDIR}/globals.o.d 
+	@${RM} ${OBJECTDIR}/globals.o 
+	@${FIXDEPS} "${OBJECTDIR}/globals.o.d" $(SILENT) -rsi ${MP_CC_DIR}../  -c ${MP_CC}  $(MP_EXTRA_CC_PRE) -g -D__DEBUG -DPICkit3PlatformTool=1  -fframe-base-loclist  -x c -c -mprocessor=$(MP_PROCESSOR_OPTION)  -MMD -MF "${OBJECTDIR}/globals.o.d" -o ${OBJECTDIR}/globals.o globals.c    -DXPRJ_default=$(CND_CONF)  -legacy-libc  $(COMPARISON_BUILD)  -O6
 	
 else
 ${OBJECTDIR}/media/axiom-logo.o: media/axiom-logo.c  nbproject/Makefile-${CND_CONF}.mk
@@ -317,12 +317,6 @@ ${OBJECTDIR}/menu.o: menu.c  nbproject/Makefile-${CND_CONF}.mk
 	@${RM} ${OBJECTDIR}/menu.o 
 	@${FIXDEPS} "${OBJECTDIR}/menu.o.d" $(SILENT) -rsi ${MP_CC_DIR}../  -c ${MP_CC}  $(MP_EXTRA_CC_PRE)  -g -x c -c -mprocessor=$(MP_PROCESSOR_OPTION)  -MMD -MF "${OBJECTDIR}/menu.o.d" -o ${OBJECTDIR}/menu.o menu.c    -DXPRJ_default=$(CND_CONF)  -legacy-libc  $(COMPARISON_BUILD)  -O6
 	
-${OBJECTDIR}/utility.o: utility.c  nbproject/Makefile-${CND_CONF}.mk
-	@${MKDIR} "${OBJECTDIR}" 
-	@${RM} ${OBJECTDIR}/utility.o.d 
-	@${RM} ${OBJECTDIR}/utility.o 
-	@${FIXDEPS} "${OBJECTDIR}/utility.o.d" $(SILENT) -rsi ${MP_CC_DIR}../  -c ${MP_CC}  $(MP_EXTRA_CC_PRE)  -g -x c -c -mprocessor=$(MP_PROCESSOR_OPTION)  -MMD -MF "${OBJECTDIR}/utility.o.d" -o ${OBJECTDIR}/utility.o utility.c    -DXPRJ_default=$(CND_CONF)  -legacy-libc  $(COMPARISON_BUILD)  -O6
-	
 ${OBJECTDIR}/draw.o: draw.c  nbproject/Makefile-${CND_CONF}.mk
 	@${MKDIR} "${OBJECTDIR}" 
 	@${RM} ${OBJECTDIR}/draw.o.d 
@@ -347,6 +341,12 @@ ${OBJECTDIR}/page_wb_help.o: page_wb_help.c  nbproject/Makefile-${CND_CONF}.mk
 	@${RM} ${OBJECTDIR}/page_wb_help.o 
 	@${FIXDEPS} "${OBJECTDIR}/page_wb_help.o.d" $(SILENT) -rsi ${MP_CC_DIR}../  -c ${MP_CC}  $(MP_EXTRA_CC_PRE)  -g -x c -c -mprocessor=$(MP_PROCESSOR_OPTION)  -MMD -MF "${OBJECTDIR}/page_wb_help.o.d" -o ${OBJECTDIR}/page_wb_help.o page_wb_help.c    -DXPRJ_default=$(CND_CONF)  -legacy-libc  $(COMPARISON_BUILD)  -O6
 	
+${OBJECTDIR}/globals.o: globals.c  nbproject/Makefile-${CND_CONF}.mk
+	@${MKDIR} "${OBJECTDIR}" 
+	@${RM} ${OBJECTDIR}/globals.o.d 
+	@${RM} ${OBJECTDIR}/globals.o 
+	@${FIXDEPS} "${OBJECTDIR}/globals.o.d" $(SILENT) -rsi ${MP_CC_DIR}../  -c ${MP_CC}  $(MP_EXTRA_CC_PRE)  -g -x c -c -mprocessor=$(MP_PROCESSOR_OPTION)  -MMD -MF "${OBJECTDIR}/globals.o.d" -o ${OBJECTDIR}/globals.o globals.c    -DXPRJ_default=$(CND_CONF)  -legacy-libc  $(COMPARISON_BUILD)  -O6
+	
 endif
 
 # ------------------------------------------------------------------------------------
@@ -358,15 +358,15 @@ endif
 # ------------------------------------------------------------------------------------
 # Rules for buildStep: link
 ifeq ($(TYPE_IMAGE), DEBUG_RUN)
-dist/${CND_CONF}/${IMAGE_TYPE}/AXIOM_Remote_Prototype_V01.${IMAGE_TYPE}.${OUTPUT_SUFFIX}: ${OBJECTFILES}  nbproject/Makefile-${CND_CONF}.mk    
+dist/${CND_CONF}/${IMAGE_TYPE}/AXIOM_Remote_Prototype_V01.X.${IMAGE_TYPE}.${OUTPUT_SUFFIX}: ${OBJECTFILES}  nbproject/Makefile-${CND_CONF}.mk    
 	@${MKDIR} dist/${CND_CONF}/${IMAGE_TYPE} 
-	${MP_CC} $(MP_EXTRA_LD_PRE) -g -mdebugger -DPICkit3PlatformTool=1 -mprocessor=$(MP_PROCESSOR_OPTION)  -o dist/${CND_CONF}/${IMAGE_TYPE}/AXIOM_Remote_Prototype_V01.${IMAGE_TYPE}.${OUTPUT_SUFFIX} ${OBJECTFILES_QUOTED_IF_SPACED}          -DXPRJ_default=$(CND_CONF)  -legacy-libc  -O6 $(COMPARISON_BUILD)   -mreserve=data@0x0:0x27F   -Wl,--defsym=__MPLAB_BUILD=1$(MP_EXTRA_LD_POST)$(MP_LINKER_FILE_OPTION),--defsym=__MPLAB_DEBUG=1,--defsym=__DEBUG=1,-D=__DEBUG_D,--defsym=PICkit3PlatformTool=1,--no-code-in-dinit,--no-dinit-in-serial-mem,-Map="${DISTDIR}/${PROJECTNAME}.${IMAGE_TYPE}.map",--memorysummary,dist/${CND_CONF}/${IMAGE_TYPE}/memoryfile.xml
+	${MP_CC} $(MP_EXTRA_LD_PRE) -g -mdebugger -DPICkit3PlatformTool=1 -mprocessor=$(MP_PROCESSOR_OPTION)  -o dist/${CND_CONF}/${IMAGE_TYPE}/AXIOM_Remote_Prototype_V01.X.${IMAGE_TYPE}.${OUTPUT_SUFFIX} ${OBJECTFILES_QUOTED_IF_SPACED}          -DXPRJ_default=$(CND_CONF)  -legacy-libc  -O6 $(COMPARISON_BUILD)   -mreserve=data@0x0:0x27F   -Wl,--defsym=__MPLAB_BUILD=1$(MP_EXTRA_LD_POST)$(MP_LINKER_FILE_OPTION),--defsym=__MPLAB_DEBUG=1,--defsym=__DEBUG=1,-D=__DEBUG_D,--defsym=PICkit3PlatformTool=1,--no-code-in-dinit,--no-dinit-in-serial-mem,-Map="${DISTDIR}/${PROJECTNAME}.${IMAGE_TYPE}.map",--memorysummary,dist/${CND_CONF}/${IMAGE_TYPE}/memoryfile.xml
 	
 else
-dist/${CND_CONF}/${IMAGE_TYPE}/AXIOM_Remote_Prototype_V01.${IMAGE_TYPE}.${OUTPUT_SUFFIX}: ${OBJECTFILES}  nbproject/Makefile-${CND_CONF}.mk   
+dist/${CND_CONF}/${IMAGE_TYPE}/AXIOM_Remote_Prototype_V01.X.${IMAGE_TYPE}.${OUTPUT_SUFFIX}: ${OBJECTFILES}  nbproject/Makefile-${CND_CONF}.mk   
 	@${MKDIR} dist/${CND_CONF}/${IMAGE_TYPE} 
-	${MP_CC} $(MP_EXTRA_LD_PRE)  -mprocessor=$(MP_PROCESSOR_OPTION)  -o dist/${CND_CONF}/${IMAGE_TYPE}/AXIOM_Remote_Prototype_V01.${IMAGE_TYPE}.${DEBUGGABLE_SUFFIX} ${OBJECTFILES_QUOTED_IF_SPACED}          -DXPRJ_default=$(CND_CONF)  -legacy-libc  -O6 $(COMPARISON_BUILD)  -Wl,--defsym=__MPLAB_BUILD=1$(MP_EXTRA_LD_POST)$(MP_LINKER_FILE_OPTION),--no-code-in-dinit,--no-dinit-in-serial-mem,-Map="${DISTDIR}/${PROJECTNAME}.${IMAGE_TYPE}.map",--memorysummary,dist/${CND_CONF}/${IMAGE_TYPE}/memoryfile.xml
-	${MP_CC_DIR}/xc32-bin2hex dist/${CND_CONF}/${IMAGE_TYPE}/AXIOM_Remote_Prototype_V01.${IMAGE_TYPE}.${DEBUGGABLE_SUFFIX} 
+	${MP_CC} $(MP_EXTRA_LD_PRE)  -mprocessor=$(MP_PROCESSOR_OPTION)  -o dist/${CND_CONF}/${IMAGE_TYPE}/AXIOM_Remote_Prototype_V01.X.${IMAGE_TYPE}.${DEBUGGABLE_SUFFIX} ${OBJECTFILES_QUOTED_IF_SPACED}          -DXPRJ_default=$(CND_CONF)  -legacy-libc  -O6 $(COMPARISON_BUILD)  -Wl,--defsym=__MPLAB_BUILD=1$(MP_EXTRA_LD_POST)$(MP_LINKER_FILE_OPTION),--no-code-in-dinit,--no-dinit-in-serial-mem,-Map="${DISTDIR}/${PROJECTNAME}.${IMAGE_TYPE}.map",--memorysummary,dist/${CND_CONF}/${IMAGE_TYPE}/memoryfile.xml
+	${MP_CC_DIR}/xc32-bin2hex dist/${CND_CONF}/${IMAGE_TYPE}/AXIOM_Remote_Prototype_V01.X.${IMAGE_TYPE}.${DEBUGGABLE_SUFFIX} 
 endif
 
 
