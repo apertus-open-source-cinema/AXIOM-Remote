@@ -10,7 +10,7 @@ jobs:
           name: Install dependencies
           command: |
             apt-get -y update
-            apt-get -y install install ca.certificate
+            apt-get -y install ca.certificate
       - run:
           name: Build
           command: |
