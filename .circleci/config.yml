@@ -7,6 +7,9 @@ jobs:
     steps:
       - checkout
       - run:
+          name: Install dependencies
+          command: apt-get -y install ca.certificate
+      - run:
           name: Build
           command: |
             cd AXIOM_Remote_Prototype_V01.X 
@@ -14,9 +17,8 @@ jobs:
             export MP_CC_DIR="/opt/microchip/xc32/v2.10/bin/"
             make -f nbproject/Makefile-default.mk SUBPROJECTS= .build-conf 
       - run:
-          name: "Publish Release on GitHub"
           command: |
-            go get github.com/tcnksm/ghr
-            VERSION=$(my-binary --version)
-            ghr -t ${GITHUB_TOKEN} -u ${CIRCLE_PROJECT_USERNAME} -r ${CIRCLE_PROJECT_REPONAME} -c ${CIRCLE_SHA1} -delete ${VERSION} ./AXIOM_Remote_Prototype_V01.X/dist/default/production/*
-      
+            mkdir /tmp/artefacts
+            cp AXIOM_Remote_Prototype_V01.X/dist/default/production/* /tmp/artefacts
+      - store_artifacts:
+          path: /tmp/artefacts
