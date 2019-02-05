@@ -9,9 +9,10 @@ jobs:
       - run:
           name: Setup
           command: |
-            cd AXIOM_Remote_Prototype_V01.X 
             export MP_CC="/opt/microchip/xc32/v2.10/bin/xc32-gcc" 
             export MP_CC_DIR="/opt/microchip/xc32/v2.10/bin/"
       - run:
           name: Build
-          command: make -f nbproject/Makefile-default.mk SUBPROJECTS= .build-conf 
+          command: |
+            cd AXIOM_Remote_Prototype_V01.X 
+            make -f nbproject/Makefile-default.mk SUBPROJECTS= .build-conf 
