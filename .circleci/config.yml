@@ -9,8 +9,8 @@ jobs:
       - run:
           name: Install dependencies
           command: |
-            apt-get update -yqq
-            apt-get install -yqq install ca.certificate
+            apt-get -y update
+            apt-get -y install install ca.certificate
       - run:
           name: Build
           command: |
