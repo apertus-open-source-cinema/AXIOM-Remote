@@ -18,4 +18,4 @@ jobs:
             mkdir /tmp/artefacts
             cp AXIOM_Remote_Prototype_V01.X/dist/default/production/* /tmp/artefacts
       - store_artifacts:
-          path: AXIOM_Remote_Prototype_V01.X/dist/default/production/
+          path: /tmp/artefacts
