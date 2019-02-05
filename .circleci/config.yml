@@ -14,8 +14,9 @@ jobs:
             export MP_CC_DIR="/opt/microchip/xc32/v2.10/bin/"
             make -f nbproject/Makefile-default.mk SUBPROJECTS= .build-conf 
       - run:
+          name: "Publish Release on GitHub"
           command: |
-            mkdir /tmp/artefacts
-            cp AXIOM_Remote_Prototype_V01.X/dist/default/production/* /tmp/artefacts
-      - store_artifacts:
-          path: /tmp/artefacts
+            go get github.com/tcnksm/ghr
+            VERSION=$(my-binary --version)
+            ghr -t ${GITHUB_TOKEN} -u ${CIRCLE_PROJECT_USERNAME} -r ${CIRCLE_PROJECT_REPONAME} -c ${CIRCLE_SHA1} -delete ${VERSION} ./AXIOM_Remote_Prototype_V01.X/dist/default/production/*
+      
