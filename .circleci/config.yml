@@ -13,3 +13,5 @@ jobs:
             export MP_CC="/opt/microchip/xc32/v2.10/bin/xc32-gcc" 
             export MP_CC_DIR="/opt/microchip/xc32/v2.10/bin/"
             make -f nbproject/Makefile-default.mk SUBPROJECTS= .build-conf 
+      - store_artifacts:
+          path: AXIOM_Remote_Prototype_V01.X/dist/default/production/
