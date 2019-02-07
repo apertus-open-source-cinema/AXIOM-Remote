@@ -1,4 +1,3 @@
-
 /*	AXIOM Remote
  **
  **	Copyright (C) 2018 Sebastian Pichelhofer
@@ -16,24 +15,21 @@
 #include <stdio.h>
 #include <string.h>
 
-//#include "globals.h"
+#include "draw.h"
 #include "utility.h"
 
-#ifndef PAGE_C
-#define PAGE_C
-
 // Color Definitions
-uint16_t page_item_label_color;
-uint16_t page_item_value_color;
-uint16_t page_item_label_background_color;
-uint16_t page_item_value_background_color;
-uint16_t page_item_highlight_color;
-uint16_t page_background_color;
-uint16_t page_item_width;
-uint8_t padding_side;
-uint8_t padding_elements;
-uint8_t page_item_label_height;
-uint8_t page_item_value_height;
+static uint16_t page_item_label_color;
+static uint16_t page_item_value_color;
+static uint16_t page_item_label_background_color;
+static uint16_t page_item_value_background_color;
+static uint16_t page_item_highlight_color;
+static uint16_t page_background_color;
+static uint16_t page_item_width;
+static uint8_t padding_side;
+static uint8_t padding_elements;
+static uint8_t page_item_label_height;
+static uint8_t page_item_value_height;
 
 
 /**************************************************************************/
@@ -85,10 +81,6 @@ void draw_page_item(uint8_t screen_index) {
     }
 
     // handle item hightlighting
-    uint16_t page_item_label_color;
-    uint16_t page_item_label_background_color;
-    uint16_t page_item_value_background_color;
-    uint16_t page_item_value_color;
     if (main_page[PAGE_HOME].page_item[screen_index].highlighted) {
         page_item_label_color = page_item_label_background_color;
         page_item_label_background_color = page_item_highlight_color;
@@ -114,7 +106,7 @@ void draw_page_item(uint8_t screen_index) {
             // draw label
             fill_round_rect(x, y + page_item_value_height, page_item_width, page_item_label_height, 3,
                     page_item_label_background_color);
-            fill_rect(x, y + page_item_value_height, page_item_width, 3, 3, page_item_label_background_color);
+            fill_rect(x, y + page_item_value_height, page_item_width, 3, page_item_label_background_color);
             draw_string(x, y + page_item_value_height + 7, main_page[PAGE_HOME].page_item[screen_index].label,
                     page_item_label_color, page_item_value_color,
                     _FreeSans9pt7b, TEXT_ALIGN_CENTER, page_item_width);
@@ -137,7 +129,7 @@ void draw_page_item(uint8_t screen_index) {
             // draw label
 
             fill_round_rect(x, y + 1, page_item_width, page_item_label_height, 3, page_item_label_background_color);
-            fill_rect(x, y + page_item_label_height - 3, page_item_width, 3, 3, page_item_label_background_color);
+            fill_rect(x, y + page_item_label_height - 3, page_item_width, 3, page_item_label_background_color);
             draw_string(x, y + 7, main_page[PAGE_HOME].page_item[screen_index].label, page_item_label_color, page_item_label_color,
                     _FreeSans9pt7b, TEXT_ALIGN_CENTER, page_item_width);
 
@@ -318,5 +310,3 @@ void main_page_button_release_handler(ButtonID BUTTON_index) {
         navigate_to_page(main_page[PAGE_HOME].page_item[5].link_to_subpage, TRANSITION_PUSH_UP);
     }
 }
-
-#endif /* PAGE_C */

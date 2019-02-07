@@ -89,10 +89,6 @@ void draw_wb_page_item(uint8_t screen_index) {
     }
 
     // handle item highlighting
-    //uint16_t page_item_label_color;
-    //uint16_t page_item_label_background_color;
-    //uint16_t page_item_value_background_color;
-    //uint16_t page_item_value_color;
     if (main_page[PAGE_WB].page_item[screen_index].highlighted) {
         page_item_label_color = page_item_label_background_color;
         page_item_label_background_color = button_hightlight_background_color;
