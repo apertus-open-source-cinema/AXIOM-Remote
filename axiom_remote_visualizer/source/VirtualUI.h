@@ -16,9 +16,13 @@ extern "C"
 {
 #include "AXIOM_Remote_Prototype_V01.X/page.h"
 #include "AXIOM_Remote_Prototype_V01.X/menu.h"
+
+#include "AXIOM_Remote_Prototype_V01.X/page_wb.h"
+#include "AXIOM_Remote_Prototype_V01.X/page_wb_help.h"
 }
 
-float value = 0;
+uint8_t value = 0;
+uint8_t lastValue = 0;
 
 void RenderUI(SDL_Window* window, ImTextureID textureID)
 {
@@ -30,7 +34,7 @@ void RenderUI(SDL_Window* window, ImTextureID textureID)
 
     ImGui::SetNextWindowPos(ImVec2(0, 0));
     ImGui::SetNextWindowSize(ImVec2(800, 480));
-    ImGui::PushStyleColor(ImGuiCol_WindowBg, (ImU32)ImColor(0, 64, 96, 255));
+    ImGui::PushStyleColor(ImGuiCol_WindowBg, (ImU32)ImColor(96, 96, 96, 255));
     ImGui::Begin("Image", nullptr, ImVec2(0, 0), -1, ImGuiWindowFlags_NoTitleBar|ImGuiWindowFlags_NoResize|ImGuiWindowFlags_NoMove|ImGuiWindowFlags_NoScrollbar|ImGuiWindowFlags_NoScrollWithMouse);
 
     ImGui::SetCursorPos(ImVec2(450, 70));
@@ -89,7 +93,21 @@ void RenderUI(SDL_Window* window, ImTextureID textureID)
     ImGui::Button("9", ImVec2(40, 30));
 
     ImGui::SetCursorPos(ImVec2(60, 140));
-    ImGui::Knob("Test123", &value, (ImTextureID)textureID);
+    if(ImGui::Knob("Test123", &value, (ImTextureID)textureID))
+    {
+        float diff = value - lastValue;
+        lastValue = value;
+
+        if (current_page == PAGE_WB) {
+            wb_page_knob_handler(E1_ROT, diff);
+        }
+        if (current_page == PAGE_WB_HELP) {
+            wb_help_page_knob_handler(E1_ROT, diff);
+        }
+        if (current_menu != MENU_NONE) {
+            main_menu_knob_handler(E1_ROT, diff);
+        }
+    }
     ImGui::PopStyleColor();
     ImGui::End();
     ImGui::EndFrame();

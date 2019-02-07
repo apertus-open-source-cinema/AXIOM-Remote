@@ -96,6 +96,7 @@ extern bool btn_E1_pressed;
 #define FRAMEBUFFER_HEIGHT 240
 #define FRAMEBUFFER_RIGHT 319
 #define FRAMEBUFFER_TOP 239
+static int FRAMEBUFFER_SIZE = FRAMEBUFFER_WIDTH * FRAMEBUFFER_HEIGHT;
 
 // the central frame buffer that is written to the LCD
 uint16_t framebuffer[FRAMEBUFFER_WIDTH][FRAMEBUFFER_HEIGHT];
@@ -113,9 +114,10 @@ enum transition_animation {
 enum transition_animation transition_animation_type;
 
 extern uint8_t menu_offset; // when scrolling the menu this is the offset for the items
+extern uint8_t parameter_menu_active;
 
-uint8_t parameter_menu_active; // is a parameter menu currently visible (0 = no)
-uint8_t parameter_selection_index; // index of the item currently selected in a parameter menu
+//uint8_t parameter_menu_active; // is a parameter menu currently visible (0 = no)
+//uint8_t parameter_selection_index; // index of the item currently selected in a parameter menu
 
 typedef struct {
     char label[32];
@@ -164,8 +166,8 @@ extern bool btn_P8_pressed;
 extern bool btn_S1_pos;
 extern bool btn_TS1_pos;
 extern bool btn_TS2_pos;
-extern uint8_t E1_pos;
-extern uint8_t E2_pos;
+//extern uint8_t E1_pos;
+//extern uint8_t E2_pos;
 
 
 //Fonts

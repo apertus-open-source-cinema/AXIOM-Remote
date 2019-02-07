@@ -23,6 +23,8 @@ extern "C"
 #include "AXIOM_Remote_Prototype_V01.X/fonts/FreeSans12pt7b.h"
 #include "AXIOM_Remote_Prototype_V01.X/fonts/FreeSans18pt7b.h"
 #include "AXIOM_Remote_Prototype_V01.X/fonts/FreeSans24pt7b.h"
+
+#include "AXIOM_Remote_Prototype_V01.X/oop.h"
 }
 
 void Shutdown(SDL_Window* win, SDL_Renderer* ren)
@@ -105,6 +107,11 @@ int main()
 {
     std::cout<<"AXIOM Remote Visualizer" << std::endl;
 
+    menu1 m1;
+    menu1_init(&m1);
+    menu_base* mb = (menu_base*)&m1;
+    mb->vtable->draw(mb);
+
     _FreeSans9pt7b = FreeSans9pt7b;
     _FreeSans12pt7b = FreeSans12pt7b;
     _FreeSans18pt7b = FreeSans18pt7b;
@@ -120,6 +127,9 @@ int main()
     SDL_GLContext gl_context = SDL_GL_CreateContext(window);
     ImGui_ImplSDL2_InitForOpenGL(window, gl_context);
     ImGui_ImplOpenGL2_Init();
+
+    current_menu = MENU_MAIN;
+    current_page = PAGE_WB;
 
     init_menus();
     init_pages();
@@ -154,10 +164,10 @@ int main()
 
     glBindTexture(GL_TEXTURE_2D, 0);
 
-    SDL_SetRenderDrawColor(renderer, 0, 60, 80, 255);
+    SDL_SetRenderDrawColor(renderer, 64, 64, 64, 255);
 
     bool appIsRunning = true;
-    const int frames = 30;
+    const int frames = 15;
     SDL_Event events;
     while ( appIsRunning )
     {

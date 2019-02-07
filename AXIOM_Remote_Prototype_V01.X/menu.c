@@ -1,10 +1,10 @@
 /*	AXIOM Remote
  **
  **	Copyright (C) 2018 Sebastian Pichelhofer
- * 
+ *
  **
  **	This program is free software; you can redistribute it and/or modify
- **    	it under the terms of the GNU General Public License 2 as published 
+ **    	it under the terms of the GNU General Public License 2 as published
  **	by the Free Software Foundation.
  **
  **	Compile with -O6 for best experience
@@ -23,9 +23,9 @@
 
 #include "media/media.h"
 
-//static uint8_t menu_offset = 0; // when scrolling the menu this is the offset for the items
-//static uint8_t parameter_menu_active; // is a parameter menu currently visible (0 = no)
-//static uint8_t parameter_selection_index; // index of the item currently selected in a parameter menu
+//uint8_t menu_offset = 0; // when scrolling the menu this is the offset for the items
+//uint8_t parameter_menu_active; // is a parameter menu currently visible (0 = no)
+uint8_t parameter_selection_index; // index of the item currently selected in a parameter menu
 static menu_t main_menu[5];
 //uint8_t main_menu_count;
 static char menu_breadcrumbs[64];
@@ -87,7 +87,7 @@ void draw_menu_item(uint16_t x, uint16_t y, uint8_t menu_index, uint8_t menu_mai
         // submenu items are indicated by a ">" sign
         sprintf(value, ">");
     } else if (main_menu[menu_index].menu_item[menu_main_item_index].type == MENU_ITEM_TYPE_PAGELINK) {
-        // page links have no value icon displayed 
+        // page links have no value icon displayed
         sprintf(value, "");
     } else if (main_menu[menu_index].menu_item[menu_main_item_index].type == MENU_ITEM_TYPE_BACKLINK) {
         // backlinks point to a menu higher in the menu hierarchy
@@ -109,11 +109,11 @@ void draw_menu_item(uint16_t x, uint16_t y, uint8_t menu_index, uint8_t menu_mai
 
         //label
         draw_string(x + 5, y + yoffset_label_from_base, main_menu[menu_index].menu_item[menu_main_item_index].label,
-                menu_selected_text_color, menu_selected_text_color, _FreeSans9pt7b, TEXT_ALIGN_LEFT, 0);
+                    menu_selected_text_color, menu_selected_text_color, _FreeSans9pt7b, TEXT_ALIGN_LEFT, 0);
 
         //value
         draw_string(x + 180, y + yoffset_label_from_base, value, menu_selected_text_color,
-                menu_selected_text_color, _FreeSans9pt7b, TEXT_ALIGN_RIGHT, 80);
+                    menu_selected_text_color, _FreeSans9pt7b, TEXT_ALIGN_RIGHT, 80);
         return;
     }
 
@@ -123,11 +123,11 @@ void draw_menu_item(uint16_t x, uint16_t y, uint8_t menu_index, uint8_t menu_mai
 
         //label
         draw_string(x + 5, y + yoffset_label_from_base, main_menu[menu_index].menu_item[menu_main_item_index].label,
-                menu_disabled_text_color, menu_disabled_text_color, _FreeSans9pt7b, TEXT_ALIGN_LEFT, 0);
+                    menu_disabled_text_color, menu_disabled_text_color, _FreeSans9pt7b, TEXT_ALIGN_LEFT, 0);
 
         //value
         draw_string(x + 180, y + yoffset_label_from_base, value, menu_disabled_text_color, menu_disabled_text_color,
-                _FreeSans9pt7b, TEXT_ALIGN_RIGHT, 80);
+                    _FreeSans9pt7b, TEXT_ALIGN_RIGHT, 80);
         return;
     }
 
@@ -137,11 +137,11 @@ void draw_menu_item(uint16_t x, uint16_t y, uint8_t menu_index, uint8_t menu_mai
 
         //label
         draw_string(x + 5, y + yoffset_label_from_base, main_menu[menu_index].menu_item[menu_main_item_index].label,
-                menu_text_color, menu_text_color, _FreeSans9pt7b, TEXT_ALIGN_LEFT, 0);
+                    menu_text_color, menu_text_color, _FreeSans9pt7b, TEXT_ALIGN_LEFT, 0);
 
         //value
         draw_string(x + 180, y + yoffset_label_from_base, value, menu_text_color, menu_text_color,
-                _FreeSans9pt7b, TEXT_ALIGN_RIGHT, 80);
+                    _FreeSans9pt7b, TEXT_ALIGN_RIGHT, 80);
         return;
     }
 
@@ -155,11 +155,11 @@ void draw_menu_item(uint16_t x, uint16_t y, uint8_t menu_index, uint8_t menu_mai
 
         //label
         draw_string(x + 5, y + yoffset_label_from_base, main_menu[menu_index].menu_item[menu_main_item_index].label,
-                menu_disabled_text_color, menu_disabled_text_color, _FreeSans9pt7b, TEXT_ALIGN_LEFT, 0);
+                    menu_disabled_text_color, menu_disabled_text_color, _FreeSans9pt7b, TEXT_ALIGN_LEFT, 0);
 
         //value
         draw_string(x + 180, y + yoffset_label_from_base, value, menu_disabled_text_color, menu_disabled_text_color,
-                _FreeSans9pt7b, TEXT_ALIGN_RIGHT, 80);
+                    _FreeSans9pt7b, TEXT_ALIGN_RIGHT, 80);
         return;
     }
 
@@ -169,11 +169,11 @@ void draw_menu_item(uint16_t x, uint16_t y, uint8_t menu_index, uint8_t menu_mai
 
         //label
         draw_string(x + 5, y + yoffset_label_from_base, main_menu[menu_index].menu_item[menu_main_item_index].label,
-                menu_disabled_text_color, menu_disabled_text_color, _FreeSans9pt7b, TEXT_ALIGN_LEFT, 0);
+                    menu_disabled_text_color, menu_disabled_text_color, _FreeSans9pt7b, TEXT_ALIGN_LEFT, 0);
 
         //value
         draw_string(x + 180, y + yoffset_label_from_base, value, menu_disabled_text_color, menu_disabled_text_color,
-                _FreeSans9pt7b, TEXT_ALIGN_RIGHT, 80);
+                    _FreeSans9pt7b, TEXT_ALIGN_RIGHT, 80);
         return;
     }
 
@@ -183,11 +183,11 @@ void draw_menu_item(uint16_t x, uint16_t y, uint8_t menu_index, uint8_t menu_mai
 
         //value
         draw_string(x + 5, y + yoffset_label_from_base, main_menu[menu_index].menu_item[menu_main_item_index].label,
-                menu_selected_text_color, menu_selected_text_color, _FreeSans9pt7b, TEXT_ALIGN_LEFT, 0);
+                    menu_selected_text_color, menu_selected_text_color, _FreeSans9pt7b, TEXT_ALIGN_LEFT, 0);
 
         //label
         draw_string(x + 180, y + yoffset_label_from_base, value, menu_selected_text_color, menu_selected_text_color,
-                _FreeSans9pt7b, TEXT_ALIGN_RIGHT, 80);
+                    _FreeSans9pt7b, TEXT_ALIGN_RIGHT, 80);
         return;
     }
 
@@ -196,40 +196,39 @@ void draw_menu_item(uint16_t x, uint16_t y, uint8_t menu_index, uint8_t menu_mai
 
     //label
     draw_string(x + 5, y + yoffset_label_from_base, main_menu[menu_index].menu_item[menu_main_item_index].label,
-            menu_text_color, menu_text_color, _FreeSans9pt7b, TEXT_ALIGN_LEFT, 0);
+                menu_text_color, menu_text_color, _FreeSans9pt7b, TEXT_ALIGN_LEFT, 0);
 
     //value
     draw_string(x + 180, y + yoffset_label_from_base, value, menu_text_color, menu_text_color,
-            _FreeSans9pt7b, TEXT_ALIGN_RIGHT, 80);
+                _FreeSans9pt7b, TEXT_ALIGN_RIGHT, 80);
 }
 
 void draw_scroll_indicator(uint8_t current_menu_item_screen_count, uint8_t current_menu_item_count) {
     // maximum height is the screen without header area
-    uint8_t srollbar_max_framebuffer_height = FRAMEBUFFER_HEIGHT - 30;
+    uint8_t srollbar_max_framebuffer_height = FRAMEBUFFER_HEIGHT - 31;
 
-    // height of the scroll indicator is defined by the ratio of number of items on screen vs total number of item. 
+    // height of the scroll indicator is defined by the ratio of number of items on screen vs total number of item.
     // if there are 7 items on screen of total 14 items the scroll indicator shall be 50% of the scrollbar height
-    uint8_t scrollbarheight = srollbar_max_framebuffer_height * (float) ((float) current_menu_item_screen_count /
-            (float) (current_menu_item_count));
+    uint8_t scrollbarheight = srollbar_max_framebuffer_height * ((float) current_menu_item_screen_count / current_menu_item_count);
 
     //
     uint8_t scrollbaroffset = ((current_menu_item_count - current_menu_item_screen_count) - menu_offset) *
             ((srollbar_max_framebuffer_height - scrollbarheight) / (current_menu_item_count - current_menu_item_screen_count));
 
     //Background
-    fill_rect(FRAMEBUFFER_WIDTH - 16, 0, 16, FRAMEBUFFER_HEIGHT - 30, menu_item_color);
+    fill_rect2(FRAMEBUFFER_WIDTH - 16, 0, 16, FRAMEBUFFER_HEIGHT - 31, menu_item_color);
 
     //Thin Line
-    fill_rect(FRAMEBUFFER_WIDTH - 9, 0, 4, FRAMEBUFFER_HEIGHT - 30, menu_text_color);
+    fill_rect2(FRAMEBUFFER_WIDTH - 10, 0, 4, FRAMEBUFFER_HEIGHT - 31, menu_text_color);
 
     //Thick Line
-    fill_rect(FRAMEBUFFER_WIDTH - 13, scrollbaroffset, 12, scrollbarheight, menu_text_color);
+    fill_rect2(FRAMEBUFFER_WIDTH - 14, scrollbaroffset, 12, scrollbarheight, menu_text_color);
 }
 
 /**************************************************************************/
 /*!
    @brief  initialize our menu structure with default values and definitions
- * 
+ *
  */
 
 /**************************************************************************/
@@ -439,7 +438,7 @@ void init_menus() {
 /*!
    @brief  Draw a menu where the parameter of a certain option is displayed.
  * This typically looks like a kind of drop-down menu with several options to choose from
- * 
+ *
 
     @param    x  location (attention: top right corner of menu_item that triggers the parameter menu)
     @param    y  location (attention: top right corner of menu_item that triggers the parameter menu)
@@ -528,24 +527,24 @@ void draw_parameter_menu(uint16_t x, uint16_t y, uint8_t main_menu_index, uint8_
 
 void draw_menu() {
     //clear the screen
-    fill_rect(0, 0, FRAMEBUFFER_WIDTH, FRAMEBUFFER_HEIGHT, menu_background_color);
+    clear_screen(menu_background_color);
 
     //draw header background
-    fill_rect(0, FRAMEBUFFER_HEIGHT - 28, FRAMEBUFFER_WIDTH, 28, menu_item_color);
+    fill_rect2 (0, FRAMEBUFFER_HEIGHT - 28, FRAMEBUFFER_WIDTH, 28, menu_item_color);
 
-    //draw header bread crumbs 
-    draw_string(5, FRAMEBUFFER_HEIGHT - 22, menu_breadcrumbs, menu_text_color, menu_text_color, _FreeSans9pt7b, TEXT_ALIGN_LEFT, 0);
+    //draw header bread crumbs
+    draw_string(5, FRAMEBUFFER_HEIGHT - 20, menu_breadcrumbs, menu_text_color, menu_text_color, _FreeSans9pt7b, TEXT_ALIGN_LEFT, 0);
 
     //two header separation lines
     draw_line(0, FRAMEBUFFER_HEIGHT - 29, FRAMEBUFFER_WIDTH - 1, FRAMEBUFFER_HEIGHT - 29, menu_selected_text_color);
-
+    // TODO: Check if necessary, as previous draw_line() already gives same result
     draw_line(0, FRAMEBUFFER_HEIGHT - 30, FRAMEBUFFER_WIDTH - 1, FRAMEBUFFER_HEIGHT - 30, menu_background_color);
 
 
     //Side Icons
 
     //Side Icons Background
-    fill_rect(0, 0, 30, FRAMEBUFFER_HEIGHT - 30, menu_item_color);
+    fill_rect2(0, 0, 30, FRAMEBUFFER_HEIGHT - 31, menu_item_color);
 
     //Home Icon
     if (home_icon_highlighted) {
@@ -563,8 +562,7 @@ void draw_menu() {
 
 
     // draw menu items
-    uint8_t a;
-    for (a = 0; a < main_menu_count; a++) {
+    for (uint8_t a = 0; a < main_menu_count; a++) {
         if (main_menu[a].menu_id == current_menu) {
             uint8_t i;
 
@@ -574,7 +572,7 @@ void draw_menu() {
 
             // the _menu_offset is added to the item index and defines which item is the first one shown on screen
 
-            //scrolling up from the first item 
+            //scrolling up from the first item
             if (display_selection_index < 0) {
                 menu_offset -= 1;
             }
@@ -593,7 +591,7 @@ void draw_menu() {
                 draw_menu_item(30, (FRAMEBUFFER_HEIGHT - 29 - 30) - i * 30, a, i + menu_offset);
             }
 
-            // draw scroll bar indicator only if there are 7 or more menu items 
+            // draw scroll bar indicator only if there are 7 or more menu items
             if (menu_items_count == 7) {
                 draw_scroll_indicator(menu_items_count, main_menu[a].menu_items_count);
             }
@@ -610,7 +608,7 @@ void draw_menu() {
                     // if there is a scrollbar
                     draw_parameter_menu(FRAMEBUFFER_RIGHT - 16, offset, a, parameter_menu_active);
                 } else {
-                    //if there is no scrollbar 
+                    //if there is no scrollbar
                     draw_parameter_menu(FRAMEBUFFER_RIGHT, offset, a, parameter_menu_active);
                 }
             }
@@ -757,7 +755,7 @@ void main_menu_button_press_handler(ButtonID button_index) {
 }
 
 void main_menu_knob_handler(ButtonID button_index, int8_t diff) {
-    if (button_index == E1_pos) {
+    if (button_index == E1_ROT) {
         // are we inside a parameter menu?
         if (parameter_menu_active) {
             parameter_selection_index += diff;
@@ -771,7 +769,7 @@ void main_menu_knob_handler(ButtonID button_index, int8_t diff) {
                     main_menu[a].menu_selection_index += diff;
 
                     main_menu[a].menu_selection_index = limit_range(main_menu[a].menu_selection_index, 0,
-                            main_menu[a].menu_items_count - 1);
+                                                                    main_menu[a].menu_items_count - 1);
 
                     unhighlight_all_menu_items(current_menu);
                     unselect_all_menu_items(current_menu);

@@ -30,12 +30,12 @@ bool btn_P8_pressed = false;
 bool btn_S1_pos;
 bool btn_TS1_pos;
 bool btn_TS2_pos;
-uint8_t E1_pos;
-uint8_t E2_pos;
+//uint8_t E1_pos;
+//uint8_t E2_pos;
 
 uint16_t cursor_x = 0;
 uint16_t cursor_y = 0;
 
 uint8_t menu_offset = 0;
-uint8_t parameter_menu_active;
+uint8_t parameter_menu_active = 1;
 

@@ -24,5 +24,8 @@ void draw_string(int16_t x, int16_t y, char* text, uint16_t color, uint16_t bg, 
 void fill_rect(int16_t x, int16_t y, int16_t w, int16_t h, uint16_t color);
 void fill_circle_helper(int16_t x0, int16_t y0, int16_t r, uint8_t cornername, int16_t delta, uint16_t color);
 
+void clear_screen(uint16_t fill_color);
+void fill_rect2(int16_t x, int16_t y, int16_t w, int16_t h, uint16_t color);
+
 #endif //DRAW_H
 

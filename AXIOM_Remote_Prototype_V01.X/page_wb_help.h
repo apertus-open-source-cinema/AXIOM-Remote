@@ -13,8 +13,12 @@
 #ifndef PAGE_WB_HELP_H
 #define PAGE_WB_HELP_H
 
+#include "globals.h"
+
 void draw_wb_help_page();
 void init_wb_help_page();
+
+void wb_help_page_knob_handler(ButtonID button_index, int8_t diff);
 
 #endif //PAGE_WB_HELP_H
 

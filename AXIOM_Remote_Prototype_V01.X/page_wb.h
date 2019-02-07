@@ -1,4 +1,3 @@
-
 /*	AXIOM Remote
  **
  **	Copyright (C) 2018 Sebastian Pichelhofer
@@ -13,8 +12,12 @@
 #ifndef PAGE_WB_H
 #define PAGE_WB_H
 
+#include "globals.h"
+
 void draw_wb_page();
 void init_wb_page();
+
+void wb_page_knob_handler(ButtonID button_index, int8_t diff);
 
 #endif //PAGE_WB_H
 

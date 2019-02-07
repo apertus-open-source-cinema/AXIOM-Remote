@@ -1,4 +1,3 @@
-
 /*	AXIOM Remote
  **
  **	Copyright (C) 2018 Sebastian Pichelhofer
@@ -16,36 +15,28 @@
 #include <stdio.h>
 #include <string.h>
 
-//#include "main.h"
-//#include "definitions.h"
-//#include "draw.h"
+#include "draw.h"
 #include "globals.h"
 #include "utility.h"
 #include "media/media.h"
 
-
-//#include "main.c"
-
-#ifndef PAGE_WB_C
-#define PAGE_WB_C
-
 // Color Definitions
-uint16_t page_item_label_color;
-uint16_t page_item_value_color;
-uint16_t page_item_label_background_color;
-uint16_t page_item_value_background_color;
-uint16_t page_item_highlight_color;
-uint16_t page_background_color;
-uint16_t page_options_background_color;
-uint16_t button_primary_background_color;
-uint16_t button_background_color;
-uint16_t button_hightlight_background_color;
-uint16_t page_item_width;
-uint8_t padding_side;
-uint8_t padding_elements;
-uint8_t page_item_label_height;
-uint8_t page_item_value_height;
-uint8_t wb_menu_highlight_index;
+static uint16_t page_item_label_color;
+static uint16_t page_item_value_color;
+static uint16_t page_item_label_background_color;
+static uint16_t page_item_value_background_color;
+static uint16_t page_item_highlight_color;
+static uint16_t page_background_color;
+static uint16_t page_options_background_color;
+static uint16_t button_primary_background_color;
+static uint16_t button_background_color;
+static uint16_t button_hightlight_background_color;
+static uint16_t page_item_width;
+static uint8_t padding_side;
+static uint8_t padding_elements;
+static uint8_t page_item_label_height;
+static uint8_t page_item_value_height;
+static uint8_t wb_menu_highlight_index;
 
 
 
@@ -98,10 +89,10 @@ void draw_wb_page_item(uint8_t screen_index) {
     }
 
     // handle item highlighting
-    uint16_t page_item_label_color;
-    uint16_t page_item_label_background_color;
-    uint16_t page_item_value_background_color;
-    uint16_t page_item_value_color;
+    //uint16_t page_item_label_color;
+    //uint16_t page_item_label_background_color;
+    //uint16_t page_item_value_background_color;
+    //uint16_t page_item_value_color;
     if (main_page[PAGE_WB].page_item[screen_index].highlighted) {
         page_item_label_color = page_item_label_background_color;
         page_item_label_background_color = button_hightlight_background_color;
@@ -249,10 +240,11 @@ void draw_wb_option_item(uint16_t x, uint16_t y, uint8_t option_item_index, bool
 /*!
     @brief    draw the page
  */
-
 /**************************************************************************/
 void draw_wb_page() {
     //clear the screen
+    //clear_screen(page_item_highlight_color);
+    //fill_rect(0, 0, FRAMEBUFFER_WIDTH, FRAMEBUFFER_HEIGHT, page_item_highlight_color);
     fill_rect(0, 0, FRAMEBUFFER_WIDTH, FRAMEBUFFER_HEIGHT, page_background_color);
 
 
@@ -269,7 +261,6 @@ void draw_wb_page() {
 
     fill_rect(0, button_height + 4, FRAMEBUFFER_WIDTH, available_height, page_options_background_color);
 
-
     // Draw header
     draw_string(5, FRAMEBUFFER_HEIGHT - 30, main_page[PAGE_WB].label, page_item_label_color, page_item_label_color,
             _FreeSans18pt7b, TEXT_ALIGN_LEFT, 0);
@@ -277,11 +268,8 @@ void draw_wb_page() {
     // separation line
     draw_line(0, FRAMEBUFFER_HEIGHT - 34, FRAMEBUFFER_RIGHT, FRAMEBUFFER_TOP - 34, page_item_highlight_color);
 
-
-
     //draw rotary knob indicator/illustration
     drawRGBBitmap(37, 76, (uint16_t*) (wheel_illustration.pixel_data), wheel_illustration.width, wheel_illustration.height);
-
 
     //draw option items
     if (wb_menu_highlight_index > 1)
@@ -297,7 +285,6 @@ void draw_wb_page() {
 
     if (wb_menu_highlight_index < white_balance_parameter.white_balance_options_count - 2)
         draw_wb_option_item(110, button_height + 2 + available_height - 38 - (4 * 30), wb_menu_highlight_index + 2, false);
-
 
     // draw side icons
     draw_wb_page_side_items();
@@ -496,5 +483,3 @@ void wb_page_knob_handler(ButtonID button_index, int8_t diff) {
         wb_menu_highlight_index = limit_range(wb_menu_highlight_index, 0, white_balance_parameter.white_balance_options_count - 1);
     }
 }
-
-#endif /* PAGE_WB_C */

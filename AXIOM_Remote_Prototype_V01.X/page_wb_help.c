@@ -147,7 +147,7 @@ void wb_help_page_button_release_handler(ButtonID button_index) {
 }
 
 void wb_help_page_knob_handler(ButtonID button_index, int8_t diff) {
-    if (button_index == E1_pos) {
+    if (button_index == E1_ROT) {
         wrap_tester += diff;
         //wrap_tester = limit_range(wrap_tester, 0, 200);
 

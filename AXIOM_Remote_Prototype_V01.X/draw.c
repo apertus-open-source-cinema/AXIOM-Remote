@@ -1,11 +1,11 @@
 /*	AXIOM Remote
  **
  **	Copyright (C) 2018 Herbert Poetzl, Sebastian Pichelhofer
- * 
+ *
  * code partly based on Adafruit ILI9341 TFT Displays written by Limor "ladyada" Fried for Adafruit Industries.
  **
  **	This program is free software; you can redistribute it and/or modify
- **    	it under the terms of the GNU General Public License 2 as published 
+ **    	it under the terms of the GNU General Public License 2 as published
  **	by the Free Software Foundation.
  **
  **	Compile with -O6 for best experience
@@ -530,7 +530,7 @@ void getCharBounds(char c, int16_t *x, int16_t *y, int16_t *minx, int16_t *miny,
                 last = pgm_read_byte(&gfxFont.last);
         if ((c >= first) && (c <= last)) { // Char present in this font?
             GFXglyph *glyph = &(((GFXglyph *) pgm_read_pointer(
-                    &gfxFont.glyph))[c - first]);
+                                     &gfxFont.glyph))[c - first]);
             uint8_t gw = pgm_read_byte(&glyph->width),
                     gh = pgm_read_byte(&glyph->height),
                     xa = pgm_read_byte(&glyph->xAdvance);
@@ -675,12 +675,12 @@ void draw_string(int16_t x, int16_t y, char* text, uint16_t color, uint16_t bg, 
     for (i = 0; i < length; i++) {
         char c = text[i];
 
-        if (c == 32) { // space " " character 
+        if (c == 32) { // space " " character
             GFXglyph *glyph = &(((GFXglyph *) pgm_read_pointer(&gfxFont.glyph))[32 - first]);
             cursor_x += glyph->xAdvance;//(uint8_t) pgm_read_byte(&glyph->xAdvance);
             newline = false;
 
-            // wrap text into new line: - check at every space character if next word will 
+            // wrap text into new line: - check at every space character if next word will
             // still fit into textblockwidth if not advance to next line
             if ((align == TEXT_ALIGN_LEFT) && (textblockwidth > 0)) {
                 uint16_t next_space = 0;
@@ -730,40 +730,40 @@ void draw_string(int16_t x, int16_t y, char* text, uint16_t color, uint16_t bg, 
                 }
             }
         } else
-            if (c == 10) { // "\n" (LF) line feed - new line character 
-            cursor_x = x;
-            cursor_y -= gfxFont.yAdvance;
-            newline = true;
-        } else if (c == 13) { // "\r" (CR) carriage return character 
-            cursor_x = x;
-            cursor_y -= gfxFont.yAdvance;
-            newline = true;
-        } else if ((c >= first) && (c <= last)) {
-            GFXglyph *glyph = &(((GFXglyph *) pgm_read_pointer(&gfxFont.glyph))[c - first]);
-            uint8_t w = pgm_read_byte(&glyph->width),
-                    h = pgm_read_byte(&glyph->height);
-            if ((w > 0) && (h > 0)) { // Is there an associated bitmap?
-                int16_t xo = (int8_t) pgm_read_byte(&glyph->xOffset);
+            if (c == 10) { // "\n" (LF) line feed - new line character
+                cursor_x = x;
+                cursor_y -= gfxFont.yAdvance;
+                newline = true;
+            } else if (c == 13) { // "\r" (CR) carriage return character
+                cursor_x = x;
+                cursor_y -= gfxFont.yAdvance;
+                newline = true;
+            } else if ((c >= first) && (c <= last)) {
+                GFXglyph *glyph = &(((GFXglyph *) pgm_read_pointer(&gfxFont.glyph))[c - first]);
+                uint8_t w = pgm_read_byte(&glyph->width),
+                        h = pgm_read_byte(&glyph->height);
+                if ((w > 0) && (h > 0)) { // Is there an associated bitmap?
+                    int16_t xo = (int8_t) pgm_read_byte(&glyph->xOffset);
 
-                if ((i == 0) || newline) {
-                    //first character doesn't need x offset
-                    cursor_x -= xo;
-                    newline = false;
-                }
+                    if ((i == 0) || newline) {
+                        //first character doesn't need x offset
+                        cursor_x -= xo;
+                        newline = false;
+                    }
 
-                if (align == TEXT_ALIGN_LEFT) {
-                    drawChar(cursor_x + xo, cursor_y, c, color, bg, gfxFont);
-                }
-                if ((align == TEXT_ALIGN_CENTER) && (textblockwidth > 0)) {
-                    drawChar(cursor_x + xo - textframebuffer_width / 2 + textblockwidth / 2, cursor_y, c, color, bg, gfxFont);
-                }
-                if ((align == TEXT_ALIGN_RIGHT) && (textblockwidth > 0)) {
-                    drawChar(cursor_x + xo + textblockwidth - textframebuffer_width, cursor_y, c, color, bg, gfxFont);
-                }
+                    if (align == TEXT_ALIGN_LEFT) {
+                        drawChar(cursor_x + xo, cursor_y, c, color, bg, gfxFont);
+                    }
+                    if ((align == TEXT_ALIGN_CENTER) && (textblockwidth > 0)) {
+                        drawChar(cursor_x + xo - textframebuffer_width / 2 + textblockwidth / 2, cursor_y, c, color, bg, gfxFont);
+                    }
+                    if ((align == TEXT_ALIGN_RIGHT) && (textblockwidth > 0)) {
+                        drawChar(cursor_x + xo + textblockwidth - textframebuffer_width, cursor_y, c, color, bg, gfxFont);
+                    }
 
-                cursor_x += (uint8_t) pgm_read_byte(&glyph->xAdvance);
+                    cursor_x += (uint8_t) pgm_read_byte(&glyph->xAdvance);
+                }
             }
-        }
     }
 
     /*if(text == '\n') {                        // Newline?
@@ -793,3 +793,36 @@ void start_framebuffer_transition(enum transition_animation transition_animation
     transition_animation_speed = speed;
     transition_animation_type = transition_animation_type;
 }
+
+/**************************************************************************/
+
+void clear_screen(uint16_t fill_color)
+{
+    uint16_t* fb = (uint16_t*)framebuffer;
+
+    for(int index = 0; index < FRAMEBUFFER_SIZE; index++)
+    {
+        fb[index] = fill_color;
+    }
+}
+
+// Diff from fill_rect(): Reduces number of calls to draw a rectangle
+void fill_rect2(int16_t x, int16_t y, int16_t w, int16_t h, uint16_t color) {
+    // Origin (0,0) -> bottom-left corner
+    int tempHeight = y + h;
+    if(tempHeight > 240)
+    {
+        tempHeight = 240;
+    }
+
+    for(int xIndex = x; xIndex < x + w; xIndex++)
+    {
+        // Subtract requested values from frame buffer height, to draw bottom-up, see previous origin comment
+        for(int yIndex = (FRAMEBUFFER_HEIGHT - 1) - y ; yIndex > (FRAMEBUFFER_HEIGHT - 1) - tempHeight; yIndex--)
+        {
+            framebuffer[xIndex][yIndex] = color;
+        }
+    }
+}
+
+

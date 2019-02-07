@@ -21,6 +21,8 @@ void draw_menu();
 void main_menu_button_press_handler(ButtonID button_index);
 void main_menu_button_release_handler(ButtonID button_index);
 
+void main_menu_knob_handler(ButtonID button_index, int8_t diff);
+
 void unselect_all_menu_items(enum menu_id_t current_menu);
 
 void navigate_to_menu(enum menu_id_t target_menu);
