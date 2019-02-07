@@ -562,7 +562,8 @@ void draw_menu() {
 
 
     // draw menu items
-    for (uint8_t a = 0; a < main_menu_count; a++) {
+    uint8_t a;
+    for (a = 0; a < main_menu_count; a++) {
         if (main_menu[a].menu_id == current_menu) {
             uint8_t i;
 

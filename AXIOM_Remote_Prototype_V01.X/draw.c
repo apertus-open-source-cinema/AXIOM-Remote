@@ -801,7 +801,8 @@ void clear_screen(uint16_t fill_color)
 {
     uint16_t* fb = (uint16_t*)framebuffer;
 
-    for(int index = 0; index < FRAMEBUFFER_SIZE; index++)
+    int index;
+    for(index = 0; index < FRAMEBUFFER_SIZE; index++)
     {
         fb[index] = fill_color;
     }
@@ -816,10 +817,12 @@ void fill_rect2(int16_t x, int16_t y, int16_t w, int16_t h, uint16_t color) {
         tempHeight = 240;
     }
 
-    for(int xIndex = x; xIndex < x + w; xIndex++)
+    int xIndex;
+    int yIndex;
+    for(xIndex = x; xIndex < x + w; xIndex++)
     {
         // Subtract requested values from frame buffer height, to draw bottom-up, see previous origin comment
-        for(int yIndex = (FRAMEBUFFER_HEIGHT - 1) - y ; yIndex > (FRAMEBUFFER_HEIGHT - 1) - tempHeight; yIndex--)
+        for(yIndex = (FRAMEBUFFER_HEIGHT - 1) - y ; yIndex > (FRAMEBUFFER_HEIGHT - 1) - tempHeight; yIndex--)
         {
             framebuffer[xIndex][yIndex] = color;
         }
