@@ -4,7 +4,9 @@ The AXIOM Remote Visualizer is a tool to emulate the actual code running on the 
 # Acquiring git module
 The imgui library is embedded as git module, so you need to execute:
 
-    git submodule update --init --recursive to initialize it.
+    git submodule update --init --recursive 
+
+to initialize it.
 
 # Building
 
