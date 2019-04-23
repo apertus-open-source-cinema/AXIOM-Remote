@@ -18,10 +18,10 @@ FILE(GLOB AXIOM_REMOTE_SOURCES "${CMAKE_SOURCE_DIR}/../AXIOM_Remote_Prototype_V0
 INCLUDE_DIRECTORIES("${CMAKE_SOURCE_DIR}/..")
 INCLUDE_DIRECTORIES("${CMAKE_SOURCE_DIR}/../AXIOM_Remote_Prototype_V01.X/")
 
-#add_subdirectory("3rdParty/imgui")
-include_directories("${CMAKE_SOURCE_DIR}/../3rdParty/imgui/")
-FILE(GLOB IMGUI_SOURCES "${CMAKE_CURRENT_SOURCE_DIR}/../3rdParty/imgui/*.cpp")
-list(REMOVE_ITEM IMGUI_SOURCES ${CMAKE_CURRENT_SOURCE_DIR}/../3rdParty/imgui/imgui_demo.cpp)
+MESSAGE(STATUS "PATH_SRC: ${CMAKE_SOURCE_DIR}")
+include_directories("${CMAKE_SOURCE_DIR}/3rdParty/imgui/")
+FILE(GLOB IMGUI_SOURCES "${CMAKE_CURRENT_SOURCE_DIR}/3rdParty/imgui/*.cpp")
+list(REMOVE_ITEM IMGUI_SOURCES ${CMAKE_CURRENT_SOURCE_DIR}/3rdParty/imgui/imgui_demo.cpp)
 
 SET(VISUALIZER_SOURCES ./source/Main.cpp ./source/imgui_modules/imgui_impl_sdl.cpp ./source/imgui_modules/imgui_impl_opengl2.cpp)
 
