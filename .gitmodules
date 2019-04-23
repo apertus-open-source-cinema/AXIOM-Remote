@@ -1,2 +1,2 @@
-[submodule "3rdParty/imgui"]
+[submodule "axiom_remote_visualizer/3rdParty/imgui"]
 	url = https://github.com/ocornut/imgui.git
