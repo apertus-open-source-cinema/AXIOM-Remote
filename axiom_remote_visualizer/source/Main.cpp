@@ -19,10 +19,10 @@ extern "C"
 #include "AXIOM_Remote_Prototype_V01.X/page_wb_help.h"
 #include "AXIOM_Remote_Prototype_V01.X/gfxfont.h"
 
-#include "AXIOM_Remote_Prototype_V01.X/fonts/FreeSans9pt7b.h"
-#include "AXIOM_Remote_Prototype_V01.X/fonts/FreeSans12pt7b.h"
-#include "AXIOM_Remote_Prototype_V01.X/fonts/FreeSans18pt7b.h"
-#include "AXIOM_Remote_Prototype_V01.X/fonts/FreeSans24pt7b.h"
+//#include "AXIOM_Remote_Prototype_V01.X/fonts/FreeSans9pt7b.h"
+//#include "AXIOM_Remote_Prototype_V01.X/fonts/FreeSans12pt7b.h"
+//#include "AXIOM_Remote_Prototype_V01.X/fonts/FreeSans18pt7b.h"
+//#include "AXIOM_Remote_Prototype_V01.X/fonts/FreeSans24pt7b.h"
 
 #include "AXIOM_Remote_Prototype_V01.X/oop.h"
 }
@@ -112,10 +112,10 @@ int main()
     menu_base* mb = (menu_base*)&m1;
     mb->vtable->draw(mb);
 
-    _FreeSans9pt7b = FreeSans9pt7b;
-    _FreeSans12pt7b = FreeSans12pt7b;
-    _FreeSans18pt7b = FreeSans18pt7b;
-    _FreeSans24pt7b = FreeSans24pt7b;
+    //_FreeSans9pt7b = FreeSans9pt7b;
+    //_FreeSans12pt7b = FreeSans12pt7b;
+    //_FreeSans18pt7b = FreeSans18pt7b;
+   // _FreeSans24pt7b = FreeSans24pt7b;
 
     SDL_Window* window;
     SDL_Renderer* renderer;
