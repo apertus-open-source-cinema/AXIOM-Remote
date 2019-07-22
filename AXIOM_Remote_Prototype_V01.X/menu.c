@@ -104,7 +104,7 @@ void draw_menu_item(uint16_t x, uint16_t y, uint8_t menu_index, uint8_t menu_mai
     }
 
     // is the current line highlighted and not disabled?
-    if (main_menu[menu_index].menu_item[menu_main_item_index].highlighted && !main_menu[menu_index].menu_item[menu_main_item_index].disabled) {
+    if (main_menu[menu_index].menu_item[menu_main_item_index].selected && !main_menu[menu_index].menu_item[menu_main_item_index].disabled) {
         fill_rect(x, y, FRAMEBUFFER_WIDTH - x, 29, menu_highlighted_item_color);
 
         //label
