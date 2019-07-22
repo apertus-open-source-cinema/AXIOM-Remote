@@ -12,10 +12,10 @@
 
 #include "globals.h"
 
-GFXfont _FreeSans9pt7b;
-GFXfont _FreeSans12pt7b;
-GFXfont _FreeSans18pt7b;
-GFXfont _FreeSans24pt7b;
+#include "fonts/FreeSans9pt7b.h"
+#include "fonts/FreeSans12pt7b.h"
+#include "fonts/FreeSans18pt7b.h"
+#include "fonts/FreeSans24pt7b.h"
 
 enum menu_id_t current_menu = MENU_MAIN;
 enum page_id_t current_page = PAGE_HOME;

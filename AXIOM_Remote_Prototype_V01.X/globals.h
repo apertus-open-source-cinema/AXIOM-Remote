@@ -169,12 +169,11 @@ extern bool btn_TS2_pos;
 //extern uint8_t E1_pos;
 //extern uint8_t E2_pos;
 
-
-//Fonts
-extern GFXfont _FreeSans9pt7b;
-extern GFXfont _FreeSans12pt7b;
-extern GFXfont _FreeSans18pt7b;
-extern GFXfont _FreeSans24pt7b;
+extern const GFXfont FreeSans9pt7b;
+extern const GFXfont FreeSans12pt7b;
+extern const GFXfont FreeSans18pt7b;
+extern const GFXfont FreeSans24pt7b;
+   
 
 // The position of the text drawing caret (cursor))
 extern uint16_t cursor_x;

@@ -41,7 +41,7 @@ static uint16_t menu_item_color;
 static uint16_t menu_dimmed_item_color;
 static uint16_t menu_disabled_item_color;
 static uint16_t menu_selected_item_color;
-static uint16_t menu_hightlighted_item_color;
+static uint16_t menu_highlighted_item_color;
 static uint16_t menu_background_color;
 static uint16_t menu_text_color;
 static uint16_t menu_disabled_text_color;
@@ -105,15 +105,15 @@ void draw_menu_item(uint16_t x, uint16_t y, uint8_t menu_index, uint8_t menu_mai
 
     // is the current line highlighted and not disabled?
     if (main_menu[menu_index].menu_item[menu_main_item_index].highlighted && !main_menu[menu_index].menu_item[menu_main_item_index].disabled) {
-        fill_rect(x, y, FRAMEBUFFER_WIDTH - x, 29, menu_hightlighted_item_color);
+        fill_rect(x, y, FRAMEBUFFER_WIDTH - x, 29, menu_highlighted_item_color);
 
         //label
         draw_string(x + 5, y + yoffset_label_from_base, main_menu[menu_index].menu_item[menu_main_item_index].label,
-                    menu_selected_text_color, menu_selected_text_color, _FreeSans9pt7b, TEXT_ALIGN_LEFT, 0);
+                    menu_selected_text_color, menu_selected_text_color, FreeSans9pt7b, TEXT_ALIGN_LEFT, 0);
 
         //value
         draw_string(x + 180, y + yoffset_label_from_base, value, menu_selected_text_color,
-                    menu_selected_text_color, _FreeSans9pt7b, TEXT_ALIGN_RIGHT, 80);
+                    menu_selected_text_color, FreeSans9pt7b, TEXT_ALIGN_RIGHT, 80);
         return;
     }
 
@@ -123,11 +123,11 @@ void draw_menu_item(uint16_t x, uint16_t y, uint8_t menu_index, uint8_t menu_mai
 
         //label
         draw_string(x + 5, y + yoffset_label_from_base, main_menu[menu_index].menu_item[menu_main_item_index].label,
-                    menu_disabled_text_color, menu_disabled_text_color, _FreeSans9pt7b, TEXT_ALIGN_LEFT, 0);
+                    menu_disabled_text_color, menu_disabled_text_color, FreeSans9pt7b, TEXT_ALIGN_LEFT, 0);
 
         //value
         draw_string(x + 180, y + yoffset_label_from_base, value, menu_disabled_text_color, menu_disabled_text_color,
-                    _FreeSans9pt7b, TEXT_ALIGN_RIGHT, 80);
+                    FreeSans9pt7b, TEXT_ALIGN_RIGHT, 80);
         return;
     }
 
@@ -137,11 +137,11 @@ void draw_menu_item(uint16_t x, uint16_t y, uint8_t menu_index, uint8_t menu_mai
 
         //label
         draw_string(x + 5, y + yoffset_label_from_base, main_menu[menu_index].menu_item[menu_main_item_index].label,
-                    menu_text_color, menu_text_color, _FreeSans9pt7b, TEXT_ALIGN_LEFT, 0);
+                    menu_text_color, menu_text_color, FreeSans9pt7b, TEXT_ALIGN_LEFT, 0);
 
         //value
         draw_string(x + 180, y + yoffset_label_from_base, value, menu_text_color, menu_text_color,
-                    _FreeSans9pt7b, TEXT_ALIGN_RIGHT, 80);
+                    FreeSans9pt7b, TEXT_ALIGN_RIGHT, 80);
         return;
     }
 
@@ -155,11 +155,11 @@ void draw_menu_item(uint16_t x, uint16_t y, uint8_t menu_index, uint8_t menu_mai
 
         //label
         draw_string(x + 5, y + yoffset_label_from_base, main_menu[menu_index].menu_item[menu_main_item_index].label,
-                    menu_disabled_text_color, menu_disabled_text_color, _FreeSans9pt7b, TEXT_ALIGN_LEFT, 0);
+                    menu_disabled_text_color, menu_disabled_text_color, FreeSans9pt7b, TEXT_ALIGN_LEFT, 0);
 
         //value
         draw_string(x + 180, y + yoffset_label_from_base, value, menu_disabled_text_color, menu_disabled_text_color,
-                    _FreeSans9pt7b, TEXT_ALIGN_RIGHT, 80);
+                    FreeSans9pt7b, TEXT_ALIGN_RIGHT, 80);
         return;
     }
 
@@ -169,11 +169,11 @@ void draw_menu_item(uint16_t x, uint16_t y, uint8_t menu_index, uint8_t menu_mai
 
         //label
         draw_string(x + 5, y + yoffset_label_from_base, main_menu[menu_index].menu_item[menu_main_item_index].label,
-                    menu_disabled_text_color, menu_disabled_text_color, _FreeSans9pt7b, TEXT_ALIGN_LEFT, 0);
+                    menu_disabled_text_color, menu_disabled_text_color, FreeSans9pt7b, TEXT_ALIGN_LEFT, 0);
 
         //value
         draw_string(x + 180, y + yoffset_label_from_base, value, menu_disabled_text_color, menu_disabled_text_color,
-                    _FreeSans9pt7b, TEXT_ALIGN_RIGHT, 80);
+                    FreeSans9pt7b, TEXT_ALIGN_RIGHT, 80);
         return;
     }
 
@@ -183,11 +183,11 @@ void draw_menu_item(uint16_t x, uint16_t y, uint8_t menu_index, uint8_t menu_mai
 
         //value
         draw_string(x + 5, y + yoffset_label_from_base, main_menu[menu_index].menu_item[menu_main_item_index].label,
-                    menu_selected_text_color, menu_selected_text_color, _FreeSans9pt7b, TEXT_ALIGN_LEFT, 0);
+                    menu_selected_text_color, menu_selected_text_color, FreeSans9pt7b, TEXT_ALIGN_LEFT, 0);
 
         //label
         draw_string(x + 180, y + yoffset_label_from_base, value, menu_selected_text_color, menu_selected_text_color,
-                    _FreeSans9pt7b, TEXT_ALIGN_RIGHT, 80);
+                    FreeSans9pt7b, TEXT_ALIGN_RIGHT, 80);
         return;
     }
 
@@ -196,11 +196,11 @@ void draw_menu_item(uint16_t x, uint16_t y, uint8_t menu_index, uint8_t menu_mai
 
     //label
     draw_string(x + 5, y + yoffset_label_from_base, main_menu[menu_index].menu_item[menu_main_item_index].label,
-                menu_text_color, menu_text_color, _FreeSans9pt7b, TEXT_ALIGN_LEFT, 0);
+                menu_text_color, menu_text_color, FreeSans9pt7b, TEXT_ALIGN_LEFT, 0);
 
     //value
     draw_string(x + 180, y + yoffset_label_from_base, value, menu_text_color, menu_text_color,
-                _FreeSans9pt7b, TEXT_ALIGN_RIGHT, 80);
+                FreeSans9pt7b, TEXT_ALIGN_RIGHT, 80);
 }
 
 void draw_scroll_indicator(uint8_t current_menu_item_screen_count, uint8_t current_menu_item_count) {
@@ -237,11 +237,11 @@ void init_menus() {
     menu_item_color = color565(255, 255, 255);
     menu_dimmed_item_color = color565(247, 251, 247);
     menu_disabled_text_color = color565(255, 255, 255);
-    menu_selected_text_color = color565(255, 128, 0);
+    menu_selected_item_color = color565(255, 128, 0);
     menu_background_color = color565(180, 180, 180);
     menu_text_color = color565(0, 0, 0);
     menu_selected_text_color = color565(255, 255, 255);
-    menu_hightlighted_item_color = color565(0, 128, 255);
+    menu_highlighted_item_color = color565(0, 128, 255);
     menu_disabled_text_color = color565(230, 230, 230);
 
     uint8_t j = 0;
@@ -461,7 +461,7 @@ void draw_parameter_menu(uint16_t x, uint16_t y, uint8_t main_menu_index, uint8_
     uint8_t i;
     for (i = 0; i < main_menu[main_menu_index].menu_item[main_menu_item_index].choice_count; i++) {
         uint16_t x1, y1, w1, h1;
-        get_text_bounds(main_menu[main_menu_index].menu_item[main_menu_item_index].choices[i].label, x, y, &x1, &y1, &w1, &h1, _FreeSans9pt7b);
+        get_text_bounds(main_menu[main_menu_index].menu_item[main_menu_item_index].choices[i].label, x, y, &x1, &y1, &w1, &h1, FreeSans9pt7b);
         if (w1 > max_width) {
             max_width = w1;
         }
@@ -501,17 +501,17 @@ void draw_parameter_menu(uint16_t x, uint16_t y, uint8_t main_menu_index, uint8_
         if (i == parameter_selection_index) {
             if (btn_E1_pressed) {
                 //highlight
-                fill_rect(x + 2, y + height - 29 - 1 - (i + 1) * 30, width - 4, 29, menu_hightlighted_item_color);
-                draw_string(x + 12, y + height - 29 + yoffset_label_from_base - (i + 1) * 30, draw_label, menu_selected_text_color, menu_selected_text_color, _FreeSans9pt7b, TEXT_ALIGN_LEFT, 0);
+                fill_rect(x + 2, y + height - 29 - 1 - (i + 1) * 30, width - 4, 29, menu_highlighted_item_color);
+                draw_string(x + 12, y + height - 29 + yoffset_label_from_base - (i + 1) * 30, draw_label, menu_selected_text_color, menu_selected_text_color, FreeSans9pt7b, TEXT_ALIGN_LEFT, 0);
             } else {
                 //selected
                 fill_rect(x + 2, y + height - 29 - 1 - (i + 1) * 30, width - 4, 29, menu_selected_item_color);
-                draw_string(x + 12, y + height - 29 + yoffset_label_from_base - (i + 1) * 30, draw_label, menu_selected_text_color, menu_selected_text_color, _FreeSans9pt7b, TEXT_ALIGN_LEFT, 0);
+                draw_string(x + 12, y + height - 29 + yoffset_label_from_base - (i + 1) * 30, draw_label, menu_selected_text_color, menu_selected_text_color, FreeSans9pt7b, TEXT_ALIGN_LEFT, 0);
             }
         } else {
             //normal
             fill_rect(x + 2, y + height - 29 - 1 - (i + 1) * 30, width - 4, 29, menu_item_color);
-            draw_string(x + 12, y + height - 29 + yoffset_label_from_base - (i + 1) * 30, draw_label, menu_text_color, menu_text_color, _FreeSans9pt7b, TEXT_ALIGN_LEFT, 0);
+            draw_string(x + 12, y + height - 29 + yoffset_label_from_base - (i + 1) * 30, draw_label, menu_text_color, menu_text_color, FreeSans9pt7b, TEXT_ALIGN_LEFT, 0);
         }
 
         // add a circle icon at beginning of the line of the currently set option
@@ -533,7 +533,7 @@ void draw_menu() {
     fill_rect2 (0, FRAMEBUFFER_HEIGHT - 28, FRAMEBUFFER_WIDTH, 28, menu_item_color);
 
     //draw header bread crumbs
-    draw_string(5, FRAMEBUFFER_HEIGHT - 20, menu_breadcrumbs, menu_text_color, menu_text_color, _FreeSans9pt7b, TEXT_ALIGN_LEFT, 0);
+    draw_string(5, FRAMEBUFFER_HEIGHT - 20, menu_breadcrumbs, menu_text_color, menu_text_color, FreeSans9pt7b, TEXT_ALIGN_LEFT, 0);
 
     //two header separation lines
     draw_line(0, FRAMEBUFFER_HEIGHT - 29, FRAMEBUFFER_WIDTH - 1, FRAMEBUFFER_HEIGHT - 29, menu_selected_text_color);

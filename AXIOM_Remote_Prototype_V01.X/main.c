@@ -25,16 +25,12 @@
 #include "glcdfont.c"// TODO get rid of c file include
 #include "gfxfont.h"
 //#include "main.h"
-#include "fonts/FreeSans9pt7b.h"
-#include "fonts/FreeSans12pt7b.h"
-#include "fonts/FreeSans18pt7b.h"
-#include "fonts/FreeSans24pt7b.h"
 //#include "axiom-logo.c"
 //#include "home-icon.c"
 #include "utility.h"
-#include "draw.c" // TODO get rid of c file include
-#include "menu.c" // TODO get rid of c file include
-
+#include "main.h"
+#include "draw.h"
+#include "menu.h"
 
 #define DEBUGBUTTONS TRUE
 
@@ -82,23 +78,22 @@
 
 // LCD text drawing font
 //GFXfont gfxFont;
-GFXfont _FreeSans9pt7b;
-GFXfont _FreeSans12pt7b;
-GFXfont _FreeSans18pt7b;
-GFXfont _FreeSans24pt7b;
-
+//GFXfont _FreeSans9pt7b;
+//GFXfont _FreeSans12pt7b;
+//GFXfont _FreeSans18pt7b;
+//GFXfont _FreeSans24pt7b;
 
 // AXIOM Remote buttons and knobs
-bool btn_E1_pressed = false;
-bool btn_E2_pressed = false;
+//bool btn_E1_pressed = false;
+//bool btn_E2_pressed = false;
 bool btn_P1_pressed = false;
 bool btn_P2_pressed = false;
 bool btn_P3_pressed = false;
 bool btn_P4_pressed = false;
 bool btn_P5_pressed = false;
 bool btn_P6_pressed = false;
-bool btn_P7_pressed = false;
-bool btn_P8_pressed = false;
+//bool btn_P7_pressed = false;
+//bool btn_P8_pressed = false;
 bool btn_P9_pressed = false;
 bool btn_P10_pressed = false;
 bool btn_P11_pressed = false;
@@ -1133,10 +1128,6 @@ void init_lcd() {
     lcd_pmp_wr(0x0F);
 
     //gfxFont = FreeSans9pt7b;
-    _FreeSans9pt7b = FreeSans9pt7b;
-    _FreeSans12pt7b = FreeSans12pt7b;
-    _FreeSans18pt7b = FreeSans18pt7b;
-    _FreeSans24pt7b = FreeSans24pt7b;
 
     // Clear the image
     clearframebuffer(ILI9341_WHITE);
@@ -1273,6 +1264,10 @@ void button_event_handler(ButtonID button_event, bool pressed) {
 
 int main(void) {
     static uint8_t rgb[4];
+
+    INTCONbits.MVEC = 1;            // Multi Vector Interrupts
+    PRISSbits.SS0 = 0;              // Normal Register Set
+    PRISSbits.PRI7SS = 7;           // Assign Shadow Register Set
 
     init_pbus();
     init_icsp_w();

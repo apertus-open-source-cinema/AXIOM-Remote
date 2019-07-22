@@ -100,7 +100,7 @@ void draw_page_item(uint8_t screen_index) {
             fill_round_rect(x, y + 2 + button_height, page_item_width, button_height, 3, page_item_label_background_color);
             draw_string(x, y + 9 + button_height, main_page[PAGE_HOME].page_item[screen_index].label,
                     page_item_label_color, page_item_label_color,
-                    _FreeSans12pt7b, TEXT_ALIGN_CENTER, page_item_width);
+                    FreeSans12pt7b, TEXT_ALIGN_CENTER, page_item_width);
         }
         if (main_page[PAGE_HOME].page_item[screen_index].item_type == VALUE_AND_LABEL) {
             // draw label
@@ -109,13 +109,13 @@ void draw_page_item(uint8_t screen_index) {
             fill_rect(x, y + page_item_value_height, page_item_width, 3, page_item_label_background_color);
             draw_string(x, y + page_item_value_height + 7, main_page[PAGE_HOME].page_item[screen_index].label,
                     page_item_label_color, page_item_value_color,
-                    _FreeSans9pt7b, TEXT_ALIGN_CENTER, page_item_width);
+                    FreeSans9pt7b, TEXT_ALIGN_CENTER, page_item_width);
 
             // draw value
             fill_round_rect(x, y, page_item_width, page_item_value_height, 3, page_item_value_background_color);
             fill_rect(x, y + page_item_value_height - 3, page_item_width, 3, page_item_value_background_color);
             draw_string(x, y + 10, main_page[PAGE_HOME].page_item[screen_index].value, page_item_value_color, page_item_value_color,
-                    _FreeSans12pt7b, TEXT_ALIGN_CENTER, page_item_width);
+                    FreeSans12pt7b, TEXT_ALIGN_CENTER, page_item_width);
         }
     } else {
         // 3 bottom items
@@ -123,7 +123,7 @@ void draw_page_item(uint8_t screen_index) {
         if (main_page[PAGE_HOME].page_item[screen_index].item_type == BUTTON) {
             fill_round_rect(x, y + 2, page_item_width, button_height, 3, page_item_label_background_color);
             draw_string(x, y + 9, main_page[PAGE_HOME].page_item[screen_index].label, page_item_label_color, page_item_label_color,
-                    _FreeSans12pt7b, TEXT_ALIGN_CENTER, page_item_width);
+                    FreeSans12pt7b, TEXT_ALIGN_CENTER, page_item_width);
         }
         if (main_page[PAGE_HOME].page_item[screen_index].item_type == VALUE_AND_LABEL) {
             // draw label
@@ -131,13 +131,13 @@ void draw_page_item(uint8_t screen_index) {
             fill_round_rect(x, y + 1, page_item_width, page_item_label_height, 3, page_item_label_background_color);
             fill_rect(x, y + page_item_label_height - 3, page_item_width, 3, page_item_label_background_color);
             draw_string(x, y + 7, main_page[PAGE_HOME].page_item[screen_index].label, page_item_label_color, page_item_label_color,
-                    _FreeSans9pt7b, TEXT_ALIGN_CENTER, page_item_width);
+                    FreeSans9pt7b, TEXT_ALIGN_CENTER, page_item_width);
 
             // draw value
             fill_round_rect(x, y + page_item_label_height, page_item_width, page_item_value_height, 3, page_item_value_background_color);
             fill_rect(x, y + page_item_label_height, page_item_width, 3, page_item_value_background_color);
             draw_string(x, y + page_item_label_height + 6, main_page[PAGE_HOME].page_item[screen_index].value, page_item_value_color, page_item_value_color,
-                    _FreeSans12pt7b, TEXT_ALIGN_CENTER, page_item_width);
+                    FreeSans12pt7b, TEXT_ALIGN_CENTER, page_item_width);
         }
     }
 }
@@ -165,8 +165,8 @@ void draw_page() {
     /*
      * Testing font sizes and string length calculations
      * 
-     * draw_string(15, 60, "test", _page_item_label_color, _page_item_label_color, _FreeSans9pt7b, ALIGN_LEFT, 0);
-    fill_rect(15, 55, get_string_width("test", _FreeSans9pt7b), 3, _page_item_value_color);
+     * draw_string(15, 60, "test", _page_item_label_color, _page_item_label_color, FreeSans9pt7b, ALIGN_LEFT, 0);
+    fill_rect(15, 55, get_string_width("test", FreeSans9pt7b), 3, _page_item_value_color);
 
     draw_string(15, 80, "15", _page_item_label_color, _page_item_label_color, _FreeSans18pt7b, ALIGN_LEFT, 0);
     fill_rect(15, 75, get_string_width("15", _FreeSans18pt7b), 3, _page_item_value_color);
@@ -174,8 +174,8 @@ void draw_page() {
     draw_string(15, 110, "A Word", _page_item_label_color, _page_item_label_color, _FreeSans18pt7b, ALIGN_LEFT, 0);
     fill_rect(15, 105, get_string_width("A Word", _FreeSans18pt7b), 3, _page_item_value_color);
 
-    draw_string(15, 160, "Long 34", _page_item_label_color, _page_item_label_color, _FreeSans12pt7b, ALIGN_LEFT, 0);
-    fill_rect(15, 155, get_string_width("Long 34", _FreeSans12pt7b), 3, _page_item_value_color);
+    draw_string(15, 160, "Long 34", _page_item_label_color, _page_item_label_color, FreeSans12pt7b, ALIGN_LEFT, 0);
+    fill_rect(15, 155, get_string_width("Long 34", FreeSans12pt7b), 3, _page_item_value_color);
      */
 }
 
@@ -235,7 +235,7 @@ void init_pages() {
     strcpy(main_page[PAGE_HOME].page_item[j].label, "WB");
     sprintf(main_page[PAGE_HOME].page_item[j].value, "%dK", white_balance_parameter.white_balance_options[white_balance_parameter.white_balance_selection_index].Kelvin);
     main_page[PAGE_HOME].page_item[j].link_to_subpage = PAGE_WB;
-    main_page[PAGE_HOME].page_item[j].fontsize = _FreeSans12pt7b;
+    main_page[PAGE_HOME].page_item[j].fontsize = FreeSans12pt7b;
     main_page[PAGE_HOME].page_item[j].highlighted = false;
     main_page[PAGE_HOME].page_item[j].item_type = VALUE_AND_LABEL;
 

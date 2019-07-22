@@ -86,7 +86,7 @@ void draw_wb_help_page() {
 
     // Draw header
     draw_string(5, FRAMEBUFFER_HEIGHT - 30, "White Balance Help", help_page_text_color, help_page_text_color,
-            _FreeSans12pt7b, TEXT_ALIGN_LEFT, 0);
+            FreeSans12pt7b, TEXT_ALIGN_LEFT, 0);
 
     //separation line
     draw_line(0, FRAMEBUFFER_TOP - 34, FRAMEBUFFER_RIGHT, FRAMEBUFFER_TOP - 34, color565(255, 128, 0));
@@ -102,7 +102,7 @@ void draw_wb_help_page() {
 
     //draw content
     draw_string(30 + 6, FRAMEBUFFER_TOP - 30 - 25 + help_page_scroll_index, wb_help_text, help_page_text_color, help_page_text_color,
-            _FreeSans9pt7b, TEXT_ALIGN_LEFT, FRAMEBUFFER_WIDTH - 36 - 20 - wrap_tester);
+            FreeSans9pt7b, TEXT_ALIGN_LEFT, FRAMEBUFFER_WIDTH - 36 - 20 - wrap_tester);
 
     /*uint8_t length = string_len("This is a very long text with many letters ahahaha - its so incredible  lonmg.asdasd.");
     char debug[32];
