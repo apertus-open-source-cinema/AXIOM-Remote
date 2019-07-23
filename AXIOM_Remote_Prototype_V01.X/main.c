@@ -194,6 +194,10 @@ void init_uart2(void) {
 
     TRISEbits.TRISE8 = 0; // U2TX out
     TRISEbits.TRISE9 = 1; // U2RX in
+    
+    // Pull-down
+    CNPUEbits.CNPUE9 = 1;
+    
     ANSELEbits.ANSE8 = 0; // digital
     ANSELEbits.ANSE9 = 0; // digital
 
