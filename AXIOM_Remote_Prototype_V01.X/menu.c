@@ -147,7 +147,7 @@ void draw_menu_item(uint16_t x, uint16_t y, uint8_t menu_index, uint8_t menu_mai
 
     // is the current line selected and disabled?
     if (main_menu[menu_index].menu_item[menu_main_item_index].selected && main_menu[menu_index].menu_item[menu_main_item_index].disabled) {
-        fill_rect(x, y, FRAMEBUFFER_WIDTH - x, 29, menu_disabled_item_color);
+        fill_rect(x, y, FRAMEBUFFER_WIDTH - x, 29, menu_disabled_text_color);
 
         //disabled indicators on the side
         fill_rect(30, y, 4, 29, menu_selected_text_color);
@@ -155,17 +155,17 @@ void draw_menu_item(uint16_t x, uint16_t y, uint8_t menu_index, uint8_t menu_mai
 
         //label
         draw_string(x + 5, y + yoffset_label_from_base, main_menu[menu_index].menu_item[menu_main_item_index].label,
-                    menu_disabled_text_color, menu_disabled_text_color, FreeSans9pt7b, TEXT_ALIGN_LEFT, 0);
+                    menu_disabled_item_color, menu_disabled_item_color, FreeSans9pt7b, TEXT_ALIGN_LEFT, 0);
 
         //value
-        draw_string(x + 180, y + yoffset_label_from_base, value, menu_disabled_text_color, menu_disabled_text_color,
+        draw_string(x + 180, y + yoffset_label_from_base, value, menu_disabled_item_color, menu_disabled_item_color,
                     FreeSans9pt7b, TEXT_ALIGN_RIGHT, 80);
         return;
     }
 
     // is the current line disabled?
     if (main_menu[menu_index].menu_item[menu_main_item_index].disabled) {
-        fill_rect(x, y, FRAMEBUFFER_WIDTH - x, 29, menu_disabled_text_color);
+        fill_rect(x, y, FRAMEBUFFER_WIDTH - x, 29, menu_disabled_item_color);
 
         //label
         draw_string(x + 5, y + yoffset_label_from_base, main_menu[menu_index].menu_item[menu_main_item_index].label,
@@ -236,7 +236,7 @@ void init_menus() {
     //Color Theme definitions
     menu_item_color = color565(255, 255, 255);
     menu_dimmed_item_color = color565(247, 251, 247);
-    menu_disabled_text_color = color565(255, 255, 255);
+    menu_disabled_item_color = color565(255, 255, 255);
     menu_selected_item_color = color565(255, 128, 0);
     menu_background_color = color565(180, 180, 180);
     menu_text_color = color565(0, 0, 0);
