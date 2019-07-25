@@ -5,12 +5,12 @@ jobs:
     docker:
       - image: marlon365/mplab-xc32-2.10:sat-xc32-2.10-fw
     steps:
+      - checkout  
       - run:
           name: Install dependencies
           command: |
             apt-get -y update
-            apt-get -y install git ca.certificate
-      - checkout      
+            apt-get -y install ca.certificate
       - run:
           name: Build
           command: |
@@ -23,6 +23,7 @@ jobs:
             mkdir /tmp/artefacts
             cd AXIOM_Remote_Prototype_V01.X/dist/default/production/
             mv AXIOM_Remote_Prototype_V01.X.production.hex AXIOM_Remote_Prototype_V01.0.${CIRCLE_BUILD_NUM}.hex
+            md5sum AXIOM_Remote_Prototype_V01.0.${CIRCLE_BUILD_NUM}.hex > AXIOM_Remote_Prototype_V01.0.${CIRCLE_BUILD_NUM}.hex.md5
             cp * /tmp/artefacts
       - store_artifacts:
           path: /tmp/artefacts
