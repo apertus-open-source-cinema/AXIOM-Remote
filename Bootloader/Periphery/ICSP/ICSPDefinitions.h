@@ -1,0 +1,36 @@
+#ifndef ICSPDEFINITIONS_H
+#define ICSPDEFINITIONS_H
+
+#include <xc.h>
+
+// Pin 72
+#define ICSP_W_MCLR_O	LATCbits.LATC13
+#define ICSP_W_MCLR_T	TRISCbits.TRISC13
+
+// Pin 58
+#define	ICSP_W_PCLK_O	LATFbits.LATF8
+#define	ICSP_W_PCLK_T	TRISFbits.TRISF8
+#define ICSP_W_PCLK_U	CNPUFbits.CNPUF8
+
+// Pin 57
+#define	ICSP_W_PDAT_O	LATFbits.LATF2
+#define ICSP_W_PDAT_I	PORTFbits.RF2
+#define ICSP_W_PDAT_T	TRISFbits.TRISF2
+#define ICSP_W_PDAT_U	CNPUFbits.CNPUF2
+
+// Pin 73
+#define ICSP_E_MCLR_O	LATCbits.LATC14
+#define ICSP_E_MCLR_T	TRISCbits.TRISC14
+
+// Pin 59
+#define	ICSP_E_PCLK_O	LATAbits.LATA2
+#define	ICSP_E_PCLK_T	TRISAbits.TRISA2
+#define	ICSP_E_PCLK_U	CNPUAbits.CNPUA2
+
+// Pin 60
+#define	ICSP_E_PDAT_O	LATAbits.LATA3
+#define ICSP_E_PDAT_I	PORTAbits.RA3
+#define ICSP_E_PDAT_T	TRISAbits.TRISA3
+#define ICSP_E_PDAT_U	CNPUAbits.CNPUA3
+
+#endif //ICSPDEFINITIONS_H
