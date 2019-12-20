@@ -3,16 +3,16 @@ XC32_PATH=/home/andi/XC32
 CC=${XC32_PATH}/bin/xc32-g++
 LD=${XC32_PATH}/bin/xc32-ld
 
-NAME=AXIOM_Remote_Bootloader
-
-LINKER_SCRIPT=procdefs_boot.ld
+NAME=AXIOM_Remote_Firmware
 
 DEVICE=32MZ2048ECG100
+
+LINKER_SCRIPT=procdefs_app.ld
 
 BUILD_DIR=build
 INC_DIR=-I${XC32_PATH}/pic32mx/include -I../Common
 
-SOURCE_FILES=$(wildcard *.cpp) $(wildcard **/*.cpp) $(wildcard Periphery/**/*.cpp)
+SOURCE_FILES=$(wildcard *.cpp) $(wildcard **/*.cpp) #$(wildcard ../../Bootloader/Periphery/USB/*.cpp)
 OBJ_FILES=${SOURCE_FILES:%.cpp=${BUILD_DIR}/%.o}
 
 OPTS=-c -G0 -mprocessor=${DEVICE} -mconfig-data-dir=${XC32_PATH}/pic32mx/lib/proc/${DEVICE} -iprefix ${XC32_PATH}/lib/gcc/pic32mx/4.8.3/ -Wall -MMD -MF ${BUILD_DIR}/.depend
@@ -25,7 +25,7 @@ ${BUILD_DIR}/${NAME}.elf: ${OBJ_FILES}
 	${XC32_PATH}/bin/xc32-bin2hex $@ 
 
 ${BUILD_DIR}/%.o: %.cpp
-	@ mkdir -p build build/Periphery build/Periphery/ICSP build/Periphery/USB build/Periphery/ILI9341
+	@ mkdir -p build build/UI build/Periphery build/Periphery/USB build/Periphery/ILI9341
 	${CC} ${OPTS} $< -o $@ ${INC_DIR}
 
 .PHONY: clean

@@ -1,7 +1,7 @@
 #include "ICSProgrammer.h"
 
 #include "ICSPDefinitions.h"
-#include "../../Helpers.h"
+#include <Helpers.h>
 
 #define MAGIC_NUMBER 0x4d434850
 

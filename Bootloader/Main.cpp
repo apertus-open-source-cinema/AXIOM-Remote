@@ -9,7 +9,9 @@
 #include "Periphery/USB/USBCDCDevice.h"
 #include "Periphery/ICSP/ICSProgrammer.h"
 
-#include "Helpers.h"
+#include <Helpers.h>
+
+#define LCD_BLT_O LATDbits.LATD10
 
 void ConfigGPIO()
 {
@@ -68,8 +70,6 @@ void Setup()
 
     EnableIRQ();
 }
-
-#define LCD_BLT_O LATDbits.LATD10
 
 char outputBuffer[50];
 

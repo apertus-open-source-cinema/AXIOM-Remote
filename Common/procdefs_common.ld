@@ -1912,4 +1912,3 @@ SECTIONS
     __pic32_tlb_init_values_count = 8 ;
   } > kseg1_boot_mem_4B0
 }
-
