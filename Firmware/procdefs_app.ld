@@ -54,6 +54,7 @@ PROVIDE(_ebase_address = 0x9D000000);
 _RESET_ADDR                   = _ebase_address + 0x1000;
 _BEV_EXCPT_ADDR               = _RESET_ADDR + 0x380;
 _DBG_EXCPT_ADDR               = _RESET_ADDR + 0x480;
+
 _SIMPLE_TLB_REFILL_EXCPT_ADDR = _ebase_address + 0;
 _CACHE_ERR_EXCPT_ADDR         = _ebase_address + 0x100;
 _GEN_EXCPT_ADDR               = _ebase_address + 0x180;
@@ -72,7 +73,7 @@ _GEN_EXCPT_ADDR               = _ebase_address + 0x180;
  *************************************************************************/
 MEMORY
 {
-  kseg0_program_mem      (rx) : ORIGIN = 0x9D002000, LENGTH = 64K
+  kseg0_program_mem      (rx) : ORIGIN = 0x9D002000, LENGTH = 128K
 
   /* first half of boot flash */
   kseg0_boot_mem              : ORIGIN = 0x9D000000, LENGTH = 0x0
@@ -81,16 +82,12 @@ MEMORY
   exception_mem               : ORIGIN = 0x9D000000, LENGTH = 0x1000
 
   /* other half of boot flash <*/
-  kseg1_boot_mem              : ORIGIN = 0x9D001000, LENGTH = 0x490
+  kseg1_boot_mem              : ORIGIN = 0x9D001000, LENGTH = 0x480
   kseg1_boot_mem_4B0          : ORIGIN = 0x9D0014B0, LENGTH = (0x1000 - 0x4B0)
-  /*kseg1_boot_mem              : ORIGIN = 0xBFC00000, LENGTH = 0x480
-  kseg1_boot_mem_4B0          : ORIGIN = 0xBFC004B0, LENGTH = 0xFA50*/
-  framebuffer_mem      (w!x)  : ORIGIN = 0x80000000, LENGTH = 150K        /* 150K -> 153600 -> 0x25800 */
+  
+  framebuffer_mem      (w!x)  : ORIGIN = 0xA0000000, LENGTH = 150K        /* 150K -> 153600 -> 0x25800 */
   /*fifo_queue_mem         (w!x)  : ORIGIN = 0x80000000 + 150K, LENGTH = 40   /* 2 bytes for counters, 38 bytes for 2 x fifo queues */
   kseg0_data_mem       (w!x)  : ORIGIN = 0x80000000 + 150K + 40, LENGTH = 16K
-  /*kseg1_data_mem       (w!x)  : ORIGIN = 0xA0000000 + 200K, LENGTH = 300K - 200K /*0x25800*/
-  /*kseg1_data_mem       (w!x)  : ORIGIN = 0xA0000000 + 150K + 4, LENGTH = 0x80000 - 150K*/
-  /*kseg0_data_mem       (w!x)  : ORIGIN = 0x80000000 + 150K + 32K, LENGTH = 0x80000 - 150K - 32K*/
 }
 
 SECTIONS {
