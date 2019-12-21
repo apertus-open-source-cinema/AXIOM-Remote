@@ -90,6 +90,8 @@ int main()
     Painter painter(display.GetFramebuffer(), display.GetWidth(), display.GetHeight());
     MainMenu mainMenu(&cdcDevice);
     
+     IMenu* currentMenu = &mainMenu;
+
     // static uint8_t rgb[4];
     // rgb[0] = 0x14;
     // rgb[1] = 0x24;
@@ -99,14 +101,41 @@ int main()
 
     LCD_BLT_O = 1;
 
-    //    display.ClearFramebuffer(RGB565(255,0,0));
-    //    display.DisplayFramebuffer();
+    // //    display.ClearFramebuffer(RGB565(255,0,0));
+    // //    display.DisplayFramebuffer();
 
+    // while (1)
+    // {
+    // // Display Bottom
+    //     DelayMs(2000);
+    //     LCD_BLT_O = !LCD_BLT_O;
+    // }
+
+    char debugText[32];
+
+    uint16_t counter = 0;
     while (1)
     {
-    // Display Bottom
-        DelayMs(2000);
-        LCD_BLT_O = !LCD_BLT_O;
+        cdcDevice.Process();
+
+        // Buttons and knobs, PIC16 (west)
+        //PollKMW(&display, &cdcDevice);
+
+        // Buttons, PIC16 (east)
+        //currentMenu->Update(PollKME());
+
+        display.ClearFramebuffer(currentMenu->GetBackgroundColor());
+        currentMenu->Draw(&painter);
+
+        counter++;
+        sprintf(debugText, "%d\r\n", counter);
+        painter.DrawText(debugText, 10, 70, RGB565(255, 0, 0), TextAlign::TEXT_ALIGN_LEFT, 10);
+
+        //cdcDevice.Send((uint8_t*)debugText, 10);
+
+        display.DisplayFramebuffer();
+
+        DelayMs(30);
     }
 
     return 0;
