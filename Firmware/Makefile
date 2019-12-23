@@ -13,11 +13,11 @@ BUILD_DIR=build
 INC_DIR=-I${XC32_PATH}/pic32mx/include -I../Common
 
 # Bootloader modules are added temporarily, till UA can be flashed through BL
-SOURCE_FILES=$(wildcard *.cpp) $(wildcard **/*.cpp) $(wildcard ./../Bootloader/Periphery/**/*.cpp)
+SOURCE_FILES=$(wildcard *.cpp) $(wildcard **/*.cpp) #$(wildcard ./../Bootloader/Periphery/**/*.cpp)
 OBJ_FILES=${SOURCE_FILES:%.cpp=${BUILD_DIR}/%.o}
 
 OPTS=-c -G0 -mprocessor=${DEVICE} -mconfig-data-dir=${XC32_PATH}/pic32mx/lib/proc/${DEVICE} -iprefix ${XC32_PATH}/lib/gcc/pic32mx/4.8.3/ -Wall -MMD -MF ${BUILD_DIR}/.depend
-LD_OPTS= -Wl,--defsym=_min_heap_size=128,--trace,--script="${LINKER_SCRIPT}",--cref,-Map="${BUILD_DIR}/${NAME}.map",--report-mem,--warn-section-align,--memorysummary=${BUILD_DIR}/memoryfile.xml
+LD_OPTS= -Wl,--defsym=_ebase_address=0x9D002000,--trace,--script="${LINKER_SCRIPT}",--cref,-Map="${BUILD_DIR}/${NAME}.map",--report-mem,--warn-section-align,--memorysummary=${BUILD_DIR}/memoryfile.xml
 
 all: ${BUILD_DIR}/${NAME}.elf
 

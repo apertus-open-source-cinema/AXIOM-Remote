@@ -9,7 +9,7 @@
 #define	IMENU_H
 
 //#include <Helpers.h>
-#include <inttypes.h>
+#include <stdint.h>
 
 #include <Helpers.h>
 

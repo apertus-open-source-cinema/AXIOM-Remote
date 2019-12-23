@@ -1,7 +1,7 @@
 #ifndef USBCDCDEVICE_H
 #define USBCDCDEVICE_H
 
-#include <inttypes.h>
+#include <stdint.h>
 
 class USBCDCDevice
 {

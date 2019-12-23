@@ -39,7 +39,7 @@ OPTIONAL("vector_offset_init.o")
  *   xc32-gcc src.c -Wl,--defsym=_ebase_address=0x9D001000
  *************************************************************************/
 PROVIDE(_vector_spacing = 0x0001);
-PROVIDE(_ebase_address = 0x9FC01000);
+/*PROVIDE(_ebase_address = 0x9FC01000);*/
 
 /*************************************************************************
  * Memory Address Equates
@@ -78,10 +78,10 @@ MEMORY
 
   /* Bootloader C program is in the Boot_Flash */
   /* adjust length, as the boot program grows. (0x80000 for now) */
-  kseg0_program_mem     (rx)  : ORIGIN = 0x9FC01000, LENGTH = 64K
+  kseg0_program_mem     (rx)  : ORIGIN = 0x9FC01000, LENGTH = 128K
   /*shared_lib_mem (rx)         : ORIGIN = 0x9FC01000 + 16K, LENGTH = 0x4000 /* Shared between bootloader and app */
 /*kseg1_program_mem      (rx)  : ORIGIN = 0x9D000000, LENGTH = 16K*/
-  user_app              (rx)  : ORIGIN = 0x9D000000, LENGTH = 32K
+  user_app              (rx)  : ORIGIN = 0x9D002000, LENGTH = 512K
 
   /* first half of boot flash */
   kseg0_boot_mem              : ORIGIN = 0x9FC004b0, LENGTH = 0x0
@@ -125,11 +125,11 @@ SECTIONS {
     . = ALIGN(4);
   } >shared_lib_mem*/
 
-  .user_app ORIGIN(user_app) : 
+  /*.user_app ORIGIN(user_app) : 
   {
     __USER_APP_ADDRESS = .;
     KEEP(*(.user_app*))
-  } >user_app
+  } >user_app*/
 }
 
 INCLUDE "../Common/procdefs_common.ld"

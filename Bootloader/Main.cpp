@@ -71,7 +71,7 @@ void Setup()
     EnableIRQ();
 }
 
-char outputBuffer[50];
+char outputBuffer[128];
 
 void GetKMConfig(ICSProgrammer &icsp, USBCDCDevice &usbDevice)
 {
@@ -83,7 +83,7 @@ void GetKMConfig(ICSProgrammer &icsp, USBCDCDevice &usbDevice)
     for (int i = 0; i < 10; i++)
     {
         uint16_t value = icsp.Receive();
-        sprintf(outputBuffer, "Address: %#X, value/dec: %u, value/hex: %#X\r\n", address + i, value, value);
+        sprintf(outputBuffer, "Address: 0x%.8X, value/dec: %u, value/hex: 0x%X\r\n", address + i, value, value);
         usbDevice.Send((uint8_t *)outputBuffer, strlen(outputBuffer));
         icsp.SendCommand(ICSPCommand::IncrementAddress);
     }
@@ -96,7 +96,7 @@ void GetKMProgramData(ICSProgrammer &icsp, USBCDCDevice &usbDevice)
     while (count <= 0x3FFF)
     {
         uint16_t value = icsp.Receive();
-        sprintf(outputBuffer, "%#X: %d %#X\r\n", count, value, value);
+        sprintf(outputBuffer, "0x%.8X: %d 0x%X\r\n", count, value, value);
         usbDevice.Send((uint8_t *)outputBuffer, strlen(outputBuffer));
         icsp.SendCommand(ICSPCommand::IncrementAddress);
 

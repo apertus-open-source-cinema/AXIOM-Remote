@@ -1,7 +1,7 @@
 #ifndef ICSPROGRAMMER_H
 #define ICSPROGRAMMER_H
 
-#include <inttypes.h>
+#include <stdint.h>
 
 // Added 0x20 to get PDAT change at the end of command transfer
 enum class ICSPCommand : uint8_t
