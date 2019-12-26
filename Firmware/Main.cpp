@@ -1,3 +1,5 @@
+// Configuration
+#include "../Bootloader/Configuration/PIC32.h"
 
 // Periphery
 #include "../Bootloader/Periphery/ILI9341/ILI9341Device.h"
@@ -269,8 +271,6 @@ int main()
     //     LCD_BLT_O = !LCD_BLT_O;
     // }
 
-    char debugText[32];
-
     uint16_t counter = 0;
     while (1)
     {
@@ -284,3 +284,17 @@ int main()
 
         display.ClearFramebuffer(currentMenu->GetBackgroundColor());
         currentMenu->Draw(&painter);
+
+        counter++;
+        sprintf(debugText, "%d\r\n", counter);
+        painter.DrawText(debugText, 10, 70, RGB565(255, 0, 0), TextAlign::TEXT_ALIGN_LEFT, 10);
+
+        //cdcDevice.Send((uint8_t*)debugText, 10);
+
+        display.DisplayFramebuffer();
+
+        DelayMs(30);
+    }
+
+    return 0;
+}

@@ -5,8 +5,6 @@
 //#include "LCDDefinitions.h"
 #include "Helpers.h"
 
-#include <GlobalSettings.h>
-
 ILI9341Display::ILI9341Display(volatile uint16_t* framebuffer)
 {
     _framebuffer = framebuffer;
