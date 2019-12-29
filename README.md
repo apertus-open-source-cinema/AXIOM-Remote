@@ -26,6 +26,7 @@ A universal remote control with buttons, dials and an LCD for menu/settings (no 
 - **HEX** and **ELF** files would placed in the **build** folder
 
 ## Flash instructions
+Note that with the current hardware the PICKit2 needs to stay connected for normal operation even when flashing has been completed as the PICkit2 pulls down the RESET signal.
 
 ### IPE
 
