@@ -17,18 +17,29 @@ A universal remote control with buttons, dials and an LCD for menu/settings (no 
 - Open **Bootloader** folder in terminal
 - Execute **make** or when rebuilding **make clean && make**
 - **HEX** and **ELF** files would placed in the **build** folder
-- Open IPE and connect to your PICKit, drag and drop the HEX file into the IPE window
-- Click **Program**, after a moment it should be finished 
-- Connect with **minicom** and reset the board, after a short moment the information about west key manager will be shown
+- After flashing connect with **minicom** and reset the board, after a short moment the information about west key manager will be shown
 
 ### Firmware
 
 - Open **Firmware** folder in terminal
 - Execute **make** or when rebuilding **make clean && make**
 - **HEX** and **ELF** files would placed in the **build** folder
-- Open IPE and connect to your PICKit, drag and drop the HEX file into the IPE window
+
+## Flash instructions
+Note that with the current hardware the PICKit2 needs to stay connected for normal operation even when flashing has been completed as the PICkit2 pulls down the RESET signal.
+
+### IPE
+
+- Open IPE and connect to your PICKit3 or later, drag and drop the HEX file into the IPE window
 - Click **Program**, after a moment it should be finished and main menu with 6 buttons shown
 
-## TODO
+### pic32prog
 
-- Add instructions for **pic32prog**
+- Acquire binary or build from source from: https://github.com/sergev/pic32prog to flash with PICKit2
+- run **sudo ./pic32prog yourfile.hex** and you should see a progress bar of the flashing/verification process
+
+## Usage instructions
+
+### Firmware
+- USB communication to/from the AXIOM Remote is done via a USB communications device class (CDC)
+- **sudo minicom -D /dev/ttyACM0** (baud rate is not required)
