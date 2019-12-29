@@ -34,5 +34,5 @@ A universal remote control with buttons, dials and an LCD for menu/settings (no 
 
 ### pic32prog
 
-- Acquire binary or build from source from: https://github.com/sergev/pic32prog
+- Acquire binary or build from source from: https://github.com/sergev/pic32prog to flash with PICKit2
 - run **sudo ./pic32prog yourfile.hex** and you should see a progress bar of the flashing/verification process
