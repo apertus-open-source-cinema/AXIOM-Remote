@@ -2,20 +2,19 @@
 
 #include <cstring>
 
-#include <Helpers.h>
+#include "Utils.h"
 
 #include "../Media/Fonts/FreeSans9pt7b.h"
 #include "../Media/Fonts/FreeSans12pt7b.h"
 #include "../Media/Fonts/FreeSans18pt7b.h"
 #include "../Media/Fonts/FreeSans24pt7b.h"
 
-Painter::Painter(volatile uint16_t* framebuffer, uint16_t framebufferWidth, uint8_t framebufferHeight) :
-_framebufferWidth(framebufferWidth),
-_framebufferHeight(framebufferHeight),
-_framebuffer(framebuffer),
-_fontList({FreeSans9pt7b, FreeSans12pt7b, FreeSans18pt7b, FreeSans24pt7b}),
-_cursorX(0),
-_cursorY(0)
+Painter::Painter(volatile uint16_t *framebuffer, uint16_t framebufferWidth, uint8_t framebufferHeight) : _framebufferWidth(framebufferWidth),
+                                                                                                         _framebufferHeight(framebufferHeight),
+                                                                                                         _framebuffer(framebuffer),
+                                                                                                         _fontList({FreeSans9pt7b, FreeSans12pt7b, FreeSans18pt7b, FreeSans24pt7b}),
+                                                                                                         _cursorX(0),
+                                                                                                         _cursorY(0)
 {
     // Default font
     SetFont(Font::FreeSans9pt7b);
@@ -46,7 +45,7 @@ void Painter::DrawRectangle(uint16_t x, uint16_t y, uint16_t width, uint16_t hei
     }
 }
 
-void Painter::DrawImage(const uint8_t* data, uint16_t x, uint16_t y, uint16_t width, uint16_t height)
+void Painter::DrawImage(const uint8_t *data, uint16_t x, uint16_t y, uint16_t width, uint16_t height)
 {
     for (uint16_t yIndex = 0; yIndex < height; yIndex++)
     {
@@ -60,7 +59,7 @@ void Painter::DrawImage(const uint8_t* data, uint16_t x, uint16_t y, uint16_t wi
             //    continue;
             //}
 
-            uint16_t pixel = ((uint16_t) value1 << 8) | value2;
+            uint16_t pixel = ((uint16_t)value1 << 8) | value2;
             _framebuffer[(_framebufferWidth * (yIndex + y)) + x + xIndex] = pixel;
         }
     }
@@ -68,7 +67,7 @@ void Painter::DrawImage(const uint8_t* data, uint16_t x, uint16_t y, uint16_t wi
 
 uint8_t count = 0;
 
-void Painter::DrawText(const char* text, uint16_t x, uint16_t y, uint16_t color, TextAlign align, uint16_t textblockwidth)
+void Painter::DrawText(const char *text, uint16_t x, uint16_t y, uint16_t color, TextAlign align, uint16_t textblockwidth)
 {
     uint8_t first = _currentFont.first;
     uint8_t last = _currentFont.last;
@@ -91,7 +90,7 @@ void Painter::DrawText(const char* text, uint16_t x, uint16_t y, uint16_t color,
     uint16_t textPixelWidth = GetStringFramebufferWidth(text);
     DrawFillRectangle(x, 0, textPixelWidth, 10, RGB565(255, 255, 0));
     count++;
-    
+
     GFXglyph *glyph = nullptr;
 
     for (uint8_t i = 0; i < length; i++)
@@ -122,7 +121,6 @@ void Painter::DrawText(const char* text, uint16_t x, uint16_t y, uint16_t color,
                     if ((text[i + j] == 32) || (text[i + j] == 0))
                     {
                         next_space = j;
-
 
                         /*char debug2[32];
                         sprintf(debug2, "next_space = %u", next_space);
@@ -206,7 +204,6 @@ void Painter::DrawText(const char* text, uint16_t x, uint16_t y, uint16_t color,
             }
         }
 
-
         //        if (c == '\n')
         //        { // Newline?
         //            _cursorX = 0; // Reset x to zero,
@@ -222,7 +219,6 @@ void Painter::DrawText(const char* text, uint16_t x, uint16_t y, uint16_t color,
         //            DrawCharacter(c, _cursorX, _cursorY, color);
         //            _cursorX += size * 6; // Advance x one char
         //        }
-
     }
 }
 
@@ -260,7 +256,7 @@ void Painter::DrawCharacter(unsigned char character, int16_t x, int16_t y, uint1
     }
 }
 
-uint16_t Painter::GetStringFramebufferWidth(const char* str)
+uint16_t Painter::GetStringFramebufferWidth(const char *str)
 {
     uint16_t width = 0;
     uint8_t gap;
@@ -327,17 +323,17 @@ void Painter::SetFont(Font font)
 {
     switch (font)
     {
-        case Font::FreeSans9pt7b:
-            _currentFont = _fontList[0];
-            break;
-        case Font::FreeSans12pt7b:
-            _currentFont = _fontList[1];
-            break;
-        case Font::FreeSans18pt7b:
-            _currentFont = _fontList[2];
-            break;
-        case Font::FreeSans24pt7b:
-            _currentFont = _fontList[3];
-            break;
+    case Font::FreeSans9pt7b:
+        _currentFont = _fontList[0];
+        break;
+    case Font::FreeSans12pt7b:
+        _currentFont = _fontList[1];
+        break;
+    case Font::FreeSans18pt7b:
+        _currentFont = _fontList[2];
+        break;
+    case Font::FreeSans24pt7b:
+        _currentFont = _fontList[3];
+        break;
     }
 }
