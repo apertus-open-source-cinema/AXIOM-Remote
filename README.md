@@ -17,18 +17,22 @@ A universal remote control with buttons, dials and an LCD for menu/settings (no 
 - Open **Bootloader** folder in terminal
 - Execute **make** or when rebuilding **make clean && make**
 - **HEX** and **ELF** files would placed in the **build** folder
-- Open IPE and connect to your PICKit, drag and drop the HEX file into the IPE window
-- Click **Program**, after a moment it should be finished 
-- Connect with **minicom** and reset the board, after a short moment the information about west key manager will be shown
+- After flashing connect with **minicom** and reset the board, after a short moment the information about west key manager will be shown
 
 ### Firmware
 
 - Open **Firmware** folder in terminal
 - Execute **make** or when rebuilding **make clean && make**
 - **HEX** and **ELF** files would placed in the **build** folder
-- Open IPE and connect to your PICKit, drag and drop the HEX file into the IPE window
+
+## Flash instructions
+
+### IPE
+
+- Open IPE and connect to your PICKit3 or later, drag and drop the HEX file into the IPE window
 - Click **Program**, after a moment it should be finished and main menu with 6 buttons shown
 
-## TODO
+### pic32prog
 
-- Add instructions for **pic32prog**
+- Acquire binary or build from source from: https://github.com/sergev/pic32prog
+- run **sudo ./pic32prog yourfile.hex** and you should see a progress bar of the flashing/verification process
