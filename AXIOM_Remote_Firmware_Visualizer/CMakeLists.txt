@@ -5,15 +5,13 @@ set(CMAKE_CXX_STANDARD 11)
 set(CMAKE_C_STANDARD 99)
 
 find_package(SDL2 REQUIRED)
-#string(STRIP "${SDL2_LIBRARIES}" SDL2_LIBRARIES)
+# Fix for ArchLinux, see https://bbs.archlinux.org/viewtopic.php?id=235931
+if("${SDL2_LIBRARIES}" STREQUAL "")
+    SET(SDL2_LIBRARIES SDL2::SDL2)
+ELSE()
+    string(STRIP "${SDL2_LIBRARIES}" SDL2_LIBRARIES)
+ENDIF()
 include_directories(${SDL2_INCLUDE_DIRS})
-
-#FILE(GLOB AXIOM_REMOTE_SOURCES "${CMAKE_SOURCE_DIR}/../AXIOM_Remote_Prototype_V01.X/draw.c"
-#                               "${CMAKE_SOURCE_DIR}/../AXIOM_Remote_Prototype_V01.X/page.c"
-#                               "${CMAKE_SOURCE_DIR}/../AXIOM_Remote_Prototype_V01.X/page_wb.c"
-#                               "${CMAKE_SOURCE_DIR}/../AXIOM_Remote_Prototype_V01.X/page_wb_help.c"
-#                               "${CMAKE_SOURCE_DIR}/../AXIOM_Remote_Prototype_V01.X/menu.c"
-#                               "${CMAKE_SOURCE_DIR}/../AXIOM_Remote_Prototype_V01.X/globals.c")
 
 INCLUDE_DIRECTORIES("${CMAKE_SOURCE_DIR}/..")
 INCLUDE_DIRECTORIES("${CMAKE_SOURCE_DIR}/../Firmware/")

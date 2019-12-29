@@ -11,7 +11,7 @@
 
 #include "ButtonDefinitions.h"
 
-#include "../../Bootloader/Periphery/USB/USBCDCDevice.h"
+#include "../../Bootloader/Periphery/USB/IUSBDevice.h"
 
 class MainMenu : public IMenu
 {

@@ -225,7 +225,7 @@ int main()
         //     SDL_SaveBMP(surface, "test.bmp");
         //     saved = true;
         // }
-        
+
         RenderUI(window, reinterpret_cast<ImTextureID>(knobTextureID));
         ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());
 
