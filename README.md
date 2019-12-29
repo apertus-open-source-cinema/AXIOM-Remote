@@ -36,3 +36,9 @@ A universal remote control with buttons, dials and an LCD for menu/settings (no 
 
 - Acquire binary or build from source from: https://github.com/sergev/pic32prog to flash with PICKit2
 - run **sudo ./pic32prog yourfile.hex** and you should see a progress bar of the flashing/verification process
+
+## Usage instructions
+
+### Firmware
+- USB communication to/from the AXIOM Remote is done via a USB communications device class (CDC)
+-**sudo minicom -D /dev/ttyACM0** (baud rate is not required)
