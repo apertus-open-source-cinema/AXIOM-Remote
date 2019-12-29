@@ -3,14 +3,16 @@
 
 #include <stdint.h>
 
-class USBCDCDevice
+#include "IUSBDevice.h"
+
+class USBCDCDevice : public IUSBDevice
 {
 public:
     void Initialize();
 
     void Process();
 
-    void Send(uint8_t *data, uint16_t length);
+    void Send(uint8_t *data, uint16_t length) override;
 };
 
 #endif //USBCDCDEVICE_H

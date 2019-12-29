@@ -12,12 +12,17 @@
 Painter::Painter(volatile uint16_t *framebuffer, uint16_t framebufferWidth, uint8_t framebufferHeight) : _framebufferWidth(framebufferWidth),
                                                                                                          _framebufferHeight(framebufferHeight),
                                                                                                          _framebuffer(framebuffer),
-                                                                                                         _fontList({FreeSans9pt7b, FreeSans12pt7b, FreeSans18pt7b, FreeSans24pt7b}),
+                                                                                                         _fontList{FreeSans9pt7b, FreeSans12pt7b, FreeSans18pt7b, FreeSans24pt7b},
                                                                                                          _cursorX(0),
                                                                                                          _cursorY(0)
 {
     // Default font
     SetFont(Font::FreeSans9pt7b);
+}
+
+void Painter::DrawFillRectangle(uint16_t x, uint16_t y, uint16_t width, uint16_t height, Color565 color)
+{
+    DrawFillRectangle(x, y, width, height, (uint16_t)color);
 }
 
 void Painter::DrawFillRectangle(uint16_t x, uint16_t y, uint16_t width, uint16_t height, uint16_t color)
@@ -66,6 +71,11 @@ void Painter::DrawImage(const uint8_t *data, uint16_t x, uint16_t y, uint16_t wi
 }
 
 uint8_t count = 0;
+
+void Painter::DrawText(const char *text, uint16_t x, uint16_t y, Color565 color, TextAlign align, uint16_t textblockwidth)
+{
+    DrawText(text, x, y, (uint16_t)color, align, textblockwidth);
+}
 
 void Painter::DrawText(const char *text, uint16_t x, uint16_t y, uint16_t color, TextAlign align, uint16_t textblockwidth)
 {

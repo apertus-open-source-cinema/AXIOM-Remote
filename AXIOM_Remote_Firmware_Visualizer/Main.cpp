@@ -14,6 +14,9 @@
 #include "UI/Painter.h"
 #include "UI/MainMenu.h"
 
+// Periphery
+#include "USBCDCTerminalDevice.h"
+
 // extern "C"
 // {
 // #include "AXIOM_Remote_Prototype_V01.X/globals.h"
@@ -54,7 +57,7 @@ void Initialization(SDL_Window **win, SDL_Renderer **renderer)
         std::cout << "SDL could not initialize! SDL_Error: " << SDL_GetError() << std::endl;
     }
 
-    *win = SDL_CreateWindow("AXIOM Remote Visualizer", 100, 100, 800, 480, SDL_WINDOW_OPENGL);
+    *win = SDL_CreateWindow("AXIOM Remote Visualizer", 100, 100, 800, 480, SDL_WINDOW_OPENGL | SDL_WINDOW_ALLOW_HIGHDPI);
     if (*win == nullptr)
     {
         std::cout << "SDL_CreateWindow Error: " << SDL_GetError() << std::endl;
@@ -84,7 +87,7 @@ void Initialization(SDL_Window **win, SDL_Renderer **renderer)
 uint8_t* framebuffer = new uint8_t[FRAMEBUFFER_WIDTH * FRAMEBUFFER_HEIGHT * 3];
 uint16_t* frameBuffer = new uint16_t[FRAMEBUFFER_WIDTH * FRAMEBUFFER_HEIGHT];
 
-void RenderDisplay(uint8_t *frameBuffer, int width, int height)
+void RenderDisplay(uint8_t *fb, int width, int height)
 {
     //     if (current_menu != MENU_NONE) {
     //         draw_menu();
@@ -97,11 +100,15 @@ void RenderDisplay(uint8_t *frameBuffer, int width, int height)
     //     }
 
     unsigned int j = 0;
-    for (int yIndex = 0; yIndex < height; ++yIndex)
+    for (int yIndex = 0; yIndex < height; yIndex++)
     {
         for (int xIndex = 0; xIndex < width; xIndex++)
         {
-            uint16_t val = frameBuffer[xIndex * yIndex];
+            uint16_t val = frameBuffer[yIndex * width + xIndex];
+            /*if(val > 0)
+            {
+                std::cout << "PIXEL" << std::endl;
+            }*/
             framebuffer[j] = (val >> 11) << 3;
             framebuffer[j + 1] = ((val >> 5) & 0x3F) << 2;
             framebuffer[j + 2] = (val & 0x1F) << 3;
@@ -150,14 +157,6 @@ int main()
     ImGui_ImplSDL2_InitForOpenGL(window, gl_context);
     ImGui_ImplOpenGL3_Init("#version 130");
 
-    /*current_menu = MENU_MAIN;
-    current_page = PAGE_WB;
-
-    init_menus();
-    init_pages();*/
-    //draw_menu();
-    std::cout << "Debug point 1" << std::endl;
-
     SDL_Texture *texture = SDL_CreateTexture(renderer, SDL_PIXELFORMAT_RGB24, SDL_TEXTUREACCESS_STREAMING, FRAMEBUFFER_WIDTH, FRAMEBUFFER_HEIGHT);
     void *textureData;
     int pitch = 0;
@@ -179,38 +178,30 @@ int main()
         Mode = GL_RGBA;
     }
 
-    std::cout << "Debug point 2" << std::endl;
-
     glTexImage2D(GL_TEXTURE_2D, 0, Mode, surface->w, surface->h, 0, Mode, GL_UNSIGNED_BYTE, surface->pixels);
 
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
-    //knob_tex = SDL_CreateTextureFromSurface(ren, surface);
 
     glBindTexture(GL_TEXTURE_2D, 0);
 
-    std::cout << "Debug point 3" << std::endl;
-
     SDL_SetRenderDrawColor(renderer, 64, 64, 64, 255);
-
-    /*framebuffer[11480 * 3] = 0x7f;
-    framebuffer[11481 * 3] = 0x7f;
-    framebuffer[11482 * 3] = 0x7f;*/
 
     SDL_GL_MakeCurrent(window, gl_context);
 
     Painter painter(frameBuffer, FRAMEBUFFER_WIDTH, FRAMEBUFFER_HEIGHT);
-    MainMenu mainMenu;
+    USBCDCTerminalDevice cdcDevice;
+    MainMenu mainMenu(&cdcDevice);
 
     IMenu *currentMenu = &mainMenu;
 
+    bool saved = false;
+
     bool appIsRunning = true;
-    const int frames = 15;
+    const int frames = 30;
     SDL_Event events;
     while (appIsRunning)
     {
-        std::cout << "Debug point 4" << std::endl;
-
         while (SDL_PollEvent(&events))
         {
             if ((events.type == SDL_WINDOWEVENT && events.window.event == SDL_WINDOWEVENT_CLOSE) || (events.type == SDL_KEYDOWN && events.key.keysym.sym == SDLK_ESCAPE))
@@ -219,26 +210,24 @@ int main()
             }
         }
 
-        //SDL_RenderClear(renderer);
+        SDL_RenderClear(renderer);
+
         painter.DrawFillRectangle(0, 0, FRAMEBUFFER_WIDTH, FRAMEBUFFER_HEIGHT, currentMenu->GetBackgroundColor());
         currentMenu->Draw(&painter);
-
         RenderDisplay(framebuffer, FRAMEBUFFER_WIDTH, FRAMEBUFFER_HEIGHT);
-        std::cout << "Debug point 5" << std::endl;
 
         SDL_LockTexture(texture, nullptr, &textureData, &pitch);
         memcpy(textureData, framebuffer, FRAMEBUFFER_WIDTH * FRAMEBUFFER_HEIGHT * 3);
         SDL_UnlockTexture(texture);
 
-        std::cout << "Debug point 6" << std::endl;
-
+        // if(!saved)
+        // {
+        //     SDL_SaveBMP(surface, "test.bmp");
+        //     saved = true;
+        // }
+        
         RenderUI(window, reinterpret_cast<ImTextureID>(knobTextureID));
-        std::cout << "Debug point 7" << std::endl;
-
         ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());
-        std::cout << "Debug point 8" << std::endl;
-
-        //SDL_GL_SwapWindow(window);
 
         SDL_RenderCopy(renderer, texture, nullptr, &texture_rect);
         SDL_RenderPresent(renderer); //updates the renderer

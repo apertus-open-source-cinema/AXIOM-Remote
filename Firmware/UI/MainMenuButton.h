@@ -10,6 +10,8 @@
 
 #include "IButton.h"
 
+#include "Color565.h"
+
 class MainMenuButton : public IButton
 {
     uint16_t _x;
@@ -58,8 +60,8 @@ public:
             if(!_hideValue)
             {
                 painter->SetFont(_valueFont);
-                painter->DrawFillRectangle(_x, _y, _width, _valueHeight, ILI9341_WHITE);
-                painter->DrawText(_value, _x, _y + (_valueHeight - 5), ILI9341_BLACK, TextAlign::TEXT_ALIGN_CENTER, _width);
+                painter->DrawFillRectangle(_x, _y, _width, _valueHeight, Color565::White);
+                painter->DrawText(_value, _x, _y + (_valueHeight - 5),  Color565::Black, TextAlign::TEXT_ALIGN_CENTER, _width);
             }
 
             if(_hideValue)
@@ -68,21 +70,21 @@ public:
             }
 
             painter->SetFont(_captionFont);
-            painter->DrawFillRectangle(_x, _y + _valueHeight, _width, _captionHeight, ILI9341_BLACK);
-            painter->DrawText(_caption, _x, _y + _valueHeight + (_captionHeight - 5), ILI9341_WHITE, TextAlign::TEXT_ALIGN_CENTER, _width);
+            painter->DrawFillRectangle(_x, _y + _valueHeight, _width, _captionHeight,  Color565::Black);
+            painter->DrawText(_caption, _x, _y + _valueHeight + (_captionHeight - 5),  Color565::White, TextAlign::TEXT_ALIGN_CENTER, _width);
 
         }
         else
         {
             painter->SetFont(_captionFont);
-            painter->DrawFillRectangle(_x, _y, _width, _captionHeight, ILI9341_BLACK);
-            painter->DrawText(_caption, _x, _y + 15, ILI9341_WHITE, TextAlign::TEXT_ALIGN_CENTER, _width);
+            painter->DrawFillRectangle(_x, _y, _width, _captionHeight,  Color565::Black);
+            painter->DrawText(_caption, _x, _y + 15,  Color565::White, TextAlign::TEXT_ALIGN_CENTER, _width);
 
             if(!_hideValue)
             {
                 painter->SetFont(_valueFont);
-                painter->DrawFillRectangle(_x, _y + _captionHeight, _width, _valueHeight, ILI9341_WHITE);
-                painter->DrawText(_value, _x, _y + _captionHeight + (_valueHeight - 5), ILI9341_BLACK, TextAlign::TEXT_ALIGN_CENTER, _width);
+                painter->DrawFillRectangle(_x, _y + _captionHeight, _width, _valueHeight,  Color565::White);
+                painter->DrawText(_value, _x, _y + _captionHeight + (_valueHeight - 5),  Color565::Black, TextAlign::TEXT_ALIGN_CENTER, _width);
             }
         }
     }
