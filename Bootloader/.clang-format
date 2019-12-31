@@ -1,0 +1,8 @@
+Language: Cpp
+Standard: Cpp11
+# Force pointers to the type for C++.
+DerivePointerAlignment: false
+PointerAlignment: Left
+IndentWidth: 4
+BreakBeforeBraces: Stroustrup
+BreakConstructorInitializers: AfterColon

@@ -4,6 +4,8 @@ PROJECT(AXIOM_Remote_Firmware_Visualizer)
 set(CMAKE_CXX_STANDARD 11)
 set(CMAKE_C_STANDARD 99)
 
+set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wall -Wextra -pedantic")
+
 find_package(SDL2 REQUIRED)
 # Fix for ArchLinux, see https://bbs.archlinux.org/viewtopic.php?id=235931
 if("${SDL2_LIBRARIES}" STREQUAL "")

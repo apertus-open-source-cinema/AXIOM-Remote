@@ -96,8 +96,8 @@ void RenderUI(SDL_Window *window, ImTextureID textureID)
   ImGui::SetCursorPos(ImVec2(60, 140));
   if (ImGui::Knob("Test123", &value, (ImTextureID)textureID))
   {
-    float diff = value - lastValue;
-    lastValue = value;
+    /*float diff = value - lastValue;
+    lastValue = value;*/
 
     /*if (current_page == PAGE_WB) {
       wb_page_knob_handler(E1_ROT, diff);

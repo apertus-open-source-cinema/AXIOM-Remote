@@ -1,0 +1,21 @@
+Language: Cpp
+Standard: Cpp11
+# Force pointers to the type for C++.
+DerivePointerAlignment: false
+PointerAlignment: Left
+IndentWidth: 4
+BreakBeforeBraces: Stroustrup
+BreakConstructorInitializers: AfterColon
+BreakBeforeBraces: Custom
+BraceWrapping:
+  AfterEnum: true
+  AfterStruct: true
+  SplitEmptyFunction: true
+  AfterControlStatement: true
+  AfterFunction: true
+  AfterNamespace: true
+  AfterClass: true
+SortIncludes: false
+Cpp11BracedListStyle: true
+ColumnLimit: 120
+AllowShortFunctionsOnASingleLine: false

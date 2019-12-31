@@ -1,4 +1,4 @@
-/* 
+/*
  * File:   IButton.h
  * Author: dev
  *
@@ -10,22 +10,21 @@
 
 #include "IWidget.h"
 
-class IButton : public IWidget
-{
+class IButton : public IWidget {
     // void* -> sender, e.g. MainMenu
-    void (*_handlerPtr)(void *);
+    void (*_handlerPtr)(void*);
 
-public:
+  public:
     IButton() : _handlerPtr(nullptr)
     {
     }
 
-    virtual void SetHandler(void (*handler)(void *))
+    virtual void SetHandler(void (*handler)(void*))
     {
         _handlerPtr = handler;
     }
 
-    void Activate(void *sender)
+    void Activate(void* sender)
     {
         _handlerPtr(sender);
     }

@@ -98,7 +98,7 @@ void Painter::DrawText(const char *text, uint16_t x, uint16_t y, uint16_t color,
     //}
 
     uint16_t textPixelWidth = GetStringFramebufferWidth(text);
-    DrawFillRectangle(x, 0, textPixelWidth, 10, RGB565(255, 255, 0));
+    //DrawFillRectangle(x, 0, textPixelWidth, 10, RGB565(255, 255, 0));
     count++;
 
     GFXglyph *glyph = nullptr;
@@ -317,15 +317,14 @@ uint16_t Painter::GetStringFramebufferWidth(const char *str)
 
 void Painter::DrawPixel(uint16_t x, uint16_t y, uint16_t color)
 {
-    //prevent drawing outside of bounds
-    if ((x >= 0) && (x < _framebufferWidth) && (y >= 0) && (y < _framebufferHeight))
+    // Prevent drawing outside of bounds
+    // Removed check >= 0, as we use uint16_t which has no negative values
+    if (x < _framebufferWidth && y < _framebufferHeight)
     {
-        //origin shall be at the lower left corner so we mirror y axis
         _framebuffer[(y * _framebufferWidth) + x] = color;
     }
     else
     {
-        //uart2_str0("draw attempt outside bounds\n\r");
     }
 }
 

@@ -9,8 +9,10 @@
 #define	MAINMENUBUTTON_H
 
 #include "IButton.h"
+#include "Painter.h"
 
 #include "Color565.h"
+
 
 class MainMenuButton : public IButton
 {
@@ -44,7 +46,7 @@ public:
     _captionHeight(20),
     _valueHeight(40),
     _caption((char*)caption),
-    _value((char*)"...\n***"),
+    _value((char*)"..."),
     _invertOrder(invertOrder),
     _captionFont(Font::FreeSans9pt7b),
     _valueFont(Font::FreeSans12pt7b),
