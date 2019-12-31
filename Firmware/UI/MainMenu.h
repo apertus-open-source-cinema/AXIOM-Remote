@@ -26,7 +26,7 @@ class MainMenu : public IMenu {
     IButton* _widgetArray[6] = {&_fpsButton,  &_analogGainButton, &_digitalGainButton,
                                 &_menuButton, &_shutterButton,    &_whiteBalanceButton};
 
-    uint16_t _backgroundColor;
+    Color565 _backgroundColor;
 
   public:
     explicit MainMenu(IUSBDevice* cdcDevice) :
@@ -37,7 +37,7 @@ class MainMenu : public IMenu {
         _menuButton(MainMenuButton(10, 210, 90, "MENU", true)),
         _shutterButton(MainMenuButton(115, 180, 90, "Shutter", true)),
         _whiteBalanceButton(MainMenuButton(220, 180, 90, "WB", true)),
-        _backgroundColor(RGB565(180, 180, 180))
+        _backgroundColor(Color565::MenuBackground)
     {
         _menuButton.SetCaptionHeight(30);
         _menuButton.HideValue(true);
@@ -49,12 +49,12 @@ class MainMenu : public IMenu {
     }
 
   protected:
-    virtual uint16_t GetBackgroundColor() override
+    virtual Color565 GetBackgroundColor() override
     {
         return _backgroundColor;
     }
 
-    virtual void SetBackgroundColor(uint16_t color)
+    virtual void SetBackgroundColor(Color565 color)
     {
         _backgroundColor = color;
     }
@@ -62,19 +62,19 @@ class MainMenu : public IMenu {
     static void MenuButtonHandler(void* sender)
     {
         MainMenu* menu = static_cast<MainMenu*>(sender);
-        menu->SetBackgroundColor(RGB565(255, 0, 0));
+        menu->SetBackgroundColor(Color565::Red);
     }
 
     static void AnalogGainButtonHandler(void* sender)
     {
         MainMenu* menu = static_cast<MainMenu*>(sender);
-        menu->SetBackgroundColor(RGB565(0, 255, 64));
+        menu->SetBackgroundColor(Color565::Green);
     }
 
     static void DigitalGainButtonHandler(void* sender)
     {
         MainMenu* menu = static_cast<MainMenu*>(sender);
-        menu->SetBackgroundColor(RGB565(180, 180, 180));
+        menu->SetBackgroundColor(Color565::MenuBackground);
     }
 
     void Draw(Painter* painter) override

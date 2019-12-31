@@ -353,7 +353,7 @@ int main()
         // Buttons, PIC16 (east)
         currentMenu->Update(PollKME());
 
-        display.ClearFramebuffer(currentMenu->GetBackgroundColor());
+        display.ClearFramebuffer((uint16_t)currentMenu->GetBackgroundColor());
         currentMenu->Draw(&painter);
 
         counter++;

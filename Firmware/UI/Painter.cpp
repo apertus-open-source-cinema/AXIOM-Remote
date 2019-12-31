@@ -1,7 +1,7 @@
 #include "Painter.h"
 
 #include <cstring>
-#include <math.h>
+#include <cstdlib>
 
 #include "../Utils.h"
 
@@ -11,9 +11,6 @@
 #include "../Media/Fonts/FreeSans24pt7b.h"
 
 #define _swap_int16_t(a, b) { int16_t t = a; a = b; b = t; }
-#define safe_abs(n) _Generic((n), int16_t: abs(n))
-
-
 
 Painter::Painter(volatile uint16_t *framebuffer, uint16_t framebufferWidth, uint8_t framebufferHeight) : _framebufferWidth(framebufferWidth),
                                                                                                          _framebufferHeight(framebufferHeight),
@@ -27,7 +24,7 @@ Painter::Painter(volatile uint16_t *framebuffer, uint16_t framebufferWidth, uint
 }
 
 void Painter::DrawLine(int16_t x0, int16_t y0, int16_t x1, int16_t y1, Color565 color) {
-    int16_t steep = safe_abs(y1 - y0) > safe_abs(x1 - x0);
+    int16_t steep = abs(y1 - y0) > abs(x1 - x0);
     //int16_t steep = (y1 - y0) > (x1 - x0);
     if (steep) {
         _swap_int16_t(x0, y0);
@@ -41,7 +38,7 @@ void Painter::DrawLine(int16_t x0, int16_t y0, int16_t x1, int16_t y1, Color565 
 
     int16_t dx, dy;
     dx = x1 - x0;
-    dy = safe_abs(y1 - y0);
+    dy = abs(y1 - y0);
     //dy = (y1 - y0);
 
     int16_t err = dx / 2;
@@ -129,6 +126,7 @@ void Painter::DrawCirlce(int16_t x, int16_t y, int16_t r, Color565 color)
         DrawPixel(x - y0, y - x0, color);
     }
 }
+
 void Painter::DrawFillCirlce(int16_t x, int16_t y, int16_t r, Color565 color)
 {
     DrawFastVLine(x, y - r, 2 * r + 1, color);

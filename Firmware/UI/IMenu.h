@@ -12,9 +12,9 @@ enum class Button;
 class IMenu
 {
   public:
-    virtual uint16_t GetBackgroundColor()
+    virtual Color565 GetBackgroundColor()
     {
-        return (uint16_t)Color565::MenuBackground;
+        return Color565::MenuBackground;
     }
 
     virtual void Draw(Painter* painter)
