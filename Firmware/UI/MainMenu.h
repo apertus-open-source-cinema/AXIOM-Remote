@@ -30,7 +30,8 @@ class MainMenu : public IMenu {
 
   public:
     explicit MainMenu(IUSBDevice* cdcDevice) :
-        _usbDevice(cdcDevice), _fpsButton(MainMenuButton(10, 0, 90, "FPS")),
+        _usbDevice(cdcDevice),
+        _fpsButton(MainMenuButton(10, 0, 90, "FPS")),
         _analogGainButton(MainMenuButton(115, 0, 90, "A. Gain")),
         _digitalGainButton(MainMenuButton(220, 0, 90, "D. Gain")),
         _menuButton(MainMenuButton(10, 210, 90, "MENU", true)),
@@ -96,21 +97,25 @@ class MainMenu : public IMenu {
     {
         switch (button)
         {
-        case Button::BUTTON_1:
-            _fpsButton.SetValue((char*)"1");
-            _usbDevice->Send((uint8_t*)"Button 1\r\n", 10);
+        case Button::BUTTON_1_UP:
+            _fpsButton.SetValue((char*)"1U");
+            _usbDevice->Send((uint8_t*)"Button 1 Up\r\n", 10);
             break;
-        case Button::BUTTON_2:
+        case Button::BUTTON_1_DOWN:
+            _fpsButton.SetValue((char*)"1D");
+            _usbDevice->Send((uint8_t*)"Button 1 Down\r\n", 10);
+            break;
+        case Button::BUTTON_2_UP:
             _fpsButton.SetValue((char*)"2");
             _analogGainButton.Activate(this);
             _usbDevice->Send((uint8_t*)"Button 2\r\n", 10);
             break;
-        case Button::BUTTON_3:
+        case Button::BUTTON_3_UP:
             _fpsButton.SetValue((char*)"3");
             _digitalGainButton.Activate(this);
             _usbDevice->Send((uint8_t*)"Button 3\r\n", 10);
             break;
-        case Button::BUTTON_4:
+        case Button::BUTTON_4_UP:
             _fpsButton.SetValue((char*)"4");
             _menuButton.Activate(this);
             _usbDevice->Send((uint8_t*)"Button 4\r\n", 10);

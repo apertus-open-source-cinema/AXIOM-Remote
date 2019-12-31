@@ -11,6 +11,9 @@
 #include "../Media/Fonts/FreeSans24pt7b.h"
 
 #define _swap_int16_t(a, b) { int16_t t = a; a = b; b = t; }
+#define safe_abs(n) _Generic((n), int16_t: abs(n))
+
+
 
 Painter::Painter(volatile uint16_t *framebuffer, uint16_t framebufferWidth, uint8_t framebufferHeight) : _framebufferWidth(framebufferWidth),
                                                                                                          _framebufferHeight(framebufferHeight),
@@ -24,8 +27,8 @@ Painter::Painter(volatile uint16_t *framebuffer, uint16_t framebufferWidth, uint
 }
 
 void Painter::DrawLine(int16_t x0, int16_t y0, int16_t x1, int16_t y1, Color565 color) {
-    //int16_t steep = abs(y1 - y0) > abs(x1 - x0); <- FIXME
-    int16_t steep = (y1 - y0) > (x1 - x0);
+    int16_t steep = safe_abs(y1 - y0) > safe_abs(x1 - x0);
+    //int16_t steep = (y1 - y0) > (x1 - x0);
     if (steep) {
         _swap_int16_t(x0, y0);
         _swap_int16_t(x1, y1);
@@ -38,8 +41,8 @@ void Painter::DrawLine(int16_t x0, int16_t y0, int16_t x1, int16_t y1, Color565 
 
     int16_t dx, dy;
     dx = x1 - x0;
-    //dy = abs(y1 - y0); <- FIXME
-    dy = (y1 - y0);
+    dy = safe_abs(y1 - y0);
+    //dy = (y1 - y0);
 
     int16_t err = dx / 2;
     int16_t ystep;
@@ -240,6 +243,7 @@ void Painter::DrawText(const char *text, uint16_t x, uint16_t y, Color565 color,
     //}
 
     uint16_t textPixelWidth = GetStringFramebufferWidth(text);
+
     //DrawFillRectangle(x, 0, textPixelWidth, 10, RGB565(255, 255, 0));
     count++;
 
@@ -376,7 +380,6 @@ void Painter::DrawText(const char *text, uint16_t x, uint16_t y, Color565 color,
 
 void Painter::DrawCharacter(unsigned char character, int16_t x, int16_t y, Color565 color)
 {
-
     character -= _currentFont.first;
     GFXglyph *glyph = &_currentFont.glyph[character];
     uint8_t *bitmap = _currentFont.bitmap;
