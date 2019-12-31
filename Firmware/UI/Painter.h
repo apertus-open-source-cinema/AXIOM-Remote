@@ -50,6 +50,8 @@ public:
     void DrawImage(const uint8_t* data, uint16_t x, uint16_t y, uint16_t width, uint16_t height);
     void DrawPixel(uint16_t x, uint16_t y, Color565 color);
 
+    void Fill(Color565 fillColor);
+
     // Text Related
     void SetFont(Font font);
     void DrawCharacter(unsigned char c, int16_t x, int16_t y, Color565 color);

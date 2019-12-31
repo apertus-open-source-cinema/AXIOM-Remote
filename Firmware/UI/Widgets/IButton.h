@@ -11,7 +11,7 @@
 #include "IWidget.h"
 
 class IButton : public IWidget {
-    // void* -> sender, e.g. MainMenu
+    // void* -> sender, e.g. MainPage
     void (*_handlerPtr)(void*);
 
   public:

@@ -1,14 +1,7 @@
-/* 
- * File:   IWidget.h
- * Author: dev
- *
- * Created on 03 August 2019, 23:44
- */
-
 #ifndef IWIDGET_H
 #define	IWIDGET_H
 
-#include "../Utils.h"
+#include "../../Utils.h"
 
 class Painter;
 

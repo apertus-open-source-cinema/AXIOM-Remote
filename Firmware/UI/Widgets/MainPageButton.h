@@ -1,20 +1,13 @@
-/* 
- * File:   MainMenuButton.h
- * Author: dev
- *
- * Created on 03 August 2019, 23:44
- */
-
-#ifndef MAINMENUBUTTON_H
-#define	MAINMENUBUTTON_H
+#ifndef MAINPAGEBUTTON_H
+#define	MAINPAGEBUTTON_H
 
 #include "IButton.h"
-#include "Painter.h"
+#include "../Painter.h"
 
-#include "Color565.h"
+#include "../Color565.h"
 
 
-class MainMenuButton : public IButton
+class MainPageButton : public IButton
 {
     uint16_t _x;
     uint16_t _y;
@@ -39,7 +32,7 @@ public:
 
     // TODO: Check if customizable height is required for this button, if yes, add it later
 
-    MainMenuButton(uint16_t x, uint16_t y, uint16_t width, const char* caption = "...", bool invertOrder = false) :
+    MainPageButton(uint16_t x, uint16_t y, uint16_t width, const char* caption = "...", bool invertOrder = false) :
     _x(x),
     _y(y),
     _width(width),
@@ -112,5 +105,5 @@ public:
     };
 };
 
-#endif	/* MAINMENUBUTTON_H */
+#endif	/* MAINPAGEBUTTON_H */
 

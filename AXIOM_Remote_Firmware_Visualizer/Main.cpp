@@ -11,7 +11,8 @@
 
 #include "VirtualUI.h"
 
-#include "UI/MainMenu.h"
+//#include "UI/MainPage.h"
+#include "UI/MenuSystem.h"
 #include "UI/Painter.h"
 
 // Periphery
@@ -148,9 +149,12 @@ int main()
 
     Painter painter(frameBuffer, FRAMEBUFFER_WIDTH, FRAMEBUFFER_HEIGHT);
     USBCDCTerminalDevice cdcDevice;
-    MainMenu mainMenu(&cdcDevice);
+    
+    MenuSystem menuSystem(&cdcDevice);
 
-    IMenu* currentMenu = &mainMenu;
+    //MainPage MainPage(&cdcDevice);
+
+    //IMenu* currentMenu = &MainPage;
 
     bool appIsRunning = true;
     const int frames = 30;
@@ -168,8 +172,8 @@ int main()
 
         //SDL_RenderClear(renderer);
 
-        painter.DrawFillRectangle(0, 0, FRAMEBUFFER_WIDTH, FRAMEBUFFER_HEIGHT, currentMenu->GetBackgroundColor());
-        currentMenu->Draw(&painter);
+        //currentMenu->Draw(&painter);
+        menuSystem.Draw(&painter);
         RenderDisplay(frameBuffer, framebuffer, FRAMEBUFFER_WIDTH, FRAMEBUFFER_HEIGHT);
 
         SDL_LockTexture(texture, nullptr, &textureData, &pitch);

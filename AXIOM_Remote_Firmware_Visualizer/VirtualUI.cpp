@@ -29,13 +29,13 @@ void RenderUI(SDL_Window *window, ImTextureID textureID)
                    ImGuiWindowFlags_NoMove | ImGuiWindowFlags_NoScrollbar |
                    ImGuiWindowFlags_NoScrollWithMouse);
 
-  RenderButton("1", 450, 70);
-  RenderButton("2", 530, 70);
-  RenderButton("3", 610, 70);
+  RenderButton("1", 434, 70);
+  RenderButton("2", 540, 70);
+  RenderButton("3", 650, 70);
 
-  RenderButton("4", 450, 380);
-  RenderButton("5", 530, 380);
-  RenderButton("6", 610, 380);
+  RenderButton("4", 435, 380);
+  RenderButton("5", 540, 380);
+  RenderButton("6", 650, 380);
 
   RenderButton("7", 340, 170);
   RenderButton("8", 340, 220);

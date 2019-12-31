@@ -1,11 +1,11 @@
-#ifndef MAINMENU_H
-#define MAINMENU_H
+#ifndef MainPage_H
+#define MainPage_H
 
 #include "IMenu.h"
 #include "Painter.h"
 //#include "IWidget.h"
 
-#include "MainMenuButton.h"
+#include "Widgets/MainPageButton.h"
 
 #include "../Media/Images/ApertusLogo.h"
 
@@ -13,15 +13,15 @@
 
 #include "../../Bootloader/Periphery/USB/IUSBDevice.h"
 
-class MainMenu : public IMenu {
+class MainPage : public IMenu {
     IUSBDevice* _usbDevice;
 
-    MainMenuButton _fpsButton;
-    MainMenuButton _analogGainButton;
-    MainMenuButton _digitalGainButton;
-    MainMenuButton _menuButton;
-    MainMenuButton _shutterButton;
-    MainMenuButton _whiteBalanceButton;
+    MainPageButton _fpsButton;
+    MainPageButton _analogGainButton;
+    MainPageButton _digitalGainButton;
+    MainPageButton _menuButton;
+    MainPageButton _shutterButton;
+    MainPageButton _whiteBalanceButton;
 
     IButton* _widgetArray[6] = {&_fpsButton,  &_analogGainButton, &_digitalGainButton,
                                 &_menuButton, &_shutterButton,    &_whiteBalanceButton};
@@ -29,14 +29,14 @@ class MainMenu : public IMenu {
     Color565 _backgroundColor;
 
   public:
-    explicit MainMenu(IUSBDevice* cdcDevice) :
+    explicit MainPage(IUSBDevice* cdcDevice) :
         _usbDevice(cdcDevice),
-        _fpsButton(MainMenuButton(10, 0, 90, "FPS")),
-        _analogGainButton(MainMenuButton(115, 0, 90, "A. Gain")),
-        _digitalGainButton(MainMenuButton(220, 0, 90, "D. Gain")),
-        _menuButton(MainMenuButton(10, 210, 90, "MENU", true)),
-        _shutterButton(MainMenuButton(115, 180, 90, "Shutter", true)),
-        _whiteBalanceButton(MainMenuButton(220, 180, 90, "WB", true)),
+        _fpsButton(MainPageButton(10, 0, 90, "FPS")),
+        _analogGainButton(MainPageButton(115, 0, 90, "A. Gain")),
+        _digitalGainButton(MainPageButton(220, 0, 90, "D. Gain")),
+        _menuButton(MainPageButton(10, 210, 90, "MENU", true)),
+        _shutterButton(MainPageButton(115, 180, 90, "Shutter", true)),
+        _whiteBalanceButton(MainPageButton(220, 180, 90, "WB", true)),
         _backgroundColor(Color565::MenuBackground)
     {
         _menuButton.SetCaptionHeight(30);
@@ -61,19 +61,19 @@ class MainMenu : public IMenu {
 
     static void MenuButtonHandler(void* sender)
     {
-        MainMenu* menu = static_cast<MainMenu*>(sender);
+        MainPage* menu = static_cast<MainPage*>(sender);
         menu->SetBackgroundColor(Color565::Red);
     }
 
     static void AnalogGainButtonHandler(void* sender)
     {
-        MainMenu* menu = static_cast<MainMenu*>(sender);
+        MainPage* menu = static_cast<MainPage*>(sender);
         menu->SetBackgroundColor(Color565::Green);
     }
 
     static void DigitalGainButtonHandler(void* sender)
     {
-        MainMenu* menu = static_cast<MainMenu*>(sender);
+        MainPage* menu = static_cast<MainPage*>(sender);
         menu->SetBackgroundColor(Color565::MenuBackground);
     }
 
@@ -126,4 +126,4 @@ class MainMenu : public IMenu {
     }
 };
 
-#endif /* MAINMENU_H */
+#endif /* MainPage_H */

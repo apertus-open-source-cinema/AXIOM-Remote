@@ -8,7 +8,7 @@
 
 // Menus/Pages
 #include "UI/MenuSystem.h"
-#include "UI/MainMenu.h"
+#include "UI/MainPage.h"
 #include "UI/AnalogGainMenu.h"
 
 #include "GlobalSettings.h"
@@ -317,9 +317,9 @@ int main()
     MenuSystem menuSystem;
 
     Painter painter(display.GetFramebuffer(), display.GetWidth(), display.GetHeight());
-    MainMenu mainMenu(&cdcDevice);
+    MainPage MainPage(&cdcDevice);
 
-    IMenu* currentMenu = &mainMenu;
+    IMenu* currentMenu = &MainPage;
 
     static uint8_t rgb[4];
     rgb[0] = 0x14;

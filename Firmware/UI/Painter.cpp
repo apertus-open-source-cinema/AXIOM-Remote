@@ -10,28 +10,34 @@
 #include "../Media/Fonts/FreeSans18pt7b.h"
 #include "../Media/Fonts/FreeSans24pt7b.h"
 
-#define _swap_int16_t(a, b) { int16_t t = a; a = b; b = t; }
+#define _swap_int16_t(a, b)                                                                                            \
+    {                                                                                                                  \
+        int16_t t = a;                                                                                                 \
+        a = b;                                                                                                         \
+        b = t;                                                                                                         \
+    }
 
-Painter::Painter(volatile uint16_t *framebuffer, uint16_t framebufferWidth, uint8_t framebufferHeight) : _framebufferWidth(framebufferWidth),
-                                                                                                         _framebufferHeight(framebufferHeight),
-                                                                                                         _framebuffer(framebuffer),
-                                                                                                         _fontList{FreeSans9pt7b, FreeSans12pt7b, FreeSans18pt7b, FreeSans24pt7b},
-                                                                                                         _cursorX(0),
-                                                                                                         _cursorY(0)
+Painter::Painter(volatile uint16_t* framebuffer, uint16_t framebufferWidth, uint8_t framebufferHeight) :
+    _framebufferWidth(framebufferWidth), _framebufferHeight(framebufferHeight),
+    _framebuffer(framebuffer), _fontList{FreeSans9pt7b, FreeSans12pt7b, FreeSans18pt7b, FreeSans24pt7b}, _cursorX(0),
+    _cursorY(0)
 {
     // Default font
     SetFont(Font::FreeSans9pt7b);
 }
 
-void Painter::DrawLine(int16_t x0, int16_t y0, int16_t x1, int16_t y1, Color565 color) {
+void Painter::DrawLine(int16_t x0, int16_t y0, int16_t x1, int16_t y1, Color565 color)
+{
     int16_t steep = abs(y1 - y0) > abs(x1 - x0);
-    //int16_t steep = (y1 - y0) > (x1 - x0);
-    if (steep) {
+    // int16_t steep = (y1 - y0) > (x1 - x0);
+    if (steep)
+    {
         _swap_int16_t(x0, y0);
         _swap_int16_t(x1, y1);
     }
 
-    if (x0 > x1) {
+    if (x0 > x1)
+    {
         _swap_int16_t(x0, x1);
         _swap_int16_t(y0, y1);
     }
@@ -39,33 +45,40 @@ void Painter::DrawLine(int16_t x0, int16_t y0, int16_t x1, int16_t y1, Color565 
     int16_t dx, dy;
     dx = x1 - x0;
     dy = abs(y1 - y0);
-    //dy = (y1 - y0);
+    // dy = (y1 - y0);
 
     int16_t err = dx / 2;
     int16_t ystep;
 
-    if (y0 < y1) {
+    if (y0 < y1)
+    {
         ystep = 1;
-    } else {
+    } else
+    {
         ystep = -1;
     }
 
-    for (; x0 <= x1; x0++) {
-        if (steep) {
+    for (; x0 <= x1; x0++)
+    {
+        if (steep)
+        {
             DrawPixel(y0, x0, color);
-        } else {
+        } else
+        {
             DrawPixel(x0, y0, color);
         }
         err -= dy;
-        if (err < 0) {
+        if (err < 0)
+        {
             y0 += ystep;
             err += dx;
         }
     }
 }
 
-void Painter::DrawFastVLine(int16_t x, int16_t y, int16_t h, Color565 color) {
-    DrawLine(x, y, x, (int16_t) y + h - 1, color);
+void Painter::DrawFastVLine(int16_t x, int16_t y, int16_t h, Color565 color)
+{
+    DrawLine(x, y, x, (int16_t)y + h - 1, color);
 }
 
 void Painter::DrawFillRectangle(uint16_t x, uint16_t y, uint16_t width, uint16_t height, Color565 color)
@@ -106,8 +119,10 @@ void Painter::DrawCirlce(int16_t x, int16_t y, int16_t r, Color565 color)
     DrawPixel(x + r, y, color);
     DrawPixel(x - r, y, color);
 
-    while (x0 < y0) {
-        if (f >= 0) {
+    while (x0 < y0)
+    {
+        if (f >= 0)
+        {
             y0--;
             ddF_y += 2;
             f += ddF_y;
@@ -141,8 +156,10 @@ void Painter::DrawCircleQuarter(int16_t x, int16_t y, int16_t r, uint8_t cornern
     int16_t x0 = 0;
     int16_t y0 = r;
 
-    while (x0 < y0) {
-        if (f >= 0) {
+    while (x0 < y0)
+    {
+        if (f >= 0)
+        {
             y0--;
             ddF_y += 2;
             f += ddF_y;
@@ -150,26 +167,31 @@ void Painter::DrawCircleQuarter(int16_t x, int16_t y, int16_t r, uint8_t cornern
         x0++;
         ddF_x += 2;
         f += ddF_x;
-        if (cornername & 0x4) {
+        if (cornername & 0x4)
+        {
             DrawPixel(x + x0, y + y0, color);
             DrawPixel(x + y0, y + x0, color);
         }
-        if (cornername & 0x2) {
+        if (cornername & 0x2)
+        {
             DrawPixel(x + x0, y - y0, color);
             DrawPixel(x + y0, y - x0, color);
         }
-        if (cornername & 0x8) {
+        if (cornername & 0x8)
+        {
             DrawPixel(x - y0, y + x0, color);
             DrawPixel(x - x0, y + y0, color);
         }
-        if (cornername & 0x1) {
+        if (cornername & 0x1)
+        {
             DrawPixel(x - y0, y - x0, color);
             DrawPixel(x - x0, y - y0, color);
         }
     }
 }
 
-void Painter::DrawFillCircleQuarter(int16_t x0, int16_t y0, int16_t r, uint8_t cornername, int16_t delta, Color565 color)
+void Painter::DrawFillCircleQuarter(int16_t x0, int16_t y0, int16_t r, uint8_t cornername, int16_t delta,
+                                    Color565 color)
 {
     int16_t f = 1 - r;
     int16_t ddF_x = 1;
@@ -177,8 +199,10 @@ void Painter::DrawFillCircleQuarter(int16_t x0, int16_t y0, int16_t r, uint8_t c
     int16_t x = 0;
     int16_t y = r;
 
-    while (x < y) {
-        if (f >= 0) {
+    while (x < y)
+    {
+        if (f >= 0)
+        {
             y--;
             ddF_y += 2;
             f += ddF_y;
@@ -187,18 +211,20 @@ void Painter::DrawFillCircleQuarter(int16_t x0, int16_t y0, int16_t r, uint8_t c
         ddF_x += 2;
         f += ddF_x;
 
-        if (cornername & 0x1) {
+        if (cornername & 0x1)
+        {
             DrawFastVLine(x0 + x, y0 - y, 2 * y + 1 + delta, color);
             DrawFastVLine(x0 + y, y0 - x, 2 * x + 1 + delta, color);
         }
-        if (cornername & 0x2) {
+        if (cornername & 0x2)
+        {
             DrawFastVLine(x0 - x, y0 - y, 2 * y + 1 + delta, color);
             DrawFastVLine(x0 - y, y0 - x, 2 * x + 1 + delta, color);
         }
     }
 }
 
-void Painter::DrawImage(const uint8_t *data, uint16_t x, uint16_t y, uint16_t width, uint16_t height)
+void Painter::DrawImage(const uint8_t* data, uint16_t x, uint16_t y, uint16_t width, uint16_t height)
 {
     for (uint16_t yIndex = 0; yIndex < height; yIndex++)
     {
@@ -207,7 +233,7 @@ void Painter::DrawImage(const uint8_t *data, uint16_t x, uint16_t y, uint16_t wi
             uint8_t value1 = data[((width * yIndex) + xIndex) * 2];
             uint8_t value2 = data[((width * yIndex) + xIndex) * 2 + 1];
             // Skip "transparency" pixels
-            //if(value1 == 248 && value2 == 31)
+            // if(value1 == 248 && value2 == 31)
             //{
             //    continue;
             //}
@@ -220,7 +246,8 @@ void Painter::DrawImage(const uint8_t *data, uint16_t x, uint16_t y, uint16_t wi
 
 uint8_t count = 0;
 
-void Painter::DrawText(const char *text, uint16_t x, uint16_t y, Color565 color, TextAlign align, uint16_t textblockwidth)
+void Painter::DrawText(const char* text, uint16_t x, uint16_t y, Color565 color, TextAlign align,
+                       uint16_t textblockwidth)
 {
     uint8_t first = _currentFont.first;
     uint8_t last = _currentFont.last;
@@ -235,17 +262,17 @@ void Painter::DrawText(const char *text, uint16_t x, uint16_t y, Color565 color,
     _cursorX = x;
     _cursorY = y;
 
-    //if (count < 3)
+    // if (count < 3)
     //{
 
     //}
 
     uint16_t textPixelWidth = GetStringFramebufferWidth(text);
 
-    //DrawFillRectangle(x, 0, textPixelWidth, 10, RGB565(255, 255, 0));
+    // DrawFillRectangle(x, 0, textPixelWidth, 10, RGB565(255, 255, 0));
     count++;
 
-    GFXglyph *glyph = nullptr;
+    GFXglyph* glyph = nullptr;
 
     for (uint8_t i = 0; i < length; i++)
     {
@@ -284,7 +311,7 @@ void Painter::DrawText(const char *text, uint16_t x, uint16_t y, Color565 color,
                     }
                 }
 
-                //measure the width of the next word in pixels
+                // measure the width of the next word in pixels
                 uint16_t next_wordframebuffer_width = 0;
                 for (j = 1; j <= next_space - 1; j++)
                 {
@@ -297,7 +324,8 @@ void Painter::DrawText(const char *text, uint16_t x, uint16_t y, Color565 color,
                 //                {
                 //
                 //                    //debug
-                //                    draw_line(_cursorX, _cursorY - 3, _cursorX + next_wordframebuffer_width, _cursorY - 3, color);
+                //                    draw_line(_cursorX, _cursorY - 3, _cursorX + next_wordframebuffer_width, _cursorY
+                //                    - 3, color);
                 //
                 //                    /*char debug3[32];
                 //                    sprintf(debug3, "next_wordframebuffer_width = %u", next_wordframebuffer_width);
@@ -310,33 +338,29 @@ void Painter::DrawText(const char *text, uint16_t x, uint16_t y, Color565 color,
                 //
                 //                }
             }
-        }
-        else
+        } else
 
             if (c == 10)
         { // "\n" (LF) line feed - new line character
             _cursorX = x;
             _cursorY -= _currentFont.yAdvance;
             newline = true;
-        }
-        else if (c == 13)
+        } else if (c == 13)
         { // "\r" (CR) carriage return character
             _cursorX = x;
             _cursorY -= _currentFont.yAdvance;
             newline = true;
-        }
-        else if ((c >= first) && (c <= last))
+        } else if ((c >= first) && (c <= last))
         {
             glyph = &_currentFont.glyph[c - first];
-            uint8_t w = glyph->width,
-                    h = glyph->height;
+            uint8_t w = glyph->width, h = glyph->height;
             if ((w > 0) && (h > 0))
             { // Is there an associated bitmap?
                 int16_t xo = glyph->xOffset;
 
                 if ((i == 0) || newline)
                 {
-                    //first character doesn't need x offset
+                    // first character doesn't need x offset
                     _cursorX -= xo;
                     newline = false;
                 }
@@ -379,8 +403,8 @@ void Painter::DrawText(const char *text, uint16_t x, uint16_t y, Color565 color,
 void Painter::DrawCharacter(unsigned char character, int16_t x, int16_t y, Color565 color)
 {
     character -= _currentFont.first;
-    GFXglyph *glyph = &_currentFont.glyph[character];
-    uint8_t *bitmap = _currentFont.bitmap;
+    GFXglyph* glyph = &_currentFont.glyph[character];
+    uint8_t* bitmap = _currentFont.bitmap;
 
     uint16_t bo = glyph->bitmapOffset;
     uint8_t w = glyph->width;
@@ -409,7 +433,7 @@ void Painter::DrawCharacter(unsigned char character, int16_t x, int16_t y, Color
     }
 }
 
-uint16_t Painter::GetStringFramebufferWidth(const char *str)
+uint16_t Painter::GetStringFramebufferWidth(const char* str)
 {
     uint16_t width = 0;
     uint8_t gap;
@@ -429,7 +453,7 @@ uint16_t Painter::GetStringFramebufferWidth(const char *str)
             continue;
         }
 
-        GFXglyph *glyph = &_currentFont.glyph[*str - first];
+        GFXglyph* glyph = &_currentFont.glyph[*str - first];
         uint8_t gw = glyph->width;
         uint8_t xa = glyph->xAdvance;
         int8_t xo = glyph->xOffset;
@@ -465,10 +489,7 @@ void Painter::DrawPixel(uint16_t x, uint16_t y, Color565 color)
     if (x < _framebufferWidth && y < _framebufferHeight)
     {
         _framebuffer[(y * _framebufferWidth) + x] = (uint16_t)color;
-    }
-    else
-    {
-    }
+    } 
 }
 
 void Painter::SetFont(Font font)
@@ -488,4 +509,9 @@ void Painter::SetFont(Font font)
         _currentFont = _fontList[3];
         break;
     }
+}
+
+void Painter::Fill(Color565 fillColor)
+{
+    DrawFillRectangle(0, 0, _framebufferWidth, _framebufferHeight, fillColor);
 }
