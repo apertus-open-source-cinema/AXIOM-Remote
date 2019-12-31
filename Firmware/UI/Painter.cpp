@@ -1,6 +1,7 @@
 #include "Painter.h"
 
 #include <cstring>
+#include <math.h>
 
 #include "../Utils.h"
 
@@ -8,6 +9,8 @@
 #include "../Media/Fonts/FreeSans12pt7b.h"
 #include "../Media/Fonts/FreeSans18pt7b.h"
 #include "../Media/Fonts/FreeSans24pt7b.h"
+
+#define _swap_int16_t(a, b) { int16_t t = a; a = b; b = t; }
 
 Painter::Painter(volatile uint16_t *framebuffer, uint16_t framebufferWidth, uint8_t framebufferHeight) : _framebufferWidth(framebufferWidth),
                                                                                                          _framebufferHeight(framebufferHeight),
@@ -20,23 +23,63 @@ Painter::Painter(volatile uint16_t *framebuffer, uint16_t framebufferWidth, uint
     SetFont(Font::FreeSans9pt7b);
 }
 
-void Painter::DrawFillRectangle(uint16_t x, uint16_t y, uint16_t width, uint16_t height, Color565 color)
-{
-    DrawFillRectangle(x, y, width, height, (uint16_t)color);
+void Painter::DrawLine(int16_t x0, int16_t y0, int16_t x1, int16_t y1, Color565 color) {
+    //int16_t steep = abs(y1 - y0) > abs(x1 - x0); <- FIXME
+    int16_t steep = (y1 - y0) > (x1 - x0);
+    if (steep) {
+        _swap_int16_t(x0, y0);
+        _swap_int16_t(x1, y1);
+    }
+
+    if (x0 > x1) {
+        _swap_int16_t(x0, x1);
+        _swap_int16_t(y0, y1);
+    }
+
+    int16_t dx, dy;
+    dx = x1 - x0;
+    //dy = abs(y1 - y0); <- FIXME
+    dy = (y1 - y0);
+
+    int16_t err = dx / 2;
+    int16_t ystep;
+
+    if (y0 < y1) {
+        ystep = 1;
+    } else {
+        ystep = -1;
+    }
+
+    for (; x0 <= x1; x0++) {
+        if (steep) {
+            DrawPixel(y0, x0, color);
+        } else {
+            DrawPixel(x0, y0, color);
+        }
+        err -= dy;
+        if (err < 0) {
+            y0 += ystep;
+            err += dx;
+        }
+    }
 }
 
-void Painter::DrawFillRectangle(uint16_t x, uint16_t y, uint16_t width, uint16_t height, uint16_t color)
+void Painter::DrawFastVLine(int16_t x, int16_t y, int16_t h, Color565 color) {
+    DrawLine(x, y, x, (int16_t) y + h - 1, color);
+}
+
+void Painter::DrawFillRectangle(uint16_t x, uint16_t y, uint16_t width, uint16_t height, Color565 color)
 {
     for (uint16_t yIndex = y; yIndex < y + height; yIndex++)
     {
         for (uint16_t xIndex = x; xIndex < x + width; xIndex++)
         {
-            _framebuffer[(_framebufferWidth * yIndex) + xIndex] = color;
+            _framebuffer[(_framebufferWidth * yIndex) + xIndex] = (uint16_t)color;
         }
     }
 }
 
-void Painter::DrawRectangle(uint16_t x, uint16_t y, uint16_t width, uint16_t height, uint16_t color)
+void Painter::DrawRectangle(uint16_t x, uint16_t y, uint16_t width, uint16_t height, Color565 color)
 {
     for (uint16_t yIndex = y; yIndex < y + height; yIndex++)
     {
@@ -44,8 +87,112 @@ void Painter::DrawRectangle(uint16_t x, uint16_t y, uint16_t width, uint16_t hei
         {
             if (yIndex == y || yIndex == y + height - 1)
             {
-                _framebuffer[(_framebufferWidth * yIndex) + xIndex] = color;
+                _framebuffer[(_framebufferWidth * yIndex) + xIndex] = (uint16_t)color;
             }
+        }
+    }
+}
+
+void Painter::DrawCirlce(int16_t x, int16_t y, int16_t r, Color565 color)
+{
+    int16_t f = 1 - r;
+    int16_t ddF_x = 1;
+    int16_t ddF_y = -2 * r;
+    int16_t x0 = 0;
+    int16_t y0 = r;
+
+    DrawPixel(x, y + r, color);
+    DrawPixel(x, y - r, color);
+    DrawPixel(x + r, y, color);
+    DrawPixel(x - r, y, color);
+
+    while (x0 < y0) {
+        if (f >= 0) {
+            y0--;
+            ddF_y += 2;
+            f += ddF_y;
+        }
+        x0++;
+        ddF_x += 2;
+        f += ddF_x;
+
+        DrawPixel(x + x0, y + y0, color);
+        DrawPixel(x - x0, y + y0, color);
+        DrawPixel(x + x0, y - y0, color);
+        DrawPixel(x - x0, y - y0, color);
+        DrawPixel(x + y0, y + x0, color);
+        DrawPixel(x - y0, y + x0, color);
+        DrawPixel(x + y0, y - x0, color);
+        DrawPixel(x - y0, y - x0, color);
+    }
+}
+void Painter::DrawFillCirlce(int16_t x, int16_t y, int16_t r, Color565 color)
+{
+    DrawFastVLine(x, y - r, 2 * r + 1, color);
+    DrawFillCircleQuarter(x, y, r, 3, 0, color);
+}
+
+void Painter::DrawCircleQuarter(int16_t x, int16_t y, int16_t r, uint8_t cornername, Color565 color)
+{
+    int16_t f = 1 - r;
+    int16_t ddF_x = 1;
+    int16_t ddF_y = -2 * r;
+    int16_t x0 = 0;
+    int16_t y0 = r;
+
+    while (x0 < y0) {
+        if (f >= 0) {
+            y0--;
+            ddF_y += 2;
+            f += ddF_y;
+        }
+        x0++;
+        ddF_x += 2;
+        f += ddF_x;
+        if (cornername & 0x4) {
+            DrawPixel(x + x0, y + y0, color);
+            DrawPixel(x + y0, y + x0, color);
+        }
+        if (cornername & 0x2) {
+            DrawPixel(x + x0, y - y0, color);
+            DrawPixel(x + y0, y - x0, color);
+        }
+        if (cornername & 0x8) {
+            DrawPixel(x - y0, y + x0, color);
+            DrawPixel(x - x0, y + y0, color);
+        }
+        if (cornername & 0x1) {
+            DrawPixel(x - y0, y - x0, color);
+            DrawPixel(x - x0, y - y0, color);
+        }
+    }
+}
+
+void Painter::DrawFillCircleQuarter(int16_t x0, int16_t y0, int16_t r, uint8_t cornername, int16_t delta, Color565 color)
+{
+    int16_t f = 1 - r;
+    int16_t ddF_x = 1;
+    int16_t ddF_y = -2 * r;
+    int16_t x = 0;
+    int16_t y = r;
+
+    while (x < y) {
+        if (f >= 0) {
+            y--;
+            ddF_y += 2;
+            f += ddF_y;
+        }
+        x++;
+        ddF_x += 2;
+        f += ddF_x;
+
+        if (cornername & 0x1) {
+            DrawFastVLine(x0 + x, y0 - y, 2 * y + 1 + delta, color);
+            DrawFastVLine(x0 + y, y0 - x, 2 * x + 1 + delta, color);
+        }
+        if (cornername & 0x2) {
+            DrawFastVLine(x0 - x, y0 - y, 2 * y + 1 + delta, color);
+            DrawFastVLine(x0 - y, y0 - x, 2 * x + 1 + delta, color);
         }
     }
 }
@@ -73,11 +220,6 @@ void Painter::DrawImage(const uint8_t *data, uint16_t x, uint16_t y, uint16_t wi
 uint8_t count = 0;
 
 void Painter::DrawText(const char *text, uint16_t x, uint16_t y, Color565 color, TextAlign align, uint16_t textblockwidth)
-{
-    DrawText(text, x, y, (uint16_t)color, align, textblockwidth);
-}
-
-void Painter::DrawText(const char *text, uint16_t x, uint16_t y, uint16_t color, TextAlign align, uint16_t textblockwidth)
 {
     uint8_t first = _currentFont.first;
     uint8_t last = _currentFont.last;
@@ -232,7 +374,7 @@ void Painter::DrawText(const char *text, uint16_t x, uint16_t y, uint16_t color,
     }
 }
 
-void Painter::DrawCharacter(unsigned char character, int16_t x, int16_t y, uint16_t color)
+void Painter::DrawCharacter(unsigned char character, int16_t x, int16_t y, Color565 color)
 {
 
     character -= _currentFont.first;
@@ -315,13 +457,13 @@ uint16_t Painter::GetStringFramebufferWidth(const char *str)
     return width;
 }
 
-void Painter::DrawPixel(uint16_t x, uint16_t y, uint16_t color)
+void Painter::DrawPixel(uint16_t x, uint16_t y, Color565 color)
 {
     // Prevent drawing outside of bounds
     // Removed check >= 0, as we use uint16_t which has no negative values
     if (x < _framebufferWidth && y < _framebufferHeight)
     {
-        _framebuffer[(y * _framebufferWidth) + x] = color;
+        _framebuffer[(y * _framebufferWidth) + x] = (uint16_t)color;
     }
     else
     {

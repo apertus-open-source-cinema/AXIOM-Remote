@@ -35,7 +35,8 @@ class MainMenu : public IMenu {
         _digitalGainButton(MainMenuButton(220, 0, 90, "D. Gain")),
         _menuButton(MainMenuButton(10, 210, 90, "MENU", true)),
         _shutterButton(MainMenuButton(115, 180, 90, "Shutter", true)),
-        _whiteBalanceButton(MainMenuButton(220, 180, 90, "WB", true)), _backgroundColor(RGB565(180, 180, 180))
+        _whiteBalanceButton(MainMenuButton(220, 180, 90, "WB", true)),
+        _backgroundColor(RGB565(180, 180, 180))
     {
         _menuButton.SetCaptionHeight(30);
         _menuButton.HideValue(true);
