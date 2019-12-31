@@ -3,6 +3,7 @@
 
 // Periphery
 #include "../Bootloader/Periphery/ILI9341/ILI9341Device.h"
+#include "../Bootloader/Periphery/USB/USBCDCDevice.h"
 #include "../Bootloader/Periphery/I2C/I2C.h"
 
 // Menus/Pages

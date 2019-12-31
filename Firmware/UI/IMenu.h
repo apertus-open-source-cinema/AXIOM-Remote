@@ -3,7 +3,8 @@
 
 #include <stdint.h>
 
-#include "Utils.h"
+#include "../Utils.h"
+#include "Color565.h"
 
 class Painter;
 enum class Button;
@@ -13,7 +14,7 @@ class IMenu
   public:
     virtual uint16_t GetBackgroundColor()
     {
-        return RGB565(180, 180, 180);
+        return (uint16_t)Color565::MenuBackground;
     }
 
     virtual void Draw(Painter* painter)
