@@ -3,7 +3,8 @@
 
 #include "MenuDefinitions.h"
 
-#include "MainPage.h"
+#include "Screens/MainPage.h"
+#include "Screens/SettingsMenu.h"
 
 class Painter;
 class IMenu;
@@ -20,6 +21,7 @@ class MenuSystem
 
     // Menus, static init
     MainPage _mainPage;
+    SettingsMenu _settingsMenu;
 
     void InitializeAvailableMenus();
 

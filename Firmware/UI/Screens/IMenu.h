@@ -3,8 +3,8 @@
 
 #include <stdint.h>
 
-#include "../Utils.h"
-#include "Color565.h"
+#include "../../Utils.h"
+#include "../Color565.h"
 
 class Painter;
 enum class Button;

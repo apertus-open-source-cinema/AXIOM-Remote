@@ -2,16 +2,16 @@
 #define MainPage_H
 
 #include "IMenu.h"
-#include "Painter.h"
+#include "../Painter.h"
 //#include "IWidget.h"
 
-#include "Widgets/MainPageButton.h"
+#include "../Widgets/MainPageButton.h"
 
-#include "../Media/Images/ApertusLogo.h"
+#include "../../Media/Images/ApertusLogo.h"
 
-#include "ButtonDefinitions.h"
+#include "../ButtonDefinitions.h"
 
-#include "../../Bootloader/Periphery/USB/IUSBDevice.h"
+#include "../../../Bootloader/Periphery/USB/IUSBDevice.h"
 
 class MainPage : public IMenu {
     IUSBDevice* _usbDevice;

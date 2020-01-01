@@ -151,10 +151,7 @@ int main()
     USBCDCTerminalDevice cdcDevice;
     
     MenuSystem menuSystem(&cdcDevice);
-
-    //MainPage MainPage(&cdcDevice);
-
-    //IMenu* currentMenu = &MainPage;
+    menuSystem.SetCurrentMenu(AvailableMenus::SettingsMenu);
 
     bool appIsRunning = true;
     const int frames = 30;
