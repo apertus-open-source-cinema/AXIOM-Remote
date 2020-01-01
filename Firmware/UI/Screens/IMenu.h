@@ -7,6 +7,8 @@
 #include "../Color565.h"
 
 class Painter;
+class MenuSystem;
+
 enum class Button;
 
 class IMenu

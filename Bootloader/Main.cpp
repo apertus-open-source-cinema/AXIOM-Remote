@@ -73,7 +73,7 @@ void Setup()
 
 char outputBuffer[128];
 
-void GetKMConfig(ICSProgrammer &icsp, USBCDCDevice &usbDevice)
+void GetKMConfig(ICSProgrammer& icsp, USBCDCDevice& usbDevice)
 {
     // Added 1 to force sending of data, which is disabled for 0,
     // e.g. increment address command
@@ -84,12 +84,12 @@ void GetKMConfig(ICSProgrammer &icsp, USBCDCDevice &usbDevice)
     {
         uint16_t value = icsp.Receive();
         sprintf(outputBuffer, "Address: 0x%.8X, value/dec: %u, value/hex: 0x%X\r\n", address + i, value, value);
-        usbDevice.Send((uint8_t *)outputBuffer, strlen(outputBuffer));
+        usbDevice.Send((uint8_t*)outputBuffer, strlen(outputBuffer));
         icsp.SendCommand(ICSPCommand::IncrementAddress);
     }
 }
 
-void GetKMProgramData(ICSProgrammer &icsp, USBCDCDevice &usbDevice)
+void GetKMProgramData(ICSProgrammer& icsp, USBCDCDevice& usbDevice)
 {
     icsp.SendCommand(ICSPCommand::ResetAddress);
     uint16_t count = 0;
@@ -97,16 +97,16 @@ void GetKMProgramData(ICSProgrammer &icsp, USBCDCDevice &usbDevice)
     {
         uint16_t value = icsp.Receive();
         sprintf(outputBuffer, "0x%.8X: %d 0x%X\r\n", count, value, value);
-        usbDevice.Send((uint8_t *)outputBuffer, strlen(outputBuffer));
+        usbDevice.Send((uint8_t*)outputBuffer, strlen(outputBuffer));
         icsp.SendCommand(ICSPCommand::IncrementAddress);
 
         count++;
     }
 }
 
-void RetrieveKMData(ICSProgrammer &icsp, USBCDCDevice &usbDevice)
+void RetrieveKMData(ICSProgrammer& icsp, USBCDCDevice& usbDevice)
 {
-    //icsp.SelectKM(KeyManager::East);
+    // icsp.SelectKM(KeyManager::East);
     icsp.EnterLVP();
 
     GetKMConfig(icsp, usbDevice);
@@ -125,7 +125,7 @@ int main()
     DelayMs(5000);
 
     // TODO: Add wait routine till USB is ready
-    usbDevice.Send((uint8_t *)"=== AXIOM Remote bootloader ===\r\n", 33);
+    usbDevice.Send((uint8_t*)"=== AXIOM Remote bootloader ===\r\n", 33);
 
     ICSProgrammer icsp;
     RetrieveKMData(icsp, usbDevice);

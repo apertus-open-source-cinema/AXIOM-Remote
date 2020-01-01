@@ -66,19 +66,17 @@ void init_icsp_e(void)
     ICSP_E_MCLR_O = 0; // MCLR low
 }
 
-static inline
-void set_mclr_w(unsigned val)
+static inline void set_mclr_w(unsigned val)
 {
     ICSP_W_MCLR_O = (val & 1) ? 1 : 0;
 }
 
-static inline
-void set_mclr_e(unsigned val)
+static inline void set_mclr_e(unsigned val)
 {
     ICSP_E_MCLR_O = (val & 1) ? 1 : 0;
 }
 
-void Setup(ILI9341Display &display, USBCDCDevice& cdcDevice)
+void Setup(ILI9341Display& display, USBCDCDevice& cdcDevice)
 {
     DisableIRQ();
 
@@ -130,8 +128,7 @@ void PollKMW(ILI9341Display* display, USBCDCDevice* cdcDevice)
             {
                 brightness = 10;
             }
-        }
-        else
+        } else
         {
             brightness += 10;
             if (brightness > 100)
@@ -141,7 +138,7 @@ void PollKMW(ILI9341Display* display, USBCDCDevice* cdcDevice)
         }
 
         sprintf(debugText, "nob/diff: %d\r\n", diff);
-        cdcDevice->Send((uint8_t*) debugText, 32);
+        cdcDevice->Send((uint8_t*)debugText, 32);
 
         knob_position[1] = data[1];
         GlobalSettings::brightnessPercentage = brightness;
@@ -164,8 +161,7 @@ Button PollKME()
             {
                 // Button released
                 return Button::BUTTON_1_UP;
-            }
-            else
+            } else
             {
                 // Button pressed down
                 return Button::BUTTON_1_DOWN;
@@ -177,8 +173,7 @@ Button PollKME()
             if (data_status[1] & 0x10)
             {
                 return Button::BUTTON_2_UP;
-            }
-            else
+            } else
             {
                 return Button::BUTTON_2_DOWN;
             }
@@ -189,8 +184,7 @@ Button PollKME()
             if (data_status[1] & 0x20)
             {
                 return Button::BUTTON_3_UP;
-            }
-            else
+            } else
             {
                 return Button::BUTTON_3_DOWN;
             }
@@ -201,8 +195,7 @@ Button PollKME()
             if (data_status[2] & 0x80)
             {
                 return Button::BUTTON_4_UP;
-            }
-            else
+            } else
             {
                 return Button::BUTTON_4_DOWN;
             }
@@ -213,8 +206,7 @@ Button PollKME()
             if (data_status[2] & 0x40)
             {
                 return Button::BUTTON_5_UP;
-            }
-            else
+            } else
             {
                 return Button::BUTTON_5_DOWN;
             }
@@ -225,8 +217,7 @@ Button PollKME()
             if (data_status[2] & 0x20)
             {
                 return Button::BUTTON_6_UP;
-            }
-            else
+            } else
             {
                 return Button::BUTTON_6_DOWN;
             }
@@ -236,8 +227,7 @@ Button PollKME()
             if (data_status[2] & 0x10)
             {
                 return Button::BUTTON_7_UP;
-            }
-            else
+            } else
             {
                 return Button::BUTTON_7_DOWN;
             }
@@ -247,8 +237,7 @@ Button PollKME()
             if (data_status[2] & 0x08)
             {
                 return Button::BUTTON_8_UP;
-            }
-            else
+            } else
             {
                 return Button::BUTTON_8_DOWN;
             }
@@ -258,8 +247,7 @@ Button PollKME()
             if (data_status[2] & 0x04)
             {
                 return Button::BUTTON_9_UP;
-            }
-            else
+            } else
             {
                 return Button::BUTTON_9_DOWN;
             }
@@ -269,8 +257,7 @@ Button PollKME()
             if (data_status[1] & 0x04)
             {
                 return Button::BUTTON_10_UP;
-            }
-            else
+            } else
             {
                 return Button::BUTTON_10_DOWN;
             }
@@ -280,8 +267,7 @@ Button PollKME()
             if (data_status[1] & 0x02)
             {
                 return Button::BUTTON_11_UP;
-            }
-            else
+            } else
             {
                 return Button::BUTTON_11_DOWN;
             }
@@ -291,8 +277,7 @@ Button PollKME()
             if (data_status[1] & 0x01)
             {
                 return Button::BUTTON_12_UP;
-            }
-            else
+            } else
             {
                 return Button::BUTTON_12_DOWN;
             }
@@ -312,7 +297,7 @@ int main()
 
     Setup(display, cdcDevice);
 
-    //display.SetBacklight(GlobalSettings::brightnessPercentage);
+    // display.SetBacklight(GlobalSettings::brightnessPercentage);
 
     MenuSystem menuSystem(&cdcDevice);
 
@@ -340,8 +325,6 @@ int main()
     //     LCD_BLT_O = !LCD_BLT_O;
     // }
 
-
-
     uint16_t counter = 0;
     while (1)
     {
@@ -360,24 +343,23 @@ int main()
         sprintf(debugText, "%d\r\n", counter);
         painter.DrawText(debugText, 10, 90, Color565::Red, TextAlign::TEXT_ALIGN_LEFT, 10);
 
-        //Test
-        painter.DrawCirlce(50, 120, counter%20, Color565::White);
-        painter.DrawFillCirlce(120, 120, counter%20, Color565::White);
-        painter.DrawCircleQuarter(200, 120, counter%20, 1, Color565::White);
-        painter.DrawFillCircleQuarter(280, 120, counter%20, 1, 0, Color565::White);
+        // Test
+        painter.DrawCirlce(50, 120, counter % 20, Color565::White);
+        painter.DrawFillCirlce(120, 120, counter % 20, Color565::White);
+        painter.DrawCircleQuarter(200, 120, counter % 20, 1, Color565::White);
+        painter.DrawFillCircleQuarter(280, 120, counter % 20, 1, 0, Color565::White);
         painter.DrawLine(50, 110, 300, 130, Color565::White);
-        //painter.DrawCirlce(100, 160, (counter+5)%30, Color565::Red);
-        //painter.DrawCirlce(270, 150, (counter+18)%14, Color565::Blue);
-        //painter.DrawCirlce(160, 120, (counter+2)%25, Color565::Green);
-        //painter.DrawCirlce(200, 90, (counter+12)%17, Color565::White);
-        //painter.DrawCircleQuarter(50, 150, counter%15, 1, Color565::White);
+        // painter.DrawCirlce(100, 160, (counter+5)%30, Color565::Red);
+        // painter.DrawCirlce(270, 150, (counter+18)%14, Color565::Blue);
+        // painter.DrawCirlce(160, 120, (counter+2)%25, Color565::Green);
+        // painter.DrawCirlce(200, 90, (counter+12)%17, Color565::White);
+        // painter.DrawCircleQuarter(50, 150, counter%15, 1, Color565::White);
 
-
-        //cdcDevice.Send((uint8_t*)debugText, 10);
+        // cdcDevice.Send((uint8_t*)debugText, 10);
 
         display.DisplayFramebuffer();
 
-        //DelayMs(30);
+        // DelayMs(30);
     }
 
     return 0;
