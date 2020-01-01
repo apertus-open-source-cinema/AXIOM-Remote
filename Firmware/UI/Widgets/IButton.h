@@ -10,7 +10,8 @@
 
 #include "IWidget.h"
 
-class IButton : public IWidget {
+class IButton : public IWidget
+{
     // void* -> sender, e.g. MainPage
     void (*_handlerPtr)(void*);
 
