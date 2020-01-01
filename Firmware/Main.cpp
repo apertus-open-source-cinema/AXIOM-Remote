@@ -8,7 +8,7 @@
 
 // Menus/Pages
 #include "UI/MenuSystem.h"
-#include "UI/MainPage.h"
+#include "UI/Screens/MainPage.h"
 #include "UI/AnalogGainMenu.h"
 
 #include "GlobalSettings.h"
@@ -314,7 +314,7 @@ int main()
 
     //display.SetBacklight(GlobalSettings::brightnessPercentage);
 
-    MenuSystem menuSystem;
+    MenuSystem menuSystem(&cdcDevice);
 
     Painter painter(display.GetFramebuffer(), display.GetWidth(), display.GetHeight());
     MainPage MainPage(&cdcDevice);
