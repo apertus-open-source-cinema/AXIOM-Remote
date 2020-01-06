@@ -3,31 +3,13 @@
 
 #include <stdint.h>
 
+#include "IScreen.h"
+
 #include "../../Utils.h"
 #include "../Color565.h"
 
-class Painter;
-class MenuSystem;
-
-enum class Button;
-
-class IMenu
+class IMenu : public IScreen
 {
-  public:
-    virtual Color565 GetBackgroundColor()
-    {
-        return Color565::MenuBackground;
-    }
-
-    virtual void Draw(Painter* painter)
-    {
-        UNUSED(painter);
-    }
-
-    virtual void Update(Button button)
-    {
-        UNUSED(button);
-    }
 };
 
 #endif /* IMENU_H */

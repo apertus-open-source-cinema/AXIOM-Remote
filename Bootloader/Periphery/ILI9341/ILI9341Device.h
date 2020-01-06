@@ -34,7 +34,7 @@ class ILI9341Display// : public ILCDDevice
 
 public:
 
-    ILI9341Display(volatile uint16_t* framebuffer);
+    explicit ILI9341Display(volatile uint16_t* framebuffer);
 
     uint16_t GetWidth()
     {

@@ -1,10 +1,11 @@
 #ifndef SETTINGSMENU_H
 #define SETTINGSMENU_H
 
+#include <vector>
+
 #include "IMenu.h"
 #include "../Painter.h"
 #include "../Widgets/MenuItem.h"
-#include <vector>
 
 //#include "../Widgets/MainPageButton.h"
 
@@ -24,6 +25,8 @@ class SettingsMenu : public IMenu
   public:
     explicit SettingsMenu(IUSBDevice* cdcDevice)
     {
+        UNUSED(cdcDevice);
+
         MenuItem item1 = new MenuItem();
         item1.SetLabel("Test Item 1");
         _menuItems.push_back(item1);
@@ -168,8 +171,10 @@ class SettingsMenu : public IMenu
         */
     }
 
-    void Update(Button button) override
+    void Update(Button button, IMenuSystem* menuSystem) override
     {
+        UNUSED(button);
+        UNUSED(menuSystem);
     }
 };
 

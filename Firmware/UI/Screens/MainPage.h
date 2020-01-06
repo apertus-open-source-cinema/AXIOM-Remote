@@ -3,7 +3,7 @@
 
 #include "IMenu.h"
 #include "../Painter.h"
-//#include "IWidget.h"
+#include "../IMenuSystem.h"
 
 #include "../Widgets/MainPageButton.h"
 
@@ -13,7 +13,10 @@
 
 #include "../../../Bootloader/Periphery/USB/IUSBDevice.h"
 
-class MainPage : public IMenu {
+class MenuSystem;
+
+class MainPage : public IMenu
+{
     IUSBDevice* _usbDevice;
 
     MainPageButton _fpsButton;
@@ -30,14 +33,12 @@ class MainPage : public IMenu {
 
   public:
     explicit MainPage(IUSBDevice* cdcDevice) :
-        _usbDevice(cdcDevice),
-        _fpsButton(MainPageButton(10, 0, 90, "FPS")),
+        _usbDevice(cdcDevice), _fpsButton(MainPageButton(10, 0, 90, "FPS")),
         _analogGainButton(MainPageButton(115, 0, 90, "A. Gain")),
         _digitalGainButton(MainPageButton(220, 0, 90, "D. Gain")),
         _menuButton(MainPageButton(10, 210, 90, "MENU", true)),
         _shutterButton(MainPageButton(115, 180, 90, "Shutter", true)),
-        _whiteBalanceButton(MainPageButton(220, 180, 90, "WB", true)),
-        _backgroundColor(Color565::MenuBackground)
+        _whiteBalanceButton(MainPageButton(220, 180, 90, "WB", true)), _backgroundColor(Color565::MenuBackground)
     {
         _menuButton.SetCaptionHeight(30);
         _menuButton.HideValue(true);
@@ -93,7 +94,7 @@ class MainPage : public IMenu {
         }
     }
 
-    void Update(Button button) override
+    void Update(Button button, IMenuSystem* menuSystem) override
     {
         switch (button)
         {
@@ -115,10 +116,13 @@ class MainPage : public IMenu {
             _digitalGainButton.Activate(this);
             _usbDevice->Send((uint8_t*)"Button 3\r\n", 10);
             break;
-        case Button::BUTTON_4_UP:
+        case Button::BUTTON_4_DOWN:
             _fpsButton.SetValue((char*)"4");
             _menuButton.Activate(this);
             _usbDevice->Send((uint8_t*)"Button 4\r\n", 10);
+
+            menuSystem->SetCurrentScreen(AvailableScreens::SettingsMenu);
+
             break;
         default:
             break;

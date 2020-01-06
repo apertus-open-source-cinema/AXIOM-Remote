@@ -1,21 +1,23 @@
 #ifndef MENUSYSTEM_H
 #define	MENUSYSTEM_H
 
+#include "IMenuSystem.h"
+
 #include "MenuDefinitions.h"
 
 #include "Screens/MainPage.h"
 #include "Screens/SettingsMenu.h"
 
 class Painter;
-class IMenu;
+class IScreen;
 class IUSBDevice;
 
-class MenuSystem
+class MenuSystem : public IMenuSystem
 {
-    IMenu* _currentMenu;
+    IScreen* _currentScreen;
 
     // TODO: Length has to be adjusted manually, as currently we use static init to save space on the MCU
-    IMenu* _availableMenus[3];
+    IScreen* _availableScreens[3];
 
     IUSBDevice* _usbDevice;
 
@@ -23,15 +25,17 @@ class MenuSystem
     MainPage _mainPage;
     SettingsMenu _settingsMenu;
 
-    void InitializeAvailableMenus();
+    void InitializeAvailableScreens();
 
 public:
     MenuSystem(IUSBDevice* usbDevice);
     virtual ~MenuSystem();
 
-    void SetCurrentMenu(AvailableMenus menu);
+    void SetCurrentScreen(AvailableScreens menu);
 
     void Draw(Painter* painter);
+
+    void Update(Button button);
 };
 
 #endif	//MENUSYSTEM_H

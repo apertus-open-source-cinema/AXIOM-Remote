@@ -11,7 +11,6 @@
 
 #include "VirtualUI.h"
 
-//#include "UI/MainPage.h"
 #include "UI/MenuSystem.h"
 #include "UI/Painter.h"
 
@@ -78,7 +77,7 @@ void RenderDisplay(uint16_t* sourceFramebuffer, uint8_t* targetFramebuffer, int 
         for (int xIndex = 0; xIndex < width; xIndex++)
         {
             uint16_t val = sourceFramebuffer[yIndex * width + xIndex];
-            
+
             targetFramebuffer[j] = (val >> 11) << 3;
             targetFramebuffer[j + 1] = ((val >> 5) & 0x3F) << 2;
             targetFramebuffer[j + 2] = (val & 0x1F) << 3;
@@ -149,9 +148,11 @@ int main()
 
     Painter painter(frameBuffer, FRAMEBUFFER_WIDTH, FRAMEBUFFER_HEIGHT);
     USBCDCTerminalDevice cdcDevice;
-    
+
     MenuSystem menuSystem(&cdcDevice);
-    menuSystem.SetCurrentMenu(AvailableMenus::SettingsMenu);
+    // menuSystem.SetCurrentMenu(AvailableMenus::SettingsMenu);
+
+    Button button = Button::BUTTON_NONE;
 
     bool appIsRunning = true;
     const int frames = 30;
@@ -167,9 +168,10 @@ int main()
             }
         }
 
-        //SDL_RenderClear(renderer);
+        // SDL_RenderClear(renderer);
 
-        //currentMenu->Draw(&painter);
+        // currentMenu->Draw(&painter);
+
         menuSystem.Draw(&painter);
         RenderDisplay(frameBuffer, framebuffer, FRAMEBUFFER_WIDTH, FRAMEBUFFER_HEIGHT);
 
@@ -177,7 +179,9 @@ int main()
         memcpy(textureData, framebuffer, FRAMEBUFFER_WIDTH * FRAMEBUFFER_HEIGHT * 3);
         SDL_UnlockTexture(texture);
 
-        RenderUI(window, reinterpret_cast<ImTextureID>(knobTextureID));
+        button = Button::BUTTON_NONE;
+        RenderUI(window, reinterpret_cast<ImTextureID>(knobTextureID), button);
+        menuSystem.Update(button);
         ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());
 
         // SDL_GL_SwapWindow(window);

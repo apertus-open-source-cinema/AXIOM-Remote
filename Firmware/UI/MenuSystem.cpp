@@ -6,35 +6,40 @@
 #include "Screens/SettingsMenu.h"
 
 MenuSystem::MenuSystem(IUSBDevice* usbDevice) :
-    _currentMenu(nullptr), _usbDevice(usbDevice), _mainPage(usbDevice), _settingsMenu(usbDevice)
+    _currentScreen(nullptr), _usbDevice(usbDevice), _mainPage(usbDevice), _settingsMenu(usbDevice)
 {
-    InitializeAvailableMenus();
+    InitializeAvailableScreens();
 
-    SetCurrentMenu(AvailableMenus::MainPage);
+    SetCurrentScreen(AvailableScreens::MainPage);
 }
 
 MenuSystem::~MenuSystem()
 {
 }
 
-void MenuSystem::SetCurrentMenu(AvailableMenus menu)
+void MenuSystem::SetCurrentScreen(AvailableScreens menu)
 {
-    _currentMenu = _availableMenus[(uint8_t)menu];
+    _currentScreen = _availableScreens[(uint8_t)menu];
 }
 
-void MenuSystem::InitializeAvailableMenus()
+void MenuSystem::InitializeAvailableScreens()
 {
-    _availableMenus[0] = &_mainPage;
-    _availableMenus[1] = &_settingsMenu;
+    _availableScreens[0] = &_mainPage;
+    _availableScreens[1] = &_settingsMenu;
 }
 
 void MenuSystem::Draw(Painter* painter)
 {
-    if (_currentMenu == nullptr)
+    if (_currentScreen == nullptr)
     {
         return;
     }
 
-    painter->Fill(_currentMenu->GetBackgroundColor());
-    _currentMenu->Draw(painter);
+    painter->Fill(_currentScreen->GetBackgroundColor());
+    _currentScreen->Draw(painter);
+}
+
+void MenuSystem::Update(Button button)
+{
+    _currentScreen->Update(button, this);
 }

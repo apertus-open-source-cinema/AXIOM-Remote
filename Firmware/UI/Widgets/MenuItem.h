@@ -27,9 +27,9 @@ class MenuItem : public IWidget
 
   public:
     MenuItem(bool disabled = false, bool hidden = false, bool selected = false, bool highlighted = false,
-             const char* _label = "...", MenuItemType type = MenuItemType::MENU_ITEM_TYPE_NUMERIC) :
+             const char* label = "...", MenuItemType type = MenuItemType::MENU_ITEM_TYPE_NUMERIC) :
         _disabled(disabled),
-        _hidden(hidden), _selected(selected), _highlighted(highlighted), _type(type)
+        _hidden(hidden), _selected(selected), _highlighted(highlighted), _label(const_cast<char*>(label)), _type(type)
     {
     }
 
@@ -73,9 +73,9 @@ class MenuItem : public IWidget
         return _highlighted;
     }
 
-    void SetLabel(char* value)
+    void SetLabel(const char* value)
     {
-        _label = value;
+        _label = const_cast<char*>(value);
     }
 
     char* GetLabel()

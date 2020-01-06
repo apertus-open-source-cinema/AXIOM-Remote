@@ -6,16 +6,8 @@
 #include "imgui_modules/imgui_impl_opengl3.h"
 #include "imgui_modules/imgui_impl_sdl.h"
 
-// #include "AXIOM_Remote_Prototype_V01.X/globals.h"
+enum class Button;
 
-// extern "C" {
-// #include "AXIOM_Remote_Prototype_V01.X/menu.h"
-// #include "AXIOM_Remote_Prototype_V01.X/page.h"
-
-// #include "AXIOM_Remote_Prototype_V01.X/page_wb.h"
-// #include "AXIOM_Remote_Prototype_V01.X/page_wb_help.h"
-// }
-
-void RenderUI(SDL_Window *window, ImTextureID textureID);
+void RenderUI(SDL_Window *window, ImTextureID textureID, Button& button);
 
 #endif //VIRTUALUI_H
