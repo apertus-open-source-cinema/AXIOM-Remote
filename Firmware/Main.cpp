@@ -306,8 +306,8 @@ int main()
     MainPage MainPage(&cdcDevice);
     SettingsMenu SettingsMenu(&cdcDevice);
 
-    IMenu* currentMenu = &MainPage;
-    // IMenu* currentMenu = &SettingsMenu;
+    //IMenu* currentMenu = &MainPage;
+    IMenu* currentMenu = &SettingsMenu;
 
     static uint8_t rgb[4];
     rgb[0] = 0x14;
@@ -337,7 +337,7 @@ int main()
         PollKMW(&display, &cdcDevice);
 
         // Buttons, PIC16 (east)
-        currentMenu->Update(PollKME());
+        currentMenu->Update(PollKME(), &menuSystem);
 
         // TODO: each menu should draw/clear the background itself in the future
         display.ClearFramebuffer((uint16_t)currentMenu->GetBackgroundColor());
@@ -349,11 +349,13 @@ int main()
         painter.DrawText(debugText, 10, 90, Color565::Red, TextAlign::TEXT_ALIGN_LEFT, 10);
 
         // Test
+        /*
         painter.DrawCirlce(50, 120, counter % 20, Color565::White);
         painter.DrawFillCirlce(120, 120, counter % 20, Color565::White);
         painter.DrawCircleQuarter(200, 120, counter % 20, 1, Color565::White);
         painter.DrawFillCircleQuarter(280, 120, counter % 20, 1, 0, Color565::White);
         painter.DrawLine(50, 110, 300, 130, Color565::White);
+        */
         // painter.DrawCirlce(100, 160, (counter+5)%30, Color565::Red);
         // painter.DrawCirlce(270, 150, (counter+18)%14, Color565::Blue);
         // painter.DrawCirlce(160, 120, (counter+2)%25, Color565::Green);

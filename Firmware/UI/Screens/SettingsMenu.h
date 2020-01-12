@@ -9,6 +9,8 @@
 
 #include "../ButtonDefinitions.h"
 
+#include "../../GlobalSettings.h"
+
 #include "../../../Bootloader/Periphery/USB/IUSBDevice.h"
 
 class SettingsMenu : public IMenu
@@ -19,7 +21,17 @@ class SettingsMenu : public IMenu
     MenuItem _menuItems[3];
     uint8_t _menuSelectionIndex;
     uint8_t _menuItemsCount;
-    // Color565 _backgroundColor;
+
+    // Color Defintions
+    Color565 _menuBackgroundColor;
+    Color565 _menuItemColor;
+    Color565 _menuDimmedItemColor;
+    Color565 _menuDisabledItemColor;
+    Color565 _menuSelectedItemColor;
+    Color565 _menuHightlightedItemColor;
+    Color565 _menuTextColor;
+    Color565 _menuDisabledTextColor;
+    Color565 _menuSelectedTextColor;
 
   public:
     explicit SettingsMenu(IUSBDevice* cdcDevice)
@@ -36,6 +48,11 @@ class SettingsMenu : public IMenu
         _menuItems[1] = new MenuItem();
         _menuItems[1].SetDisabled(true);
         _menuItems[1].SetLabel("Test Item 2");
+
+        _menuBackgroundColor = Color565::LightGrey;
+        _menuItemColor = Color565::White;
+        _menuSelectedTextColor = Color565::White;
+
         /*
                 _menuItems[2] = new MenuItem();
                 _menuItems[2].SetLabel("Test Item 3");
@@ -64,10 +81,29 @@ class SettingsMenu : public IMenu
   protected:
     void Draw(Painter* painter) override
     {
+
+        // clear the screen
+        // fill_rect(0, 0, FRAMEBUFFER_WIDTH, FRAMEBUFFER_HEIGHT, _backgroundColor);
+
+        // draw header background
+        painter->DrawFillRectangle(0, GlobalSettings::LCDHeight - 28, GlobalSettings::LCDWidth, 28, _menuItemColor);
+
+        /*
+        // draw header bread crumbs
+        draw_string(5, FRAMEBUFFER_HEIGHT - 22, menu_breadcrumbs, menu_text_color, menu_text_color, _FreeSans9pt7b,
+                    TEXT_ALIGN_LEFT, 0);
+*/
+        // two header separation lines
+        painter->DrawLine(0, GlobalSettings::LCDHeight - 29, GlobalSettings::LCDWidth - 1,
+                          GlobalSettings::LCDHeight - 29, _menuSelectedTextColor);
+
+        painter->DrawLine(0, GlobalSettings::LCDHeight - 30, GlobalSettings::LCDWidth - 1,
+                          GlobalSettings::LCDHeight - 30, _menuBackgroundColor);
+
         for (int8_t i = 0; i < _menuItemsCount; i++)
         {
             //_menuItems[i].Draw(painter);
-            painter->DrawFillRectangle(0, 0, FRAMEBUFFER_WIDTH, FRAMEBUFFER_HEIGHT, menu_background_color);
+            painter->DrawFillRectangle(0, i * 30, 100, 25, _menuBackgroundColor);
         }
 
         /*
