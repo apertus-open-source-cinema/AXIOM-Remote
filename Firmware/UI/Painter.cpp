@@ -190,8 +190,7 @@ void Painter::DrawCircleQuarter(int16_t x, int16_t y, int16_t r, uint8_t cornern
     }
 }
 
-void Painter::DrawFillCircleQuarter(int16_t x0, int16_t y0, int16_t r, uint8_t cornername, int16_t delta,
-                                    Color565 color)
+void Painter::DrawFillCircleQuarter(int16_t x0, int16_t y0, int16_t r, uint8_t cornername, int16_t delta, Color565 color)
 {
     int16_t f = 1 - r;
     int16_t ddF_x = 1;
@@ -489,7 +488,7 @@ void Painter::DrawPixel(uint16_t x, uint16_t y, Color565 color)
     if (x < _framebufferWidth && y < _framebufferHeight)
     {
         _framebuffer[(y * _framebufferWidth) + x] = (uint16_t)color;
-    } 
+    }
 }
 
 void Painter::SetFont(Font font)

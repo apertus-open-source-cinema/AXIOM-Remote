@@ -1,8 +1,6 @@
 #ifndef SETTINGSMENU_H
 #define SETTINGSMENU_H
 
-#include <vector>
-
 #include "IMenu.h"
 #include "../Painter.h"
 #include "../Widgets/MenuItem.h"
@@ -18,29 +16,30 @@ class SettingsMenu : public IMenu
     IUSBDevice* _usbDevice;
 
     char* _label;
-    std::vector<MenuItem> _menuItems;
+    MenuItem _menuItems[3];
     uint8_t _menuSelectionIndex;
-    Color565 _backgroundColor;
+    uint8_t _menuItemsCount;
+    // Color565 _backgroundColor;
 
   public:
     explicit SettingsMenu(IUSBDevice* cdcDevice)
     {
         UNUSED(cdcDevice);
 
-        MenuItem item1 = new MenuItem();
-        item1.SetLabel("Test Item 1");
-        _menuItems.push_back(item1);
+        _label = "Settings Menu";
+        _menuItemsCount = 3;
+        _menuSelectionIndex = 0;
 
-        MenuItem item2 = new MenuItem();
-        item2.SetDisabled(true);
-        item2.SetLabel("Test Item 2");
-        _menuItems.push_back(item2);
+        _menuItems[0] = new MenuItem();
+        _menuItems[0].SetLabel("Test Item 1");
 
-        MenuItem item3 = new MenuItem();
-        item3.SetLabel("Test Item 3");
-        _menuItems.push_back(item3);
-
+        _menuItems[1] = new MenuItem();
+        _menuItems[1].SetDisabled(true);
+        _menuItems[1].SetLabel("Test Item 2");
         /*
+                _menuItems[2] = new MenuItem();
+                _menuItems[2].SetLabel("Test Item 3");
+
                 _menuButton.SetHandler(&MenuButtonHandler);
 
                 _analogGainButton.SetHandler(&AnalogGainButtonHandler);
@@ -57,12 +56,18 @@ class SettingsMenu : public IMenu
         return _label;
     }
 
+    int8_t GetMenuItemsCount()
+    {
+        return _menuItemsCount;
+    }
+
   protected:
     void Draw(Painter* painter) override
     {
-        for (int8_t i = 0; i < (int8_t)_menuItems.size(); i++)
+        for (int8_t i = 0; i < _menuItemsCount; i++)
         {
-            _menuItems.at(i).Draw(painter);
+            //_menuItems[i].Draw(painter);
+            painter->DrawFillRectangle(0, 0, FRAMEBUFFER_WIDTH, FRAMEBUFFER_HEIGHT, menu_background_color);
         }
 
         /*

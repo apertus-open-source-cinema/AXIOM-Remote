@@ -9,6 +9,7 @@
 // Menus/Pages
 #include "UI/MenuSystem.h"
 #include "UI/Screens/MainPage.h"
+#include "UI/Screens/SettingsMenu.h"
 #include "UI/AnalogGainMenu.h"
 
 #include "GlobalSettings.h"
@@ -303,8 +304,10 @@ int main()
 
     Painter painter(display.GetFramebuffer(), display.GetWidth(), display.GetHeight());
     MainPage MainPage(&cdcDevice);
+    SettingsMenu SettingsMenu(&cdcDevice);
 
     IMenu* currentMenu = &MainPage;
+    // IMenu* currentMenu = &SettingsMenu;
 
     static uint8_t rgb[4];
     rgb[0] = 0x14;
@@ -336,7 +339,9 @@ int main()
         // Buttons, PIC16 (east)
         currentMenu->Update(PollKME());
 
+        // TODO: each menu should draw/clear the background itself in the future
         display.ClearFramebuffer((uint16_t)currentMenu->GetBackgroundColor());
+
         currentMenu->Draw(&painter);
 
         counter++;
