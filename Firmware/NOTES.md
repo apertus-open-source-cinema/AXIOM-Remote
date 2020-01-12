@@ -1,30 +1,31 @@
 # Communication Protocol
 A simple ASCII based line prototcol is currently envisioned:
 
+Format:
 ```
-G = GET
-R = return value
-S = SET
-```
-
-**Example:**
-
-```
-[Remote to BETA] G analog_gain
-[BETA to Remote] R 1
-[Remote to BETA] S analog_gain 2
-[BETA to Remote] R success
+Xyyyzz FIELDS...
 ```
 
+where `X` indicates the request type, currently
+- `G` for get
+- `S` for set
+- `R` for return value / reply
 
-Timeouts shall be used for waiting for replies.
+Get / set requests are initiated by the remote and answered asynchronously by the beta with a `R`
 
-First attempt will be made without any buffering, but if it shows to be a problem the requests and replies could be made async,
-for example using a request id:
+`yyy` is a alphanumeric id, for example a counter formatted in hex counting up
+`zz` is the CRC8 (polynomial `0x7`, initial value `0x0`) in hex of everything coming after that, including the space and the newline at the end.
+and `FIELDS` is a space seperated list of fields
 
+for replies the id matches the id of the (get or set) request
+
+example:
 ```
-[Remote to BETA] G 1234 analog_gain
-[Remote to BETA] S 1235 analog_gain 5
-[BETA to Remote] R 1235 ERR set 4
-[BETA to Remote] R 1234 OK 4
+[remote to beta] G123459 analog_gain
+[remote to beta] S1235FB analog_gain 5
+[beta to remote] R12352F ERR set 4
+[beta to remote] R12344B OK 1
 ```
+
+The remote should use a timeout of `1s` for long running requests.
+
