@@ -14,8 +14,8 @@ where `X` indicates the request type, currently
 Get / set requests are initiated by the remote and answered asynchronously by the beta with a `R`
 
 `yyy` is a alphanumeric id, for example a counter formatted in hex counting up
-`zz` is the CRC8 (polynomial `0x7`, initial value `0x0`) in hex of everything coming after that, including the RS and the newline at the end.
-and `FIELDS` is a RS (Record Seperator ASCII code 0x1E) seperated list of fields
+`zz` is the CRC8 (polynomial `0x7`, initial value `0x0`) in hex of everything coming after that, including the RS and the EOT (end of transmission - ASCII code 0x04)) character indicating the end of the message.
+and `FIELDS` is a RS (Record Seperator - ASCII code 0x1E) seperated list of fields
 
 for replies the id matches the id of the (get or set) request
 
