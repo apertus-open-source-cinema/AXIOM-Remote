@@ -23,6 +23,7 @@ class MenuItem : public IWidget
     bool _selected;
     bool _highlighted;
     char* _label;
+    uint16_t _value;
     MenuItemType _type;
 
   public:
@@ -81,6 +82,16 @@ class MenuItem : public IWidget
     char* GetLabel()
     {
         return _label;
+    }
+
+    void SetValue(uint16_t value)
+    {
+        _value = value;
+    }
+
+    uint16_t GetValue()
+    {
+        return _value;
     }
 
     void SetMenuType(MenuItemType type)

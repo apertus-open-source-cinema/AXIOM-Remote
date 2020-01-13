@@ -23,7 +23,7 @@ Painter::Painter(volatile uint16_t* framebuffer, uint16_t framebufferWidth, uint
     _cursorY(0)
 {
     // Default font
-    SetFont(Font::FreeSans9pt7b);
+    //SetFont(Font::FreeSans9pt7b);
 }
 
 void Painter::DrawLine(int16_t x0, int16_t y0, int16_t x1, int16_t y1, Color565 color)
@@ -83,12 +83,18 @@ void Painter::DrawFastVLine(int16_t x, int16_t y, int16_t h, Color565 color)
 
 void Painter::DrawFillRectangle(uint16_t x, uint16_t y, uint16_t width, uint16_t height, Color565 color)
 {
-    for (uint16_t yIndex = y; yIndex < y + height; yIndex++)
+    /*for (uint16_t yIndex = y; yIndex < y + height; yIndex++)
     {
         for (uint16_t xIndex = x; xIndex < x + width; xIndex++)
         {
+
             _framebuffer[(_framebufferWidth * yIndex) + xIndex] = (uint16_t)color;
         }
+    }*/
+    int16_t i;
+    for (i = x; i < x + width; i++)
+    {
+        DrawFastVLine(i, y, height, color);
     }
 }
 
@@ -190,7 +196,8 @@ void Painter::DrawCircleQuarter(int16_t x, int16_t y, int16_t r, uint8_t cornern
     }
 }
 
-void Painter::DrawFillCircleQuarter(int16_t x0, int16_t y0, int16_t r, uint8_t cornername, int16_t delta, Color565 color)
+void Painter::DrawFillCircleQuarter(int16_t x0, int16_t y0, int16_t r, uint8_t cornername, int16_t delta,
+                                    Color565 color)
 {
     int16_t f = 1 - r;
     int16_t ddF_x = 1;
@@ -238,6 +245,8 @@ void Painter::DrawImage(const uint8_t* data, uint16_t x, uint16_t y, uint16_t wi
             //}
 
             uint16_t pixel = ((uint16_t)value1 << 8) | value2;
+
+            // TODO: replace with DrawPixel
             _framebuffer[(_framebufferWidth * (yIndex + y)) + x + xIndex] = pixel;
         }
     }
@@ -245,13 +254,29 @@ void Painter::DrawImage(const uint8_t* data, uint16_t x, uint16_t y, uint16_t wi
 
 uint8_t count = 0;
 
-void Painter::DrawText(const char* text, uint16_t x, uint16_t y, Color565 color, TextAlign align,
+void Painter::DrawText(uint16_t x, uint16_t y, const char* text, Color565 color, Font font, TextAlign align,
                        uint16_t textblockwidth)
 {
     uint8_t first = _currentFont.first;
     uint8_t last = _currentFont.last;
     uint8_t length = strlen(text);
     bool newline = false;
+
+    switch (font)
+    {
+    case Font::FreeSans9pt7b:
+        _currentFont = _fontList[0];
+        break;
+    case Font::FreeSans12pt7b:
+        _currentFont = _fontList[1];
+        break;
+    case Font::FreeSans18pt7b:
+        _currentFont = _fontList[2];
+        break;
+    case Font::FreeSans24pt7b:
+        _currentFont = _fontList[3];
+        break;
+    }
 
     /*char debug[32];
     sprintf(debug, "length = %d", length);
@@ -425,7 +450,7 @@ void Painter::DrawCharacter(unsigned char character, int16_t x, int16_t y, Color
             }
             if (bits & 0x80)
             {
-                DrawPixel(x + xo + xx, y + yo + yy, color);
+                DrawPixel(x + xo + xx, y - yo - yy, color);
             }
             bits <<= 1;
         }
@@ -484,29 +509,11 @@ uint16_t Painter::GetStringFramebufferWidth(const char* str)
 void Painter::DrawPixel(uint16_t x, uint16_t y, Color565 color)
 {
     // Prevent drawing outside of bounds
-    // Removed check >= 0, as we use uint16_t which has no negative values
     if (x < _framebufferWidth && y < _framebufferHeight)
     {
-        _framebuffer[(y * _framebufferWidth) + x] = (uint16_t)color;
-    }
-}
-
-void Painter::SetFont(Font font)
-{
-    switch (font)
-    {
-    case Font::FreeSans9pt7b:
-        _currentFont = _fontList[0];
-        break;
-    case Font::FreeSans12pt7b:
-        _currentFont = _fontList[1];
-        break;
-    case Font::FreeSans18pt7b:
-        _currentFont = _fontList[2];
-        break;
-    case Font::FreeSans24pt7b:
-        _currentFont = _fontList[3];
-        break;
+        // origin shall be at the lower left corner so we need to mirror y axis (by default the LCD coordinates are so
+        // that origin is at top left corner)
+        _framebuffer[((_framebufferHeight - y) * _framebufferWidth) + x] = (uint16_t)color;
     }
 }
 

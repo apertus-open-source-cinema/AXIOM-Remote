@@ -1,5 +1,5 @@
 #ifndef PAINTER_H
-#define	PAINTER_H
+#define PAINTER_H
 
 #include <stdint.h>
 
@@ -17,7 +17,9 @@ enum class Font
 
 enum class TextAlign
 {
-    TEXT_ALIGN_LEFT, TEXT_ALIGN_CENTER, TEXT_ALIGN_RIGHT
+    TEXT_ALIGN_LEFT,
+    TEXT_ALIGN_CENTER,
+    TEXT_ALIGN_RIGHT
 };
 
 class Painter
@@ -33,7 +35,7 @@ class Painter
     uint16_t _cursorX;
     uint16_t _cursorY;
 
-public:
+  public:
     Painter(volatile uint16_t* framebuffer, uint16_t framebufferWidth, uint8_t framebufferHeight);
 
     // Primitives
@@ -53,10 +55,11 @@ public:
     void Fill(Color565 fillColor);
 
     // Text Related
-    void SetFont(Font font);
+    // void SetFont(Font font);
     void DrawCharacter(unsigned char c, int16_t x, int16_t y, Color565 color);
-    void DrawText(const char* text, uint16_t x, uint16_t y, Color565 color, TextAlign align, uint16_t textblockwidth);
+    void DrawText(uint16_t x, uint16_t y, const char* text, Color565 color, Font font, TextAlign align,
+                  uint16_t textblockwidth);
     uint16_t GetStringFramebufferWidth(const char* str);
 };
 
-#endif	/* PAINTER_H */
+#endif /* PAINTER_H */

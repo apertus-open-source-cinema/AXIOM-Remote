@@ -306,8 +306,8 @@ int main()
     MainPage MainPage(&cdcDevice);
     SettingsMenu SettingsMenu(&cdcDevice);
 
-    //IMenu* currentMenu = &MainPage;
-    IMenu* currentMenu = &SettingsMenu;
+    IMenu* currentMenu = &MainPage;
+    // IMenu* currentMenu = &SettingsMenu;
 
     static uint8_t rgb[4];
     rgb[0] = 0x14;
@@ -342,11 +342,12 @@ int main()
         // TODO: each menu should draw/clear the background itself in the future
         display.ClearFramebuffer((uint16_t)currentMenu->GetBackgroundColor());
 
-        currentMenu->Draw(&painter);
+        menuSystem.Draw(&painter);
+        //currentMenu->Draw(&painter);
 
         counter++;
         sprintf(debugText, "%d\r\n", counter);
-        painter.DrawText(debugText, 10, 90, Color565::Red, TextAlign::TEXT_ALIGN_LEFT, 10);
+        painter.DrawText(10, 90, debugText, Color565::Red, Font::FreeSans9pt7b, TextAlign::TEXT_ALIGN_LEFT, 10);
 
         // Test
         /*

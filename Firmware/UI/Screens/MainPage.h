@@ -3,7 +3,7 @@
 
 #include "IMenu.h"
 #include "../Painter.h"
-#include "../IMenuSystem.h"
+#include "../MenuSystem.h"
 
 #include "../Widgets/MainPageButton.h"
 
@@ -116,7 +116,7 @@ class MainPage : public IMenu
             _digitalGainButton.Activate(this);
             _usbDevice->Send((uint8_t*)"Button 3\r\n", 10);
             break;
-        case Button::BUTTON_4_DOWN:
+        case Button::BUTTON_4_UP:
             _fpsButton.SetValue((char*)"4");
             _menuButton.Activate(this);
             _usbDevice->Send((uint8_t*)"Button 4\r\n", 10);
