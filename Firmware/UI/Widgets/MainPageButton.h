@@ -44,8 +44,8 @@ class MainPageButton : public IButton
             if (!_hideValue)
             {
                 // painter->SetFont(_valueFont);
-                painter->DrawFillRectangle(_x, _y, _width, _valueHeight, Color565::White);
-                painter->DrawText(_x, _y + (_valueHeight - 5), _value, Color565::Black, Font::FreeSans9pt7b,
+                painter->DrawFillRectangle(_x, _y, _width, _valueHeight, (uint16_t)Color565::White);
+                painter->DrawText(_x, _y + (_valueHeight - 5), _value, (uint16_t)Color565::Black, Font::FreeSans9pt7b,
                                   TextAlign::TEXT_ALIGN_CENTER, _width);
             }
 
@@ -55,22 +55,22 @@ class MainPageButton : public IButton
             }
 
             // painter->SetFont(_captionFont);
-            painter->DrawFillRectangle(_x, _y + _valueHeight, _width, _captionHeight, Color565::Black);
-            painter->DrawText(_x, _y + _valueHeight + (_captionHeight - 5), _caption, Color565::White,
+            painter->DrawFillRectangle(_x, _y + _valueHeight, _width, _captionHeight, (uint16_t)Color565::Black);
+            painter->DrawText(_x, _y + _valueHeight + (_captionHeight - 5), _caption, (uint16_t)Color565::White,
                               Font::FreeSans9pt7b, TextAlign::TEXT_ALIGN_CENTER, _width);
 
         } else
         {
-            //painter->SetFont(_captionFont);
-            painter->DrawFillRectangle(_x, _y, _width, _captionHeight, Color565::Black);
-            painter->DrawText(_x, _y + 15, _caption, Color565::White, Font::FreeSans9pt7b, TextAlign::TEXT_ALIGN_CENTER,
+            // painter->SetFont(_captionFont);
+            painter->DrawFillRectangle(_x, _y, _width, _captionHeight, (uint16_t)Color565::Black);
+            painter->DrawText(_x, _y + 15, _caption, (uint16_t)Color565::White, Font::FreeSans9pt7b, TextAlign::TEXT_ALIGN_CENTER,
                               _width);
 
             if (!_hideValue)
             {
                 // painter->SetFont(_valueFont);
-                painter->DrawFillRectangle(_x, _y + _captionHeight, _width, _valueHeight, Color565::White);
-                painter->DrawText(_x, _y + _captionHeight + (_valueHeight - 5), _value, Color565::Black,
+                painter->DrawFillRectangle(_x, _y + _captionHeight, _width, _valueHeight, (uint16_t)Color565::White);
+                painter->DrawText(_x, _y + _captionHeight + (_valueHeight - 5), _value, (uint16_t)Color565::Black,
                                   Font::FreeSans9pt7b, TextAlign::TEXT_ALIGN_CENTER, _width);
             }
         }

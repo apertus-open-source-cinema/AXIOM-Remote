@@ -347,7 +347,7 @@ int main()
 
         counter++;
         sprintf(debugText, "%d\r\n", counter);
-        painter.DrawText(10, 90, debugText, Color565::Red, Font::FreeSans9pt7b, TextAlign::TEXT_ALIGN_LEFT, 10);
+        painter.DrawText(10, 90, debugText, (uint16_t)Color565::Red, Font::FreeSans9pt7b, TextAlign::TEXT_ALIGN_LEFT, 10);
 
         // Test
         /*

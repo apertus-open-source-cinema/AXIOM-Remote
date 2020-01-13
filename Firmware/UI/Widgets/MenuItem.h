@@ -23,14 +23,16 @@ class MenuItem : public IWidget
     bool _selected;
     bool _highlighted;
     char* _label;
-    uint16_t _value;
+    char* _value;
     MenuItemType _type;
 
   public:
     MenuItem(bool disabled = false, bool hidden = false, bool selected = false, bool highlighted = false,
-             const char* label = "...", MenuItemType type = MenuItemType::MENU_ITEM_TYPE_NUMERIC) :
+             const char* label = "...", const char* value = "..",
+             MenuItemType type = MenuItemType::MENU_ITEM_TYPE_NUMERIC) :
         _disabled(disabled),
-        _hidden(hidden), _selected(selected), _highlighted(highlighted), _label(const_cast<char*>(label)), _type(type)
+        _hidden(hidden), _selected(selected), _highlighted(highlighted), _label(const_cast<char*>(label)),
+        _value(const_cast<char*>(value)), _type(type)
     {
     }
 
@@ -84,12 +86,12 @@ class MenuItem : public IWidget
         return _label;
     }
 
-    void SetValue(uint16_t value)
+    void SetValue(char* value)
     {
         _value = value;
     }
 
-    uint16_t GetValue()
+    char* GetValue()
     {
         return _value;
     }

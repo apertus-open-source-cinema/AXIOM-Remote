@@ -35,7 +35,7 @@ void MenuSystem::Draw(Painter* painter)
         return;
     }
 
-    painter->Fill(_currentScreen->GetBackgroundColor());
+    painter->Fill((uint16_t)_currentScreen->GetBackgroundColor());
     _currentScreen->Draw(painter);
 }
 

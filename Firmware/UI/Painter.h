@@ -39,25 +39,25 @@ class Painter
     Painter(volatile uint16_t* framebuffer, uint16_t framebufferWidth, uint8_t framebufferHeight);
 
     // Primitives
-    void DrawLine(int16_t x0, int16_t y0, int16_t x1, int16_t y1, Color565 color);
-    void DrawFastVLine(int16_t x, int16_t y, int16_t h, Color565 color);
-    void DrawRectangle(uint16_t x, uint16_t y, uint16_t width, uint16_t height, Color565 color);
-    void DrawFillRectangle(uint16_t x, uint16_t y, uint16_t width, uint16_t height, Color565 color);
-    void DrawCirlce(int16_t x, int16_t y, int16_t r, Color565 color);
-    void DrawFillCirlce(int16_t x, int16_t y, int16_t r, Color565 color);
-    void DrawCircleQuarter(int16_t x, int16_t y, int16_t r, uint8_t cornername, Color565 color);
-    void DrawFillCircleQuarter(int16_t x0, int16_t y0, int16_t r, uint8_t cornername, int16_t delta, Color565 color);
+    void DrawLine(int16_t x0, int16_t y0, int16_t x1, int16_t y1, uint16_t color);
+    void DrawFastVLine(int16_t x, int16_t y, int16_t h, uint16_t color);
+    void DrawRectangle(uint16_t x, uint16_t y, uint16_t width, uint16_t height, uint16_t color);
+    void DrawFillRectangle(uint16_t x, uint16_t y, uint16_t width, uint16_t height, uint16_t color);
+    void DrawCirlce(int16_t x, int16_t y, int16_t r, uint16_t color);
+    void DrawFillCirlce(int16_t x, int16_t y, int16_t r, uint16_t color);
+    void DrawCircleQuarter(int16_t x, int16_t y, int16_t r, uint8_t cornername, uint16_t color);
+    void DrawFillCircleQuarter(int16_t x0, int16_t y0, int16_t r, uint8_t cornername, int16_t delta, uint16_t color);
 
     // Misc
     void DrawImage(const uint8_t* data, uint16_t x, uint16_t y, uint16_t width, uint16_t height);
-    void DrawPixel(uint16_t x, uint16_t y, Color565 color);
+    void DrawPixel(uint16_t x, uint16_t y, uint16_t color);
 
-    void Fill(Color565 fillColor);
+    void Fill(uint16_t fillColor);
 
     // Text Related
     // void SetFont(Font font);
-    void DrawCharacter(unsigned char c, int16_t x, int16_t y, Color565 color);
-    void DrawText(uint16_t x, uint16_t y, const char* text, Color565 color, Font font, TextAlign align,
+    void DrawCharacter(unsigned char c, int16_t x, int16_t y, uint16_t color);
+    void DrawText(uint16_t x, uint16_t y, const char* text, uint16_t color, Font font, TextAlign align,
                   uint16_t textblockwidth);
     uint16_t GetStringFramebufferWidth(const char* str);
 };
