@@ -23,7 +23,7 @@ Painter::Painter(volatile uint16_t* framebuffer, uint16_t framebufferWidth, uint
     _cursorY(0)
 {
     // Default font
-    //SetFont(Font::FreeSans9pt7b);
+    // SetFont(Font::FreeSans9pt7b);
 }
 
 void Painter::DrawLine(int16_t x0, int16_t y0, int16_t x1, int16_t y1, uint16_t color)
@@ -257,11 +257,6 @@ uint8_t count = 0;
 void Painter::DrawText(uint16_t x, uint16_t y, const char* text, uint16_t color, Font font, TextAlign align,
                        uint16_t textblockwidth)
 {
-    uint8_t first = _currentFont.first;
-    uint8_t last = _currentFont.last;
-    uint8_t length = strlen(text);
-    bool newline = false;
-
     switch (font)
     {
     case Font::FreeSans9pt7b:
@@ -277,6 +272,11 @@ void Painter::DrawText(uint16_t x, uint16_t y, const char* text, uint16_t color,
         _currentFont = _fontList[3];
         break;
     }
+
+    uint8_t first = _currentFont.first;
+    uint8_t last = _currentFont.last;
+    uint8_t length = strlen(text);
+    bool newline = false;
 
     /*char debug[32];
     sprintf(debug, "length = %d", length);

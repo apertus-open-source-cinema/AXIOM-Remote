@@ -21,7 +21,7 @@ class SettingsMenu : public IMenu
 
     char* _label;
     char* _menuBreadcrumbs;
-    MenuItem _menuItems[5];
+    MenuItem _menuItems[10];
     uint8_t _menuSelectionIndex;
     uint8_t _menuItemsCount;
     uint8_t _parameterSelectionIndex;
@@ -45,29 +45,41 @@ class SettingsMenu : public IMenu
         UNUSED(cdcDevice);
 
         _label = "Settings Menu";
-        _menuItemsCount = 5;
+        _menuItemsCount = 10;
         _menuSelectionIndex = 0;
 
         _menuBreadcrumbs = "Settings Menu";
 
-        _menuItems[0].SetDisabled(false);
-        _menuItems[0].SetLabel("Test Item 1");
-
-        _menuItems[1].SetDisabled(true);
-        _menuItems[1].SetLabel("Test Item 2");
-
-        _menuItems[2].SetDisabled(false);
-        _menuItems[2].SetLabel("Test Item 3");
-
-        _menuItems[3].SetDisabled(false);
-        _menuItems[3].SetLabel("Test Item 4");
+        int i = 0;
+        _menuItems[i].SetLabel("Test Item 1");
+        _menuItems[i].SetSelected(true);
+        i++;
+        _menuItems[i].SetDisabled(true);
+        _menuItems[i].SetLabel("Test Item 2");
+        i++;
+        _menuItems[i].SetLabel("Test Item 3");
+        _menuItems[i].SetHighlighted(true);
+        i++;
+        _menuItems[i].SetLabel("Test Item 4");
+        i++;
+        _menuItems[i].SetLabel("Test Item 5");
+        i++;
+        _menuItems[i].SetLabel("Test Item 6");
+        i++;
+        _menuItems[i].SetLabel("Test Item 7");
+        i++;
+        _menuItems[i].SetLabel("Test Item 8");
+        i++;
+        _menuItems[i].SetLabel("Test Item 9");
+        i++;
+        _menuItems[i].SetLabel("Test Item 10");
 
         // Color defintions
         _menuBackgroundColor = RGB565(180, 180, 180);
         _menuItemColor = (uint16_t)Color565::White;
-        _menuSelectedTextColor = RGB565(255, 128, 0);
+        _menuSelectedItemColor = RGB565(255, 128, 0);
         _menuDimmedItemColor = RGB565(247, 251, 247);
-        _menuSelectedItemColor = RGB565(255, 255, 255);
+        _menuSelectedTextColor = RGB565(255, 255, 255);
         _menuHightlightedItemColor = RGB565(0, 128, 255);
         _menuTextColor = (uint16_t)Color565::Black;
         _menuDisabledTextColor = RGB565(40, 40, 40);
@@ -120,7 +132,7 @@ class SettingsMenu : public IMenu
 
         // two header separation lines
         painter->DrawLine(0, GlobalSettings::LCDHeight - 29, GlobalSettings::LCDWidth - 1,
-                          GlobalSettings::LCDHeight - 29, _menuSelectedTextColor);
+                          GlobalSettings::LCDHeight - 29, _menuSelectedItemColor);
 
         painter->DrawLine(0, GlobalSettings::LCDHeight - 30, GlobalSettings::LCDWidth - 1,
                           GlobalSettings::LCDHeight - 30, _menuBackgroundColor);
@@ -192,7 +204,7 @@ class SettingsMenu : public IMenu
             // draw scroll bar indicator only if there are 7 or more menu items
             if (menuItemsCount == 7)
             {
-                // draw_scroll_indicator(menuItemsCount, main_menu[a].menuItemsCount);
+                DrawScrollIndicator(menuItemsCount, _menuItemsCount, painter);
             }
 
             // draw parameter menu
@@ -234,7 +246,7 @@ class SettingsMenu : public IMenu
 
         // Background
         painter->DrawFillRectangle(GlobalSettings::LCDWidth - 16, 0, 16, GlobalSettings::LCDHeight - 30,
-                                   _menuTextColor);
+                                   _menuItemColor);
 
         // Thin Line
         painter->DrawFillRectangle(GlobalSettings::LCDWidth - 9, 0, 4, GlobalSettings::LCDHeight - 30, _menuTextColor);
@@ -294,7 +306,7 @@ class SettingsMenu : public IMenu
 
             // value
             painter->DrawText(x + 180, y + yoffset_label_from_base, value, _menuSelectedTextColor, Font::FreeSans9pt7b,
-                              TextAlign::TEXT_ALIGN_LEFT, 80);
+                              TextAlign::TEXT_ALIGN_RIGHT, 80);
             return;
         }
 
@@ -366,7 +378,7 @@ class SettingsMenu : public IMenu
         // is the current line selected (cursor)?
         if (_menuItems[item_index].IsSelected())
         {
-            painter->DrawFillRectangle(x, y, GlobalSettings::LCDWidth - x, 29, _menuSelectedTextColor);
+            painter->DrawFillRectangle(x, y, GlobalSettings::LCDWidth - x, 29, _menuSelectedItemColor);
 
             // value
             painter->DrawText(x + 5, y + yoffset_label_from_base, _menuItems[item_index].GetLabel(),
