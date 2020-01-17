@@ -41,6 +41,7 @@ class Painter
     // Primitives
     void DrawLine(int16_t x0, int16_t y0, int16_t x1, int16_t y1, uint16_t color);
     void DrawFastVLine(int16_t x, int16_t y, int16_t h, uint16_t color);
+    void DrawFastHLine(int16_t x, int16_t y, int16_t l, uint16_t color);
     void DrawRectangle(uint16_t x, uint16_t y, uint16_t width, uint16_t height, uint16_t color);
     void DrawFillRectangle(uint16_t x, uint16_t y, uint16_t width, uint16_t height, uint16_t color);
     void DrawCirlce(int16_t x, int16_t y, int16_t r, uint16_t color);

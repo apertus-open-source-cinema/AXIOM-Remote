@@ -78,23 +78,24 @@ void Painter::DrawLine(int16_t x0, int16_t y0, int16_t x1, int16_t y1, uint16_t 
 
 void Painter::DrawFastVLine(int16_t x, int16_t y, int16_t h, uint16_t color)
 {
-    DrawLine(x, y, x, (int16_t)y + h - 1, color);
+    DrawFillRectangle(x, y, h, 1, color); // DrawLine(x, y, x, (int16_t)y + h - 1, color);
+}
+
+void Painter::DrawFastHLine(int16_t x, int16_t y, int16_t l, uint16_t color)
+{
+    DrawFillRectangle(x, y, 1, l, color);
 }
 
 void Painter::DrawFillRectangle(uint16_t x, uint16_t y, uint16_t width, uint16_t height, uint16_t color)
 {
-    /*for (uint16_t yIndex = y; yIndex < y + height; yIndex++)
+    uint_fast32_t lineindex;
+    for (uint16_t yIndex = y; yIndex < y + height; yIndex++)
     {
+        lineindex = _framebufferWidth * (_framebufferHeight - yIndex);
         for (uint16_t xIndex = x; xIndex < x + width; xIndex++)
         {
-
-            _framebuffer[(_framebufferWidth * yIndex) + xIndex] = (uint16_t)color;
+            _framebuffer[lineindex + xIndex] = color;
         }
-    }*/
-    int16_t i;
-    for (i = x; i < x + width; i++)
-    {
-        DrawFastVLine(i, y, height, color);
     }
 }
 
