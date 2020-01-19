@@ -13,6 +13,8 @@ MenuSystem::MenuSystem(IUSBDevice* usbDevice) :
     SetCurrentScreen(AvailableScreens::MainPage);
 }
 
+IUSBDevice* _usbDevice;
+
 MenuSystem::~MenuSystem()
 {
 }
@@ -35,11 +37,11 @@ void MenuSystem::Draw(Painter* painter)
         return;
     }
 
-    painter->Fill((uint16_t)_currentScreen->GetBackgroundColor());
+    //painter->Fill((uint16_t)_currentScreen->GetBackgroundColor());
     _currentScreen->Draw(painter);
 }
 
 void MenuSystem::Update(Button button)
 {
-    _currentScreen->Update(button, this);
+    //_currentScreen->Update(button, 0, this, _usbDevice);
 }

@@ -78,12 +78,12 @@ void Painter::DrawLine(int16_t x0, int16_t y0, int16_t x1, int16_t y1, uint16_t 
 
 void Painter::DrawFastVLine(int16_t x, int16_t y, int16_t h, uint16_t color)
 {
-    DrawFillRectangle(x, y, h, 1, color); // DrawLine(x, y, x, (int16_t)y + h - 1, color);
+    DrawFillRectangle(x, y, 1, h, color); // DrawLine(x, y, x, (int16_t)y + h - 1, color);
 }
 
 void Painter::DrawFastHLine(int16_t x, int16_t y, int16_t l, uint16_t color)
 {
-    DrawFillRectangle(x, y, 1, l, color);
+    DrawFillRectangle(x, y, l, 1, color);
 }
 
 void Painter::DrawFillRectangle(uint16_t x, uint16_t y, uint16_t width, uint16_t height, uint16_t color)
@@ -97,6 +97,28 @@ void Painter::DrawFillRectangle(uint16_t x, uint16_t y, uint16_t width, uint16_t
             _framebuffer[lineindex + xIndex] = color;
         }
     }
+}
+
+void Painter::DrawFillRoundRectangle(uint16_t x, uint16_t y, uint16_t width, uint16_t height, uint8_t radius,
+                                     uint16_t color)
+{
+
+    DrawFillRectangle(x + radius, y, width - 2 * radius, height, color);
+
+    // draw four corners
+    DrawFillCircleQuarter(x + width - radius - 1, y + radius, radius, 1, height - 2 * radius - 1, color);
+    DrawFillCircleQuarter(x + radius, y + radius, radius, 2, height - 2 * radius - 1, color);
+
+    /*
+        uint_fast32_t lineindex;
+        for (uint16_t yIndex = y; yIndex < y + height; yIndex++)
+        {
+            lineindex = _framebufferWidth * (_framebufferHeight - yIndex);
+            for (uint16_t xIndex = x; xIndex < x + width; xIndex++)
+            {
+                _framebuffer[lineindex + xIndex] = color;
+            }
+        }*/
 }
 
 void Painter::DrawRectangle(uint16_t x, uint16_t y, uint16_t width, uint16_t height, uint16_t color)

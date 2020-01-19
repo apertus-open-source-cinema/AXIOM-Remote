@@ -1,6 +1,7 @@
 #ifndef ISCREEN_H
 #define ISCREEN_H
 
+#include "../Bootloader/Periphery/USB/USBCDCDevice.h"
 #include "../Color565.h"
 #include "../../Utils.h"
 
@@ -22,10 +23,12 @@ class IScreen
         UNUSED(painter);
     }
 
-    virtual void Update(Button button, IMenuSystem* menuSystem)
+    virtual void Update(Button button, int8_t knob, IMenuSystem* menuSystem, USBCDCDevice* cdcDevice)
     {
         UNUSED(button);
+        UNUSED(knob);
         UNUSED(menuSystem);
+        UNUSED(cdcDevice);
     }
 };
 

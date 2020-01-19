@@ -52,13 +52,12 @@ class SettingsMenu : public IMenu
 
         int i = 0;
         _menuItems[i].SetLabel("Test Item 1");
-        _menuItems[i].SetSelected(true);
         i++;
         _menuItems[i].SetDisabled(true);
         _menuItems[i].SetLabel("Test Item 2");
         i++;
         _menuItems[i].SetLabel("Test Item 3");
-        _menuItems[i].SetHighlighted(true);
+        //_menuItems[i].SetHighlighted(true);
         i++;
         _menuItems[i].SetLabel("Test Item 4");
         i++;
@@ -420,9 +419,28 @@ class SettingsMenu : public IMenu
         }
     }
 
-    void Update(Button button, IMenuSystem* menuSystem) override
+    void Update(Button button, int8_t knob, IMenuSystem* menuSystem, USBCDCDevice* cdcDevice) override
     {
-        UNUSED(button);
+        //_menuSelectionIndex += knob;
+
+        switch (button)
+        {
+        case Button::BUTTON_3_UP:
+            _menuSelectionIndex++;
+            break;
+        case Button::BUTTON_6_UP:
+            _menuSelectionIndex--;
+            break;
+        }
+
+        _menuSelectionIndex = LimitRange(_menuSelectionIndex, 0, _menuItemsCount - 1);
+        UnhighlightAllMenuItems();
+        UnselectAllMenuItems();
+        _menuItems[_menuSelectionIndex].SetSelected(true);
+
+        //_usbDevice->Send((uint8_t*)"Knob \r\n", 10);
+
+        //UNUSED(button);
         UNUSED(menuSystem);
     }
 };

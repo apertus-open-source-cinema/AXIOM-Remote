@@ -33,18 +33,18 @@ class MainPage : public IMenu
 
   public:
     explicit MainPage(IUSBDevice* cdcDevice) :
-        _usbDevice(cdcDevice), _fpsButton(MainPageButton(10, 0, 90, "FPS")),
-        _analogGainButton(MainPageButton(115, 0, 90, "A. Gain")),
-        _digitalGainButton(MainPageButton(220, 0, 90, "D. Gain")),
-        _menuButton(MainPageButton(10, 210, 90, "MENU", true)),
-        _shutterButton(MainPageButton(115, 180, 90, "Shutter", true)),
-        _whiteBalanceButton(MainPageButton(220, 180, 90, "WB", true)), _backgroundColor(Color565::MenuBackground)
+        _usbDevice(cdcDevice), _fpsButton(MainPageButton(10, 179, 90, "FPS", true)),
+        _analogGainButton(MainPageButton(115, 179, 90, "A. Gain", true)),
+        _digitalGainButton(MainPageButton(220, 179, 90, "D. Gain", true)),
+        _menuButton(MainPageButton(10, 0, 90, "MENU", false, ButtonType::BUTTON)),
+        _shutterButton(MainPageButton(115, 0, 90, "Shutter")), _whiteBalanceButton(MainPageButton(220, 0, 90, "WB")),
+        _backgroundColor(Color565::MenuBackground)
     {
-        _menuButton.SetCaptionHeight(30);
-        _menuButton.HideValue(true);
-        _menuButton.SetCaptionFont(Font::FreeSans12pt7b);
-        _menuButton.SetHandler(&MenuButtonHandler);
+        _menuButton.SetLabelHeight(30);
+        //_menuButton.HideValue(true);
+        _menuButton.SetLabelFont(Font::FreeSans12pt7b);
 
+        _menuButton.SetHandler(&MenuButtonHandler);
         _analogGainButton.SetHandler(&AnalogGainButtonHandler);
         _digitalGainButton.SetHandler(&DigitalGainButtonHandler);
     }
@@ -94,32 +94,32 @@ class MainPage : public IMenu
         }
     }
 
-    void Update(Button button, IMenuSystem* menuSystem) override
+    void Update(Button button, int8_t knob, IMenuSystem* menuSystem, USBCDCDevice* cdcDevice) override
     {
         switch (button)
         {
         case Button::BUTTON_1_UP:
             _fpsButton.SetValue((char*)"1U");
-            _usbDevice->Send((uint8_t*)"Button 1 Up\r\n", 10);
+            // _usbDevice->Send((uint8_t*)"Button 1 Up\r\n", 10);
             break;
         case Button::BUTTON_1_DOWN:
             _fpsButton.SetValue((char*)"1D");
-            _usbDevice->Send((uint8_t*)"Button 1 Down\r\n", 10);
+            //_usbDevice->Send((uint8_t*)"Button 1 Down\r\n", 10);
             break;
         case Button::BUTTON_2_UP:
             _fpsButton.SetValue((char*)"2");
-            _analogGainButton.Activate(this);
-            _usbDevice->Send((uint8_t*)"Button 2\r\n", 10);
+            // _analogGainButton.Activate(this);
+            // _usbDevice->Send((uint8_t*)"Button 2\r\n", 10);
             break;
         case Button::BUTTON_3_UP:
             _fpsButton.SetValue((char*)"3");
-            _digitalGainButton.Activate(this);
-            _usbDevice->Send((uint8_t*)"Button 3\r\n", 10);
+            //_digitalGainButton.Activate(this);
+            //_usbDevice->Send((uint8_t*)"Button 3\r\n", 10);
             break;
         case Button::BUTTON_4_UP:
             _fpsButton.SetValue((char*)"4");
-            _menuButton.Activate(this);
-            _usbDevice->Send((uint8_t*)"Button 4\r\n", 10);
+            //_menuButton.Activate(this);
+            //_usbDevice->Send((uint8_t*)"Button 4\r\n", 10);
 
             menuSystem->SetCurrentScreen(AvailableScreens::SettingsMenu);
 
@@ -127,6 +127,11 @@ class MainPage : public IMenu
         default:
             break;
         }
+
+        /*if (knob < 0)
+        {
+            _usbDevice->Send((uint8_t*)"Knob \r\n", 10);
+        }*/
     }
 };
 

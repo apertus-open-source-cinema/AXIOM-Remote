@@ -113,16 +113,17 @@ int8_t diff = 0;
 
 char debugText[32];
 
-void PollKMW(ILI9341Display* display, USBCDCDevice* cdcDevice)
+// void PollKMW(ILI9341Display* display, USBCDCDevice* cdcDevice)
+int8_t PollKMW()
 {
     i2c3_getn(0x10, data, 2);
 
-    int8_t brightness = GlobalSettings::brightnessPercentage;
+    // int8_t brightness = GlobalSettings::brightnessPercentage;
 
     if (data[1] != knob_position[1])
     {
         diff = data[1] - knob_position[1];
-        if (diff < 0)
+        /*if (diff < 0)
         {
             brightness -= 10;
             if (brightness < 10)
@@ -136,14 +137,16 @@ void PollKMW(ILI9341Display* display, USBCDCDevice* cdcDevice)
             {
                 brightness = 100;
             }
-        }
+        }*/
 
-        sprintf(debugText, "nob/diff: %d\r\n", diff);
-        cdcDevice->Send((uint8_t*)debugText, 32);
+        /*sprintf(debugText, "nob/diff: %d\r\n", diff);
+        cdcDevice->Send((uint8_t*)debugText, 32);*/
 
         knob_position[1] = data[1];
-        GlobalSettings::brightnessPercentage = brightness;
-        display->SetBacklight(GlobalSettings::brightnessPercentage);
+
+        return diff;
+        // GlobalSettings::brightnessPercentage = brightness;
+        // display->SetBacklight(GlobalSettings::brightnessPercentage);
     }
 }
 
@@ -334,21 +337,22 @@ int main()
         cdcDevice.Process();
 
         // Buttons and knobs, PIC16 (west)
-        PollKMW(&display, &cdcDevice);
+        // PollKMW(&display, &cdcDevice);
 
         // Buttons, PIC16 (east)
-        currentMenu->Update(PollKME(), &menuSystem);
+        currentMenu->Update(PollKME(), PollKMW(), &menuSystem, &cdcDevice);
 
         // TODO: each menu should draw/clear the background itself in the future
         display.ClearFramebuffer((uint16_t)currentMenu->GetBackgroundColor());
 
         menuSystem.Draw(&painter);
-        //currentMenu->Draw(&painter);
+        // currentMenu->Draw(&painter);
 
         counter++;
         sprintf(debugText, "%d\r\n", counter);
         painter.DrawText(3, 90, debugText, (uint16_t)Color565::Red, Font::FreeSans9pt7b, TextAlign::TEXT_ALIGN_LEFT, 0);
 
+        // painter.DrawFillRoundRectangle(50, 120, 100, 40, 5, (uint16_t)Color565::Black);
         // Test
         /*
         painter.DrawCirlce(50, 120, counter % 20, Color565::White);
