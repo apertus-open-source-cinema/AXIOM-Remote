@@ -41,7 +41,7 @@ void MenuSystem::Draw(Painter* painter)
     _currentScreen->Draw(painter);
 }
 
-void MenuSystem::Update(Button button)
+void MenuSystem::Update(Button button, int8_t knob, IMenuSystem* menuSystem, USBCDCDevice* cdcDevice)
 {
-    //_currentScreen->Update(button, 0, this, _usbDevice);
+    _currentScreen->Update(button, knob, menuSystem, cdcDevice);
 }

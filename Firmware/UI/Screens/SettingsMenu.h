@@ -421,15 +421,15 @@ class SettingsMenu : public IMenu
 
     void Update(Button button, int8_t knob, IMenuSystem* menuSystem, USBCDCDevice* cdcDevice) override
     {
-        //_menuSelectionIndex += knob;
+        _menuSelectionIndex += knob;
 
         switch (button)
         {
         case Button::BUTTON_3_UP:
-            _menuSelectionIndex++;
+            _menuSelectionIndex--;
             break;
         case Button::BUTTON_6_UP:
-            _menuSelectionIndex--;
+            _menuSelectionIndex++;
             break;
         }
 

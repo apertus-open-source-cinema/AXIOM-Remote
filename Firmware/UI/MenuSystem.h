@@ -1,5 +1,5 @@
 #ifndef MENUSYSTEM_H
-#define	MENUSYSTEM_H
+#define MENUSYSTEM_H
 
 #include "IMenuSystem.h"
 
@@ -27,7 +27,7 @@ class MenuSystem : public IMenuSystem
 
     void InitializeAvailableScreens();
 
-public:
+  public:
     MenuSystem(IUSBDevice* usbDevice);
     virtual ~MenuSystem();
 
@@ -35,8 +35,7 @@ public:
 
     void Draw(Painter* painter);
 
-    void Update(Button button);
+    void Update(Button button, int8_t knob, IMenuSystem* menuSystem, USBCDCDevice* cdcDevice);
 };
 
-#endif	//MENUSYSTEM_H
-
+#endif // MENUSYSTEM_H

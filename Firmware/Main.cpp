@@ -336,17 +336,12 @@ int main()
     {
         cdcDevice.Process();
 
-        // Buttons and knobs, PIC16 (west)
-        // PollKMW(&display, &cdcDevice);
-
-        // Buttons, PIC16 (east)
-        currentMenu->Update(PollKME(), PollKMW(), &menuSystem, &cdcDevice);
+        menuSystem.Update(PollKME(), PollKMW(), &menuSystem, &cdcDevice);
 
         // TODO: each menu should draw/clear the background itself in the future
         display.ClearFramebuffer((uint16_t)currentMenu->GetBackgroundColor());
 
         menuSystem.Draw(&painter);
-        // currentMenu->Draw(&painter);
 
         counter++;
         sprintf(debugText, "%d\r\n", counter);
