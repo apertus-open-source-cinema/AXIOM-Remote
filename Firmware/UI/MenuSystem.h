@@ -35,7 +35,7 @@ class MenuSystem : public IMenuSystem
 
     void Draw(Painter* painter);
 
-    void Update(Button button, int8_t knob, IMenuSystem* menuSystem, USBCDCDevice* cdcDevice);
+    void Update(Button button, int8_t knob, IUSBDevice* cdcDevice);
 };
 
 #endif // MENUSYSTEM_H

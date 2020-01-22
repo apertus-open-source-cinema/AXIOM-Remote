@@ -154,6 +154,8 @@ int main()
 
     Button button = Button::BUTTON_NONE;
 
+    int8_t knob;
+
     bool appIsRunning = true;
     const int frames = 30;
     SDL_Event events;
@@ -181,7 +183,7 @@ int main()
 
         button = Button::BUTTON_NONE;
         RenderUI(window, reinterpret_cast<ImTextureID>(knobTextureID), button);
-        menuSystem.Update(button);
+        menuSystem.Update(button, knob, &cdcDevice);
         ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());
 
         // SDL_GL_SwapWindow(window);

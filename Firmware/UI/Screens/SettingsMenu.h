@@ -13,7 +13,7 @@
 
 #include "../../../Bootloader/Periphery/USB/IUSBDevice.h"
 
-#include <Helpers.h>
+//#include <Helpers.h>
 
 class SettingsMenu : public IMenu
 {
@@ -21,9 +21,12 @@ class SettingsMenu : public IMenu
 
     char* _label;
     char* _menuBreadcrumbs;
-    MenuItem _menuItems[10];
+
     uint8_t _menuSelectionIndex;
     uint8_t _menuItemsCount;
+
+    uint8_t _maxVisibleItems;
+
     uint8_t _parameterSelectionIndex;
     uint8_t _parameterMenuActive;
     uint8_t _menuOffset;
@@ -39,39 +42,21 @@ class SettingsMenu : public IMenu
     uint16_t _menuDisabledTextColor;
     uint16_t _menuSelectedTextColor;
 
+    MenuItem _menuItems[10] = {MenuItem("Test Item 1"), MenuItem("Test Item 2", true), MenuItem("Test Item 3"),
+                               MenuItem("Test Item 4"), MenuItem("Test Item 5"),       MenuItem("Test Item 6"),
+                               MenuItem("Test Item 7"), MenuItem("Test Item 8"),       MenuItem("Test Item 9"),
+                               MenuItem("Test Item 10")};
+
   public:
-    explicit SettingsMenu(IUSBDevice* cdcDevice)
+    explicit SettingsMenu(IUSBDevice* cdcDevice) : _menuItemsCount(10), _menuSelectionIndex(0), _maxVisibleItems(7)
     {
         UNUSED(cdcDevice);
 
         _label = "Settings Menu";
-        _menuItemsCount = 10;
-        _menuSelectionIndex = 0;
-
         _menuBreadcrumbs = "Settings Menu";
 
-        int i = 0;
-        _menuItems[i].SetLabel("Test Item 1");
-        i++;
-        _menuItems[i].SetDisabled(true);
-        _menuItems[i].SetLabel("Test Item 2");
-        i++;
-        _menuItems[i].SetLabel("Test Item 3");
-        //_menuItems[i].SetHighlighted(true);
-        i++;
-        _menuItems[i].SetLabel("Test Item 4");
-        i++;
-        _menuItems[i].SetLabel("Test Item 5");
-        i++;
-        _menuItems[i].SetLabel("Test Item 6");
-        i++;
-        _menuItems[i].SetLabel("Test Item 7");
-        i++;
-        _menuItems[i].SetLabel("Test Item 8");
-        i++;
-        _menuItems[i].SetLabel("Test Item 9");
-        i++;
-        _menuItems[i].SetLabel("Test Item 10");
+        // Added for testing
+        _menuItems[2].SetMenuType(MenuItemType::MENU_ITEM_TYPE_SUBMENU);
 
         // Color defintions
         _menuBackgroundColor = RGB565(180, 180, 180);
@@ -119,22 +104,10 @@ class SettingsMenu : public IMenu
     {
 
         // clear the screen
-        painter->Fill(_menuBackgroundColor);
+        // painter->Fill(_menuBackgroundColor);
         // painter->DrawFillRectangle(0, 0, GlobalSettings::LCDWidth, GlobalSettings::LCDHeight, _menuBackgroundColor);
 
-        // draw header background
-        painter->DrawFillRectangle(0, GlobalSettings::LCDHeight - 28, GlobalSettings::LCDWidth, 28, _menuItemColor);
-
-        // draw header bread crumbs
-        painter->DrawText(5, GlobalSettings::LCDHeight - 22, _menuBreadcrumbs, _menuTextColor, Font::FreeSans9pt7b,
-                          TextAlign::TEXT_ALIGN_LEFT, 0);
-
-        // two header separation lines
-        painter->DrawLine(0, GlobalSettings::LCDHeight - 29, GlobalSettings::LCDWidth - 1,
-                          GlobalSettings::LCDHeight - 29, _menuSelectedItemColor);
-
-        painter->DrawLine(0, GlobalSettings::LCDHeight - 30, GlobalSettings::LCDWidth - 1,
-                          GlobalSettings::LCDHeight - 30, _menuBackgroundColor);
+        DrawHeader(painter);
 
         /*for (int8_t i = 0; i < _menuItemsCount; i++)
         {
@@ -168,237 +141,272 @@ class SettingsMenu : public IMenu
                 }
         */
         // draw menu items
-        uint8_t a;
-        for (a = 0; a < _menuItemsCount; a++)
+        DrawMenuItems(painter);
+
+        //     // only up to 7 menu items fit on screen at once
+        // uint8_t menuItemsCount = _menuItemsCount;
+        // menuItemsCount = LimitRange(menuItemsCount, 0, 7);
+
+        // draw scroll bar indicator only if there are 7 or more menu items
+        if (_menuItemsCount > 7)
         {
-            uint8_t i;
+            DrawScrollIndicator(_menuItemsCount, _menuItemsCount, painter);
+        }
 
-            // this is the index of the 7 menu items drawn on screen currently
-            int8_t displaySelectionIndex = _menuSelectionIndex - _menuOffset;
+        //     // draw parameter menu
+        //     if (_parameterMenuActive != 0)
+        //     {
+        //         // the drawing coordinates in this case are provided as top right corner of the menu item
+        //         // that triggers the parameter menu
+        //         // the width depends on the text length of the options
+        //         // the y coordinate may be shifted up or down if the choices would end up off screen
+        //         uint16_t offset = (GlobalSettings::LCDHeight - 1 - 30) - (_parameterMenuActive - _menuOffset) *
+        //         30 - 2;
 
-            // the _menu_offset is added to the item index and defines which item is the first one shown on screen
+        //         if (menuItemsCount == 7)
+        //         {
+        //             // if there is a scrollbar
+        //             // draw_parameter_menu(GlobalSettings::LCDWidth - 1 - 16, offset, a, _parameterMenuActive);
+        //         } else
+        //         {
+        //             // if there is no scrollbar
+        //             // draw_parameter_menu(FRAMEBUFFER_RIGHT, offset, a, parameter_menu_active);
+        //         }
+        //     }
+        //}
+    }
 
-            // scrolling up from the first item
-            if (displaySelectionIndex < 0)
-            {
-                _menuOffset -= 1;
-            }
+    void DrawHeader(Painter* painter)
+    {
+        // draw header background
+        painter->DrawFillRectangle(0, GlobalSettings::LCDHeight - 28, GlobalSettings::LCDWidth, 28, _menuItemColor);
 
-            // scrolling down from the last item
-            if (displaySelectionIndex >= 7)
-            {
-                _menuOffset += 1;
-            }
+        // draw header bread crumbs
+        painter->DrawText(5, GlobalSettings::LCDHeight - 22, _menuBreadcrumbs, _menuTextColor, Font::FreeSans9pt7b,
+                          TextAlign::TEXT_ALIGN_LEFT, 0);
 
-            // only up to 7 menu items fit on screen at once
-            uint8_t menuItemsCount = _menuItemsCount;
-            menuItemsCount = LimitRange(menuItemsCount, 0, 7);
+        // two header separation lines
+        painter->DrawLine(0, GlobalSettings::LCDHeight - 29, GlobalSettings::LCDWidth - 1,
+                          GlobalSettings::LCDHeight - 29, _menuSelectedItemColor);
 
-            // draw up to 7 menu items
-            for (i = 0; i < menuItemsCount; i++)
-            {
-                DrawMenuItem(30, (GlobalSettings::LCDHeight - 29 - 30) - i * 30, i + _menuOffset, painter);
-            }
+        painter->DrawLine(0, GlobalSettings::LCDHeight - 30, GlobalSettings::LCDWidth - 1,
+                          GlobalSettings::LCDHeight - 30, _menuBackgroundColor);
+    }
 
-            // draw scroll bar indicator only if there are 7 or more menu items
-            if (menuItemsCount == 7)
-            {
-                DrawScrollIndicator(menuItemsCount, _menuItemsCount, painter);
-            }
+    void DrawMenuItems(Painter* painter)
+    {
+        uint8_t startIndex = _menuSelectionIndex > 6 ? _menuSelectionIndex - (_maxVisibleItems - 1) : 0;
 
-            // draw parameter menu
-            if (_parameterMenuActive != 0)
-            {
-                // the drawing coordinates in this case are provided as top right corner of the menu item
-                // that triggers the parameter menu
-                // the width depends on the text length of the options
-                // the y coordinate may be shifted up or down if the choices would end up off screen
-                uint16_t offset = (GlobalSettings::LCDHeight - 1 - 30) - (_parameterMenuActive - _menuOffset) * 30 - 2;
+        for (uint8_t itemIndex = 0; itemIndex < _maxVisibleItems; itemIndex++)
+        {
+            MenuItem currentMenuItem = _menuItems[itemIndex + startIndex];
 
-                if (menuItemsCount == 7)
-                {
-                    // if there is a scrollbar
-                    // draw_parameter_menu(GlobalSettings::LCDWidth - 1 - 16, offset, a, _parameterMenuActive);
-                } else
-                {
-                    // if there is no scrollbar
-                    // draw_parameter_menu(FRAMEBUFFER_RIGHT, offset, a, parameter_menu_active);
-                }
-            }
+            SetLabel(currentMenuItem);
+
+            uint16_t y = (GlobalSettings::LCDHeight - 29 - 30) - itemIndex * 30;
+            currentMenuItem.SetDimensions(30, y, GlobalSettings::LCDWidth - 30, 29);
+
+            currentMenuItem.Draw(painter);
         }
     }
 
-    void DrawScrollIndicator(uint8_t current_menu_item_screen_count, uint8_t current_menu_item_count, Painter* painter)
+    void DrawScrollIndicator(uint8_t itemCount, uint8_t currentSelectionIndex, Painter* painter)
     {
         // maximum height is the screen without header area
-        uint8_t srollbar_max_framebuffer_height = GlobalSettings::LCDHeight - 30;
+        uint8_t scrollbarHeight = GlobalSettings::LCDHeight - 30;
 
         // height of the scroll indicator is defined by the ratio of number of items on screen vs total number of item.
         // if there are 7 items on screen of total 14 items the scroll indicator shall be 50% of the scrollbar height
-        uint8_t scrollbarheight = srollbar_max_framebuffer_height *
-                                  (float)((float)current_menu_item_screen_count / (float)(current_menu_item_count));
+        uint8_t sliderHeight =
+            (scrollbarHeight / _menuItemsCount) * _maxVisibleItems; //(itemCount / (float)currentSelectionIndex);
 
-        //
-        uint8_t scrollbaroffset = ((current_menu_item_count - current_menu_item_screen_count) - _menuOffset) *
-                                  ((srollbar_max_framebuffer_height - scrollbarheight) /
-                                   (current_menu_item_count - current_menu_item_screen_count));
+        // Calculate offset of scrollbar for 1 item, then multiply by the menu selection index
+        uint8_t segmentOffset = (scrollbarHeight - sliderHeight) / (_menuItemsCount - _maxVisibleItems);
+
+        uint8_t scrollbarYOffset = (GlobalSettings::LCDHeight - 30) - sliderHeight;
+        if (_menuSelectionIndex > _maxVisibleItems - 1)
+        {
+            scrollbarYOffset -= (_menuSelectionIndex + 1 - _maxVisibleItems) * segmentOffset;
+        }
 
         // Background
         painter->DrawFillRectangle(GlobalSettings::LCDWidth - 16, 0, 16, GlobalSettings::LCDHeight - 30,
                                    _menuItemColor);
 
         // Thin Line
-        painter->DrawFillRectangle(GlobalSettings::LCDWidth - 9, 0, 4, GlobalSettings::LCDHeight - 30, _menuTextColor);
+        painter->DrawFillRectangle(GlobalSettings::LCDWidth - 10, 0, 4, GlobalSettings::LCDHeight - 30, _menuTextColor);
 
         // Thick Line
-        painter->DrawFillRectangle(GlobalSettings::LCDWidth - 13, scrollbaroffset, 12, scrollbarheight, _menuTextColor);
+        painter->DrawFillRectangle(GlobalSettings::LCDWidth - 14, scrollbarYOffset, 12, sliderHeight, _menuTextColor);
+    }
+
+    void SetLabel(MenuItem& menuItem)
+    {
+        switch (menuItem.GetMenuType())
+        {
+        case MenuItemType::MENU_ITEM_TYPE_SUBMENU:
+            menuItem.SetValue(">");
+            break;
+            /*case MenuItemType::MENU_ITEM_TYPE_PAGELINK:
+            case MenuItemType::MENU_ITEM_TYPE_BACKLINK:
+                break;
+            default:
+                value = _menuItems[item_index].GetValue();*/
+        }
     }
 
     void DrawMenuItem(uint16_t x, uint16_t y, uint8_t item_index, Painter* painter)
     {
-        uint16_t yoffset_label_from_base = 7;
+        // uint16_t yoffset_label_from_base = 7;
 
-        // don't draw empty items
-        if (_label == NULL)
-        {
-            return;
-        }
+        // // don't draw empty items
+        // if (_label == nullptr)
+        // {
+        //     return;
+        // }
 
-        char* value = "test";
+        // char* value = "test";
 
-        if (_menuItems[item_index].GetMenuType() == MenuItemType::MENU_ITEM_TYPE_SUBMENU)
-        {
-            // submenu items are indicated by a ">" sign
-            value = ">";
-        } else if (_menuItems[item_index].GetMenuType() == MenuItemType::MENU_ITEM_TYPE_PAGELINK)
-        {
-            // page links have no value icon displayed
-            value = "";
-        } else if (_menuItems[item_index].GetMenuType() == MenuItemType::MENU_ITEM_TYPE_BACKLINK)
-        {
-            // backlinks point to a menu higher in the menu hierarchy
-            value = "";
-        } else
-        {
-            if (0) //_menuItems[item_index].current_value_ptr != NULL)
-            {
-                /*strcpy(value, (*main_menu[menu_index].menu_item[item_index].current_value_ptr)(menu_index,
-                item_index));
+        // switch (_menuItems[item_index].GetMenuType())
+        // {
+        // case MenuItemType::MENU_ITEM_TYPE_SUBMENU:
+        //     value = ">";
+        //     break;
+        // case MenuItemType::MENU_ITEM_TYPE_PAGELINK:
+        // case MenuItemType::MENU_ITEM_TYPE_BACKLINK:
+        //     break;
+        // default:
+        //     value = _menuItems[item_index].GetValue();
+        // }
+        //   == MenuItemType::MENU_ITEM_TYPE_SUBMENU)
+        // {
+        //     // submenu items are indicated by a ">" sign
+        //     value = ">";
+        // } else if (_menuItems[item_index].GetMenuType() == MenuItemType::MENU_ITEM_TYPE_PAGELINK)
+        // {
+        //     // page links have no value icon displayed
+        //     value = "";
+        // } else if (_menuItems[item_index].GetMenuType() == MenuItemType::MENU_ITEM_TYPE_BACKLINK)
+        // {
+        //     // backlinks point to a menu higher in the menu hierarchy
+        //     value = "";
+        // } else
+        // {
+        //     if (0) //_menuItems[item_index].current_value_ptr != NULL)
+        //     {
+        //         /*strcpy(value, (*main_menu[menu_index].menu_item[item_index].current_value_ptr)(menu_index,
+        //         item_index));
 
-                sprintf(value, "%s",
-                        (*main_menu[menu_index].menu_item[item_index].current_value_ptr)(menu_index, item_index));
-                        */
-            } else
-            {
-                value = _menuItems[item_index].GetValue();
-            }
-        }
+        //         sprintf(value, "%s",
+        //                 (*main_menu[menu_index].menu_item[item_index].current_value_ptr)(menu_index, item_index));
+        //                 */
+        //     } else
+        //     {
+        //         value = _menuItems[item_index].GetValue();
+        //     }
+        // }
 
         // is the current line highlighted and not disabled?
-        if (_menuItems[item_index].IsHighlighted() && !_menuItems[item_index].IsDisabled())
-        {
-            painter->DrawFillRectangle(x, y, GlobalSettings::LCDWidth - x, 29, _menuHightlightedItemColor);
+        /*      if (_menuItems[item_index].IsHighlighted() && !_menuItems[item_index].IsDisabled())
+              {
+                  painter->DrawFillRectangle(x, y, GlobalSettings::LCDWidth - x, 29, _menuHightlightedItemColor);
 
-            // label
-            painter->DrawText(x + 5, y + yoffset_label_from_base, _menuItems[item_index].GetLabel(),
-                              _menuSelectedTextColor, Font::FreeSans9pt7b, TextAlign::TEXT_ALIGN_LEFT, 0);
+                  // label
+                  painter->DrawText(x + 5, y + yoffset_label_from_base, _menuItems[item_index].GetLabel(),
+                                    _menuSelectedTextColor, Font::FreeSans9pt7b, TextAlign::TEXT_ALIGN_LEFT, 0);
 
-            // value
-            painter->DrawText(x + 180, y + yoffset_label_from_base, value, _menuSelectedTextColor, Font::FreeSans9pt7b,
-                              TextAlign::TEXT_ALIGN_RIGHT, 80);
-            return;
-        }
+                  // value
+                  painter->DrawText(x + 180, y + yoffset_label_from_base, value, _menuSelectedTextColor,
+           Font::FreeSans9pt7b, TextAlign::TEXT_ALIGN_RIGHT, 80); return;
+              }
 
-        // is a parameter menu active currently and the item is disabled?
-        if (_parameterMenuActive && _menuItems[item_index].IsDisabled())
-        {
-            painter->DrawFillRectangle(x, y, GlobalSettings::LCDWidth - x, 29, _menuDimmedItemColor);
+              // is a parameter menu active currently and the item is disabled?
+              if (_parameterMenuActive && _menuItems[item_index].IsDisabled())
+              {
+                  painter->DrawFillRectangle(x, y, GlobalSettings::LCDWidth - x, 29, _menuDimmedItemColor);
 
-            // label
-            painter->DrawText(x + 5, y + yoffset_label_from_base, _menuItems[item_index].GetLabel(),
-                              _menuDisabledTextColor, Font::FreeSans9pt7b, TextAlign::TEXT_ALIGN_LEFT, 0);
+                  // label
+                  painter->DrawText(x + 5, y + yoffset_label_from_base, _menuItems[item_index].GetLabel(),
+                                    _menuDisabledTextColor, Font::FreeSans9pt7b, TextAlign::TEXT_ALIGN_LEFT, 0);
 
-            // value
-            painter->DrawText(x + 180, y + yoffset_label_from_base, value, _menuDisabledTextColor, Font::FreeSans9pt7b,
-                              TextAlign::TEXT_ALIGN_LEFT, 80);
-            return;
-        }
+                  // value
+                  painter->DrawText(x + 180, y + yoffset_label_from_base, value, _menuDisabledTextColor,
+           Font::FreeSans9pt7b, TextAlign::TEXT_ALIGN_LEFT, 80); return;
+              }
 
-        // is a parameter menu active currently?
-        if (_parameterMenuActive)
-        {
-            painter->DrawFillRectangle(x, y, GlobalSettings::LCDWidth - x, 29, _menuDimmedItemColor);
+              // is a parameter menu active currently?
+           if (_parameterMenuActive)
+              {
+                  painter->DrawFillRectangle(x, y, GlobalSettings::LCDWidth - x, 29, _menuDimmedItemColor);
 
-            // label
-            painter->DrawText(x + 5, y + yoffset_label_from_base, _menuItems[item_index].GetLabel(), _menuTextColor,
-                              Font::FreeSans9pt7b, TextAlign::TEXT_ALIGN_LEFT, 0);
+                  // label
+                  painter->DrawText(x + 5, y + yoffset_label_from_base, _menuItems[item_index].GetLabel(),
+           _menuTextColor, Font::FreeSans9pt7b, TextAlign::TEXT_ALIGN_LEFT, 0);
 
-            // value
-            painter->DrawText(x + 180, y + yoffset_label_from_base, value, _menuTextColor, Font::FreeSans9pt7b,
-                              TextAlign::TEXT_ALIGN_RIGHT, 80);
-            return;
-        }
+                  // value
+                  painter->DrawText(x + 180, y + yoffset_label_from_base, value, _menuTextColor, Font::FreeSans9pt7b,
+                                    TextAlign::TEXT_ALIGN_RIGHT, 80);
+                  return;
+              }
 
-        // is the current line selected and disabled?
-        if (_menuItems[item_index].IsSelected() && _menuItems[item_index].IsDisabled())
-        {
-            painter->DrawFillRectangle(x, y, GlobalSettings::LCDWidth - x, 29, _menuDisabledItemColor);
+              // is the current line selected and disabled?
+            if (_menuItems[item_index].IsSelected() && _menuItems[item_index].IsDisabled())
+              {
+                  painter->DrawFillRectangle(x, y, GlobalSettings::LCDWidth - x, 29, _menuDisabledItemColor);
 
-            // disabled indicators on the side
-            painter->DrawFillRectangle(30, y, 4, 29, _menuSelectedTextColor);
-            painter->DrawFillRectangle(GlobalSettings::LCDWidth - 16 - 4, y, 4, 29, _menuSelectedTextColor);
+                  // disabled indicators on the side
+                  painter->DrawFillRectangle(30, y, 4, 29, _menuSelectedTextColor);
+                  painter->DrawFillRectangle(GlobalSettings::LCDWidth - 16 - 4, y, 4, 29, _menuSelectedTextColor);
 
-            // label
-            painter->DrawText(x + 5, y + yoffset_label_from_base, _menuItems[item_index].GetLabel(),
-                              _menuDisabledTextColor, Font::FreeSans9pt7b, TextAlign::TEXT_ALIGN_LEFT, 0);
+                  // label
+                  painter->DrawText(x + 5, y + yoffset_label_from_base, _menuItems[item_index].GetLabel(),
+                                    _menuDisabledTextColor, Font::FreeSans9pt7b, TextAlign::TEXT_ALIGN_LEFT, 0);
 
-            // value
-            painter->DrawText(x + 180, y + yoffset_label_from_base, value, _menuDisabledTextColor, Font::FreeSans9pt7b,
-                              TextAlign::TEXT_ALIGN_RIGHT, 80);
-            return;
-        }
+                  // value
+                  painter->DrawText(x + 180, y + yoffset_label_from_base, value, _menuDisabledTextColor,
+           Font::FreeSans9pt7b, TextAlign::TEXT_ALIGN_RIGHT, 80); return;
+              }
 
-        // is the current line disabled?
-        if (_menuItems[item_index].IsDisabled())
-        {
-            painter->DrawFillRectangle(x, y, GlobalSettings::LCDWidth - x, 29, _menuDisabledItemColor);
+              // is the current line disabled?
+                   if (_menuItems[item_index].IsDisabled())
+              {
+                  painter->DrawFillRectangle(x, y, GlobalSettings::LCDWidth - x, 29, _menuDisabledItemColor);
 
-            // label
-            painter->DrawText(x + 5, y + yoffset_label_from_base, _menuItems[item_index].GetLabel(),
-                              _menuDisabledTextColor, Font::FreeSans9pt7b, TextAlign::TEXT_ALIGN_LEFT, 0);
+                  // label
+                  painter->DrawText(x + 5, y + yoffset_label_from_base, _menuItems[item_index].GetLabel(),
+                                    _menuDisabledTextColor, Font::FreeSans9pt7b, TextAlign::TEXT_ALIGN_LEFT, 0);
 
-            // value
-            painter->DrawText(x + 180, y + yoffset_label_from_base, value, _menuDisabledTextColor, Font::FreeSans9pt7b,
-                              TextAlign::TEXT_ALIGN_RIGHT, 80);
-            return;
-        }
-        // start comment out here
+                  // value
+                  painter->DrawText(x + 180, y + yoffset_label_from_base, value, _menuDisabledTextColor,
+           Font::FreeSans9pt7b, TextAlign::TEXT_ALIGN_RIGHT, 80); return;
+              }
+              // start comment out here
 
-        // is the current line selected (cursor)?
-        if (_menuItems[item_index].IsSelected())
-        {
-            painter->DrawFillRectangle(x, y, GlobalSettings::LCDWidth - x, 29, _menuSelectedItemColor);
+              // is the current line selected (cursor)?
+              if (_menuItems[item_index].IsSelected())
+              {
+                  painter->DrawFillRectangle(x, y, GlobalSettings::LCDWidth - x, 29, _menuSelectedItemColor);
 
-            // value
-            painter->DrawText(x + 5, y + yoffset_label_from_base, _menuItems[item_index].GetLabel(),
-                              _menuSelectedTextColor, Font::FreeSans9pt7b, TextAlign::TEXT_ALIGN_LEFT, 0);
+                  // value
+                  painter->DrawText(x + 5, y + yoffset_label_from_base, _menuItems[item_index].GetLabel(),
+                                    _menuSelectedTextColor, Font::FreeSans9pt7b, TextAlign::TEXT_ALIGN_LEFT, 0);
 
-            // label
-            painter->DrawText(x + 180, y + yoffset_label_from_base, value, _menuSelectedTextColor, Font::FreeSans9pt7b,
-                              TextAlign::TEXT_ALIGN_RIGHT, 80);
-            return;
-        }
+                  // label
+                  painter->DrawText(x + 180, y + yoffset_label_from_base, value, _menuSelectedTextColor,
+           Font::FreeSans9pt7b, TextAlign::TEXT_ALIGN_RIGHT, 80); return;
+              }*/
 
         // if nothing of the above applies simply draw the line item normally
-        painter->DrawFillRectangle(x, y, GlobalSettings::LCDWidth - x, 29, _menuItemColor);
+        // painter->DrawFillRectangle(x, y, GlobalSettings::LCDWidth - x, 29, _menuItemColor);
 
         // label
-        painter->DrawText(x + 5, y + yoffset_label_from_base, _menuItems[item_index].GetLabel(), _menuTextColor,
+        /*painter->DrawText(x + 5, y + yoffset_label_from_base, _menuItems[item_index].GetLabel(), _menuTextColor,
                           Font::FreeSans9pt7b, TextAlign::TEXT_ALIGN_LEFT, 0);
 
         // value
         painter->DrawText(x + 180, y + yoffset_label_from_base, value, _menuTextColor, Font::FreeSans9pt7b,
                           TextAlign::TEXT_ALIGN_RIGHT, 80);
+                          */
     }
 
     void UnselectAllMenuItems()
@@ -419,9 +427,15 @@ class SettingsMenu : public IMenu
         }
     }
 
-    void Update(Button button, int8_t knob, IMenuSystem* menuSystem, USBCDCDevice* cdcDevice) override
+    void Update(Button button, int8_t knob, IMenuSystem* menuSystem, IUSBDevice* cdcDevice) override
     {
         _menuSelectionIndex += knob;
+
+        // Remove highlighting from last selected item as new button event occured
+        if (button != Button::BUTTON_NONE)
+        {
+            _menuItems[_menuSelectionIndex].SetHighlighted(false);
+        }
 
         switch (button)
         {
@@ -434,13 +448,12 @@ class SettingsMenu : public IMenu
         }
 
         _menuSelectionIndex = LimitRange(_menuSelectionIndex, 0, _menuItemsCount - 1);
-        UnhighlightAllMenuItems();
-        UnselectAllMenuItems();
-        _menuItems[_menuSelectionIndex].SetSelected(true);
+        // UnhighlightAllMenuItems();
+        // UnselectAllMenuItems();
+        _menuItems[_menuSelectionIndex].SetHighlighted(true);
 
         //_usbDevice->Send((uint8_t*)"Knob \r\n", 10);
 
-        //UNUSED(button);
         UNUSED(menuSystem);
     }
 };

@@ -94,7 +94,7 @@ class MainPage : public IMenu
         }
     }
 
-    void Update(Button button, int8_t knob, IMenuSystem* menuSystem, USBCDCDevice* cdcDevice) override
+    void Update(Button button, int8_t knob, IMenuSystem* menuSystem, IUSBDevice* cdcDevice) override
     {
         switch (button)
         {

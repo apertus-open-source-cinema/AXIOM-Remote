@@ -111,7 +111,7 @@ void RetrieveKMData(ICSProgrammer& icsp, USBCDCDevice& usbDevice)
 
     GetKMConfig(icsp, usbDevice);
 
-    DelayMs(100);
+    //DelayMs(100);
 
     GetKMProgramData(icsp, usbDevice);
 

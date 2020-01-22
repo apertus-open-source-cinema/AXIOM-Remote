@@ -37,11 +37,11 @@ void MenuSystem::Draw(Painter* painter)
         return;
     }
 
-    //painter->Fill((uint16_t)_currentScreen->GetBackgroundColor());
+    painter->Fill((uint16_t)_currentScreen->GetBackgroundColor());
     _currentScreen->Draw(painter);
 }
 
-void MenuSystem::Update(Button button, int8_t knob, IMenuSystem* menuSystem, USBCDCDevice* cdcDevice)
+void MenuSystem::Update(Button button, int8_t knob, IUSBDevice* cdcDevice)
 {
-    _currentScreen->Update(button, knob, menuSystem, cdcDevice);
+    _currentScreen->Update(button, knob, this, cdcDevice);
 }

@@ -32,54 +32,54 @@ void RenderUI(SDL_Window* window, ImTextureID textureID, Button& button)
 
     if (RenderButton("1", 434, 70))
     {
-        button = Button::BUTTON_1_DOWN;
+        button = Button::BUTTON_1_UP;
     }
     if (RenderButton("2", 540, 70))
     {
-        button = Button::BUTTON_2_DOWN;
+        button = Button::BUTTON_2_UP;
     }
     if (RenderButton("3", 650, 70))
     {
-        button = Button::BUTTON_3_DOWN;
+        button = Button::BUTTON_3_UP;
     }
 
     if (RenderButton("4", 435, 380))
     {
-        button = Button::BUTTON_4_DOWN;
+        button = Button::BUTTON_4_UP;
     }
     if (RenderButton("5", 540, 380))
     {
-        button = Button::BUTTON_5_DOWN;
+        button = Button::BUTTON_5_UP;
     }
     if (RenderButton("6", 650, 380))
     {
-        button = Button::BUTTON_6_DOWN;
+        button = Button::BUTTON_6_UP;
     }
 
     if (RenderButton("7", 340, 170))
     {
-        button = Button::BUTTON_7_DOWN;
+        button = Button::BUTTON_7_UP;
     }
     if (RenderButton("8", 340, 220))
     {
-        button = Button::BUTTON_8_DOWN;
+        button = Button::BUTTON_8_UP;
     }
     if (RenderButton("9", 340, 270))
     {
-        button = Button::BUTTON_9_DOWN;
+        button = Button::BUTTON_9_UP;
     }
 
     if (RenderButton("10", 740, 170))
     {
-        button = Button::BUTTON_10_DOWN;
+        button = Button::BUTTON_10_UP;
     }
     if (RenderButton("11", 740, 220))
     {
-        button = Button::BUTTON_11_DOWN;
+        button = Button::BUTTON_11_UP;
     }
     if (RenderButton("12", 740, 270))
     {
-        button = Button::BUTTON_12_DOWN;
+        button = Button::BUTTON_12_UP;
     }
 
     // ImGui::SetCursorPos(ImVec2(450, 70));

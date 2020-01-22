@@ -53,7 +53,7 @@ class Painter
 
     // Misc
     void DrawImage(const uint8_t* data, uint16_t x, uint16_t y, uint16_t width, uint16_t height);
-    void DrawPixel(uint16_t x, uint16_t y, uint16_t color);
+    virtual void DrawPixel(uint16_t x, uint16_t y, uint16_t color);
 
     void Fill(uint16_t fillColor);
 

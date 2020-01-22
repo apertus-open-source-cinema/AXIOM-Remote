@@ -336,7 +336,7 @@ int main()
     {
         cdcDevice.Process();
 
-        menuSystem.Update(PollKME(), PollKMW(), &menuSystem, &cdcDevice);
+        menuSystem.Update(PollKME(), PollKMW(), &cdcDevice);
 
         // TODO: each menu should draw/clear the background itself in the future
         display.ClearFramebuffer((uint16_t)currentMenu->GetBackgroundColor());
@@ -366,7 +366,7 @@ int main()
 
         display.DisplayFramebuffer();
 
-        // DelayMs(30);
+        //DelayMs(30);
     }
 
     return 0;
