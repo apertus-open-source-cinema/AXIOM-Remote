@@ -56,6 +56,7 @@ class SettingsMenu : public IMenu
         _menuBreadcrumbs = "Settings Menu";
 
         // Added for testing
+        _menuItems[1].SetDisabled(true);
         _menuItems[2].SetMenuType(MenuItemType::MENU_ITEM_TYPE_SUBMENU);
 
         // Color defintions
@@ -73,6 +74,9 @@ class SettingsMenu : public IMenu
         _parameterMenuActive = 0;
         _parameterSelectionIndex = 0;
         _menuOffset = 0;
+
+        // Default selection is first item
+        _menuItems[_menuSelectionIndex].SetHighlighted(true);
 
         /*
                 _menuItems[2] = new MenuItem();
@@ -414,7 +418,7 @@ class SettingsMenu : public IMenu
         uint8_t b;
         for (b = 0; b < _menuItemsCount; b++)
         {
-            _menuItems[b].SetSelected(false);
+            _menuItems[b].SetPressed(false);
         }
     }
 
@@ -431,26 +435,31 @@ class SettingsMenu : public IMenu
     {
         _menuSelectionIndex += knob;
 
-        // Remove highlighting from last selected item as new button event occured
-        if (button != Button::BUTTON_NONE)
-        {
-            _menuItems[_menuSelectionIndex].SetHighlighted(false);
-        }
-
         switch (button)
         {
         case Button::BUTTON_3_UP:
+            // Remove highlighting from last selected item as new button event occured
+            _menuItems[_menuSelectionIndex].SetHighlighted(false);
+
             _menuSelectionIndex--;
+            _menuSelectionIndex = LimitRange(_menuSelectionIndex, 0, _menuItemsCount - 1);
+            _menuItems[_menuSelectionIndex].SetHighlighted(true);
             break;
         case Button::BUTTON_6_UP:
+            // Remove highlighting from last selected item as new button event occured
+            _menuItems[_menuSelectionIndex].SetHighlighted(false);
+
             _menuSelectionIndex++;
+            _menuSelectionIndex = LimitRange(_menuSelectionIndex, 0, _menuItemsCount - 1);
+            _menuItems[_menuSelectionIndex].SetHighlighted(true);
+            break;
+        case Button::BUTTON_5_UP:
+            _menuItems[_menuSelectionIndex].SetPressed(false);
+            break;
+        case Button::BUTTON_5_DOWN:
+            _menuItems[_menuSelectionIndex].SetPressed(true);
             break;
         }
-
-        _menuSelectionIndex = LimitRange(_menuSelectionIndex, 0, _menuItemsCount - 1);
-        // UnhighlightAllMenuItems();
-        // UnselectAllMenuItems();
-        _menuItems[_menuSelectionIndex].SetHighlighted(true);
 
         //_usbDevice->Send((uint8_t*)"Knob \r\n", 10);
 

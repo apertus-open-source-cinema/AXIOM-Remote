@@ -20,7 +20,7 @@ class MenuItem : public IWidget
 {
     bool _disabled;
     bool _hidden;
-    bool _selected;
+    bool _pressed;
     bool _highlighted;
     char* _label;
     char* _value;
@@ -28,21 +28,32 @@ class MenuItem : public IWidget
 
     uint16_t _backgroundColor;
     uint16_t _backgroundHighlightColor;
+    uint16_t _backgroundPressedColor;
+    uint16_t _backgroundDimmedColor;
+    uint16_t _backgroundDisabledColor;
+
     uint16_t _textColor;
+    uint16_t _textHighlightedColor;
+    uint16_t _textPressedColor;
+    uint16_t _textDimmedColor;
+    uint16_t _textDisabledColor;
 
     uint16_t _currentBackgroundColor;
+    uint16_t _currentTextColor;
 
     uint8_t _verticalLabelOffset;
 
   public:
     MenuItem(const char* label = "...", bool disabled = false, const char* value = nullptr, bool hidden = false,
-             bool selected = false, bool highlighted = false,
-             MenuItemType type = MenuItemType::MENU_ITEM_TYPE_NUMERIC) :
+             bool pressed = false, bool highlighted = false, MenuItemType type = MenuItemType::MENU_ITEM_TYPE_NUMERIC) :
         _disabled(disabled),
-        _hidden(hidden), _selected(selected), _highlighted(highlighted), _label(const_cast<char*>(label)),
+        _hidden(hidden), _pressed(pressed), _highlighted(highlighted), _label(const_cast<char*>(label)),
         _value(const_cast<char*>(value)), _type(type), _backgroundColor((uint16_t)Color565::White),
-        _backgroundHighlightColor(RGB565(0, 128, 255)), _textColor((uint16_t)Color565::Black),
-        _currentBackgroundColor(_backgroundColor), _verticalLabelOffset(7)
+        _backgroundHighlightColor(RGB565(255, 128, 0)), _textColor((uint16_t)Color565::Black),
+        _currentBackgroundColor(_backgroundColor), _currentTextColor(_textColor),
+        _backgroundPressedColor(RGB565(0, 128, 255)), _textPressedColor((uint16_t)Color565::White),
+        _textHighlightedColor(RGB565(255, 255, 255)), _textDisabledColor(RGB565(40, 40, 40)),
+        _backgroundDisabledColor(RGB565(180, 180, 180)), _verticalLabelOffset(7)
     {
         _x = 0;
         _y = 0;
@@ -53,6 +64,18 @@ class MenuItem : public IWidget
     void SetDisabled(bool disabled)
     {
         _disabled = disabled;
+
+        if (disabled)
+        {
+            _currentBackgroundColor = _backgroundDisabledColor;
+            _currentTextColor = _textDisabledColor;
+        } else
+        {
+            // TODO: add more case handling here (what if highlighted, pressed, etc.)
+
+            _currentBackgroundColor = _backgroundColor;
+            _currentTextColor = _textColor;
+        }
     }
 
     bool IsDisabled()
@@ -70,14 +93,30 @@ class MenuItem : public IWidget
         return _hidden;
     }
 
-    void SetSelected(bool selected)
+    void SetPressed(bool pressed)
     {
-        _selected = selected;
+        if (_disabled)
+        {
+            return;
+        }
+
+        _pressed = pressed;
+
+        if (pressed)
+        {
+            _currentBackgroundColor = _backgroundPressedColor;
+        } else if (_highlighted)
+        {
+            _currentBackgroundColor = _backgroundHighlightColor;
+        } else
+        {
+            _currentBackgroundColor = _backgroundColor;
+        }
     }
 
-    bool IsSelected()
+    bool IsPressed()
     {
-        return _selected;
+        return _pressed;
     }
 
     void SetHighlighted(bool highlighted)
@@ -87,6 +126,10 @@ class MenuItem : public IWidget
         if (highlighted)
         {
             _currentBackgroundColor = _backgroundHighlightColor;
+        } else if (_disabled)
+        {
+            _currentBackgroundColor = _backgroundDisabledColor;
+            _currentTextColor = _textDisabledColor;
         } else
         {
             _currentBackgroundColor = _backgroundColor;
@@ -151,11 +194,11 @@ class MenuItem : public IWidget
                           TextAlign::TEXT_ALIGN_LEFT, 0);
 
         // value
-        if(_value != nullptr)
+        if (_value != nullptr)
         {
             painter->DrawText(_x + 180, _y + _verticalLabelOffset, _value, _textColor, Font::FreeSans9pt7b,
-                          TextAlign::TEXT_ALIGN_RIGHT, 80);
-        }        
+                              TextAlign::TEXT_ALIGN_RIGHT, 80);
+        }
     }
 };
 
