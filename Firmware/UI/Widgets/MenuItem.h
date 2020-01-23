@@ -33,7 +33,7 @@ class MenuItem : public IWidget
     uint16_t _backgroundDisabledColor;
 
     uint16_t _textColor;
-    uint16_t _textHighlightedColor;
+    uint16_t _textHighlightColor;
     uint16_t _textPressedColor;
     uint16_t _textDimmedColor;
     uint16_t _textDisabledColor;
@@ -52,7 +52,7 @@ class MenuItem : public IWidget
         _backgroundHighlightColor(RGB565(255, 128, 0)), _textColor((uint16_t)Color565::Black),
         _currentBackgroundColor(_backgroundColor), _currentTextColor(_textColor),
         _backgroundPressedColor(RGB565(0, 128, 255)), _textPressedColor((uint16_t)Color565::White),
-        _textHighlightedColor(RGB565(255, 255, 255)), _textDisabledColor(RGB565(40, 40, 40)),
+        _textHighlightColor((uint16_t)Color565::White), _textDisabledColor(RGB565(40, 40, 40)),
         _backgroundDisabledColor(RGB565(180, 180, 180)), _verticalLabelOffset(7)
     {
         _x = 0;
@@ -126,6 +126,7 @@ class MenuItem : public IWidget
         if (highlighted)
         {
             _currentBackgroundColor = _backgroundHighlightColor;
+            _currentTextColor = _textHighlightColor;
         } else if (_disabled)
         {
             _currentBackgroundColor = _backgroundDisabledColor;
@@ -133,6 +134,7 @@ class MenuItem : public IWidget
         } else
         {
             _currentBackgroundColor = _backgroundColor;
+            _currentTextColor = _textColor;
         }
     }
 
@@ -190,13 +192,13 @@ class MenuItem : public IWidget
         // Draw background
         painter->DrawFillRectangle(_x, _y, _width, _height, _currentBackgroundColor);
 
-        painter->DrawText(_x + 5, _y + _verticalLabelOffset, _label, _textColor, Font::FreeSans9pt7b,
+        painter->DrawText(_x + 5, _y + _verticalLabelOffset, _label, _currentTextColor, Font::FreeSans9pt7b,
                           TextAlign::TEXT_ALIGN_LEFT, 0);
 
         // value
         if (_value != nullptr)
         {
-            painter->DrawText(_x + 180, _y + _verticalLabelOffset, _value, _textColor, Font::FreeSans9pt7b,
+            painter->DrawText(_x + 180, _y + _verticalLabelOffset, _value, _currentTextColor, Font::FreeSans9pt7b,
                               TextAlign::TEXT_ALIGN_RIGHT, 80);
         }
     }
