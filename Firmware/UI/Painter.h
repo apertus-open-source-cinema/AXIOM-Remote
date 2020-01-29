@@ -42,10 +42,16 @@ class Painter
     void DrawLine(int16_t x0, int16_t y0, int16_t x1, int16_t y1, uint16_t color);
     void DrawFastVLine(int16_t x, int16_t y, int16_t h, uint16_t color);
     void DrawFastHLine(int16_t x, int16_t y, int16_t l, uint16_t color);
+
+    // Rectangle
     void DrawRectangle(uint16_t x, uint16_t y, uint16_t width, uint16_t height, uint16_t color);
     void DrawFillRectangle(uint16_t x, uint16_t y, uint16_t width, uint16_t height, uint16_t color);
     void DrawFillRoundRectangle(uint16_t x, uint16_t y, uint16_t width, uint16_t height, uint8_t radius,
                                 uint16_t color);
+    void DrawStripedRectangle(uint16_t x, uint16_t y, uint16_t width, uint16_t height, uint16_t firstColor,
+                              uint16_t secondColor, uint8_t tilt, uint8_t offset);
+
+    // Circle
     void DrawCirlce(int16_t x, int16_t y, int16_t r, uint16_t color);
     void DrawFillCirlce(int16_t x, int16_t y, int16_t r, uint16_t color);
     void DrawCircleQuarter(int16_t x, int16_t y, int16_t r, uint8_t cornername, uint16_t color);

@@ -135,6 +135,38 @@ void Painter::DrawRectangle(uint16_t x, uint16_t y, uint16_t width, uint16_t hei
     }
 }
 
+void Painter::DrawStripedRectangle(uint16_t x, uint16_t y, uint16_t width, uint16_t height, uint16_t firstColor,
+                                   uint16_t secondColor, uint8_t tilt, uint8_t offset)
+{
+    int16_t stripeIndex = 0;
+    uint16_t drawColor = firstColor;
+    uint_fast32_t lineIndex = 0;
+    for (uint16_t yIndex = y; yIndex < y + height; yIndex++)
+    {
+       // stripeIndex = 0;
+        stripeIndex--;// = -stripeIndex - tilt;
+
+        lineIndex = _framebufferWidth * (_framebufferHeight - yIndex);
+        for (uint16_t xIndex = x; xIndex < x + width; xIndex++)
+        {
+            stripeIndex++;
+            if (stripeIndex > offset)
+            {
+                if (drawColor == firstColor)
+                    drawColor = secondColor;
+                else
+                {
+                    drawColor = firstColor;
+                }
+
+                stripeIndex = 0;
+            }
+
+            _framebuffer[lineIndex + xIndex] = drawColor;
+        }
+    }
+}
+
 void Painter::DrawCirlce(int16_t x, int16_t y, int16_t r, uint16_t color)
 {
     int16_t f = 1 - r;

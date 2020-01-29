@@ -52,7 +52,7 @@ class MenuItem : public IWidget
         _backgroundHighlightColor(RGB565(255, 128, 0)), _textColor((uint16_t)Color565::Black),
         _currentBackgroundColor(_backgroundColor), _currentTextColor(_textColor),
         _backgroundPressedColor(RGB565(0, 128, 255)), _textPressedColor((uint16_t)Color565::White),
-        _textHighlightColor((uint16_t)Color565::White), _textDisabledColor(RGB565(40, 40, 40)),
+        _textHighlightColor((uint16_t)Color565::White), _textDisabledColor(RGB565(180, 180, 180)),
         _backgroundDisabledColor(RGB565(180, 180, 180)), _verticalLabelOffset(7)
     {
         _x = 0;
@@ -190,7 +190,13 @@ class MenuItem : public IWidget
     void Draw(Painter* painter) override
     {
         // Draw background
-        painter->DrawFillRectangle(_x, _y, _width, _height, _currentBackgroundColor);
+        if (_disabled)
+        {
+            painter->DrawStripedRectangle(_x, _y, _width, _height, 0x8A01, 0x5120, 6, 12);
+        } else
+        {
+            painter->DrawFillRectangle(_x, _y, _width, _height, _currentBackgroundColor);
+        }
 
         painter->DrawText(_x + 5, _y + _verticalLabelOffset, _label, _currentTextColor, Font::FreeSans9pt7b,
                           TextAlign::TEXT_ALIGN_LEFT, 0);
