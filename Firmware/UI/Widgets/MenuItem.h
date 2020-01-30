@@ -192,7 +192,7 @@ class MenuItem : public IWidget
         // Draw background
         if (_disabled)
         {
-            painter->DrawStripedRectangle(_x, _y, _width, _height, 0x8A01, 0x5120, 6, 12);
+            painter->DrawStripedRectangle(_x, _y, _width, _height, 0x8A01, 0x5120, 5, 12);
         } else
         {
             painter->DrawFillRectangle(_x, _y, _width, _height, _currentBackgroundColor);

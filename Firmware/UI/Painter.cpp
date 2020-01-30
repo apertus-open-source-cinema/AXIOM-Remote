@@ -141,23 +141,18 @@ void Painter::DrawStripedRectangle(uint16_t x, uint16_t y, uint16_t width, uint1
     int16_t stripeIndex = 0;
     uint16_t drawColor = firstColor;
     uint_fast32_t lineIndex = 0;
+    
     for (uint16_t yIndex = y; yIndex < y + height; yIndex++)
     {
-       // stripeIndex = 0;
-        stripeIndex--;// = -stripeIndex - tilt;
-
+        stripeIndex -= tilt;
+        
         lineIndex = _framebufferWidth * (_framebufferHeight - yIndex);
         for (uint16_t xIndex = x; xIndex < x + width; xIndex++)
         {
             stripeIndex++;
             if (stripeIndex > offset)
             {
-                if (drawColor == firstColor)
-                    drawColor = secondColor;
-                else
-                {
-                    drawColor = firstColor;
-                }
+                drawColor = (drawColor == firstColor) ? secondColor : firstColor;
 
                 stripeIndex = 0;
             }

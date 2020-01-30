@@ -232,7 +232,7 @@ class SettingsMenu : public IMenu
         {
             scrollbarYOffset -= (_menuSelectionIndex + 1 - _maxVisibleItems) * segmentOffset;
         }
-
+    
         // Background
         painter->DrawFillRectangle(GlobalSettings::LCDWidth - 16, 0, 16, GlobalSettings::LCDHeight - 30,
                                    _menuItemColor);
