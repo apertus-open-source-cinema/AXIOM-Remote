@@ -19,6 +19,6 @@ jobs:
             cd Firmware/build
             mv AXIOM_Remote_Firmware.hex AXIOM_Remote_Firmware_${CIRCLE_BUILD_NUM}.hex
             md5sum AXIOM_Remote_Firmware_${CIRCLE_BUILD_NUM}.hex > AXIOM_Remote_Firmware_${CIRCLE_BUILD_NUM}.hex.md5
-            cp *.hex /tmp/artefacts
+            cp *.hex *.md5 /tmp/artefacts
       - store_artifacts:
           path: /tmp/artefacts
