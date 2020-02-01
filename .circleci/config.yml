@@ -3,27 +3,22 @@ version: 2
 jobs:
   build:
     docker:
-      - image: marlon365/mplab-xc32-2.10:sat-xc32-2.10-fw
+      - image: bandit1983/xc32_ubuntu:latest
     steps:
       - checkout  
       - run:
-          name: Install dependencies
-          command: |
-            apt-get -y update
-            apt-get -y install ca.certificate
-      - run:
           name: Build
           command: |
-            cd AXIOM_Remote_Prototype_V01.X 
-            export MP_CC="/opt/microchip/xc32/v2.10/bin/xc32-gcc" 
-            export MP_CC_DIR="/opt/microchip/xc32/v2.10/bin/"
-            make -f nbproject/Makefile-default.mk SUBPROJECTS= .build-conf 
+            cd Firmware
+            export MP_CC="/opt/microchip/xc32/v2.30/bin/xc32-gcc" 
+            export MP_CC_DIR="/opt/microchip/xc32/v2.30/bin/"
+            make -j8
       - run:
           command: |
             mkdir /tmp/artefacts
-            cd AXIOM_Remote_Prototype_V01.X/dist/default/production/
-            mv AXIOM_Remote_Prototype_V01.X.production.hex AXIOM_Remote_Prototype_V01.0.${CIRCLE_BUILD_NUM}.hex
-            md5sum AXIOM_Remote_Prototype_V01.0.${CIRCLE_BUILD_NUM}.hex > AXIOM_Remote_Prototype_V01.0.${CIRCLE_BUILD_NUM}.hex.md5
-            cp * /tmp/artefacts
+            cd Firmware/build
+            mv AXIOM_Remote_Firmware.hex AXIOM_Remote_Firmware_${CIRCLE_BUILD_NUM}.hex
+            md5sum AXIOM_Remote_Firmware_${CIRCLE_BUILD_NUM}.hex > AXIOM_Remote_Firmware_${CIRCLE_BUILD_NUM}.hex.md5
+            cp *.hex /tmp/artefacts
       - store_artifacts:
           path: /tmp/artefacts
