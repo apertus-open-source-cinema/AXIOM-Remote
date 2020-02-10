@@ -1,10 +1,10 @@
 #ifndef ISCREEN_H
 #define ISCREEN_H
 
-#include "../Bootloader/Periphery/USB/USBCDCDevice.h"
 #include "../Color565.h"
 #include "../../Utils.h"
 
+class IUSBDevice;
 class Painter;
 class IMenuSystem;
 
