@@ -22,3 +22,13 @@ jobs:
             cp *.hex *.md5 /tmp/artefacts
       - store_artifacts:
           path: /tmp/artefacts
+      - run:
+          name: Build firmware tests 
+          command: |
+            cd ..
+            cd FirmwareTest
+            mkdir build
+            cd build
+            cmake ..
+            make -j8
+            ./AXIOM_Firmware_Test
