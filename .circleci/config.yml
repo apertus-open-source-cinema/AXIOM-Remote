@@ -25,7 +25,6 @@ jobs:
       - run:
           name: Build firmware tests 
           command: |
-            cd ..
             cd FirmwareTest
             mkdir build
             cd build
