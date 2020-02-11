@@ -30,4 +30,7 @@ jobs:
             cd build
             cmake ..
             make -j8
-            ./AXIOM_Remote_Firmware_Test
+            mkdir /tmp/test-results
+            ./AXIOM_Remote_Firmware_Test > /tmp/test-results/AXIOM_Remote_Firmware_Test_results.xml
+      - store_test_results:
+          path: /tmp/test-results
