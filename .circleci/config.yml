@@ -31,6 +31,6 @@ jobs:
             cmake ..
             make -j8
             mkdir /tmp/test-results
-            ./AXIOM_Remote_Firmware_Test -r xml > /tmp/test-results/AXIOM_Remote_Firmware_Test_results.xml
+            ./AXIOM_Remote_Firmware_Test -r junit > /tmp/test-results/AXIOM_Remote_Firmware_Test_results.xml
       - store_test_results:
           path: /tmp/test-results
