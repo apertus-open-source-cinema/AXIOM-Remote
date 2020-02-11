@@ -30,4 +30,4 @@ jobs:
             cd build
             cmake ..
             make -j8
-            ./AXIOM_Firmware_Test
+            ./AXIOM_Remote_Firmware_Test
