@@ -5,7 +5,7 @@ jobs:
     docker:
       - image: bandit1983/xc32_ubuntu:latest
     steps:
-      - checkout  
+      - checkout
       - run:
           name: Build
           command: |
@@ -22,14 +22,13 @@ jobs:
             cp *.hex *.md5 /tmp/artefacts
       - store_artifacts:
           path: /tmp/artefacts
-
   test:
     docker:
       - image: tangramor/cpptools
     steps:
-      - checkout  
+      - checkout
       - run:
-        name: Build firmware tests 
+        name: Build firmware tests
         command: |
           cd FirmwareTest
           mkdir build
