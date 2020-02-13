@@ -18,4 +18,4 @@ ADD_EXECUTABLE(${PROJECT_NAME} ${TEST_SOURCES} ${FIRMWARE_SOURCES})
 ADD_CUSTOM_COMMAND(TARGET ${PROJECT_NAME} POST_BUILD
                    COMMAND ${CMAKE_COMMAND} -E make_directory ${PROJECT_BINARY_DIR}/coverage_report
                    COMMAND gcovr -r ../../Firmware/ . --html --html-details -o ${PROJECT_BINARY_DIR}/coverage_report/coverage_report.html
-                   COMMAND gcovr -r ../../Firmware/ . --xml ${PROJECT_BINARY_DIR}/coverage_report/coverage_report.xml)
+                   COMMAND gcovr -r ../../Firmware/ . --xml -o ${PROJECT_BINARY_DIR}/coverage_report/coverage_report.xml)
