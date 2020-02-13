@@ -41,10 +41,7 @@ jobs:
             make -j8
             mkdir /tmp/test-results
             ./AXIOM_Remote_Firmware_Test -r junit > /tmp/test-results/AXIOM_Remote_Firmware_Test_results.xml
-      - run:
-          command: |
-            mkdir coverage_report
-            bash <(curl -s https://codecov.io/bash) -f coverage_report/coverage_report.json
+            bash <(curl -s https://codecov.io/bash) -f coverage_report/coverage_report.xml -t "42b5b27b-fb66-4e35-8d72-1277791370be"
       - store_test_results:
           path: /tmp/test-results
 
