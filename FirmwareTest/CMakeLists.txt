@@ -17,4 +17,5 @@ ADD_EXECUTABLE(${PROJECT_NAME} ${TEST_SOURCES} ${FIRMWARE_SOURCES})
 # Code coverage
 ADD_CUSTOM_COMMAND(TARGET ${PROJECT_NAME} POST_BUILD
                    COMMAND ${CMAKE_COMMAND} -E make_directory ${PROJECT_BINARY_DIR}/coverage_report
-                   COMMAND gcovr --verbose -r ../../Firmware/ . --html --html-details -o ${PROJECT_BINARY_DIR}/coverage_report/coverage_report.html)
+                   COMMAND gcovr -r ../../Firmware/ . --html --html-details -o ${PROJECT_BINARY_DIR}/coverage_report/coverage_report.html
+                   COMMAND gcovr -r ../../Firmware/ . --json -o ${PROJECT_BINARY_DIR}/coverage_report/coverage_report.json)
