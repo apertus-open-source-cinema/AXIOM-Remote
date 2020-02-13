@@ -22,15 +22,28 @@ jobs:
             cp *.hex *.md5 /tmp/artefacts
       - store_artifacts:
           path: /tmp/artefacts
+
+  test:
+    docker:
+      - image: tangramor/cpptools
+    steps:
+      - checkout  
       - run:
-          name: Build firmware tests 
-          command: |
-            cd FirmwareTest
-            mkdir build
-            cd build
-            cmake ..
-            make -j8
-            mkdir /tmp/test-results
-            ./AXIOM_Remote_Firmware_Test -r junit > /tmp/test-results/AXIOM_Remote_Firmware_Test_results.xml
+        name: Build firmware tests 
+        command: |
+          cd FirmwareTest
+          mkdir build
+          cd build
+          cmake ..
+          make -j8
+          mkdir /tmp/test-results
+          ./AXIOM_Remote_Firmware_Test -r junit > /tmp/test-results/AXIOM_Remote_Firmware_Test_results.xml
       - store_test_results:
           path: /tmp/test-results
+
+workflows:
+  version: 2
+  build_and_test:
+    jobs:
+      - build
+      - test
