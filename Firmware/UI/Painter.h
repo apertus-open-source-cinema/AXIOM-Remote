@@ -52,8 +52,8 @@ class Painter
                               uint16_t secondColor, uint8_t tilt, uint8_t offset);
 
     // Circle
-    void DrawCirlce(int16_t x, int16_t y, int16_t r, uint16_t color);
-    void DrawFillCirlce(int16_t x, int16_t y, int16_t r, uint16_t color);
+    void DrawCircle(int16_t x, int16_t y, int16_t r, uint16_t color);
+    void DrawFillCircle(int16_t x, int16_t y, int16_t r, uint16_t color);
     void DrawCircleQuarter(int16_t x, int16_t y, int16_t r, uint8_t cornername, uint16_t color);
     void DrawFillCircleQuarter(int16_t x0, int16_t y0, int16_t r, uint8_t cornername, int16_t delta, uint16_t color);
 

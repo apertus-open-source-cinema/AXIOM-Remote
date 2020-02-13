@@ -162,7 +162,7 @@ void Painter::DrawStripedRectangle(uint16_t x, uint16_t y, uint16_t width, uint1
     }
 }
 
-void Painter::DrawCirlce(int16_t x, int16_t y, int16_t r, uint16_t color)
+void Painter::DrawCircle(int16_t x, int16_t y, int16_t r, uint16_t color)
 {
     int16_t f = 1 - r;
     int16_t ddF_x = 1;
@@ -198,7 +198,7 @@ void Painter::DrawCirlce(int16_t x, int16_t y, int16_t r, uint16_t color)
     }
 }
 
-void Painter::DrawFillCirlce(int16_t x, int16_t y, int16_t r, uint16_t color)
+void Painter::DrawFillCircle(int16_t x, int16_t y, int16_t r, uint16_t color)
 {
     DrawFastVLine(x, y - r, 2 * r + 1, color);
     DrawFillCircleQuarter(x, y, r, 3, 0, color);

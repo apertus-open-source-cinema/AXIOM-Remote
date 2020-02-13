@@ -5,63 +5,11 @@
 
 #include "catch2/catch.hpp"
 
-#include "../Firmware/UI/Painter.h"
-
-class PainterMod : public Painter
-{
-  public:
-    uint16_t currentX = 0;
-    uint16_t currentY = 0;
-
-    bool wrongDirection = false;
-
-    PainterMod(volatile uint16_t* framebuffer, uint16_t framebufferWidth, uint8_t framebufferHeight) :
-        Painter(framebuffer, framebufferWidth, framebufferHeight)
-    {
-    }
-
-    void DrawPixel(uint16_t x, uint16_t y, uint16_t color) override
-    {
-        if (x < currentX || y < currentY)
-        {
-            wrongDirection = true;
-            std::cout << "Wrong direction!" << std::endl;
-        }
-
-        currentX = x;
-        currentY = y;
-    }
-};
-
-// int Factorial(int number)
-// {
-//     return number <= 1 ? number : Factorial(number - 1) * number; // fail
-//     // return number <= 1 ? 1      : Factorial( number - 1 ) * number;  // pass
-// }
-
-// TEST_CASE("Factorial of 0 is 1 (fail)", "[single-file]")
-// {
-//     REQUIRE(Factorial(0) == 1);
-// }
-
-// TEST_CASE("Factorials of 1 and higher are computed (pass)", "[single-file]")
-// {
-//     REQUIRE(Factorial(1) == 1);
-//     REQUIRE(Factorial(2) == 2);
-//     REQUIRE(Factorial(3) == 6);
-//     REQUIRE(Factorial(10) == 3628800);
-// }
-
-// TEST_CASE("Factorials of 1 and higher are computed (pass)", "[single-file]")
-// {
-//     REQUIRE(Factorial(1) == 1);
-//     REQUIRE(Factorial(2) == 2);
-//     REQUIRE(Factorial(3) == 6);
-//     REQUIRE(Factorial(10) == 3628800);
-// }
+#include "PainterMod.h"
 
 #define FRAMEBUFFER_WIDTH 320
 #define FRAMEBUFFER_HEIGHT 240
+
 
 TEST_CASE("DrawFillRectangle test")
 {
@@ -83,17 +31,107 @@ TEST_CASE("DrawLine test")
     REQUIRE(painter.wrongDirection == false);
 }
 
+TEST_CASE("DrawFastVLine test")
+{
+    uint16_t* framebuffer = new uint16_t[FRAMEBUFFER_WIDTH * FRAMEBUFFER_HEIGHT];
+    PainterMod painter(framebuffer, FRAMEBUFFER_WIDTH, FRAMEBUFFER_HEIGHT);
 
-// Compile & run:
-// - g++ -std=c++11 -Wall -I$(CATCH_SINGLE_INCLUDE) -o 010-TestCase 010-TestCase.cpp && 010-TestCase --success
-// - cl -EHsc -I%CATCH_SINGLE_INCLUDE% 010-TestCase.cpp && 010-TestCase --success
+    painter.DrawFastVLine(0, 0, 10, 0xFFFF);
 
-// Expected compact output (all assertions):
-//
-// prompt> 010-TestCase --reporter compact --success
-// 010-TestCase.cpp:14: failed: Factorial(0) == 1 for: 0 == 1
-// 010-TestCase.cpp:18: passed: Factorial(1) == 1 for: 1 == 1
-// 010-TestCase.cpp:19: passed: Factorial(2) == 2 for: 2 == 2
-// 010-TestCase.cpp:20: passed: Factorial(3) == 6 for: 6 == 6
-// 010-TestCase.cpp:21: passed: Factorial(10) == 3628800 for: 3628800 (0x375f00) == 3628800 (0x375f00)
-// Failed 1 test case, failed 1 assertion.
+    REQUIRE(painter.wrongDirection == false);
+}
+
+TEST_CASE("DrawFastHLine test")
+{
+    uint16_t* framebuffer = new uint16_t[FRAMEBUFFER_WIDTH * FRAMEBUFFER_HEIGHT];
+    PainterMod painter(framebuffer, FRAMEBUFFER_WIDTH, FRAMEBUFFER_HEIGHT);
+
+    painter.DrawFastHLine(0, 0, 10, 0xFFFF);
+
+    REQUIRE(painter.wrongDirection == false);
+}
+
+TEST_CASE("DrawFillRoundRectangle test")
+{
+    uint16_t* framebuffer = new uint16_t[FRAMEBUFFER_WIDTH * FRAMEBUFFER_HEIGHT];
+    PainterMod painter(framebuffer, FRAMEBUFFER_WIDTH, FRAMEBUFFER_HEIGHT);
+
+    painter.DrawFillRoundRectangle(0, 0, 10, 10, 3, 0xFFFF);
+
+    REQUIRE(painter.wrongDirection == false);
+}
+
+
+TEST_CASE("DrawRectangle test")
+{
+    uint16_t* framebuffer = new uint16_t[FRAMEBUFFER_WIDTH * FRAMEBUFFER_HEIGHT];
+    PainterMod painter(framebuffer, FRAMEBUFFER_WIDTH, FRAMEBUFFER_HEIGHT);
+
+    painter.DrawRectangle(0, 0, 10, 10, 0xFFFF);
+
+    REQUIRE(painter.wrongDirection == false);
+}
+
+TEST_CASE("DrawStripedRectangle test")
+{
+    uint16_t* framebuffer = new uint16_t[FRAMEBUFFER_WIDTH * FRAMEBUFFER_HEIGHT];
+    PainterMod painter(framebuffer, FRAMEBUFFER_WIDTH, FRAMEBUFFER_HEIGHT);
+
+    painter.DrawStripedRectangle(0, 0, 10, 10, 0x0, 0x0, 0, 0);
+
+    REQUIRE(painter.wrongDirection == false);
+}
+
+TEST_CASE("DrawCircle test")
+{
+    uint16_t* framebuffer = new uint16_t[FRAMEBUFFER_WIDTH * FRAMEBUFFER_HEIGHT];
+    PainterMod painter(framebuffer, FRAMEBUFFER_WIDTH, FRAMEBUFFER_HEIGHT);
+
+    painter.DrawCircle(0, 0, 10, 0x0);
+
+    REQUIRE(painter.wrongDirection == false);
+}
+
+TEST_CASE("DrawFillCircle test")
+{
+    uint16_t* framebuffer = new uint16_t[FRAMEBUFFER_WIDTH * FRAMEBUFFER_HEIGHT];
+    PainterMod painter(framebuffer, FRAMEBUFFER_WIDTH, FRAMEBUFFER_HEIGHT);
+
+    painter.DrawFillCircle(20, 20, 10, 0x0);
+
+    REQUIRE(painter.wrongDirection == false);
+}
+
+TEST_CASE("DrawCircleQuarter test")
+{
+    uint16_t* framebuffer = new uint16_t[FRAMEBUFFER_WIDTH * FRAMEBUFFER_HEIGHT];
+    PainterMod painter(framebuffer, FRAMEBUFFER_WIDTH, FRAMEBUFFER_HEIGHT);
+
+    painter.DrawCircleQuarter(20, 20, 10, 1, 0x0);
+    painter.DrawCircleQuarter(20, 20, 10, 2, 0x0);
+    painter.DrawCircleQuarter(20, 20, 10, 4, 0x0);
+    painter.DrawCircleQuarter(20, 20, 10, 8, 0x0);
+
+    REQUIRE(painter.wrongDirection == false);
+}
+
+TEST_CASE("DrawText test")
+{
+    uint16_t* framebuffer = new uint16_t[FRAMEBUFFER_WIDTH * FRAMEBUFFER_HEIGHT];
+    PainterMod painter(framebuffer, FRAMEBUFFER_WIDTH, FRAMEBUFFER_HEIGHT);
+
+    painter.DrawText(0, 0, "Test", 0x0, Font::FreeSans9pt7b, TextAlign::TEXT_ALIGN_LEFT, 10);
+
+    REQUIRE(painter.wrongDirection == false);
+}
+
+TEST_CASE("Fill test")
+{
+    uint16_t* framebuffer = new uint16_t[FRAMEBUFFER_WIDTH * FRAMEBUFFER_HEIGHT];
+    PainterMod painter(framebuffer, FRAMEBUFFER_WIDTH, FRAMEBUFFER_HEIGHT);
+
+    painter.Fill(0x0);
+
+    REQUIRE(painter.wrongDirection == false);
+}
+
