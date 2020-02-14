@@ -43,7 +43,7 @@ jobs:
       - store_test_results:
           path: /tmp/test-results
       - codecov/upload:
-          file: coverage_report/coverage_report.json
+          file: FirmwareTest/build/coverage_report/coverage_report.json
           flags: frontend
 
 workflows:
