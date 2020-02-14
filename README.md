@@ -8,7 +8,8 @@ A universal remote control with buttons, dials and an LCD for menu/settings (no 
 
 | master | dev |
 |:------:|:------:|
-|[![CircleCI](https://circleci.com/gh/apertus-open-source-cinema/AXIOM-Remote/tree/master.svg?style=svg)](https://circleci.com/gh/apertus-open-source-cinema/AXIOM-Remote/tree/master)|[![CircleCI](https://circleci.com/gh/apertus-open-source-cinema/AXIOM-Remote/tree/dev.svg?style=svg)](https://circleci.com/gh/apertus-open-source-cinema/AXIOM-Remote/tree/dev)|
+|[![CircleCI](https://circleci.com/gh/apertus-open-source-cinema/AXIOM-Remote/tree/master.svg?style=svg)](https://circleci.com/gh/apertus-open-source-cinema/AXIOM-Remote/tree/master)|[![CircleCI](https://circleci.com/gh/apertus-open-source-cinema/AXIOM-Remote/tree/dev.svg?style=svg)](https://circleci.com/gh/apertus-open-source-cinema/AXIOM-Remote/tree/dev)
+||[![codecov](https://codecov.io/gh/apertus-open-source-cinema/AXIOM-Remote/branch/dev/graph/badge.svg)](https://codecov.io/gh/apertus-open-source-cinema/AXIOM-Remote)
 
 ## Build instructions
 
