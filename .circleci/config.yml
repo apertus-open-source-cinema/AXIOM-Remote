@@ -1,4 +1,7 @@
-version: 2
+version: 2.1
+
+orbs:
+  codecov: codecov/codecov@1.0.5
 
 jobs:
   build:
@@ -28,10 +31,6 @@ jobs:
     steps:
       - checkout
       - run:
-          name: "Setup custom environment variables"
-          command: |
-            echo 'export CODECOV_TOKEN="42b5b27b-fb66-4e35-8d72-1277791370be"' >> $BASH_ENV
-      - run:
           name: Build firmware tests
           command: |
             cd FirmwareTest
@@ -41,9 +40,11 @@ jobs:
             make -j8
             mkdir /tmp/test-results
             ./AXIOM_Remote_Firmware_Test -r junit > /tmp/test-results/AXIOM_Remote_Firmware_Test_results.xml
-            bash <(curl -s https://codecov.io/bash) -f coverage_report/coverage_report.xml -t "42b5b27b-fb66-4e35-8d72-1277791370be"
       - store_test_results:
           path: /tmp/test-results
+      - codecov/upload:
+          file: coverage_report/coverage_report.json
+          flags: frontend
 
 workflows:
   version: 2
