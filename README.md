@@ -13,6 +13,10 @@ A universal remote control with buttons, dials and an LCD for menu/settings (no 
 
 ## Build instructions
 
+### Fetch the Microchip XC32/XC32++ compiler for your OS
+[https://www.microchip.com/mplab/compilers](https://www.microchip.com/mplab/compilers). We have tested the code on v2.3. 
+
+
 ### Bootloader
 
 - Open **Bootloader** folder in terminal
