@@ -26,7 +26,7 @@ void RenderUI(SDL_Window* window, ImTextureID textureID, Button& button)
     ImGui::SetNextWindowPos(ImVec2(0, 0));
     ImGui::SetNextWindowSize(ImVec2(800, 480));
     ImGui::PushStyleColor(ImGuiCol_WindowBg, (ImU32)ImColor(96, 96, 96, 255));
-    ImGui::Begin("Image", nullptr, ImVec2(0, 0), -1,
+    ImGui::Begin("Image", nullptr,
                  ImGuiWindowFlags_NoTitleBar | ImGuiWindowFlags_NoResize | ImGuiWindowFlags_NoMove |
                      ImGuiWindowFlags_NoScrollbar | ImGuiWindowFlags_NoScrollWithMouse);
 
