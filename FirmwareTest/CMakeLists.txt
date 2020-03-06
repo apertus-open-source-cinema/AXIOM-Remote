@@ -10,7 +10,7 @@ SET(CMAKE_EXE_LINKER_FLAGS "-fprofile-arcs -ftest-coverage")
 
 FILE(GLOB FIRMWARE_SOURCES "${CMAKE_CURRENT_SOURCE_DIR}/../Firmware/UI/*.cpp" "${CMAKE_CURRENT_SOURCE_DIR}/../Firmware/GlobalSettings.cpp")
 
-SET(TEST_SOURCES Main.cpp PainterTest.cpp)
+SET(TEST_SOURCES Main.cpp PainterTest.cpp MenuSystemTest.cpp)
 
 ADD_EXECUTABLE(${PROJECT_NAME} ${TEST_SOURCES} ${FIRMWARE_SOURCES})
 
@@ -19,4 +19,4 @@ ADD_CUSTOM_COMMAND(TARGET ${PROJECT_NAME} POST_BUILD
                    COMMAND ./${PROJECT_NAME}
                    COMMAND ${CMAKE_COMMAND} -E make_directory ${PROJECT_BINARY_DIR}/coverage_report
                    COMMAND gcovr -r ../../Firmware/ . --html --html-details -o ${PROJECT_BINARY_DIR}/coverage_report/coverage_report.html
-                   COMMAND gcovr --verbose -r ../../Firmware/ . --xml -o ${PROJECT_BINARY_DIR}/coverage_report/coverage_report.xml)
+                   COMMAND gcovr -r ../../Firmware/ . --xml -o ${PROJECT_BINARY_DIR}/coverage_report/coverage_report.xml)

@@ -14,7 +14,9 @@ class IUSBDevice;
 
 class MenuSystem : public IMenuSystem
 {
+  protected:
     IScreen* _currentScreen;
+    AvailableScreens _currentScreenType;
 
     // TODO: Length has to be adjusted manually, as currently we use static init to save space on the MCU
     IScreen* _availableScreens[3];
@@ -32,6 +34,7 @@ class MenuSystem : public IMenuSystem
     virtual ~MenuSystem();
 
     void SetCurrentScreen(AvailableScreens menu);
+    AvailableScreens GetCurrentScreen();
 
     void Draw(Painter* painter);
 

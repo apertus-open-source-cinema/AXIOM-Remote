@@ -21,7 +21,13 @@ MenuSystem::~MenuSystem()
 
 void MenuSystem::SetCurrentScreen(AvailableScreens menu)
 {
+    _currentScreenType = menu;
     _currentScreen = _availableScreens[(uint8_t)menu];
+}
+
+AvailableScreens MenuSystem::GetCurrentScreen()
+{
+    return _currentScreenType;
 }
 
 void MenuSystem::InitializeAvailableScreens()
