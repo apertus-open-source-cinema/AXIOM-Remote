@@ -33,10 +33,10 @@ class MainPageButton : public IButton
     ButtonType _type;
 
     // Color Defintions
-    uint16_t _PageItemLabelColor;
-    uint16_t _PageItemLabelBackgroundColor;
-    uint16_t _PageItemValueColor;
-    uint16_t _PageItemValueBackgroundColor;
+    uint16_t labelTextColor;
+    uint16_t labelBackgroundColor;
+    uint16_t valueTextColor;
+    uint16_t valueBackgroundColor;
 
     // bool _hideValue;
 
@@ -52,10 +52,10 @@ class MainPageButton : public IButton
         _y(y), _width(width), _labelHeight(20), _valueHeight(40), _label((char*)label), _value((char*)"..."),
         _invertOrder(invertOrder), _labelFont(Font::FreeSans9pt7b), _valueFont(Font::FreeSans12pt7b), _type(type)
     {
-        _PageItemLabelColor = (uint16_t)Color565::White;
-        _PageItemLabelBackgroundColor = (uint16_t)Color565::Black;
-        _PageItemValueColor = (uint16_t)Color565::Black;
-        _PageItemValueBackgroundColor = (uint16_t)Color565::White;
+        labelTextColor = (uint16_t)Color565::White;
+        labelBackgroundColor = (uint16_t)Color565::Black;
+        valueTextColor = (uint16_t)Color565::Black;
+        valueBackgroundColor = (uint16_t)Color565::White;
     }
 
     void Draw(Painter* painter) override
@@ -66,45 +66,27 @@ class MainPageButton : public IButton
             if (_type == ButtonType::VALUE_AND_LABEL)
             {
                 // draw label
-                painter->DrawFillRoundRectangle(_x, _y + _valueHeight, _width, _labelHeight, 3,
-                                                _PageItemLabelBackgroundColor);
-                painter->DrawFillRectangle(_x, _y + _valueHeight - 3, _width, 6, _PageItemLabelBackgroundColor);
+                painter->DrawFillRoundRectangle(_x, _y + _valueHeight, _width, _labelHeight, 3, labelBackgroundColor);
+                painter->DrawFillRectangle(_x, _y + _valueHeight - 3, _width, 6, labelBackgroundColor);
                 // painter->DrawFillRectangle(_x, _y + _valueHeight, _width, _labelHeight, (uint16_t)Color565::Black);
-                painter->DrawText(_x, _y + _valueHeight + 5, _label, _PageItemLabelColor, Font::FreeSans9pt7b,
+                painter->DrawText(_x, _y + _valueHeight + 5, _label, labelTextColor, Font::FreeSans9pt7b,
                                   TextAlign::TEXT_ALIGN_CENTER, _width);
 
                 // draw value
-                painter->DrawFillRoundRectangle(_x, _y, _width, _valueHeight, 3, _PageItemValueBackgroundColor);
-                painter->DrawText(_x, _y + 10, _value, _PageItemValueColor, Font::FreeSans9pt7b,
+                painter->DrawFillRoundRectangle(_x, _y, _width, _valueHeight, 3, valueBackgroundColor);
+                painter->DrawText(_x, _y + 10, _value, valueTextColor, Font::FreeSans9pt7b,
                                   TextAlign::TEXT_ALIGN_CENTER, _width);
             }
 
             if (_type == ButtonType::BUTTON)
             {
 
-                uint8_t fontoffset;
-                switch (_labelFont)
-                {
-                case Font::FreeSans9pt7b:
-                    fontoffset = _labelHeight / 2 - 16 / 2;
-                    break;
-                case Font::FreeSans12pt7b:
-                    fontoffset = _labelHeight / 2 - 24 / 2;
-                    break;
-                case Font::FreeSans18pt7b:
-                    fontoffset = _labelHeight / 2 - 34 / 2;
-                    break;
-                case Font::FreeSans24pt7b:
-                    fontoffset = _labelHeight / 2 - 44 / 2;
-                    break;
-                default:
-                    fontoffset = 0;
-                    break;
-                }
+                uint8_t fontoffset = GetFontOffset();
+
                 // draw label
-                painter->DrawFillRoundRectangle(_x, _y, _width, _labelHeight, 3, _PageItemLabelBackgroundColor);
-                painter->DrawText(_x, _y + fontoffset, _label, _PageItemLabelColor, _labelFont,
-                                  TextAlign::TEXT_ALIGN_CENTER, _width);
+                painter->DrawFillRoundRectangle(_x, _y, _width, _labelHeight, 3, labelBackgroundColor);
+                painter->DrawText(_x, _y + fontoffset, _label, labelTextColor, _labelFont, TextAlign::TEXT_ALIGN_CENTER,
+                                  _width);
             }
         } else
         // Buttons at the bottom of the screen have the label at the bottom and the value above it -> _invertOrder ==
@@ -112,45 +94,49 @@ class MainPageButton : public IButton
         {
             if (_type == ButtonType::BUTTON)
             {
-                uint8_t fontoffset;
-                switch (_labelFont)
-                {
-                case Font::FreeSans9pt7b:
-                    fontoffset = _labelHeight / 2 - 16 / 2;
-                    break;
-                case Font::FreeSans12pt7b:
-                    fontoffset = _labelHeight / 2 - 24 / 2;
-                    break;
-                case Font::FreeSans18pt7b:
-                    fontoffset = _labelHeight / 2 - 34 / 2;
-                    break;
-                case Font::FreeSans24pt7b:
-                    fontoffset = _labelHeight / 2 - 44 / 2;
-                    break;
-                default:
-                    fontoffset = 0;
-                    break;
-                }
+                uint8_t fontoffset = GetFontOffset();
 
                 // draw label
-                painter->DrawFillRoundRectangle(_x, _y, _width, _labelHeight, 3, _PageItemLabelBackgroundColor);
-                painter->DrawText(_x, _y + fontoffset, _label, _PageItemLabelColor, _labelFont,
-                                  TextAlign::TEXT_ALIGN_CENTER, _width);
+                painter->DrawFillRoundRectangle(_x, _y, _width, _labelHeight, 3, labelBackgroundColor);
+                painter->DrawText(_x, _y + fontoffset, _label, labelTextColor, _labelFont, TextAlign::TEXT_ALIGN_CENTER,
+                                  _width);
             } else if (_type == ButtonType::VALUE_AND_LABEL)
             {
                 // draw label
-                painter->DrawFillRoundRectangle(_x, _y + 1, _width, _labelHeight, 3, _PageItemLabelBackgroundColor);
-                painter->DrawFillRectangle(_x, _y + _labelHeight - 3, _width, 6, _PageItemLabelBackgroundColor);
-                painter->DrawText(_x, _y + 5, _label, _PageItemLabelColor, Font::FreeSans9pt7b,
-                                  TextAlign::TEXT_ALIGN_CENTER, _width);
+                painter->DrawFillRoundRectangle(_x, _y + 1, _width, _labelHeight, 3, labelBackgroundColor);
+                painter->DrawFillRectangle(_x, _y + _labelHeight - 3, _width, 6, labelBackgroundColor);
+                painter->DrawText(_x, _y + 5, _label, labelTextColor, Font::FreeSans9pt7b, TextAlign::TEXT_ALIGN_CENTER,
+                                  _width);
 
                 // draw value
-                painter->DrawFillRoundRectangle(_x, _y + _labelHeight, _width, _valueHeight, 3,
-                                                _PageItemValueBackgroundColor);
-                painter->DrawText(_x, _y + _labelHeight + 10, _value, _PageItemValueColor, Font::FreeSans9pt7b,
+                painter->DrawFillRoundRectangle(_x, _y + _labelHeight, _width, _valueHeight, 3, valueBackgroundColor);
+                painter->DrawText(_x, _y + _labelHeight + 10, _value, valueTextColor, Font::FreeSans9pt7b,
                                   TextAlign::TEXT_ALIGN_CENTER, _width);
             }
         }
+    }
+
+    uint8_t GetFontOffset()
+    {
+        uint8_t fontOffset = 0;
+
+        switch (_labelFont)
+        {
+        case Font::FreeSans9pt7b:
+            fontOffset = _labelHeight / 2 - 16 / 2;
+            break;
+        case Font::FreeSans12pt7b:
+            fontOffset = _labelHeight / 2 - 24 / 2;
+            break;
+        case Font::FreeSans18pt7b:
+            fontOffset = _labelHeight / 2 - 34 / 2;
+            break;
+        case Font::FreeSans24pt7b:
+            fontOffset = _labelHeight / 2 - 44 / 2;
+            break;
+        }
+
+        return fontOffset;
     }
 
     void SetLabelFont(Font font)

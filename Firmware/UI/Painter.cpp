@@ -104,8 +104,8 @@ void Painter::DrawFillRoundRectangle(uint16_t x, uint16_t y, uint16_t width, uin
     DrawFillRectangle(x + radius, y, width - 2 * radius, height, color);
 
     // draw four corners
-   // DrawFillCircleQuarter(x + width - radius - 1, y + radius, radius, 1, height - 2 * radius - 1, color);
-   // DrawFillCircleQuarter(x + radius, y + radius, radius, 2, height - 2 * radius - 1, color);
+    DrawFillCircleQuarter(x + width - radius - 1, y + radius, radius, 1, height - 2 * radius - 1, color);
+    DrawFillCircleQuarter(x + radius, y + radius, radius, 2, height - 2 * radius - 1, color);
 
     /*
         uint_fast32_t lineindex;
@@ -127,7 +127,7 @@ void Painter::DrawRectangle(uint16_t x, uint16_t y, uint16_t width, uint16_t hei
         {
             if (yIndex == y || yIndex == y + height - 1)
             {
-               DrawPixel(xIndex, yIndex, color);
+                DrawPixel(xIndex, yIndex, color);
             }
         }
     }
@@ -292,7 +292,7 @@ void Painter::DrawImage(const uint8_t* data, uint16_t x, uint16_t y, uint16_t wi
 
             uint16_t color = ((uint16_t)value1 << 8) | value2;
 
-            DrawPixel(x + xIndex, x + yIndex, color);
+            DrawPixel(x + xIndex, y + yIndex, color);
         }
     }
 }
@@ -412,12 +412,12 @@ void Painter::DrawText(uint16_t x, uint16_t y, const char* text, uint16_t color,
             if (c == 10)
         { // "\n" (LF) line feed - new line character
             _cursorX = x;
-            _cursorY -= _currentFont.yAdvance;
+            _cursorY += _currentFont.yAdvance;
             newline = true;
         } else if (c == 13)
         { // "\r" (CR) carriage return character
             _cursorX = x;
-            _cursorY -= _currentFont.yAdvance;
+            _cursorY += _currentFont.yAdvance;
             newline = true;
         } else if ((c >= first) && (c <= last))
         {
@@ -495,7 +495,7 @@ void Painter::DrawCharacter(unsigned char character, int16_t x, int16_t y, uint1
             }
             if (bits & 0x80)
             {
-                DrawPixel(x + xo + xx, y - yo - yy, color);
+                DrawPixel(x + xo + xx, y + yo + yy, color);
             }
             bits <<= 1;
         }
