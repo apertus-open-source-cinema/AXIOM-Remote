@@ -13,7 +13,7 @@ BUILD_DIR=build
 INC_DIR=-I${XC32_PATH}/pic32mx/include -I../Common
 
 # Bootloader modules are added temporarily, till UA can be flashed through BL
-SOURCE_FILES=$(wildcard *.cpp) $(wildcard **/*.cpp) $(wildcard ../Bootloader/Periphery/**/*.cpp)
+SOURCE_FILES=$(wildcard *.cpp) $(wildcard **/*.cpp) $(wildcard UI/**/*.cpp) $(wildcard ../Bootloader/Periphery/**/*.cpp)
 OBJ_FILES=${SOURCE_FILES:%.cpp=${BUILD_DIR}/%.o}
 
 OPTS=-c -G0 -mprocessor=${DEVICE} -mconfig-data-dir=${XC32_PATH}/pic32mx/lib/proc/${DEVICE} -iprefix ${XC32_PATH}/lib/gcc/pic32mx/4.8.3/ -Wall -MMD -MF ${BUILD_DIR}/.depend
