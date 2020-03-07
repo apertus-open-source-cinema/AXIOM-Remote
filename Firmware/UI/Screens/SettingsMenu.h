@@ -186,7 +186,7 @@ class SettingsMenu : public IMenu
         painter->DrawFillRectangle(0, GlobalSettings::LCDHeight - 28, GlobalSettings::LCDWidth, 28, _menuItemColor);
 
         // draw header bread crumbs
-        painter->DrawText(5, GlobalSettings::LCDHeight - 22, _menuBreadcrumbs, _menuTextColor, Font::FreeSans9pt7b,
+        painter->DrawText(5, GlobalSettings::LCDHeight - 22, _menuBreadcrumbs, _menuTextColor,
                           TextAlign::TEXT_ALIGN_LEFT, 0);
 
         // two header separation lines

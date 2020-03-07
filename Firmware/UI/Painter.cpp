@@ -23,9 +23,27 @@ Painter::Painter(volatile uint16_t* framebuffer, uint16_t framebufferWidth, uint
     _cursorX(0), _cursorY(0), _framebuffer(framebuffer)
 {
     // Default font
-    // SetFont(Font::FreeSans9pt7b);
+    SetFont(Font::FreeSans9pt7b);
 }
 
+void Painter::SetFont(Font font)
+{
+    switch (font)
+    {
+    case Font::FreeSans9pt7b:
+        _currentFont = _fontList[0];
+        break;
+    case Font::FreeSans12pt7b:
+        _currentFont = _fontList[1];
+        break;
+    case Font::FreeSans18pt7b:
+        _currentFont = _fontList[2];
+        break;
+    case Font::FreeSans24pt7b:
+        _currentFont = _fontList[3];
+        break;
+    }
+}
 void Painter::DrawLine(int16_t x0, int16_t y0, int16_t x1, int16_t y1, uint16_t color)
 {
     int16_t steep = abs(y1 - y0) > abs(x1 - x0);
@@ -299,25 +317,9 @@ void Painter::DrawImage(const uint8_t* data, uint16_t x, uint16_t y, uint16_t wi
 
 uint8_t count = 0;
 
-void Painter::DrawText(uint16_t x, uint16_t y, const char* text, uint16_t color, Font font, TextAlign align,
+void Painter::DrawText(uint16_t x, uint16_t y, const char* text, uint16_t color, TextAlign align,
                        uint16_t textblockwidth)
 {
-    switch (font)
-    {
-    case Font::FreeSans9pt7b:
-        _currentFont = _fontList[0];
-        break;
-    case Font::FreeSans12pt7b:
-        _currentFont = _fontList[1];
-        break;
-    case Font::FreeSans18pt7b:
-        _currentFont = _fontList[2];
-        break;
-    case Font::FreeSans24pt7b:
-        _currentFont = _fontList[3];
-        break;
-    }
-
     uint8_t first = _currentFont.first;
     uint8_t last = _currentFont.last;
     uint8_t length = strlen(text);

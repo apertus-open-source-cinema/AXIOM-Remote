@@ -198,13 +198,12 @@ class MenuItem : public IWidget
             painter->DrawFillRectangle(_x, _y, _width, _height, _currentBackgroundColor);
         }
 
-        painter->DrawText(_x + 5, _y + _verticalLabelOffset, _label, _currentTextColor, Font::FreeSans9pt7b,
-                          TextAlign::TEXT_ALIGN_LEFT, 0);
+        painter->DrawText(_x + 5, _y + _verticalLabelOffset, _label, _currentTextColor, TextAlign::TEXT_ALIGN_LEFT, 0);
 
         // value
         if (_value != nullptr)
         {
-            painter->DrawText(_x + 180, _y + _verticalLabelOffset, _value, _currentTextColor, Font::FreeSans9pt7b,
+            painter->DrawText(_x + 180, _y + _verticalLabelOffset, _value, _currentTextColor,
                               TextAlign::TEXT_ALIGN_RIGHT, 80);
         }
     }

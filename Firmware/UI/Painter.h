@@ -65,9 +65,9 @@ protected:
     void Fill(uint16_t fillColor);
 
     // Text Related
-    //void SetFont(Font font);
+    void SetFont(Font font);
     void DrawCharacter(unsigned char c, int16_t x, int16_t y, uint16_t color);
-    void DrawText(uint16_t x, uint16_t y, const char* text, uint16_t color, Font font, TextAlign align,
+    void DrawText(uint16_t x, uint16_t y, const char* text, uint16_t color, TextAlign align,
                   uint16_t textblockwidth);
     uint16_t GetStringFramebufferWidth(const char* str);
 };
