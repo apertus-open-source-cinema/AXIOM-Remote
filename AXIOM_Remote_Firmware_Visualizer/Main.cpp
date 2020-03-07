@@ -183,7 +183,7 @@ int main()
 
         button = Button::BUTTON_NONE;
         RenderUI(window, reinterpret_cast<ImTextureID>(knobTextureID), button);
-        menuSystem.Update(button, knob, &cdcDevice);
+        menuSystem.Update(button, knob);
         ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());
 
         // SDL_GL_SwapWindow(window);

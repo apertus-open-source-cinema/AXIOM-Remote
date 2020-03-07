@@ -18,9 +18,9 @@
     }
 
 Painter::Painter(volatile uint16_t* framebuffer, uint16_t framebufferWidth, uint8_t framebufferHeight) :
-    _framebufferWidth(framebufferWidth), _framebufferHeight(framebufferHeight),
-    _framebuffer(framebuffer), _fontList{FreeSans9pt7b, FreeSans12pt7b, FreeSans18pt7b, FreeSans24pt7b}, _cursorX(0),
-    _cursorY(0)
+    _framebufferWidth(framebufferWidth),
+    _framebufferHeight(framebufferHeight), _fontList{FreeSans9pt7b, FreeSans12pt7b, FreeSans18pt7b, FreeSans24pt7b},
+    _cursorX(0), _cursorY(0), _framebuffer(framebuffer)
 {
     // Default font
     // SetFont(Font::FreeSans9pt7b);
@@ -78,7 +78,7 @@ void Painter::DrawLine(int16_t x0, int16_t y0, int16_t x1, int16_t y1, uint16_t 
 
 void Painter::DrawFastVLine(int16_t x, int16_t y, int16_t h, uint16_t color)
 {
-    DrawFillRectangle(x, y, 1, h, color); // DrawLine(x, y, x, (int16_t)y + h - 1, color);
+    DrawFillRectangle(x, y, 1, h, color);
 }
 
 void Painter::DrawFastHLine(int16_t x, int16_t y, int16_t l, uint16_t color)
@@ -88,13 +88,11 @@ void Painter::DrawFastHLine(int16_t x, int16_t y, int16_t l, uint16_t color)
 
 void Painter::DrawFillRectangle(uint16_t x, uint16_t y, uint16_t width, uint16_t height, uint16_t color)
 {
-    uint_fast32_t lineindex;
     for (uint16_t yIndex = y; yIndex < y + height; yIndex++)
     {
-        lineindex = _framebufferWidth * (_framebufferHeight - yIndex);
         for (uint16_t xIndex = x; xIndex < x + width; xIndex++)
         {
-            _framebuffer[lineindex + xIndex] = color;
+            DrawPixel(xIndex, yIndex, color);
         }
     }
 }
@@ -106,8 +104,8 @@ void Painter::DrawFillRoundRectangle(uint16_t x, uint16_t y, uint16_t width, uin
     DrawFillRectangle(x + radius, y, width - 2 * radius, height, color);
 
     // draw four corners
-    DrawFillCircleQuarter(x + width - radius - 1, y + radius, radius, 1, height - 2 * radius - 1, color);
-    DrawFillCircleQuarter(x + radius, y + radius, radius, 2, height - 2 * radius - 1, color);
+   // DrawFillCircleQuarter(x + width - radius - 1, y + radius, radius, 1, height - 2 * radius - 1, color);
+   // DrawFillCircleQuarter(x + radius, y + radius, radius, 2, height - 2 * radius - 1, color);
 
     /*
         uint_fast32_t lineindex;
@@ -129,7 +127,7 @@ void Painter::DrawRectangle(uint16_t x, uint16_t y, uint16_t width, uint16_t hei
         {
             if (yIndex == y || yIndex == y + height - 1)
             {
-                _framebuffer[(_framebufferWidth * yIndex) + xIndex] = (uint16_t)color;
+               DrawPixel(xIndex, yIndex, color);
             }
         }
     }
@@ -140,13 +138,11 @@ void Painter::DrawStripedRectangle(uint16_t x, uint16_t y, uint16_t width, uint1
 {
     int16_t stripeIndex = 0;
     uint16_t drawColor = firstColor;
-    uint_fast32_t lineIndex = 0;
-    
+
     for (uint16_t yIndex = y; yIndex < y + height; yIndex++)
     {
         stripeIndex -= tilt;
-        
-        lineIndex = _framebufferWidth * (_framebufferHeight - yIndex);
+
         for (uint16_t xIndex = x; xIndex < x + width; xIndex++)
         {
             stripeIndex++;
@@ -157,7 +153,7 @@ void Painter::DrawStripedRectangle(uint16_t x, uint16_t y, uint16_t width, uint1
                 stripeIndex = 0;
             }
 
-            _framebuffer[lineIndex + xIndex] = drawColor;
+            DrawPixel(xIndex, yIndex, drawColor);
         }
     }
 }
@@ -294,10 +290,9 @@ void Painter::DrawImage(const uint8_t* data, uint16_t x, uint16_t y, uint16_t wi
             //    continue;
             //}
 
-            uint16_t pixel = ((uint16_t)value1 << 8) | value2;
+            uint16_t color = ((uint16_t)value1 << 8) | value2;
 
-            // TODO: replace with DrawPixel
-            _framebuffer[(_framebufferWidth * (yIndex + y)) + x + xIndex] = pixel;
+            DrawPixel(x + xIndex, x + yIndex, color);
         }
     }
 }
@@ -561,9 +556,7 @@ void Painter::DrawPixel(uint16_t x, uint16_t y, uint16_t color)
     // Prevent drawing outside of bounds
     if (x < _framebufferWidth && y < _framebufferHeight)
     {
-        // origin shall be at the lower left corner so we need to mirror y axis (by default the LCD coordinates are so
-        // that origin is at top left corner)
-        _framebuffer[((_framebufferHeight - y) * _framebufferWidth) + x] = color;
+        _framebuffer[y * _framebufferWidth + x] = color;
     }
 }
 

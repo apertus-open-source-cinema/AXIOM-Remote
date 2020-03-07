@@ -27,13 +27,14 @@ class Painter
     uint16_t _framebufferWidth;
     uint16_t _framebufferHeight;
 
-    volatile uint16_t* _framebuffer;
-
     GFXfont _fontList[4];
     GFXfont _currentFont;
 
     uint16_t _cursorX;
     uint16_t _cursorY;
+
+protected:
+    volatile uint16_t* _framebuffer;
 
   public:
     Painter(volatile uint16_t* framebuffer, uint16_t framebufferWidth, uint8_t framebufferHeight);
@@ -64,7 +65,7 @@ class Painter
     void Fill(uint16_t fillColor);
 
     // Text Related
-    // void SetFont(Font font);
+    //void SetFont(Font font);
     void DrawCharacter(unsigned char c, int16_t x, int16_t y, uint16_t color);
     void DrawText(uint16_t x, uint16_t y, const char* text, uint16_t color, Font font, TextAlign align,
                   uint16_t textblockwidth);

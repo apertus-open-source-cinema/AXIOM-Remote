@@ -22,8 +22,8 @@ class MenuItem : public IWidget
     bool _hidden;
     bool _pressed;
     bool _highlighted;
-    char* _label;
-    char* _value;
+    char const* _label;
+    char const* _value;
     MenuItemType _type;
 
     uint16_t _backgroundColor;
@@ -49,11 +49,11 @@ class MenuItem : public IWidget
         _disabled(disabled),
         _hidden(hidden), _pressed(pressed), _highlighted(highlighted), _label(const_cast<char*>(label)),
         _value(const_cast<char*>(value)), _type(type), _backgroundColor((uint16_t)Color565::White),
-        _backgroundHighlightColor(RGB565(255, 128, 0)), _textColor((uint16_t)Color565::Black),
-        _currentBackgroundColor(_backgroundColor), _currentTextColor(_textColor),
-        _backgroundPressedColor(RGB565(0, 128, 255)), _textPressedColor((uint16_t)Color565::White),
-        _textHighlightColor((uint16_t)Color565::White), _textDisabledColor(RGB565(180, 180, 180)),
-        _backgroundDisabledColor(RGB565(180, 180, 180)), _verticalLabelOffset(7)
+        _backgroundHighlightColor(RGB565(255, 128, 0)), _backgroundPressedColor(RGB565(0, 128, 255)),
+        _backgroundDisabledColor(RGB565(180, 180, 180)), _textColor((uint16_t)Color565::Black),
+        _textHighlightColor((uint16_t)Color565::White), _textPressedColor((uint16_t)Color565::White),
+        _textDisabledColor(RGB565(180, 180, 180)), _currentBackgroundColor(_backgroundColor),
+        _currentTextColor(_textColor), _verticalLabelOffset(7)
     {
         _x = 0;
         _y = 0;
@@ -148,17 +148,17 @@ class MenuItem : public IWidget
         _label = const_cast<char*>(value);
     }
 
-    char* GetLabel()
+    char const* GetLabel()
     {
         return _label;
     }
 
-    void SetValue(char* value)
+    void SetValue(char const* value)
     {
         _value = value;
     }
 
-    char* GetValue()
+    char const* GetValue()
     {
         return _value;
     }

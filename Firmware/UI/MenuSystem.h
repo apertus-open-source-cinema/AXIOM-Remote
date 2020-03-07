@@ -30,7 +30,7 @@ class MenuSystem : public IMenuSystem
     void InitializeAvailableScreens();
 
   public:
-    MenuSystem(IUSBDevice* usbDevice);
+    explicit MenuSystem(IUSBDevice* usbDevice);
     virtual ~MenuSystem();
 
     void SetCurrentScreen(AvailableScreens menu);
@@ -38,7 +38,7 @@ class MenuSystem : public IMenuSystem
 
     void Draw(Painter* painter);
 
-    void Update(Button button, int8_t knob, IUSBDevice* cdcDevice);
+    void Update(Button button, int8_t knob);
 };
 
 #endif // MENUSYSTEM_H

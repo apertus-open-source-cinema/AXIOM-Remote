@@ -5,6 +5,9 @@
 
 #include "../Firmware/UI/Painter.h"
 
+#define FRAMEBUFFER_WIDTH 320
+#define FRAMEBUFFER_HEIGHT 240
+
 // Used for checks of proper draw direction, otherwise performance can degrade massively
 class PainterMod : public Painter
 {
@@ -21,6 +24,13 @@ class PainterMod : public Painter
 
     void DrawPixel(uint16_t x, uint16_t y, uint16_t color) override
     {
+        Painter::DrawPixel(x, y, color);
+
+        if(y > currentY)
+        {
+            currentX = 0;
+        }
+
         if (x < currentX || y < currentY)
         {
             wrongDirection = true;
@@ -28,6 +38,17 @@ class PainterMod : public Painter
 
         currentX = x;
         currentY = y;
+    }
+
+    uint16_t GetPixel(uint16_t x, uint16_t y)
+    {
+        if(x < FRAMEBUFFER_WIDTH && y < FRAMEBUFFER_HEIGHT)
+        {
+            return _framebuffer[y * FRAMEBUFFER_WIDTH + x];
+        }
+
+        std::cout << "Invalid position" << std::endl;
+        return 0;
     }
 };
 

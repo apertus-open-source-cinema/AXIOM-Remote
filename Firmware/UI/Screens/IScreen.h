@@ -23,12 +23,11 @@ class IScreen
         UNUSED(painter);
     }
 
-    virtual void Update(Button button, int8_t knob, IMenuSystem* menuSystem, IUSBDevice* cdcDevice)
+    virtual void Update(Button button, int8_t knob, IMenuSystem* menuSystem)
     {
         UNUSED(button);
         UNUSED(knob);
         UNUSED(menuSystem);
-        UNUSED(cdcDevice);
     }
 };
 

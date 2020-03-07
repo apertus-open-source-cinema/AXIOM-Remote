@@ -26,7 +26,9 @@ list(REMOVE_ITEM IMGUI_SOURCES ${CMAKE_CURRENT_SOURCE_DIR}/3rdParty/imgui/imgui_
 include_directories("${CMAKE_SOURCE_DIR}/3rdParty/gl3w/")
 FILE(GLOB GL3W_SOURCES "${CMAKE_SOURCE_DIR}/3rdParty/gl3w/GL/gl3w.c")
 
-FILE(GLOB FIRMWARE_SOURCES "${CMAKE_CURRENT_SOURCE_DIR}/../Firmware/UI/*.cpp" "${CMAKE_CURRENT_SOURCE_DIR}/../Firmware/GlobalSettings.cpp")
+FILE(GLOB FIRMWARE_SOURCES "${CMAKE_CURRENT_SOURCE_DIR}/../Firmware/UI/*.cpp"
+                           "${CMAKE_CURRENT_SOURCE_DIR}/../Firmware/UI/Screens/*.cpp"
+                           "${CMAKE_CURRENT_SOURCE_DIR}/../Firmware/GlobalSettings.cpp")
 MESSAGE(STATUS "Firmware files: ${FIRMWARE_SOURCES}")
 
 #FILE(GLOB BOOTLOADER_SOURCES "${CMAKE_CURRENT_SOURCE_DIR}/../Bootloader/Periphery/USB/*.cpp")

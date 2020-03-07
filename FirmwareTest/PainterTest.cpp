@@ -2,10 +2,6 @@
 
 #include "PainterMod.h"
 
-#define FRAMEBUFFER_WIDTH 320
-#define FRAMEBUFFER_HEIGHT 240
-
-
 TEST_CASE("DrawFillRectangle test")
 {
     uint16_t* framebuffer = new uint16_t[FRAMEBUFFER_WIDTH * FRAMEBUFFER_HEIGHT];
@@ -87,15 +83,15 @@ TEST_CASE("DrawStripedRectangle test")
 //     REQUIRE(painter.wrongDirection == false);
 // }
 
-TEST_CASE("DrawFillCircle test")
-{
-    uint16_t* framebuffer = new uint16_t[FRAMEBUFFER_WIDTH * FRAMEBUFFER_HEIGHT];
-    PainterMod painter(framebuffer, FRAMEBUFFER_WIDTH, FRAMEBUFFER_HEIGHT);
+// TEST_CASE("DrawFillCircle test")
+// {
+//     uint16_t* framebuffer = new uint16_t[FRAMEBUFFER_WIDTH * FRAMEBUFFER_HEIGHT];
+//     PainterMod painter(framebuffer, FRAMEBUFFER_WIDTH, FRAMEBUFFER_HEIGHT);
 
-    painter.DrawFillCircle(20, 20, 10, 0x0);
+//     painter.DrawFillCircle(20, 20, 10, 0x0);
 
-    REQUIRE(painter.wrongDirection == false);
-}
+//     REQUIRE(painter.wrongDirection == false);
+// }
 
 // TEST_CASE("DrawCircleQuarter test")
 // {
@@ -130,3 +126,12 @@ TEST_CASE("Fill test")
     REQUIRE(painter.wrongDirection == false);
 }
 
+TEST_CASE("DrawPixel test")
+{
+    uint16_t* framebuffer = new uint16_t[FRAMEBUFFER_WIDTH * FRAMEBUFFER_HEIGHT];
+    PainterMod painter(framebuffer, FRAMEBUFFER_WIDTH, FRAMEBUFFER_HEIGHT);
+    
+    painter.DrawPixel(20,30, 0x53);
+
+    REQUIRE(painter.GetPixel(20, 30) == 0x53);
+}

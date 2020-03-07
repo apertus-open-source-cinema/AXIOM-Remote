@@ -2,9 +2,6 @@
 
 #include "Painter.h"
 
-#include "Screens/MainPage.h"
-#include "Screens/SettingsMenu.h"
-
 MenuSystem::MenuSystem(IUSBDevice* usbDevice) :
     _currentScreen(nullptr), _usbDevice(usbDevice), _mainPage(usbDevice), _settingsMenu(usbDevice)
 {
@@ -12,8 +9,6 @@ MenuSystem::MenuSystem(IUSBDevice* usbDevice) :
 
     SetCurrentScreen(AvailableScreens::MainPage);
 }
-
-IUSBDevice* _usbDevice;
 
 MenuSystem::~MenuSystem()
 {
@@ -47,7 +42,7 @@ void MenuSystem::Draw(Painter* painter)
     _currentScreen->Draw(painter);
 }
 
-void MenuSystem::Update(Button button, int8_t knob, IUSBDevice* cdcDevice)
+void MenuSystem::Update(Button button, int8_t knob)
 {
-    _currentScreen->Update(button, knob, this, cdcDevice);
+    _currentScreen->Update(button, knob, this);
 }

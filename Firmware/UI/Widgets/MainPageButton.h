@@ -41,8 +41,11 @@ class MainPageButton : public IButton
     // bool _hideValue;
 
   public:
-    // TODO: Check if customizable height is required for this button, if yes, add it later
+    MainPageButton() : _x(0), _y(0), _width(0)
+    {
+    }
 
+    // TODO: Check if customizable height is required for this button, if yes, add it later
     MainPageButton(uint16_t x, uint16_t y, uint16_t width, const char* label = "...", bool invertOrder = false,
                    ButtonType type = ButtonType::VALUE_AND_LABEL) :
         _x(x),
