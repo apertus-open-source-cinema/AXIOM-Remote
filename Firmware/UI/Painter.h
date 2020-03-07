@@ -32,6 +32,8 @@ class Painter
 
     uint16_t _cursorX;
     uint16_t _cursorY;
+  
+    uint16_t ProcessByte(uint8_t data, uint16_t x, uint16_t xIndex, uint16_t yPos, uint16_t height, uint16_t color);
 
   protected:
     volatile uint16_t* _framebuffer;
@@ -61,6 +63,8 @@ class Painter
     // Misc
     void DrawImage(const uint8_t* data, uint16_t x, uint16_t y, uint16_t width, uint16_t height);
     virtual void DrawPixel(uint16_t x, uint16_t y, uint16_t color);
+  
+    void DrawIcon(const uint8_t* data_text, uint16_t x_text, uint16_t y_text, uint16_t width_text, uint16_t height_text, uint16_t color);
 
     void Fill(uint16_t fillColor);
 
