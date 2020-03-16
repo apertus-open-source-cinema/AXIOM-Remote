@@ -338,14 +338,11 @@ int main()
 
         menuSystem.Update(PollKME(), PollKMW());
 
-        // TODO: each menu should draw/clear the background itself in the future
-        display.ClearFramebuffer((uint16_t)currentMenu->GetBackgroundColor());
-
         menuSystem.Draw(&painter);
 
         counter++;
         sprintf(debugText, "%d\r\n", counter);
-        painter.DrawText(3, 90, debugText, (uint16_t)Color565::Red, Font::FreeSans9pt7b, TextAlign::TEXT_ALIGN_LEFT, 0);
+        painter.DrawText(3, 90, debugText, (uint16_t)Color565::Red, TextAlign::TEXT_ALIGN_LEFT, 0);
 
         // painter.DrawFillRoundRectangle(50, 120, 100, 40, 5, (uint16_t)Color565::Black);
         // Test
