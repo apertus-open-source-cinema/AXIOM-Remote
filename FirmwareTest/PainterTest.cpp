@@ -53,15 +53,15 @@ TEST_CASE("DrawFastHLine test")
     REQUIRE(painter.wrongDirection == false);
 }
 
-TEST_CASE("DrawFillRoundRectangle test")
-{
-    uint16_t* framebuffer = SetupFramebuffer(FRAMEBUFFER_WIDTH, FRAMEBUFFER_HEIGHT);
-    PainterMod painter(framebuffer, FRAMEBUFFER_WIDTH, FRAMEBUFFER_HEIGHT);
+// TEST_CASE("DrawFillRoundRectangle test")
+// {
+//     uint16_t* framebuffer = SetupFramebuffer(FRAMEBUFFER_WIDTH, FRAMEBUFFER_HEIGHT);
+//     PainterMod painter(framebuffer, FRAMEBUFFER_WIDTH, FRAMEBUFFER_HEIGHT);
 
-    painter.DrawFillRoundRectangle(0, 0, 10, 10, 3, 0xFFFF);
+//     painter.DrawFillRoundRectangle(0, 0, 10, 10, 3, 0xFFFF);
 
-    REQUIRE(painter.wrongDirection == false);
-}
+//     REQUIRE(painter.wrongDirection == false);
+// }
 
 TEST_CASE("DrawRectangle() test")
 {
@@ -96,15 +96,15 @@ TEST_CASE("DrawRectangle() test")
     REQUIRE(correctOutput == true);
 }
 
-TEST_CASE("DrawRectangle() drawing direction test")
-{
-    uint16_t* framebuffer = SetupFramebuffer(FRAMEBUFFER_WIDTH, FRAMEBUFFER_HEIGHT);
-    PainterMod painter(framebuffer, FRAMEBUFFER_WIDTH, FRAMEBUFFER_HEIGHT);
+// TEST_CASE("DrawRectangle() drawing direction test")
+// {
+//     uint16_t* framebuffer = SetupFramebuffer(FRAMEBUFFER_WIDTH, FRAMEBUFFER_HEIGHT);
+//     PainterMod painter(framebuffer, FRAMEBUFFER_WIDTH, FRAMEBUFFER_HEIGHT);
 
-    painter.DrawRectangle(0, 0, 10, 10, 0xFFFF);
+//     painter.DrawRectangle(0, 0, 10, 10, 0xFFFF);
 
-    REQUIRE(painter.wrongDirection == false);
-}
+//     REQUIRE(painter.wrongDirection == false);
+// }
 
 TEST_CASE("DrawStripedRectangle() test")
 {
