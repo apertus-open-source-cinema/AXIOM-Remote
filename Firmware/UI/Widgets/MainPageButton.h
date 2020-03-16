@@ -1,8 +1,6 @@
 #ifndef MAINPAGEBUTTON_H
 #define MAINPAGEBUTTON_H
 
-#include <iostream>
-
 #include "IButton.h"
 #include "../Painter.h"
 
@@ -118,7 +116,7 @@ class MainPageButton : public IButton
         painter->SetFont(_labelFont);
 
         uint8_t fontOffset = GetFontYOffset(_labelHeight);
-        std::cout << "Font offset: " << (int)fontOffset << std::endl;
+        //std::cout << "Font offset: " << (int)fontOffset << std::endl;
         painter->DrawText(_x, _y + _labelHeight - fontOffset, _label, labelTextColor, TextAlign::TEXT_ALIGN_CENTER, _width);
     }
 

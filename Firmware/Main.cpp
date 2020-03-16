@@ -148,6 +148,8 @@ int8_t PollKMW()
         // GlobalSettings::brightnessPercentage = brightness;
         // display->SetBacklight(GlobalSettings::brightnessPercentage);
     }
+
+    return 0;
 }
 
 Button PollKME()
@@ -309,7 +311,7 @@ int main()
     MainPage MainPage(&cdcDevice);
     SettingsMenu SettingsMenu(&cdcDevice);
 
-    IMenu* currentMenu = &MainPage;
+    //IMenu* currentMenu = &MainPage;
     // IMenu* currentMenu = &SettingsMenu;
 
     static uint8_t rgb[4];

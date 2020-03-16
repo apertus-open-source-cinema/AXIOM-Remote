@@ -10,9 +10,10 @@
 
 #include "../ButtonDefinitions.h"
 
-#include "../../../Bootloader/Periphery/USB/IUSBDevice.h"
+//#include "../../../Bootloader/Periphery/USB/IUSBDevice.h"
 
 class MenuSystem;
+class IUSBDevice;
 
 class MainPage : public IMenu
 {
