@@ -139,16 +139,13 @@ void Painter::DrawFillRoundRectangle(uint16_t x, uint16_t y, uint16_t width, uin
 
 void Painter::DrawRectangle(uint16_t x, uint16_t y, uint16_t width, uint16_t height, uint16_t color)
 {
-    for (uint16_t yIndex = y; yIndex < y + height; yIndex++)
-    {
-        for (uint16_t xIndex = x; xIndex < x + width; xIndex++)
-        {
-            if (yIndex == y || yIndex == y + height - 1)
-            {
-                DrawPixel(xIndex, yIndex, color);
-            }
-        }
-    }
+    // Draw top and bottom line
+    DrawFastHLine(x, y, width, color);
+    DrawFastHLine(x, y + height - 1, width, color);
+
+    // Draw left and right line
+    DrawFastVLine(x, y, height, color);
+    DrawFastVLine(x + width - 1, y, height, color);
 }
 
 void Painter::DrawStripedRectangle(uint16_t x, uint16_t y, uint16_t width, uint16_t height, uint16_t firstColor,
@@ -300,13 +297,10 @@ void Painter::DrawImage(const uint8_t* data, uint16_t x, uint16_t y, uint16_t wi
     {
         for (uint16_t xIndex = 0; xIndex < width; xIndex++)
         {
-            uint8_t value1 = data[((width * yIndex) + xIndex) * 2];
-            uint8_t value2 = data[((width * yIndex) + xIndex) * 2 + 1];
-            // Skip "transparency" pixels
-            // if(value1 == 248 && value2 == 31)
-            //{
-            //    continue;
-            //}
+            uint16_t index = ((width * yIndex) + xIndex) * 2;
+
+            uint8_t value1 = data[index];
+            uint8_t value2 = data[index + 1];
 
             uint16_t color = ((uint16_t)value1 << 8) | value2;
 

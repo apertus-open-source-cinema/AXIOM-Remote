@@ -62,8 +62,6 @@ void MainPage::Draw(Painter* painter)
 {
     painter->DrawImage(apertus_logo.pixel_data, 58, 89, apertus_logo.width, apertus_logo.height);
 
-    painter->DrawCircle(100, 100, 20, 0x0);
-
     for (uint8_t index = 0; index < 6; index++)
     {
         IWidget* widget = _widgetArray[index];

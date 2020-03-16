@@ -33,7 +33,7 @@ class Painter
     uint16_t _cursorX;
     uint16_t _cursorY;
 
-protected:
+  protected:
     volatile uint16_t* _framebuffer;
 
   public:
@@ -67,8 +67,7 @@ protected:
     // Text Related
     void SetFont(Font font);
     void DrawCharacter(unsigned char c, int16_t x, int16_t y, uint16_t color);
-    void DrawText(uint16_t x, uint16_t y, const char* text, uint16_t color, TextAlign align,
-                  uint16_t textblockwidth);
+    void DrawText(uint16_t x, uint16_t y, const char* text, uint16_t color, TextAlign align, uint16_t textblockwidth);
     uint16_t GetStringFramebufferWidth(const char* str);
 };
 
