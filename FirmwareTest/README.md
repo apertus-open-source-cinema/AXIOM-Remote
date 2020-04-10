@@ -6,6 +6,9 @@ Using the catch2 unit testing framework, which consists of just one C++11 header
 ## Catch Framework Tutorial:
 https://github.com/catchorg/Catch2/blob/master/docs/tutorial.md
 
+## Prerequisites
+Install *cmake & gcovr* packages
+
 ## Build & Run
 ```
 mkdir build && cd build
