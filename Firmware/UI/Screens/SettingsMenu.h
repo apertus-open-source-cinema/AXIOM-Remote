@@ -106,6 +106,7 @@ class SettingsMenu : public IMenu
   protected:
     void Draw(Painter* painter) override
     {
+        painter->SetFont(Font::FreeSans9pt7b);
 
         // clear the screen
         // painter->Fill(_menuBackgroundColor);
@@ -183,18 +184,15 @@ class SettingsMenu : public IMenu
     void DrawHeader(Painter* painter)
     {
         // draw header background
-        painter->DrawFillRectangle(0, GlobalSettings::LCDHeight - 28, GlobalSettings::LCDWidth, 28, _menuItemColor);
+        painter->DrawFillRectangle(0, 0, GlobalSettings::LCDWidth, 28, _menuItemColor);
 
         // draw header bread crumbs
-        painter->DrawText(5, GlobalSettings::LCDHeight - 22, _menuBreadcrumbs, _menuTextColor,
-                          TextAlign::TEXT_ALIGN_LEFT, 0);
+        painter->DrawText(5, 22, _menuBreadcrumbs, _menuTextColor, TextAlign::TEXT_ALIGN_LEFT, 0);
 
         // two header separation lines
-        painter->DrawLine(0, GlobalSettings::LCDHeight - 29, GlobalSettings::LCDWidth - 1,
-                          GlobalSettings::LCDHeight - 29, _menuSelectedItemColor);
+        painter->DrawLine(0, 29, GlobalSettings::LCDWidth - 1, 29, _menuSelectedItemColor);
 
-        painter->DrawLine(0, GlobalSettings::LCDHeight - 30, GlobalSettings::LCDWidth - 1,
-                          GlobalSettings::LCDHeight - 30, _menuBackgroundColor);
+        painter->DrawLine(0, 30, GlobalSettings::LCDWidth - 1, 30, _menuBackgroundColor);
     }
 
     void DrawMenuItems(Painter* painter)
@@ -207,7 +205,7 @@ class SettingsMenu : public IMenu
 
             SetLabel(currentMenuItem);
 
-            uint16_t y = (GlobalSettings::LCDHeight - 29 - 30) - itemIndex * 30;
+            uint16_t y = 29 + itemIndex * 30;
             currentMenuItem.SetDimensions(30, y, GlobalSettings::LCDWidth - 30, 29);
 
             currentMenuItem.Draw(painter);
@@ -227,18 +225,18 @@ class SettingsMenu : public IMenu
         // Calculate offset of scrollbar for 1 item, then multiply by the menu selection index
         uint8_t segmentOffset = (scrollbarHeight - sliderHeight) / (_menuItemsCount - _maxVisibleItems);
 
-        uint8_t scrollbarYOffset = (GlobalSettings::LCDHeight - 30) - sliderHeight;
+        uint8_t scrollbarYOffset = sliderHeight;
         if (_menuSelectionIndex > _maxVisibleItems - 1)
         {
-            scrollbarYOffset -= (_menuSelectionIndex + 1 - _maxVisibleItems) * segmentOffset;
+            scrollbarYOffset += (_menuSelectionIndex + 1) * segmentOffset;
         }
 
         // Background
-        painter->DrawFillRectangle(GlobalSettings::LCDWidth - 16, 0, 16, GlobalSettings::LCDHeight - 30,
+        painter->DrawFillRectangle(GlobalSettings::LCDWidth - 16, 30, 16, GlobalSettings::LCDHeight - 30,
                                    _menuItemColor);
 
         // Thin Line
-        painter->DrawFillRectangle(GlobalSettings::LCDWidth - 10, 0, 4, GlobalSettings::LCDHeight - 30, _menuTextColor);
+        painter->DrawFillRectangle(GlobalSettings::LCDWidth - 10, 30, 4, GlobalSettings::LCDHeight - 30, _menuTextColor);
 
         // Thick Line
         painter->DrawFillRectangle(GlobalSettings::LCDWidth - 14, scrollbarYOffset, 12, sliderHeight, _menuTextColor);
