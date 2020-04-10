@@ -53,7 +53,7 @@ class MenuItem : public IWidget
         _backgroundDisabledColor(RGB565(180, 180, 180)), _textColor((uint16_t)Color565::Black),
         _textHighlightColor((uint16_t)Color565::White), _textPressedColor((uint16_t)Color565::White),
         _textDisabledColor(RGB565(180, 180, 180)), _currentBackgroundColor(_backgroundColor),
-        _currentTextColor(_textColor), _verticalLabelOffset(7)
+        _currentTextColor(_textColor), _verticalLabelOffset(20)
     {
         _x = 0;
         _y = 0;

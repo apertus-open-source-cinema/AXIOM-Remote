@@ -188,7 +188,7 @@ class SettingsMenu : public IMenu
 
         // draw header bread crumbs
         painter->SetFont(Font::FreeSans9pt7b);
-        painter->DrawText(5, 22, _menuBreadcrumbs, _menuTextColor, TextAlign::TEXT_ALIGN_LEFT, 0);
+        painter->DrawText(5, 20, _menuBreadcrumbs, _menuTextColor, TextAlign::TEXT_ALIGN_LEFT, 0);
 
         // two header separation lines
         painter->DrawLine(0, 29, GlobalSettings::LCDWidth - 1, 29, _menuSelectedItemColor);
@@ -206,8 +206,8 @@ class SettingsMenu : public IMenu
 
             SetLabel(currentMenuItem);
 
-            uint16_t y = 29 + itemIndex * 30;
-            currentMenuItem.SetDimensions(30, y, GlobalSettings::LCDWidth - 30, 29);
+            uint16_t y = 31 + itemIndex * 30;
+            currentMenuItem.SetDimensions(31, y, GlobalSettings::LCDWidth - 30, 29);
 
             currentMenuItem.Draw(painter);
         }
@@ -216,7 +216,7 @@ class SettingsMenu : public IMenu
     void DrawScrollIndicator(uint8_t itemCount, uint8_t currentSelectionIndex, Painter* painter)
     {
         // start the scrollbar below the header
-        uint8_t scrollbarYOrigin = 30;
+        uint8_t scrollbarYOrigin = 31;
 
         // maximum height is the screen without header area
         uint8_t scrollbarHeight = GlobalSettings::LCDHeight - scrollbarYOrigin;
