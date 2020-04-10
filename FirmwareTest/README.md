@@ -14,3 +14,6 @@ Install *cmake & gcovr* packages
 mkdir build && cd build
 cmake .. && make
 ```
+
+## Code Coverage
+https://codecov.io/gh/apertus-open-source-cinema/AXIOM-Remote
