@@ -106,6 +106,7 @@ class SettingsMenu : public IMenu
   protected:
     void Draw(Painter* painter) override
     {
+        painter->SetFont(Font::FreeSans9pt7b);
 
         // clear the screen
         // painter->Fill(_menuBackgroundColor);

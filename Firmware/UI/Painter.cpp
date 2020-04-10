@@ -44,6 +44,7 @@ void Painter::SetFont(Font font)
         break;
     }
 }
+
 void Painter::DrawLine(int16_t x0, int16_t y0, int16_t x1, int16_t y1, uint16_t color)
 {
     int16_t steep = abs(y1 - y0) > abs(x1 - x0);
@@ -124,17 +125,6 @@ void Painter::DrawFillRoundRectangle(uint16_t x, uint16_t y, uint16_t width, uin
     // draw four corners
     DrawFillCircleQuarter(x + width - radius - 1, y + radius, radius, 1, height - 2 * radius - 1, color);
     DrawFillCircleQuarter(x + radius, y + radius, radius, 2, height - 2 * radius - 1, color);
-
-    /*
-        uint_fast32_t lineindex;
-        for (uint16_t yIndex = y; yIndex < y + height; yIndex++)
-        {
-            lineindex = _framebufferWidth * (_framebufferHeight - yIndex);
-            for (uint16_t xIndex = x; xIndex < x + width; xIndex++)
-            {
-                _framebuffer[lineindex + xIndex] = color;
-            }
-        }*/
 }
 
 void Painter::DrawRectangle(uint16_t x, uint16_t y, uint16_t width, uint16_t height, uint16_t color)
@@ -472,18 +462,18 @@ void Painter::DrawCharacter(unsigned char character, int16_t x, int16_t y, uint1
     uint8_t* bitmap = _currentFont.bitmap;
 
     uint16_t bo = glyph->bitmapOffset;
-    uint8_t w = glyph->width;
-    uint8_t h = glyph->height;
+    uint8_t glyphWidth = glyph->width;
+    uint8_t glyphHeight = glyph->height;
     int8_t xo = glyph->xOffset;
     int8_t yo = glyph->yOffset;
-    uint8_t xx, yy, bits = 0, bit = 0;
+    uint8_t bits = 0, bit = 0;
     //    int16_t xo16 = 0, yo16 = 0;
 
     // Todo: Add character clipping here
 
-    for (yy = 0; yy < h; yy++)
+    for (uint8_t glyphY = 0; glyphY < glyphHeight; glyphY++)
     {
-        for (xx = 0; xx < w; xx++)
+        for (uint8_t glyphX = 0; glyphX < glyphWidth; glyphX++)
         {
             if (!(bit++ & 7))
             {
@@ -491,7 +481,7 @@ void Painter::DrawCharacter(unsigned char character, int16_t x, int16_t y, uint1
             }
             if (bits & 0x80)
             {
-                DrawPixel(x + xo + xx, y + yo + yy, color);
+                DrawPixel(x + xo + glyphX, y + yo + glyphY, color);
             }
             bits <<= 1;
         }
