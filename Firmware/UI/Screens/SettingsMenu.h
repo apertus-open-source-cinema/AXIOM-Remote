@@ -159,7 +159,7 @@ class SettingsMenu : public IMenu
         {
             MenuItem currentMenuItem = _menuItems[itemIndex + _menuOffset];
 
-            //SetLabel(currentMenuItem);
+            SetValue(currentMenuItem);
 
             uint16_t y = 31 + itemIndex * 30;
             currentMenuItem.SetDimensions(31, y, GlobalSettings::LCDWidth - 30, 29);
@@ -198,7 +198,7 @@ class SettingsMenu : public IMenu
         painter->DrawFillRectangle(GlobalSettings::LCDWidth - 14, scrollbarYOffset, 12, sliderHeight, _menuTextColor);
     }
 
-    void SetLabel(MenuItem& menuItem)
+    void SetValue(MenuItem& menuItem)
     {
         switch (menuItem.GetMenuType())
         {
