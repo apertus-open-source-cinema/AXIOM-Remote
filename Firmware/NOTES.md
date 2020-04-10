@@ -1,3 +1,6 @@
+# LCD
+The drawing origin (X,Y = 0,0) is located in the top left corner. The LCD is used in landscape (widescreen) mode.
+
 # Communication Protocol
 A simple ASCII based line prototcol is currently envisioned:
 
