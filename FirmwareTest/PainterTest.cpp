@@ -3,6 +3,7 @@
 #include <cstring>
 
 #include "PainterMod.h"
+#include "Images/logo_output.h"
 
 // Setup frame buffer and reset all values to 0
 uint16_t* SetupFramebuffer(uint16_t width, uint16_t height)
@@ -179,3 +180,32 @@ TEST_CASE("DrawPixel() test")
 
     REQUIRE(painter.GetPixel(20, 30) == 0x53);
 }
+
+TEST_CASE("DrawIcon test")
+{
+    uint16_t* framebuffer = new uint16_t[15 * 15];
+    PainterMod painter(framebuffer, 15, 15);
+    memset(framebuffer, 0, 15 * 15);
+    
+    painter.DrawIcon(logo.logo_data, 0, 0, logo.width, logo.height, 0x7);
+    
+    int index = 0;
+    bool check = true;
+    
+    for (uint16_t yIndex = 0; yIndex < logo.height; yIndex++)
+    {
+        for (uint16_t xIndex = 0; xIndex < logo.width; xIndex++)
+        {            
+            if(framebuffer[yIndex * 15 + xIndex] != logoOutput[index])
+            {
+                check = false;
+                break;
+            }
+            
+            index++;
+        }
+    }
+    
+    REQUIRE(index == 60);
+    REQUIRE(check == true);
+}   
