@@ -187,16 +187,25 @@ TEST_CASE("DrawIcon test")
     PainterMod painter(framebuffer, 15, 15);
     memset(framebuffer, 0, 15 * 15);
     
-    painter.DrawIcon(logo.logo_data, 0, 0, logo.width, logo.height, 0xc2);
+    painter.DrawIcon(logo.logo_data, 0, 0, logo.width, logo.height, 0x7);
     
-    int d = -1;
+    int index = 0;
+    bool check = true;
+    
     for (uint16_t yIndex = 0; yIndex < logo.height; yIndex++)
     {
         for (uint16_t xIndex = 0; xIndex < logo.width; xIndex++)
         {            
-            d++;
+            if(framebuffer[yIndex * 15 + xIndex] != logoOutput[index])
+            {
+                check = false;
+                break;
+            }
             
-            REQUIRE(framebuffer[yIndex * 15 + xIndex] == logoOutput[d]);
+            index++;
         }
     }
+    
+    REQUIRE(index == 60);
+    REQUIRE(check == true);
 }   
