@@ -2,8 +2,11 @@
 #define PAINTERMOD_H
 
 #include <iostream>
+#include <cstring>
 
 #include "../Firmware/UI/Painter.h"
+
+#include "Images/logo.h"
 
 #define FRAMEBUFFER_WIDTH 320
 #define FRAMEBUFFER_HEIGHT 240

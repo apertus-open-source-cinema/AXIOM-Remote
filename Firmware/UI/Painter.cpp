@@ -293,11 +293,30 @@ void Painter::DrawImage(const uint8_t* data, uint16_t x, uint16_t y, uint16_t wi
             uint8_t value2 = data[index + 1];
 
             uint16_t color = ((uint16_t)value1 << 8) | value2;
-
             DrawPixel(x + xIndex, y + yIndex, color);
         }
     }
 }
+
+/*************** Draw Icon ***************/
+
+void Painter::DrawIcon(const uint8_t* data, uint16_t x, uint16_t y, uint16_t width, uint16_t height, uint16_t color)
+{
+    int b = 0;
+    
+    for (uint16_t yIndex = 0; yIndex < height; yIndex++)
+    {
+        uint16_t yPos = y + yIndex;
+        
+        for (uint16_t xIndex = 0; xIndex < width; )
+        {
+            xIndex = ProcessByte(data[b], x, xIndex, yPos, height, color);   
+            b++;
+        }
+    }
+}
+
+/*****************************************/
 
 uint8_t count = 0;
 
@@ -549,4 +568,21 @@ void Painter::DrawPixel(uint16_t x, uint16_t y, uint16_t color)
 void Painter::Fill(uint16_t fillColor)
 {
     DrawFillRectangle(0, 0, _framebufferWidth, _framebufferHeight, fillColor);
+}
+
+uint16_t Painter::ProcessByte(uint8_t data, uint16_t x, uint16_t xIndex, uint16_t yPos, uint16_t height, uint16_t color)
+{
+    for(int i = 0 ; i < 8 ; i++)
+    {
+        uint8_t pixel = (data >> i) & 0x01;
+                
+        if(pixel == 1)
+        {
+            DrawPixel(x + xIndex, yPos, color);
+        }
+                   
+        xIndex++;
+    }
+
+   return xIndex;
 }
