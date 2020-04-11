@@ -108,67 +108,163 @@ void Setup(ILI9341Display& display, USBCDCDevice& cdcDevice)
 }
 
 static uint8_t data[16];
+static uint8_t data_status[16];
 uint16_t knob_position[2] = {0, 0};
-int8_t diff = 0;
+
 
 char debugText[32];
+bool DEBUG = true;
 
-// void PollKMW(ILI9341Display* display, USBCDCDevice* cdcDevice)
-int8_t PollKMW()
+int8_t PollKMW(USBCDCDevice* cdcDevice)
 {
     i2c3_getn(0x10, data, 2);
 
-    // int8_t brightness = GlobalSettings::brightnessPercentage;
+    if (data[0] != knob_position[0])
+    {
+        int8_t diff = data[0] - knob_position[0];
 
+        knob_position[0] = data[0];
+
+        if (DEBUG)
+        {
+            sprintf(debugText, "Knob E1: %d \r\n", knob_position[0]);
+            cdcDevice->Send((uint8_t*)debugText, 32);
+
+            sprintf(debugText, "data[0]: %d \r\n", data[0]);
+            cdcDevice->Send((uint8_t*)debugText, 32);
+
+            sprintf(debugText, "diff E1: %d \r\n", diff);
+            cdcDevice->Send((uint8_t*)debugText, 32);
+        }
+
+        return diff;
+    }
+
+    /* ignore knob 2 for now
     if (data[1] != knob_position[1])
     {
-        diff = data[1] - knob_position[1];
-        /*if (diff < 0)
-        {
-            brightness -= 10;
-            if (brightness < 10)
-            {
-                brightness = 10;
-            }
-        } else
-        {
-            brightness += 10;
-            if (brightness > 100)
-            {
-                brightness = 100;
-            }
-        }*/
-
-        /*sprintf(debugText, "nob/diff: %d\r\n", diff);
-        cdcDevice->Send((uint8_t*)debugText, 32);*/
+        int8_t diff = data[1] - knob_position[1];
 
         knob_position[1] = data[1];
 
-        return diff;
-        // GlobalSettings::brightnessPercentage = brightness;
-        // display->SetBacklight(GlobalSettings::brightnessPercentage);
-    }
+        if (DEBUG)
+        {
+            sprintf(debugText, "Knob E2: %d \r\n", knob_position[1]);
+            cdcDevice->Send((uint8_t*)debugText, 32);
 
+            sprintf(debugText, "diff E2: %d \r\n", diff);
+            cdcDevice->Send((uint8_t*)debugText, 32);
+        }
+
+        return diff;
+    }*/
     return 0;
 }
 
-Button PollKME()
+Button PollButtons(USBCDCDevice* cdcDevice)
 {
-    static uint8_t data_status[16];
+    /*
+     *  the first three registers (i2c3_getn(0x00, data, 3); data[0], data[1], data[2]) provide change information
+     *  i.e. a bit set there shows that something on the respective input (port A,B or C) changed
+     *  so, a button pressed or a button released will trigger a bit change there
+     *
+     *  register 4 to 6 (i2c3_getn(0x04, data, 3) data[0], data[1], data[2]) contain the status registers of each
+     *  button/knobs current state
+     */
+
+    
+
+    i2c3_getn(0x00, data, 3);
+    i2c3_getn(0x04, data_status, 3);
+
+    if ((data[0] & 0x3F) || data[1] || (data[2] & 0x1F))
+    {
+
+        if (data[0] & 0x20)
+        {
+            // Rotary Knob
+            if (data_status[0] & 0x20)
+            {
+                if (DEBUG)
+                {
+                    cdcDevice->Send((uint8_t*)"E_1_UP\r\n", 32);
+                }
+                return Button::E_1_UP;
+            } else
+            {
+                if (DEBUG)
+                {
+                    cdcDevice->Send((uint8_t*)"E_1_DOWN\r\n", 32);
+                }
+                return Button::E_1_DOWN;
+            }
+        }
+
+        if (data[2] & 0x10)
+        {
+            // Rotary Knob
+            if (data_status[2] & 0x10)
+            {
+                if (DEBUG)
+                {
+                    cdcDevice->Send((uint8_t*)"E_2_UP\r\n", 32);
+                }
+                return Button::E_2_UP;
+            } else
+            {
+                if (DEBUG)
+                {
+                    cdcDevice->Send((uint8_t*)"E_2_DOWN\r\n", 32);
+                }
+                return Button::E_2_DOWN;
+            }
+        }
+    }
 
     i2c2_getn(0x00, data, 3);
     i2c2_getn(0x04, data_status, 3);
 
     if (data[0] || data[1] || data[2])
     {
+        if (DEBUG)
+        {
+            char debugText[32];
+
+            sprintf(debugText, "data[0]: %02X \r\n", data[0]);
+            cdcDevice->Send((uint8_t*)debugText, 32);
+
+            sprintf(debugText, "data[1]: %02X \r\n", data[1]);
+            cdcDevice->Send((uint8_t*)debugText, 32);
+
+            sprintf(debugText, "data[2]: %02X \r\n", data[2]);
+            cdcDevice->Send((uint8_t*)debugText, 32);
+
+            sprintf(debugText, "data_status[0]: %02X \r\n", data_status[0]);
+            cdcDevice->Send((uint8_t*)debugText, 32);
+
+            sprintf(debugText, "data_status[1]: %02X \r\n", data_status[1]);
+            cdcDevice->Send((uint8_t*)debugText, 32);
+
+            sprintf(debugText, "data_status[2]: %02X \r\n", data_status[2]);
+            cdcDevice->Send((uint8_t*)debugText, 32);
+        }
+
         if (data[1] & 0x08)
         {
             if (data_status[1] & 0x08)
             {
+                if (DEBUG)
+                {
+                    cdcDevice->Send((uint8_t*)"BUTTON_1_UP\r\n", 32);
+                }
                 // Button released
                 return Button::BUTTON_1_UP;
             } else
             {
+                if (DEBUG)
+                {
+                    cdcDevice->Send((uint8_t*)"BUTTON_1_DOWN\r\n", 32);
+                }
                 // Button pressed down
                 return Button::BUTTON_1_DOWN;
             }
@@ -178,9 +274,17 @@ Button PollKME()
         {
             if (data_status[1] & 0x10)
             {
+                if (DEBUG)
+                {
+                    cdcDevice->Send((uint8_t*)"BUTTON_2_UP\r\n", 32);
+                }
                 return Button::BUTTON_2_UP;
             } else
             {
+                if (DEBUG)
+                {
+                    cdcDevice->Send((uint8_t*)"BUTTON_2_DOWN\r\n", 32);
+                }
                 return Button::BUTTON_2_DOWN;
             }
         }
@@ -189,9 +293,17 @@ Button PollKME()
         {
             if (data_status[1] & 0x20)
             {
+                if (DEBUG)
+                {
+                    cdcDevice->Send((uint8_t*)"BUTTON_3_UP\r\n", 32);
+                }
                 return Button::BUTTON_3_UP;
             } else
             {
+                if (DEBUG)
+                {
+                    cdcDevice->Send((uint8_t*)"BUTTON_3_DOWN\r\n", 32);
+                }
                 return Button::BUTTON_3_DOWN;
             }
         }
@@ -200,9 +312,17 @@ Button PollKME()
         {
             if (data_status[2] & 0x80)
             {
+                if (DEBUG)
+                {
+                    cdcDevice->Send((uint8_t*)"BUTTON_4_UP\r\n", 32);
+                }
                 return Button::BUTTON_4_UP;
             } else
             {
+                if (DEBUG)
+                {
+                    cdcDevice->Send((uint8_t*)"BUTTON_4_DOWN\r\n", 32);
+                }
                 return Button::BUTTON_4_DOWN;
             }
         }
@@ -211,9 +331,17 @@ Button PollKME()
         {
             if (data_status[2] & 0x40)
             {
+                if (DEBUG)
+                {
+                    cdcDevice->Send((uint8_t*)"BUTTON_5_UP\r\n", 32);
+                }
                 return Button::BUTTON_5_UP;
             } else
             {
+                if (DEBUG)
+                {
+                    cdcDevice->Send((uint8_t*)"BUTTON_5_DOWN\r\n", 32);
+                }
                 return Button::BUTTON_5_DOWN;
             }
         }
@@ -222,9 +350,17 @@ Button PollKME()
         {
             if (data_status[2] & 0x20)
             {
+                if (DEBUG)
+                {
+                    cdcDevice->Send((uint8_t*)"BUTTON_6_UP\r\n", 32);
+                }
                 return Button::BUTTON_6_UP;
             } else
             {
+                if (DEBUG)
+                {
+                    cdcDevice->Send((uint8_t*)"BUTTON_6_DOWN\r\n", 32);
+                }
                 return Button::BUTTON_6_DOWN;
             }
         }
@@ -232,9 +368,17 @@ Button PollKME()
         {
             if (data_status[2] & 0x10)
             {
+                if (DEBUG)
+                {
+                    cdcDevice->Send((uint8_t*)"BUTTON_7_UP\r\n", 32);
+                }
                 return Button::BUTTON_7_UP;
             } else
             {
+                if (DEBUG)
+                {
+                    cdcDevice->Send((uint8_t*)"BUTTON_7_DOWN\r\n", 32);
+                }
                 return Button::BUTTON_7_DOWN;
             }
         }
@@ -242,9 +386,17 @@ Button PollKME()
         {
             if (data_status[2] & 0x08)
             {
+                if (DEBUG)
+                {
+                    cdcDevice->Send((uint8_t*)"BUTTON_8_UP\r\n", 32);
+                }
                 return Button::BUTTON_8_UP;
             } else
             {
+                if (DEBUG)
+                {
+                    cdcDevice->Send((uint8_t*)"BUTTON_8_DOWN\r\n", 32);
+                }
                 return Button::BUTTON_8_DOWN;
             }
         }
@@ -252,9 +404,17 @@ Button PollKME()
         {
             if (data_status[2] & 0x04)
             {
+                if (DEBUG)
+                {
+                    cdcDevice->Send((uint8_t*)"BUTTON_9_UP\r\n", 32);
+                }
                 return Button::BUTTON_9_UP;
             } else
             {
+                if (DEBUG)
+                {
+                    cdcDevice->Send((uint8_t*)"BUTTON_9_DOWN\r\n", 32);
+                }
                 return Button::BUTTON_9_DOWN;
             }
         }
@@ -262,9 +422,17 @@ Button PollKME()
         {
             if (data_status[1] & 0x04)
             {
+                if (DEBUG)
+                {
+                    cdcDevice->Send((uint8_t*)"BUTTON_10_UP\r\n", 32);
+                }
                 return Button::BUTTON_10_UP;
             } else
             {
+                if (DEBUG)
+                {
+                    cdcDevice->Send((uint8_t*)"BUTTON_10_DOWN\r\n", 32);
+                }
                 return Button::BUTTON_10_DOWN;
             }
         }
@@ -272,9 +440,17 @@ Button PollKME()
         {
             if (data_status[1] & 0x02)
             {
+                if (DEBUG)
+                {
+                    cdcDevice->Send((uint8_t*)"BUTTON_11_UP\r\n", 32);
+                }
                 return Button::BUTTON_11_UP;
             } else
             {
+                if (DEBUG)
+                {
+                    cdcDevice->Send((uint8_t*)"BUTTON_11_DOWN\r\n", 32);
+                }
                 return Button::BUTTON_11_DOWN;
             }
         }
@@ -282,15 +458,72 @@ Button PollKME()
         {
             if (data_status[1] & 0x01)
             {
+                if (DEBUG)
+                {
+                    cdcDevice->Send((uint8_t*)"BUTTON_12_UP\r\n", 32);
+                }
                 return Button::BUTTON_12_UP;
             } else
             {
+                if (DEBUG)
+                {
+                    cdcDevice->Send((uint8_t*)"BUTTON_12_DOWN\r\n", 32);
+                }
                 return Button::BUTTON_12_DOWN;
             }
         }
     }
 
     return Button::BUTTON_NONE;
+}
+
+static inline void irq_disable()
+{
+    asm volatile("di");
+    asm volatile("ehb");
+}
+
+static inline void irq_enable()
+{
+    asm volatile("ei");
+}
+
+void init_uart2()
+{
+    irq_disable();
+
+    U2MODEbits.ON = 0;
+
+    TRISEbits.TRISE8 = 0; // U2TX out
+    TRISEbits.TRISE9 = 1; // U2RX in
+    ANSELEbits.ANSE8 = 0; // digital
+    ANSELEbits.ANSE9 = 0; // digital
+
+    CFGCONbits.IOLOCK = 0;
+    RPE8Rbits.RPE8R = 0b0010; // U2TX
+    U2RXRbits.U2RXR = 0b1101; // RPE9
+    CFGCONbits.IOLOCK = 1;
+
+    IPC36bits.U2TXIP = 0b000; //! Interrupt priority of 7
+    IPC36bits.U2TXIS = 0b00;  //! Interrupt sub-priority of 0
+    IPC36bits.U2RXIP = 0b111; //! Interrupt priority of 7
+    IPC36bits.U2RXIS = 0b00;  //! Interrupt sub-priority of 0
+
+    IEC4SET = _IEC4_U2RXIE_MASK; //! Rx INT Enable
+    IFS4bits.U2TXIF = 0;         //! Clear Tx flag
+    IFS4bits.U2RXIF = 0;         //! Clear Rx flag
+
+    U2BRG = 24; // 1MBaud @ 50MHz
+    U2STA = 0;
+
+    U2MODEbits.BRGH = 1;
+    U2MODEbits.PDSEL = 0b00;
+    U2MODEbits.STSEL = 0;
+    U2MODEbits.UEN = 0b00;
+    U2MODEbits.ON = 1;
+    U2STASET = 0x9400; // Enable Transmit and Receive
+
+    irq_enable();
 }
 
 int main()
@@ -311,7 +544,7 @@ int main()
     MainPage MainPage(&cdcDevice);
     SettingsMenu SettingsMenu(&cdcDevice);
 
-    //IMenu* currentMenu = &MainPage;
+    // IMenu* currentMenu = &MainPage;
     // IMenu* currentMenu = &SettingsMenu;
 
     static uint8_t rgb[4];
@@ -333,12 +566,14 @@ int main()
     //     LCD_BLT_O = !LCD_BLT_O;
     // }
 
+    init_uart2();
+
     uint16_t counter = 0;
     while (1)
     {
         cdcDevice.Process();
 
-        menuSystem.Update(PollKME(), PollKMW());
+        menuSystem.Update(PollButtons(&cdcDevice), PollKMW(&cdcDevice));
 
         menuSystem.Draw(&painter);
 
@@ -365,7 +600,7 @@ int main()
 
         display.DisplayFramebuffer();
 
-        //DelayMs(30);
+        // DelayMs(30);
     }
 
     return 0;

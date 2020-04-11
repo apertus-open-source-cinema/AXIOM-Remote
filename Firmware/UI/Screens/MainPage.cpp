@@ -80,11 +80,9 @@ void MainPage::Update(Button button, int8_t knob, IMenuSystem* menuSystem)
     {
     case Button::BUTTON_1_UP:
         _fpsButton.SetValue((char*)"1U");
-        // _usbDevice->Send((uint8_t*)"Button 1 Up\r\n", 10);
         break;
     case Button::BUTTON_1_DOWN:
         _fpsButton.SetValue((char*)"1D");
-        //_usbDevice->Send((uint8_t*)"Button 1 Down\r\n", 10);
         break;
     case Button::BUTTON_2_UP:
         _fpsButton.SetValue((char*)"2");

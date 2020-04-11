@@ -48,6 +48,14 @@ enum class Button
     BUTTON_10_UP,
     BUTTON_11_UP,
     BUTTON_12_UP,
+
+    // Rotary Knobs 
+    E_1,
+    E_2,
+    E_1_DOWN,
+    E_2_DOWN,
+    E_1_UP,
+    E_2_UP,
 };
 
 #endif //BUTTONDEFINITIONS_H

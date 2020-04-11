@@ -13,7 +13,7 @@
 
 #include "../../../Bootloader/Periphery/USB/IUSBDevice.h"
 
-//#include <Helpers.h>
+#include <Helpers.h>
 
 class SettingsMenu : public IMenu
 {
@@ -48,9 +48,11 @@ class SettingsMenu : public IMenu
                                MenuItem("Test Item 10")};
 
   public:
-    explicit SettingsMenu(IUSBDevice* cdcDevice) : _menuItemsCount(10), _menuSelectionIndex(0), _maxVisibleItems(7)
+    explicit SettingsMenu(IUSBDevice* cdcDevice) :
+        _usbDevice(cdcDevice), _menuItemsCount(10), _menuSelectionIndex(0), _maxVisibleItems(7)
     {
-        UNUSED(cdcDevice);
+        // UNUSED(cdcDevice);
+        //_usbDevice = cdcDevice;
 
         _label = "Settings Menu";
         _menuBreadcrumbs = "Settings Menu";
@@ -159,6 +161,7 @@ class SettingsMenu : public IMenu
         {
             MenuItem currentMenuItem = _menuItems[itemIndex + _menuOffset];
 
+            // TODO: move this to the update() function
             SetValue(currentMenuItem);
 
             uint16_t y = 31 + itemIndex * 30;
@@ -235,7 +238,19 @@ class SettingsMenu : public IMenu
 
     void Update(Button button, int8_t knob, IMenuSystem* menuSystem) override
     {
-        _menuSelectionIndex += knob;
+        if (knob != 0)
+        {
+            //char debugText[32];
+           // sprintf(debugText, "Knob: %d \r\n", knob);
+           // _usbDevice->Send((uint8_t*)debugText, 32);
+
+            // Remove highlighting from last selected item as new button event occured
+            _menuItems[_menuSelectionIndex].SetHighlighted(false);
+
+            _menuSelectionIndex -= knob;
+            _menuSelectionIndex = LimitRange(_menuSelectionIndex, 0, _menuItemsCount - 1);
+            _menuItems[_menuSelectionIndex].SetHighlighted(true);
+        }
 
         switch (button)
         {
