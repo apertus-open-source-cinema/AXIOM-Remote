@@ -1,8 +1,15 @@
-# LCD
+# AXIOM Remote Firmware
+
+## Usage instructions
+
+- USB communication to/from the AXIOM Remote is done via a USB communications device class (CDC)
+- **sudo minicom -D /dev/ttyACM0** (baud rate is not required)
+
+## LCD
 The drawing origin (X,Y = 0,0) is located in the top left corner. The LCD is used in landscape (widescreen) mode.
 
-# Communication Protocol
-A simple ASCII based line prototcol is currently envisioned:
+## Communication Protocol
+A simple ASCII based line prototcol is currently envisioned (not implemented yet):
 
 Format:
 ```
