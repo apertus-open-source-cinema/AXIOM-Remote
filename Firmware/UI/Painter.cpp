@@ -318,7 +318,7 @@ void Painter::DrawIcon(const uint8_t* data, uint16_t x, uint16_t y, uint16_t wid
 
 /*****************************************/
 
-uint8_t count = 0;
+//uint8_t count = 0;
 
 void Painter::DrawText(uint16_t x, uint16_t y, const char* text, uint16_t color, TextAlign align,
                        uint16_t textblockwidth)
@@ -344,7 +344,7 @@ void Painter::DrawText(uint16_t x, uint16_t y, const char* text, uint16_t color,
     uint16_t textPixelWidth = GetStringFramebufferWidth(text);
 
     // DrawFillRectangle(x, 0, textPixelWidth, 10, RGB565(255, 255, 0));
-    count++;
+    // count++;
 
     GFXglyph* glyph = nullptr;
 

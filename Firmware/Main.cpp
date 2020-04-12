@@ -168,11 +168,9 @@ Button PollButtons(USBCDCDevice* cdcDevice)
      *  i.e. a bit set there shows that something on the respective input (port A,B or C) changed
      *  so, a button pressed or a button released will trigger a bit change there
      *
-     *  register 4 to 6 (i2c3_getn(0x04, data, 3) data[0], data[1], data[2]) contain the status registers of each
-     *  button/knobs current state
+     *  register 4 to 6 (i2c3_getn(0x04, data_status, 3) data_status[0], data_status[1], data_status[2]) contain the 
+     *  status registers of each button/knobs current state
      */
-
-    
 
     i2c3_getn(0x00, data, 3);
     i2c3_getn(0x04, data_status, 3);

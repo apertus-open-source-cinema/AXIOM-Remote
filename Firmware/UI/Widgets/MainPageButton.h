@@ -111,23 +111,55 @@ class MainPageButton : public IButton
 
     void DrawLabel(Painter* painter)
     {
-        // painter->DrawFillRoundRectangle(_x, _y, _width, _labelHeight, 3, labelBackgroundColor);
-        painter->DrawFillRectangle(_x, _y, _width, _labelHeight, labelBackgroundColor);
-        painter->SetFont(_labelFont);
+        /* the buttons at the top have label at the top and value fields below
+         *  for the buttons at the bottom of the screen the order is inverted (_invertOrder == true)
+         *  meaning the value field is at the top and the label at the bottom. The drawing routine needs to
+         *  account for that.
+         */
 
-        uint8_t fontOffset = GetFontYOffset(_labelHeight);
-        //std::cout << "Font offset: " << (int)fontOffset << std::endl;
-        painter->DrawText(_x, _y + _labelHeight - fontOffset, _label, labelTextColor, TextAlign::TEXT_ALIGN_CENTER, _width);
+        if (_invertOrder)
+        {
+            // bottom buttons
+            painter->DrawFillRoundRectangle(_x, _y + _valueHeight - 2, _width, _labelHeight + 3, 3,
+                                            labelBackgroundColor);
+            painter->SetFont(_labelFont);
+
+            uint8_t fontOffset = GetFontYOffset(_labelHeight);
+            // std::cout << "Font offset: " << (int)fontOffset << std::endl;
+            painter->DrawText(_x, _y + _valueHeight + 16, _label, labelTextColor, TextAlign::TEXT_ALIGN_CENTER, _width);
+        } else
+        {
+            // top buttons
+            painter->DrawFillRoundRectangle(_x, _y, _width, _labelHeight + 3, 3, labelBackgroundColor);
+            painter->SetFont(_labelFont);
+
+            uint8_t fontOffset = GetFontYOffset(_labelHeight);
+            // std::cout << "Font offset: " << (int)fontOffset << std::endl;
+            painter->DrawText(_x, _y + _labelHeight - fontOffset, _label, labelTextColor, TextAlign::TEXT_ALIGN_CENTER,
+                              _width);
+        }
     }
 
     void DrawValue(Painter* painter)
     {
-        painter->DrawFillRoundRectangle(_x, _y + _labelHeight, _width, _valueHeight, 3, valueBackgroundColor);
-        painter->SetFont(_valueFont);
+        if (_invertOrder)
+        {
+            // bottom buttons
+            painter->DrawFillRoundRectangle(_x, _y, _width, _valueHeight, 3, valueBackgroundColor);
+            painter->SetFont(_valueFont);
 
-        uint8_t fontOffset = GetFontYOffset(_valueHeight);
-        painter->DrawText(_x, _y + _labelHeight - fontOffset, _value, valueTextColor, TextAlign::TEXT_ALIGN_CENTER,
-                          _width);
+            uint8_t fontOffset = GetFontYOffset(_valueHeight);
+            painter->DrawText(_x, _y + fontOffset + 16, _value, valueTextColor, TextAlign::TEXT_ALIGN_CENTER, _width);
+        } else
+        {
+            // top buttons
+            painter->DrawFillRoundRectangle(_x, _y + _labelHeight, _width, _valueHeight, 3, valueBackgroundColor);
+            painter->SetFont(_valueFont);
+
+            uint8_t fontOffset = GetFontYOffset(_valueHeight);
+            painter->DrawText(_x, _y + _labelHeight + fontOffset + 16, _value, valueTextColor,
+                              TextAlign::TEXT_ALIGN_CENTER, _width);
+        }
     }
 
     uint8_t GetFontYOffset(uint8_t height)
@@ -137,7 +169,7 @@ class MainPageButton : public IButton
         switch (_labelFont)
         {
         case Font::FreeSans9pt7b:
-            fontOffset = height / 2 - 16 / 2;
+            fontOffset = height / 2 - 16 / 2 + 2;
             break;
         case Font::FreeSans12pt7b:
             fontOffset = height / 2 - 24 / 2;

@@ -11,23 +11,23 @@ MainPage::MainPage(IUSBDevice* cdcDevice) : _usbDevice(cdcDevice), _backgroundCo
 void MainPage::SetupButtons()
 {
     // Top row
-    _fpsButton = MainPageButton(10, 0, 90, "FPS", true);
+    _fpsButton = MainPageButton(10, 0, 90, "FPS", false);
 
-    _analogGainButton = MainPageButton(115, 0, 90, "A. Gain", true);
+    _analogGainButton = MainPageButton(115, 0, 90, "A. Gain", false);
     _analogGainButton.SetHandler(&AnalogGainButtonHandler);
 
-    _digitalGainButton = MainPageButton(220, 0, 90, "D. Gain", true),
+    _digitalGainButton = MainPageButton(220, 0, 90, "D. Gain", false),
     _digitalGainButton.SetHandler(&DigitalGainButtonHandler);
 
     // Bottom row
-    _menuButton = MainPageButton(10, 210, 90, "MENU", false, ButtonType::BUTTON);
+    _menuButton = MainPageButton(10, 210, 90, "MENU", true, ButtonType::BUTTON);
     _menuButton.SetLabelHeight(30);
     //_menuButton.HideValue(true);
     _menuButton.SetLabelFont(Font::FreeSans12pt7b);
     _menuButton.SetHandler(&MenuButtonHandler);
 
-    _shutterButton = MainPageButton(115, 179, 90, "Shutter");
-    _whiteBalanceButton = MainPageButton(220, 179, 90, "WB");
+    _shutterButton = MainPageButton(115, 179, 90, "Shutter", true);
+    _whiteBalanceButton = MainPageButton(220, 179, 90, "WB", true);
 }
 
 Color565 MainPage::GetBackgroundColor()
