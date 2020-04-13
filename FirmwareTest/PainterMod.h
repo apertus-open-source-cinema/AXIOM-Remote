@@ -4,7 +4,7 @@
 #include <iostream>
 #include <cstring>
 
-#include "../Firmware/UI/Painter.h"
+#include "../Firmware/UI/Painter/Painter.h"
 
 #include "Images/logo.h"
 
