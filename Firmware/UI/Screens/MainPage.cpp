@@ -58,7 +58,7 @@ void MainPage::DigitalGainButtonHandler(void* sender)
     menu->SetBackgroundColor(Color565::MenuBackground);
 }
 
-void MainPage::Draw(Painter* painter)
+void MainPage::Draw(IPainter* painter)
 {
     painter->DrawIcon(apertus_text.pixel_data_text, 58, 89, apertus_text.width, apertus_text.height,
                       RGB565(194, 191, 188));

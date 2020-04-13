@@ -36,7 +36,7 @@ class MenuSystem : public IMenuSystem
     void SetCurrentScreen(AvailableScreens menu);
     AvailableScreens GetCurrentScreen();
 
-    void Draw(Painter* painter);
+    void Draw(IPainter* painter);
 
     void Update(Button button, int8_t knob);
 };

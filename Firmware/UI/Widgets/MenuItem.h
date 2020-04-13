@@ -2,9 +2,10 @@
 #define MENUITEM_H
 
 #include "IWidget.h"
-#include "../Painter.h"
 
 #include "../Color565.h"
+
+class IPainter;
 
 enum class MenuItemType
 {
@@ -187,7 +188,7 @@ class MenuItem : public IWidget
         _y = y;
     }
 
-    void Draw(Painter* painter) override
+    void Draw(IPainter* painter) override
     {
         // Draw background
         if (_disabled)

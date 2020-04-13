@@ -12,7 +12,15 @@
 #include "VirtualUI.h"
 
 #include "UI/MenuSystem.h"
-#include "UI/Painter.h"
+#include "UI/Painter/Painter.h"
+
+// Debug
+#include "UI/Painter/PainterDecorator.h"
+
+#define DEBUG_DRAW
+#ifdef DEBUG_DRAW
+    #include "UI/Painter/DebugPainter.h"
+#endif
 
 // Periphery
 #include "USBCDCTerminalDevice.h"
@@ -146,7 +154,15 @@ int main()
 
     SDL_GL_MakeCurrent(window, glContext);
 
-    Painter painter(frameBuffer, FRAMEBUFFER_WIDTH, FRAMEBUFFER_HEIGHT);
+    Painter generalPainter(frameBuffer, FRAMEBUFFER_WIDTH, FRAMEBUFFER_HEIGHT);
+    IPainter* painter = &generalPainter;
+
+#ifdef DEBUG_DRAW
+    DebugPainter debugPainter(&generalPainter);
+    painter = &debugPainter;
+#endif
+
+   // painter = debugPainter.GetPainter(); //debugPainter.GetPainter();
     USBCDCTerminalDevice cdcDevice;
 
     MenuSystem menuSystem(&cdcDevice);
@@ -174,7 +190,7 @@ int main()
 
         // currentMenu->Draw(&painter);
 
-        menuSystem.Draw(&painter);
+        menuSystem.Draw(painter);
         RenderDisplay(frameBuffer, framebuffer, FRAMEBUFFER_WIDTH, FRAMEBUFFER_HEIGHT);
 
         SDL_LockTexture(texture, nullptr, &textureData, &pitch);

@@ -3,12 +3,12 @@
 #include <cstring>
 #include <cstdlib>
 
-#include "../Utils.h"
+#include "../../Utils.h"
 
-#include "../Media/Fonts/FreeSans9pt7b.h"
-#include "../Media/Fonts/FreeSans12pt7b.h"
-#include "../Media/Fonts/FreeSans18pt7b.h"
-#include "../Media/Fonts/FreeSans24pt7b.h"
+#include "../../Media/Fonts/FreeSans9pt7b.h"
+#include "../../Media/Fonts/FreeSans12pt7b.h"
+#include "../../Media/Fonts/FreeSans18pt7b.h"
+#include "../../Media/Fonts/FreeSans24pt7b.h"
 
 #define _swap_int16_t(a, b)                                                                                            \
     {                                                                                                                  \
@@ -18,9 +18,9 @@
     }
 
 Painter::Painter(volatile uint16_t* framebuffer, uint16_t framebufferWidth, uint8_t framebufferHeight) :
-    _framebufferWidth(framebufferWidth),
+    _framebuffer(framebuffer), _framebufferWidth(framebufferWidth),
     _framebufferHeight(framebufferHeight), _fontList{FreeSans9pt7b, FreeSans12pt7b, FreeSans18pt7b, FreeSans24pt7b},
-    _cursorX(0), _cursorY(0), _framebuffer(framebuffer)
+    _cursorX(0), _cursorY(0)
 {
     // Default font
     SetFont(Font::FreeSans9pt7b);
@@ -303,14 +303,14 @@ void Painter::DrawImage(const uint8_t* data, uint16_t x, uint16_t y, uint16_t wi
 void Painter::DrawIcon(const uint8_t* data, uint16_t x, uint16_t y, uint16_t width, uint16_t height, uint16_t color)
 {
     int b = 0;
-    
+
     for (uint16_t yIndex = 0; yIndex < height; yIndex++)
     {
         uint16_t yPos = y + yIndex;
-        
-        for (uint16_t xIndex = 0; xIndex < width; )
+
+        for (uint16_t xIndex = 0; xIndex < width;)
         {
-            xIndex = ProcessByte(data[b], x, xIndex, yPos, height, color);   
+            xIndex = ProcessByte(data[b], x, xIndex, yPos, height, color);
             b++;
         }
     }
@@ -515,7 +515,7 @@ uint16_t Painter::GetStringFramebufferWidth(const char* str)
     bool first_letter = true;
 
     int length = strlen(str);
-
+    //std::cout << "Text length: " << length << std::endl;
     uint8_t first = _currentFont.first;
     uint8_t last = _currentFont.last;
 
@@ -533,6 +533,8 @@ uint16_t Painter::GetStringFramebufferWidth(const char* str)
         int8_t xo = glyph->xOffset;
         gap = xa - gw - xo;
         width += xa;
+        //std::cout << "Glyph width: " << (uint16_t)xa << std::endl;
+
 
         if (first_letter)
         {
@@ -572,17 +574,17 @@ void Painter::Fill(uint16_t fillColor)
 
 uint16_t Painter::ProcessByte(uint8_t data, uint16_t x, uint16_t xIndex, uint16_t yPos, uint16_t height, uint16_t color)
 {
-    for(int i = 0 ; i < 8 ; i++)
+    for (int i = 0; i < 8; i++)
     {
         uint8_t pixel = (data >> i) & 0x01;
-                
-        if(pixel == 1)
+
+        if (pixel)
         {
             DrawPixel(x + xIndex, yPos, color);
         }
-                   
+
         xIndex++;
     }
 
-   return xIndex;
+    return xIndex;
 }

@@ -12,6 +12,11 @@
 #include "UI/Screens/SettingsMenu.h"
 #include "UI/AnalogGainMenu.h"
 
+#define DEBUG_DRAW
+#ifdef DEBUG_DRAW
+    #include "UI/Painter/DebugPainter.h"
+#endif
+
 #include "GlobalSettings.h"
 
 #include <Helpers.h>
@@ -538,7 +543,14 @@ int main()
 
     MenuSystem menuSystem(&cdcDevice);
 
-    Painter painter(display.GetFramebuffer(), display.GetWidth(), display.GetHeight());
+    Painter generalPainter(display.GetFramebuffer(), display.GetWidth(), display.GetHeight());
+    IPainter* painter = &generalPainter;
+
+#ifdef DEBUG_DRAW
+    DebugPainter debugPainter(&generalPainter);
+    painter = &debugPainter;
+#endif
+
     MainPage MainPage(&cdcDevice);
     SettingsMenu SettingsMenu(&cdcDevice);
 
@@ -573,11 +585,11 @@ int main()
 
         menuSystem.Update(PollButtons(&cdcDevice), PollKMW(&cdcDevice));
 
-        menuSystem.Draw(&painter);
+        menuSystem.Draw(painter);
 
         counter++;
         sprintf(debugText, "%d\r\n", counter);
-        painter.DrawText(3, 90, debugText, (uint16_t)Color565::Red, TextAlign::TEXT_ALIGN_LEFT, 0);
+        painter->DrawText(3, 90, debugText, (uint16_t)Color565::Red, TextAlign::TEXT_ALIGN_LEFT, 0);
 
         // painter.DrawFillRoundRectangle(50, 120, 100, 40, 5, (uint16_t)Color565::Black);
         // Test

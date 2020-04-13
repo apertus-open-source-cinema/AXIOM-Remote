@@ -5,7 +5,7 @@
 #include "../../Utils.h"
 
 class IUSBDevice;
-class Painter;
+class IPainter;
 class IMenuSystem;
 
 enum class Button;
@@ -18,7 +18,7 @@ class IScreen
         return Color565::MenuBackground;
     }
 
-    virtual void Draw(Painter* painter)
+    virtual void Draw(IPainter* painter)
     {
         UNUSED(painter);
     }

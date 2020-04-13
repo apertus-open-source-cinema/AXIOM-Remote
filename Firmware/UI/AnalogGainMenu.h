@@ -17,7 +17,7 @@ public:
 
     }
 
-    void Draw(Painter* painter) override
+    void Draw(IPainter* painter) override
     {
 //        painter->DrawImage(apertus_logo.pixel_data, 58, 89, apertus_logo.width, apertus_logo.height);
 //

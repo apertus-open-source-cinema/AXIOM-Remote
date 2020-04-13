@@ -1,8 +1,10 @@
 #ifndef SETTINGSMENU_H
 #define SETTINGSMENU_H
 
+#include <cstring>
+
 #include "IMenu.h"
-#include "../Painter.h"
+#include "../Painter/Painter.h"
 #include "../Widgets/MenuItem.h"
 
 //#include "../Widgets/MainPageButton.h"
@@ -106,7 +108,7 @@ class SettingsMenu : public IMenu
     }
 
   protected:
-    void Draw(Painter* painter) override
+    void Draw(IPainter* painter) override
     {
         painter->SetFont(Font::FreeSans9pt7b);
         DrawHeader(painter);
@@ -121,7 +123,7 @@ class SettingsMenu : public IMenu
         }
     }
 
-    void DrawHeader(Painter* painter)
+    void DrawHeader(IPainter* painter)
     {
         // draw header background
         painter->DrawFillRectangle(0, 0, GlobalSettings::LCDWidth, 28, _menuItemColor);
@@ -136,7 +138,7 @@ class SettingsMenu : public IMenu
         painter->DrawLine(0, 30, GlobalSettings::LCDWidth - 1, 30, _menuBackgroundColor);
     }
 
-    void DrawMenuItems(Painter* painter)
+    void DrawMenuItems(IPainter* painter)
     {
         int8_t displaySelectionIndex = _menuSelectionIndex - _menuOffset;
 
@@ -171,7 +173,7 @@ class SettingsMenu : public IMenu
         }
     }
 
-    void DrawScrollIndicator(Painter* painter)
+    void DrawScrollIndicator(IPainter* painter)
     {
         // start the scrollbar below the header
         uint8_t scrollbarYOrigin = 31;

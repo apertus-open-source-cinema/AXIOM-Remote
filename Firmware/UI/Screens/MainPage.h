@@ -2,7 +2,7 @@
 #define MAINPAGE_H
 
 #include "IMenu.h"
-#include "../Painter.h"
+#include "../Painter/Painter.h"
 
 #include "../Widgets/MainPageButton.h"
 
@@ -47,7 +47,7 @@ class MainPage : public IMenu
 
     static void DigitalGainButtonHandler(void* sender);
 
-    void Draw(Painter* painter) override;
+    void Draw(IPainter* painter) override;
     void Update(Button button, int8_t knob, IMenuSystem* menuSystem) override;
 };
 

@@ -5,10 +5,10 @@
 
 class IMenuSystem
 {
-public: 
+  public:
     virtual void SetCurrentScreen(AvailableScreens screen)
     {
     }
 };
 
-#endif //IMENUSYSTEM_H
+#endif // IMENUSYSTEM_H

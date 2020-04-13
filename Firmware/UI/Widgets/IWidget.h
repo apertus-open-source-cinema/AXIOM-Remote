@@ -18,7 +18,7 @@ class IWidget
     {
     }
 
-    virtual void Draw(Painter* painter)
+    virtual void Draw(IPainter* painter)
     {
         UNUSED(painter);
 

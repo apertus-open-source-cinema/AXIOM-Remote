@@ -1,8 +1,9 @@
+
 #ifndef MAINPAGEBUTTON_H
 #define MAINPAGEBUTTON_H
 
 #include "IButton.h"
-#include "../Painter.h"
+#include "../Painter/Painter.h"
 
 #include "../Color565.h"
 
@@ -72,7 +73,7 @@ class MainPageButton : public IButton
         _hightlighted = false;
     }
 
-    void Draw(Painter* painter) override
+    void Draw(IPainter* painter) override
     {
         if (_type == ButtonType::BUTTON)
         {
@@ -99,14 +100,14 @@ class MainPageButton : public IButton
         }
     }
 
-    void DrawButton(Painter* painter)
+    void DrawButton(IPainter* painter)
     {
         painter->DrawFillRoundRectangle(_x, _y, _width, _labelHeight, 3, currentLabelBackgroundColor);
         painter->SetFont(_labelFont);
         painter->DrawText(_x, _y + 24, _label, currentLabelTextColor, TextAlign::TEXT_ALIGN_CENTER, _width);
     }
 
-    void DrawLabelBox(Painter* painter, int8_t verticaloffset, int8_t verticaltextoffset)
+    void DrawLabelBox(IPainter* painter, int8_t verticaloffset, int8_t verticaltextoffset)
     {
         painter->DrawFillRoundRectangle(_x, _y + verticaloffset, _width, _labelHeight, 3, currentLabelBackgroundColor);
         painter->SetFont(_labelFont);
@@ -114,7 +115,7 @@ class MainPageButton : public IButton
                           TextAlign::TEXT_ALIGN_CENTER, _width);
     }
 
-    void DrawValueBox(Painter* painter, int8_t verticaloffset, int8_t verticaltextoffset)
+    void DrawValueBox(IPainter* painter, int8_t verticaloffset, int8_t verticaltextoffset)
     {
         painter->DrawFillRoundRectangle(_x, _y + verticaloffset, _width, _valueHeight, 3, currentValueBackgroundColor);
         painter->SetFont(_valueFont);
