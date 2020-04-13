@@ -38,8 +38,14 @@ class MainPageButton : public IButton
     uint16_t labelBackgroundColor;
     uint16_t valueTextColor;
     uint16_t valueBackgroundColor;
+
     uint16_t backgroundHighlightColor;
     uint16_t textHighlightColor;
+
+    uint16_t currentLabelTextColor;
+    uint16_t currentLabelBackgroundColor;
+    uint16_t currentValueTextColor;
+    uint16_t currentValueBackgroundColor;
 
     // bool _hideValue;
 
@@ -55,159 +61,68 @@ class MainPageButton : public IButton
         _y(y), _width(width), _labelHeight(20), _valueHeight(40), _label((char*)label), _value((char*)"..."),
         _invertOrder(invertOrder), _labelFont(Font::FreeSans9pt7b), _valueFont(Font::FreeSans12pt7b), _type(type)
     {
-        labelTextColor = (uint16_t)Color565::White;
-        labelBackgroundColor = (uint16_t)Color565::Black;
-        valueTextColor = (uint16_t)Color565::Black;
-        valueBackgroundColor = (uint16_t)Color565::White;
+        currentLabelTextColor = labelTextColor = (uint16_t)Color565::White;
+        currentLabelBackgroundColor = labelBackgroundColor = (uint16_t)Color565::Black;
+        currentValueTextColor = valueTextColor = (uint16_t)Color565::Black;
+        currentValueBackgroundColor = valueBackgroundColor = (uint16_t)Color565::White;
+
         backgroundHighlightColor = (uint16_t)Color565::AXIOMOrange;
-        textHighlightColor = (uint16_t)Color565::White;
+        textHighlightColor = (uint16_t)Color565::Black;
+
         _hightlighted = false;
     }
 
     void Draw(Painter* painter) override
     {
-        DrawLabel(painter);
-        DrawValue(painter);
-    }
-
-    void DrawLabel(Painter* painter)
-    {
-        /* the buttons at the top have label at the top and value fields below
-         *  for the buttons at the bottom of the screen the order is inverted (_invertOrder == true)
-         *  meaning the value field is at the top and the label at the bottom. The drawing routine needs to
-         *  account for that.
-         */
-
-        if (_type == ButtonType::VALUE_AND_LABEL)
-        {
-            if (_invertOrder)
-            {
-                // bottom buttons
-                if (_hightlighted)
-                {
-                    painter->DrawFillRoundRectangle(_x, _y + _valueHeight - 2, _width, _labelHeight + 3, 3,
-                                                    backgroundHighlightColor);
-                } else
-                {
-                    painter->DrawFillRoundRectangle(_x, _y + _valueHeight - 2, _width, _labelHeight + 3, 3,
-                                                    labelBackgroundColor);
-                }
-                painter->SetFont(_labelFont);
-
-                uint8_t fontOffset = GetFontYOffset(_labelHeight);
-                // std::cout << "Font offset: " << (int)fontOffset << std::endl;
-
-                if (_hightlighted)
-                {
-                    painter->DrawText(_x, _y + _valueHeight + 16, _label, labelBackgroundColor,
-                                      TextAlign::TEXT_ALIGN_CENTER, _width);
-                } else
-                {
-                    painter->DrawText(_x, _y + _valueHeight + 16, _label, labelTextColor, TextAlign::TEXT_ALIGN_CENTER,
-                                      _width);
-                }
-            } else
-            {
-                // top buttons
-                if (_hightlighted)
-                {
-                    painter->DrawFillRoundRectangle(_x, _y, _width, _labelHeight + 3, 3, backgroundHighlightColor);
-                } else
-                {
-                    painter->DrawFillRoundRectangle(_x, _y, _width, _labelHeight + 3, 3, labelBackgroundColor);
-                }
-
-                painter->SetFont(_labelFont);
-
-                uint8_t fontOffset = GetFontYOffset(_labelHeight);
-                // std::cout << "Font offset: " << (int)fontOffset << std::endl;
-
-                if (_hightlighted)
-                {
-                    painter->DrawText(_x, _y + _labelHeight - fontOffset, _label, labelBackgroundColor,
-                                      TextAlign::TEXT_ALIGN_CENTER, _width);
-                } else
-                {
-                    painter->DrawText(_x, _y + _labelHeight - fontOffset, _label, labelTextColor,
-                                      TextAlign::TEXT_ALIGN_CENTER, _width);
-                }
-            }
-        }
-
         if (_type == ButtonType::BUTTON)
         {
-            if (_hightlighted)
-            {
-                painter->DrawFillRoundRectangle(_x, _y, _width, _labelHeight, 3, backgroundHighlightColor);
-                painter->SetFont(_labelFont);
-
-                uint8_t fontOffset = GetFontYOffset(_labelHeight);
-                // std::cout << "Font offset: " << (int)fontOffset << std::endl;
-                painter->DrawText(_x, _y + 20, _label, labelBackgroundColor, TextAlign::TEXT_ALIGN_CENTER, _width);
-            } else
-            {
-                painter->DrawFillRoundRectangle(_x, _y, _width, _labelHeight, 3, labelBackgroundColor);
-                painter->SetFont(_labelFont);
-
-                uint8_t fontOffset = GetFontYOffset(_labelHeight);
-                // std::cout << "Font offset: " << (int)fontOffset << std::endl;
-                painter->DrawText(_x, _y + 20, _label, labelTextColor, TextAlign::TEXT_ALIGN_CENTER, _width);
-            }
-        }
-    }
-
-    void DrawValue(Painter* painter)
-    {
-        if (_type == ButtonType::VALUE_AND_LABEL)
+            DrawButton(painter);
+        } else if (_type == ButtonType::VALUE_AND_LABEL)
         {
+            /*  the buttons at the top have label at the top and value fields below
+             *  for the buttons at the bottom of the screen the order is inverted (_invertOrder == true)
+             *  meaning the value field is at the top and the label at the bottom. The drawing routine needs to
+             *  account for that.
+             */
+
             if (_invertOrder)
             {
-                // bottom buttons
-
-                if (_hightlighted)
-                {
-                    painter->DrawFillRoundRectangle(_x, _y, _width, _valueHeight, 3, valueBackgroundColor);
-                    painter->SetFont(_valueFont);
-
-                    uint8_t fontOffset = GetFontYOffset(_valueHeight);
-                    painter->DrawText(_x, _y + fontOffset + 16, _value, valueTextColor, TextAlign::TEXT_ALIGN_CENTER,
-                                      _width);
-                } else
-                {
-                    painter->DrawFillRoundRectangle(_x, _y, _width, _valueHeight, 3, valueBackgroundColor);
-                    painter->SetFont(_valueFont);
-
-                    uint8_t fontOffset = GetFontYOffset(_valueHeight);
-                    painter->DrawText(_x, _y + fontOffset + 16, _value, valueTextColor, TextAlign::TEXT_ALIGN_CENTER,
-                                      _width);
-                }
-
+                // bottom items
+                DrawLabelBox(painter, _valueHeight, 16);
+                DrawValueBox(painter, 0, 30);
             } else
             {
-                // top buttons
-
-                if (_hightlighted)
-                {
-                    painter->DrawFillRoundRectangle(_x, _y + _labelHeight, _width, _valueHeight, 3, valueTextColor);
-                    painter->SetFont(_valueFont);
-
-                    uint8_t fontOffset = GetFontYOffset(_valueHeight);
-                    painter->DrawText(_x, _y + _labelHeight + fontOffset + 16, _value, valueBackgroundColor,
-                                      TextAlign::TEXT_ALIGN_CENTER, _width);
-                } else
-                {
-                    painter->DrawFillRoundRectangle(_x, _y + _labelHeight, _width, _valueHeight, 3,
-                                                    valueBackgroundColor);
-                    painter->SetFont(_valueFont);
-
-                    uint8_t fontOffset = GetFontYOffset(_valueHeight);
-                    painter->DrawText(_x, _y + _labelHeight + fontOffset + 16, _value, valueTextColor,
-                                      TextAlign::TEXT_ALIGN_CENTER, _width);
-                }
+                // top items
+                DrawLabelBox(painter, 0, 16);
+                DrawValueBox(painter, _labelHeight, 30);
             }
         }
     }
 
+    void DrawButton(Painter* painter)
+    {
+        painter->DrawFillRoundRectangle(_x, _y, _width, _labelHeight, 3, currentLabelBackgroundColor);
+        painter->SetFont(_labelFont);
+        painter->DrawText(_x, _y + 24, _label, currentLabelTextColor, TextAlign::TEXT_ALIGN_CENTER, _width);
+    }
+
+    void DrawLabelBox(Painter* painter, int8_t verticaloffset, int8_t verticaltextoffset)
+    {
+        painter->DrawFillRoundRectangle(_x, _y + verticaloffset, _width, _labelHeight, 3, currentLabelBackgroundColor);
+        painter->SetFont(_labelFont);
+        painter->DrawText(_x, _y + verticaloffset + verticaltextoffset, _label, currentLabelTextColor,
+                          TextAlign::TEXT_ALIGN_CENTER, _width);
+    }
+
+    void DrawValueBox(Painter* painter, int8_t verticaloffset, int8_t verticaltextoffset)
+    {
+        painter->DrawFillRoundRectangle(_x, _y + verticaloffset, _width, _valueHeight, 3, currentValueBackgroundColor);
+        painter->SetFont(_valueFont);
+        painter->DrawText(_x, _y + verticaloffset + verticaltextoffset, _value, currentValueTextColor,
+                          TextAlign::TEXT_ALIGN_CENTER, _width);
+    }
+
+    // TODO: Find out what this function does or why we need it.
     uint8_t GetFontYOffset(uint8_t height)
     {
         uint8_t fontOffset = 0;
@@ -215,7 +130,7 @@ class MainPageButton : public IButton
         switch (_labelFont)
         {
         case Font::FreeSans9pt7b:
-            fontOffset = height / 2 - 16 / 2 + 2;
+            fontOffset = height / 2 - 16 / 2;
             break;
         case Font::FreeSans12pt7b:
             fontOffset = height / 2 - 24 / 2;
@@ -254,6 +169,19 @@ class MainPageButton : public IButton
     void SetHighlighted(bool hightlighted)
     {
         _hightlighted = hightlighted;
+        if (hightlighted)
+        {
+            currentLabelTextColor = textHighlightColor;
+            currentLabelBackgroundColor = backgroundHighlightColor;
+            currentValueTextColor = valueBackgroundColor;
+            currentValueBackgroundColor = valueTextColor;
+        } else
+        {
+            currentLabelTextColor = labelTextColor;
+            currentLabelBackgroundColor = labelBackgroundColor;
+            currentValueTextColor = valueTextColor;
+            currentValueBackgroundColor = valueBackgroundColor;
+        }
     };
 };
 
