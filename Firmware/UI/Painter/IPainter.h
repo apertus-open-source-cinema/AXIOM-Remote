@@ -46,6 +46,7 @@ class IPainter
     virtual void DrawText(uint16_t x, uint16_t y, const char* text, uint16_t color, TextAlign align,
                           uint16_t textblockwidth) {}
     virtual uint16_t GetStringFramebufferWidth(const char* str) {}
+    virtual uint8_t GetCurrentFontHeight() {}
 };
 
 #endif /* PAINTER_H */

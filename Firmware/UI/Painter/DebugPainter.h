@@ -5,7 +5,7 @@
 
 #include "PainterDecorator.h"
 
-//template <class T>
+// template <class T>
 class DebugPainter : public Painter
 {
     Painter* _painter;
@@ -21,11 +21,27 @@ class DebugPainter : public Painter
         _painter->DrawRectangle(x, y, width, height, (uint16_t)Color565::Red);
     }
 
-    void DrawText(uint16_t x, uint16_t y, const char* text, uint16_t color, TextAlign align, uint16_t textblockwidth) override
+    void DrawText(uint16_t x, uint16_t y, const char* text, uint16_t color, TextAlign align,
+                  uint16_t textblockwidth) override
     {
         uint16_t textWidth = _painter->GetStringFramebufferWidth(text);
-        _painter->DrawRectangle(x, y, textWidth, 30, (uint16_t)Color565::Red);
-        //std::cout << "Text: " <<  text << " | x: " << x << " y: " << y << " width: " << textWidth << " height: " << "N/A" << std::endl;
+        uint16_t textHeight = GetCurrentFontHeight();
+
+        int16_t xoffset = 0;
+
+        if ((align == TextAlign::TEXT_ALIGN_CENTER) && (textblockwidth > 0))
+        {
+            xoffset = -textWidth / 2 + textblockwidth / 2;
+        }
+
+        uint8_t boundingboxyoffset = 0;
+        if (y > textHeight)
+        {
+            boundingboxyoffset = y - textHeight;
+        }
+        _painter->DrawRectangle(x + xoffset, boundingboxyoffset, textWidth, textHeight, (uint16_t)Color565::Red);
+        // std::cout << "Text: " <<  text << " | x: " << x << " y: " << y << " width: " << textWidth << " height: " <<
+        // "N/A" << std::endl;
 
         _painter->DrawText(x, y, text, color, align, textblockwidth);
     }

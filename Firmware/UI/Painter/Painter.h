@@ -14,6 +14,7 @@ class Painter : public IPainter
 {
     GFXfont _fontList[4];
     GFXfont _currentFont;
+    uint8_t _currentFontHeight;
 
     uint16_t _cursorX;
     uint16_t _cursorY;
@@ -61,6 +62,7 @@ class Painter : public IPainter
     virtual void DrawText(uint16_t x, uint16_t y, const char* text, uint16_t color, TextAlign align,
                           uint16_t textblockwidth) override;
     uint16_t GetStringFramebufferWidth(const char* str) override;
+    uint8_t GetCurrentFontHeight() override;
 };
 
 #endif /* PAINTER_H */

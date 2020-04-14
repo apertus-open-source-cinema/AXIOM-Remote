@@ -32,15 +32,19 @@ void Painter::SetFont(Font font)
     {
     case Font::FreeSans9pt7b:
         _currentFont = _fontList[0];
+        _currentFontHeight = 18;
         break;
     case Font::FreeSans12pt7b:
         _currentFont = _fontList[1];
+        _currentFontHeight = 24;
         break;
     case Font::FreeSans18pt7b:
         _currentFont = _fontList[2];
+        _currentFontHeight = 34;
         break;
     case Font::FreeSans24pt7b:
         _currentFont = _fontList[3];
+        _currentFontHeight = 45;
         break;
     }
 }
@@ -318,7 +322,7 @@ void Painter::DrawIcon(const uint8_t* data, uint16_t x, uint16_t y, uint16_t wid
 
 /*****************************************/
 
-//uint8_t count = 0;
+// uint8_t count = 0;
 
 void Painter::DrawText(uint16_t x, uint16_t y, const char* text, uint16_t color, TextAlign align,
                        uint16_t textblockwidth)
@@ -507,6 +511,11 @@ void Painter::DrawCharacter(unsigned char character, int16_t x, int16_t y, uint1
     }
 }
 
+uint8_t Painter::GetCurrentFontHeight()
+{
+    return _currentFontHeight;
+}
+
 uint16_t Painter::GetStringFramebufferWidth(const char* str)
 {
     uint16_t width = 0;
@@ -515,7 +524,7 @@ uint16_t Painter::GetStringFramebufferWidth(const char* str)
     bool first_letter = true;
 
     int length = strlen(str);
-    //std::cout << "Text length: " << length << std::endl;
+    // std::cout << "Text length: " << length << std::endl;
     uint8_t first = _currentFont.first;
     uint8_t last = _currentFont.last;
 
@@ -533,8 +542,7 @@ uint16_t Painter::GetStringFramebufferWidth(const char* str)
         int8_t xo = glyph->xOffset;
         gap = xa - gw - xo;
         width += xa;
-        //std::cout << "Glyph width: " << (uint16_t)xa << std::endl;
-
+        // std::cout << "Glyph width: " << (uint16_t)xa << std::endl;
 
         if (first_letter)
         {
