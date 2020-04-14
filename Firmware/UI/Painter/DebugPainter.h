@@ -39,7 +39,13 @@ class DebugPainter : public Painter
         {
             boundingboxyoffset = y - textHeight;
         }
+
+        // draw bounding box
         _painter->DrawRectangle(x + xoffset, boundingboxyoffset, textWidth, textHeight, (uint16_t)Color565::Red);
+
+        // draw text baseline
+        _painter->DrawLine(x + xoffset, y, x + xoffset + textWidth, y, (uint16_t)Color565::Green);
+
         // std::cout << "Text: " <<  text << " | x: " << x << " y: " << y << " width: " << textWidth << " height: " <<
         // "N/A" << std::endl;
 
