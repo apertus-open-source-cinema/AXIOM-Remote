@@ -2,6 +2,7 @@
 
 #include <cstring>
 #include <cstdlib>
+#include <iostream>
 
 #include "../../Utils.h"
 
@@ -524,7 +525,7 @@ uint16_t Painter::GetStringFramebufferWidth(const char* str)
     bool first_letter = true;
 
     int length = strlen(str);
-    // std::cout << "Text length: " << length << std::endl;
+    // std::cout << "Text length: " << str << " " << length << std::endl;
     uint8_t first = _currentFont.first;
     uint8_t last = _currentFont.last;
 
@@ -536,14 +537,14 @@ uint16_t Painter::GetStringFramebufferWidth(const char* str)
             continue;
         }
 
-        GFXglyph* glyph = &_currentFont.glyph[*str - first];
+        GFXglyph* glyph = &_currentFont.glyph[str[i] - first];
         uint8_t gw = glyph->width;
         uint8_t xa = glyph->xAdvance;
         int8_t xo = glyph->xOffset;
         gap = xa - gw - xo;
         width += xa;
-        // std::cout << "Glyph width: " << (uint16_t)xa << std::endl;
-
+        // std::cout << "Glyph width: " << str << (uint16_t)xa << std::endl;
+        
         if (first_letter)
         {
             xo1 = xo;
@@ -563,6 +564,7 @@ uint16_t Painter::GetStringFramebufferWidth(const char* str)
     {
         width -= xo1;
     }
+    // std::cout << "Glyph width: " << str << (uint16_t)width << std::endl;
     return width;
 }
 
