@@ -47,7 +47,7 @@ class DebugPainter : public Painter
         _painter->DrawLine(x + xoffset, y, x + xoffset + textWidth, y, (uint16_t)Color565::Green);
 
         // std::cout << "Text: " <<  text << " | x: " << x << " y: " << y << " width: " << textWidth << " height: " <<
-        // "N/A" << std::endl;
+        // textHeight << std::endl;
 
         _painter->DrawText(x, y, text, color, align, textblockwidth);
     }
