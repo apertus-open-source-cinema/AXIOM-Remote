@@ -8,6 +8,6 @@
 
 enum class Button;
 
-void RenderUI(SDL_Window *window, ImTextureID textureID, Button& button);
+void RenderUI(SDL_Window* window, const ImGuiIO& io, ImTextureID knoTextureID, ImTextureID displayTextureID, Button& button);
 
-#endif //VIRTUALUI_H
+#endif // VIRTUALUI_H

@@ -19,7 +19,7 @@
 
 #define DEBUG_DRAW
 #ifdef DEBUG_DRAW
-    #include "UI/Painter/DebugPainter.h"
+#include "UI/Painter/DebugPainter.h"
 #endif
 
 // Periphery
@@ -110,7 +110,6 @@ int main()
 
     ImGui::CreateContext();
     const ImGuiIO& io = ImGui::GetIO();
-    (void)io;
 
     int majorVersionGL = 0;
     int minorVersionGL = 0;
@@ -121,19 +120,29 @@ int main()
     ImGui_ImplSDL2_InitForOpenGL(window, glContext);
     ImGui_ImplOpenGL3_Init("#version 130");
 
+    SDL_Surface* displayTexture = SDL_CreateRGBSurface(0, FRAMEBUFFER_WIDTH, FRAMEBUFFER_HEIGHT, 24, 0, 0, 0, 0);
+
+    unsigned int displayTextureID = 0;
+    SDL_Surface* surface = IMG_Load("images/knob_clean.png");
+    glGenTextures(1, &displayTextureID);
+    glBindTexture(GL_TEXTURE_2D, displayTextureID);
+    glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, surface->w, surface->h, 0, GL_RGB, GL_UNSIGNED_BYTE, surface->pixels);
+
+    glBindTexture(GL_TEXTURE_2D, 0);
+
     SDL_Texture* texture = SDL_CreateTexture(renderer, SDL_PIXELFORMAT_RGB24, SDL_TEXTUREACCESS_STREAMING,
                                              FRAMEBUFFER_WIDTH, FRAMEBUFFER_HEIGHT);
     void* textureData;
     int pitch = 0;
 
     SDL_Rect texture_rect;
-    texture_rect.x = 400;                // the x coordinate
-    texture_rect.y = 120;                // the y coordinate
-    texture_rect.w = FRAMEBUFFER_WIDTH;  // the width of the texture
-    texture_rect.h = FRAMEBUFFER_HEIGHT; // the height of the texture
+    texture_rect.x = 400;                    // the x coordinate
+    texture_rect.y = 120;                    // the y coordinate
+    texture_rect.w = FRAMEBUFFER_WIDTH * 4;  // the width of the texture
+    texture_rect.h = FRAMEBUFFER_HEIGHT * 4; // the height of the texture
 
     unsigned int knobTextureID = 0;
-    SDL_Surface* surface = IMG_Load("images/knob_clean.png");
+    surface = IMG_Load("images/knob_clean.png");
     glGenTextures(1, &knobTextureID);
     glBindTexture(GL_TEXTURE_2D, knobTextureID);
 
@@ -162,7 +171,7 @@ int main()
     painter = &debugPainter;
 #endif
 
-   // painter = debugPainter.GetPainter(); //debugPainter.GetPainter();
+    // painter = debugPainter.GetPainter(); //debugPainter.GetPainter();
     USBCDCTerminalDevice cdcDevice;
 
     MenuSystem menuSystem(&cdcDevice);
@@ -197,14 +206,19 @@ int main()
         memcpy(textureData, framebuffer, FRAMEBUFFER_WIDTH * FRAMEBUFFER_HEIGHT * 3);
         SDL_UnlockTexture(texture);
 
+        glBindTexture(GL_TEXTURE_2D, displayTextureID);
+        glTexSubImage2D(GL_TEXTURE_2D, 0, 0, 0, FRAMEBUFFER_WIDTH, FRAMEBUFFER_HEIGHT, GL_RGB, GL_UNSIGNED_BYTE,
+                        framebuffer);
+        glBindTexture(GL_TEXTURE_2D, 0);
+
         button = Button::BUTTON_NONE;
-        RenderUI(window, reinterpret_cast<ImTextureID>(knobTextureID), button);
+        RenderUI(window, io, reinterpret_cast<ImTextureID>(knobTextureID), reinterpret_cast<ImTextureID>(displayTextureID),
+                 button);
         menuSystem.Update(button, knob);
         ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());
 
         // SDL_GL_SwapWindow(window);
 
-        SDL_RenderCopy(renderer, texture, nullptr, &texture_rect);
         SDL_RenderPresent(renderer); // updates the renderer
 
         std::this_thread::sleep_for(std::chrono::milliseconds(1000 / frames));

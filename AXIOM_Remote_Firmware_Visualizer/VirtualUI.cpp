@@ -16,7 +16,40 @@ bool RenderButton(std::string name, uint16_t x, uint16_t y, uint16_t width = 40,
     return ImGui::Button(name.c_str(), ImVec2(width, height));
 }
 
-void RenderUI(SDL_Window* window, ImTextureID textureID, Button& button)
+void ShowZoomTooltip(const ImGuiIO& io, ImTextureID displayTextureID)
+{
+    ImVec2 pos = ImGui::GetCursorScreenPos();
+    int16_t textureWidth = 320;
+    int16_t textureHeight = 240;
+    ImGui::Image(displayTextureID, ImVec2(textureWidth, textureHeight), ImVec2(0, 0), ImVec2(1, 1), ImVec4(1.0f, 1.0f, 1.0f, 1.0f),
+                 ImVec4(1.0f, 1.0f, 1.0f, 0.5f));
+    if (ImGui::IsItemHovered())
+    {
+        std::cout << "Mouse X: " << io.MousePos.x << "Mouse Y: " << io.MousePos.y << std::endl;
+        ImGui::BeginTooltip();
+        float region_sz = 48.0f;
+        float region_x = io.MousePos.x - pos.x - region_sz * 0.5f;
+        if (region_x < 0.0f)
+            region_x = 0.0f;
+        else if (region_x > textureWidth - region_sz)
+            region_x = textureWidth - region_sz;
+        float region_y = io.MousePos.y - pos.y - region_sz * 0.5f;
+        if (region_y < 0.0f)
+            region_y = 0.0f;
+        else if (region_y > textureHeight - region_sz)
+            region_y = textureHeight - region_sz;
+        float zoom = 4.0f;
+        ImGui::Text("Min: (%.2f, %.2f)", region_x, region_y);
+        ImGui::Text("Max: (%.2f, %.2f)", region_x + region_sz, region_y + region_sz);
+        ImVec2 uv0 = ImVec2((region_x) / textureWidth, (region_y) / textureHeight);
+        ImVec2 uv1 = ImVec2((region_x + region_sz) / textureWidth, (region_y + region_sz) / textureHeight);
+        ImGui::Image(displayTextureID, ImVec2(region_sz * zoom, region_sz * zoom), uv0, uv1,
+                     ImVec4(1.0f, 1.0f, 1.0f, 1.0f), ImVec4(1.0f, 1.0f, 1.0f, 0.5f));
+        ImGui::EndTooltip();
+    }
+}
+
+void RenderUI(SDL_Window* window, const ImGuiIO& io, ImTextureID knobTextureID, ImTextureID displayTextureID, Button& button)
 {
     ImGui_ImplOpenGL3_NewFrame();
     ImGui_ImplSDL2_NewFrame(window);
@@ -131,7 +164,7 @@ void RenderUI(SDL_Window* window, ImTextureID textureID, Button& button)
     ImGui::Button("9", ImVec2(40, 30));*/
 
     ImGui::SetCursorPos(ImVec2(60, 140));
-    if (ImGui::Knob("Test123", &value, (ImTextureID)textureID))
+    if (ImGui::Knob("Test123", &value, (ImTextureID)knobTextureID))
     {
         /*float diff = value - lastValue;
         lastValue = value;*/
@@ -146,6 +179,9 @@ void RenderUI(SDL_Window* window, ImTextureID textureID, Button& button)
           main_menu_knob_handler(E1_ROT, diff);
         }*/
     }
+
+    ImGui::SetCursorPos(ImVec2(400, 120));
+    ShowZoomTooltip(io, displayTextureID);
 
     ImGui::PopStyleColor();
     ImGui::End();
