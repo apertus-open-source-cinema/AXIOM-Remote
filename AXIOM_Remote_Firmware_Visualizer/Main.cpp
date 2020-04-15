@@ -94,6 +94,31 @@ void RenderDisplay(uint16_t* sourceFramebuffer, uint8_t* targetFramebuffer, int 
     }
 }
 
+uint32_t CreateGLTexture(SDL_Surface* surface, GLint textureFilter = GL_LINEAR)
+{
+    uint32_t textureID = 0;
+
+    glGenTextures(1, &textureID);
+    glBindTexture(GL_TEXTURE_2D, textureID);
+
+    int mode = GL_RGB;
+    if (surface->format->BytesPerPixel == 4)
+    {
+        mode = GL_RGBA;
+    }
+
+    // glTexStorage2D(GL_TEXTURE_2D, 1, GL_RGB, 320, 240);
+    glTexImage2D(GL_TEXTURE_2D, 0, mode, surface->w, surface->h, 0, mode, GL_UNSIGNED_BYTE, surface->pixels);
+
+    // Filtering
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, textureFilter);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, textureFilter);
+
+    glBindTexture(GL_TEXTURE_2D, 0);
+
+    return textureID;
+}
+
 int main()
 {
     std::cout << "AXIOM Remote Visualizer" << std::endl;
@@ -121,17 +146,9 @@ int main()
     ImGui_ImplOpenGL3_Init("#version 130");
 
     SDL_Surface* displayTexture = SDL_CreateRGBSurface(0, FRAMEBUFFER_WIDTH, FRAMEBUFFER_HEIGHT, 24, 0, 0, 0, 0);
+    uint32_t displayTextureID = CreateGLTexture(displayTexture, GL_NEAREST);
+    SDL_FreeSurface(displayTexture);
 
-    unsigned int displayTextureID = 0;
-    SDL_Surface* surface = IMG_Load("images/knob_clean.png");
-    glGenTextures(1, &displayTextureID);
-    glBindTexture(GL_TEXTURE_2D, displayTextureID);
-    glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, surface->w, surface->h, 0, GL_RGB, GL_UNSIGNED_BYTE, surface->pixels);
-
-    glBindTexture(GL_TEXTURE_2D, 0);
-
-    SDL_Texture* texture = SDL_CreateTexture(renderer, SDL_PIXELFORMAT_RGB24, SDL_TEXTUREACCESS_STREAMING,
-                                             FRAMEBUFFER_WIDTH, FRAMEBUFFER_HEIGHT);
     void* textureData;
     int pitch = 0;
 
@@ -141,23 +158,9 @@ int main()
     texture_rect.w = FRAMEBUFFER_WIDTH * 4;  // the width of the texture
     texture_rect.h = FRAMEBUFFER_HEIGHT * 4; // the height of the texture
 
-    unsigned int knobTextureID = 0;
-    surface = IMG_Load("images/knob_clean.png");
-    glGenTextures(1, &knobTextureID);
-    glBindTexture(GL_TEXTURE_2D, knobTextureID);
-
-    int Mode = GL_RGB;
-    if (surface->format->BytesPerPixel == 4)
-    {
-        Mode = GL_RGBA;
-    }
-
-    glTexImage2D(GL_TEXTURE_2D, 0, Mode, surface->w, surface->h, 0, Mode, GL_UNSIGNED_BYTE, surface->pixels);
-
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
-
-    glBindTexture(GL_TEXTURE_2D, 0);
+    SDL_Surface* surface = IMG_Load("images/knob_clean.png");
+    uint32_t knobTextureID = CreateGLTexture(surface);
+    SDL_FreeSurface(surface);
 
     SDL_SetRenderDrawColor(renderer, 64, 64, 64, 255);
 
@@ -171,11 +174,9 @@ int main()
     painter = &debugPainter;
 #endif
 
-    // painter = debugPainter.GetPainter(); //debugPainter.GetPainter();
     USBCDCTerminalDevice cdcDevice;
 
     MenuSystem menuSystem(&cdcDevice);
-    // menuSystem.SetCurrentMenu(AvailableMenus::SettingsMenu);
 
     Button button = Button::BUTTON_NONE;
 
@@ -195,16 +196,10 @@ int main()
             }
         }
 
-        // SDL_RenderClear(renderer);
-
-        // currentMenu->Draw(&painter);
+        SDL_RenderClear(renderer);
 
         menuSystem.Draw(painter);
         RenderDisplay(frameBuffer, framebuffer, FRAMEBUFFER_WIDTH, FRAMEBUFFER_HEIGHT);
-
-        SDL_LockTexture(texture, nullptr, &textureData, &pitch);
-        memcpy(textureData, framebuffer, FRAMEBUFFER_WIDTH * FRAMEBUFFER_HEIGHT * 3);
-        SDL_UnlockTexture(texture);
 
         glBindTexture(GL_TEXTURE_2D, displayTextureID);
         glTexSubImage2D(GL_TEXTURE_2D, 0, 0, 0, FRAMEBUFFER_WIDTH, FRAMEBUFFER_HEIGHT, GL_RGB, GL_UNSIGNED_BYTE,
@@ -212,14 +207,14 @@ int main()
         glBindTexture(GL_TEXTURE_2D, 0);
 
         button = Button::BUTTON_NONE;
-        RenderUI(window, io, reinterpret_cast<ImTextureID>(knobTextureID), reinterpret_cast<ImTextureID>(displayTextureID),
-                 button);
+        RenderUI(window, io, reinterpret_cast<ImTextureID>(knobTextureID),
+                 reinterpret_cast<ImTextureID>(displayTextureID), button);
         menuSystem.Update(button, knob);
         ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());
 
-        // SDL_GL_SwapWindow(window);
+        SDL_GL_SwapWindow(window);
 
-        SDL_RenderPresent(renderer); // updates the renderer
+        // SDL_RenderPresent(renderer); // updates the renderer
 
         std::this_thread::sleep_for(std::chrono::milliseconds(1000 / frames));
     }

@@ -16,6 +16,7 @@ bool RenderButton(std::string name, uint16_t x, uint16_t y, uint16_t width = 40,
     return ImGui::Button(name.c_str(), ImVec2(width, height));
 }
 
+// Grabbed from the ImGui examples
 void ShowZoomTooltip(const ImGuiIO& io, ImTextureID displayTextureID)
 {
     ImVec2 pos = ImGui::GetCursorScreenPos();
@@ -25,7 +26,6 @@ void ShowZoomTooltip(const ImGuiIO& io, ImTextureID displayTextureID)
                  ImVec4(1.0f, 1.0f, 1.0f, 0.5f));
     if (ImGui::IsItemHovered())
     {
-        std::cout << "Mouse X: " << io.MousePos.x << "Mouse Y: " << io.MousePos.y << std::endl;
         ImGui::BeginTooltip();
         float region_sz = 48.0f;
         float region_x = io.MousePos.x - pos.x - region_sz * 0.5f;
