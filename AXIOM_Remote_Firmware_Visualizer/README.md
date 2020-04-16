@@ -12,7 +12,7 @@ to initialize it.
 
 * Install required packages: **CMake, libsdl2-dev, libsdl2-image-dev**
 * Open terminal, usual shortcut under Linux is **Ctrl+Alt+T**
-* **cd** into **/axiom_remote_visualizer**
+* **cd** into **/AXIOM_Remote_Firmware_Visualizer**
 * **mkdir build**
 * **cd build**
 * **cmake ..**
