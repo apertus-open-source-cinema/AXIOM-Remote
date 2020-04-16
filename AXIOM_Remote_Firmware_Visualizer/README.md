@@ -17,4 +17,4 @@ to initialize it.
 * **cd build**
 * **cmake ..**
 * **make -j4**
-* **./axiom_remote_visualizer**
+* **./AXIOM_Remote_Firmware_Visualizer**
