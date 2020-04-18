@@ -118,11 +118,11 @@ void MainPage::Update(Button button, int8_t knob, IMenuSystem* menuSystem)
         break;
     case Button::BUTTON_6_UP:
         //_menuButton.Activate(this);
-        _menuButton.SetHighlighted(false);
+        _whiteBalanceButton.SetHighlighted(false);
         menuSystem->SetCurrentScreen(AvailableScreens::WhiteBalance);
         break;
     case Button::BUTTON_6_DOWN:
-        _menuButton.SetHighlighted(true);
+        _whiteBalanceButton.SetHighlighted(true);
         break;
     default:
         break;

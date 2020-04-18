@@ -12,7 +12,7 @@ WhiteBalanceScreen::WhiteBalanceScreen(IUSBDevice* usbDevice) :
     _homeButton.SetHandler(&HomeButtonHandler);
     _bottomButtonBar.SetButton(ButtonPosition::Left, &_homeButton);
 
-    _testButton.SetCornerRadius(10);
+    _testButton.SetCornerRadius(3);
     _testButton.SetHandler(&TestButtonHandler);
     _bottomButtonBar.SetButton(ButtonPosition::Right, &_testButton);
 }
@@ -44,10 +44,18 @@ void WhiteBalanceScreen::Update(Button button, int8_t knob, IMenuSystem* menuSys
 {
     switch (button)
     {
+    case Button::BUTTON_4_DOWN:
+        _homeButton.SetHighlighted(true);
+        break;
     case Button::BUTTON_4_UP:
+        _homeButton.SetHighlighted(false);
         menuSystem->SetCurrentScreen(AvailableScreens::MainPage);
         break;
+    case Button::BUTTON_6_DOWN:
+        _testButton.SetHighlighted(true);
+        break;
     case Button::BUTTON_6_UP:
+        _testButton.SetHighlighted(false);
         menuSystem->SetCurrentScreen(AvailableScreens::SettingsMenu);
         break;
     default:

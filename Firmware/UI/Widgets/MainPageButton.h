@@ -40,8 +40,8 @@ class MainPageButton : public IButton
     uint16_t valueTextColor;
     uint16_t valueBackgroundColor;
 
-    uint16_t backgroundHighlightColor;
     uint16_t textHighlightColor;
+    uint16_t backgroundHighlightColor;
 
     uint16_t currentLabelTextColor;
     uint16_t currentLabelBackgroundColor;
