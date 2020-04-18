@@ -543,7 +543,7 @@ uint16_t Painter::GetStringFramebufferWidth(const char* str)
         gap = xa - gw - xo;
         width += xa;
         // std::cout << "Glyph width: " << str << (uint16_t)xa << std::endl;
-        
+
         if (first_letter)
         {
             xo1 = xo;

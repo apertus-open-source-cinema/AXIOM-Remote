@@ -1,6 +1,7 @@
 #ifndef BUTTONDEFINITIONS_H
 #define BUTTONDEFINITIONS_H
 
+// TODO: Find proper name as Button gives the impression of a base class, but is only containing definitions
 enum class Button
 {
     BUTTON_NONE,

@@ -3,7 +3,9 @@
 #include "../MenuDefinitions.h"
 #include "../MenuSystem.h"
 
-MainPage::MainPage(IUSBDevice* cdcDevice) : _usbDevice(cdcDevice), _backgroundColor(Color565::MenuBackground)
+// TODO: Add assignment of menu system to IMenu
+MainPage::MainPage(IUSBDevice* cdcDevice) :
+    IMenu(cdcDevice), _backgroundColor(Color565::MenuBackground)
 {
     SetupButtons();
 }
@@ -22,7 +24,6 @@ void MainPage::SetupButtons()
     // Bottom row
     _menuButton = MainPageButton(10, 210, 90, "MENU", true, ButtonType::BUTTON);
     _menuButton.SetLabelHeight(30);
-    //_menuButton.HideValue(true);
     _menuButton.SetLabelFont(Font::FreeSans12pt7b);
     _menuButton.SetHandler(&MenuButtonHandler);
 
@@ -113,6 +114,14 @@ void MainPage::Update(Button button, int8_t knob, IMenuSystem* menuSystem)
         menuSystem->SetCurrentScreen(AvailableScreens::SettingsMenu);
         break;
     case Button::BUTTON_4_DOWN:
+        _menuButton.SetHighlighted(true);
+        break;
+    case Button::BUTTON_6_UP:
+        //_menuButton.Activate(this);
+        _menuButton.SetHighlighted(false);
+        menuSystem->SetCurrentScreen(AvailableScreens::WhiteBalance);
+        break;
+    case Button::BUTTON_6_DOWN:
         _menuButton.SetHighlighted(true);
         break;
     default:

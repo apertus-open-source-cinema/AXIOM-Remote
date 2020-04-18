@@ -7,6 +7,7 @@
 
 #include "Screens/MainPage.h"
 #include "Screens/SettingsMenu.h"
+#include "Screens/WhiteBalanceScreen.h"
 
 class Painter;
 class IScreen;
@@ -26,6 +27,7 @@ class MenuSystem : public IMenuSystem
     // Menus, static init
     MainPage _mainPage;
     SettingsMenu _settingsMenu;
+    WhiteBalanceScreen _whiteBalance;
 
     void InitializeAvailableScreens();
 

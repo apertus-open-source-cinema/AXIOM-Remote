@@ -19,8 +19,6 @@ class IUSBDevice;
 
 class MainPage : public IMenu
 {
-    IUSBDevice* _usbDevice;
-
     MainPageButton _fpsButton;
     MainPageButton _analogGainButton;
     MainPageButton _digitalGainButton;
@@ -37,14 +35,13 @@ class MainPage : public IMenu
 
   public:
     MainPage(IUSBDevice* cdcDevice);
-    
+
   protected:
     virtual Color565 GetBackgroundColor() override;
     virtual void SetBackgroundColor(Color565 color);
 
     static void MenuButtonHandler(void* sender);
     static void AnalogGainButtonHandler(void* sender);
-
     static void DigitalGainButtonHandler(void* sender);
 
     void Draw(IPainter* painter) override;

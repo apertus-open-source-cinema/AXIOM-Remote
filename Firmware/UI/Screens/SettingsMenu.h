@@ -19,8 +19,6 @@
 
 class SettingsMenu : public IMenu
 {
-    IUSBDevice* _usbDevice;
-
     char const* _label;
     char const* _menuBreadcrumbs;
 
@@ -50,8 +48,9 @@ class SettingsMenu : public IMenu
                                MenuItem("Test Item 10")};
 
   public:
+    // TODO: Add assignment of menu system to IMenu
     explicit SettingsMenu(IUSBDevice* cdcDevice) :
-        _usbDevice(cdcDevice), _menuItemsCount(10), _menuSelectionIndex(0), _maxVisibleItems(7)
+        IMenu(cdcDevice), _menuItemsCount(10), _menuSelectionIndex(0), _maxVisibleItems(7)
     {
         // UNUSED(cdcDevice);
         //_usbDevice = cdcDevice;
@@ -242,9 +241,9 @@ class SettingsMenu : public IMenu
     {
         if (knob != 0)
         {
-            //char debugText[32];
-           // sprintf(debugText, "Knob: %d \r\n", knob);
-           // _usbDevice->Send((uint8_t*)debugText, 32);
+            // char debugText[32];
+            // sprintf(debugText, "Knob: %d \r\n", knob);
+            // _usbDevice->Send((uint8_t*)debugText, 32);
 
             // Remove highlighting from last selected item as new button event occured
             _menuItems[_menuSelectionIndex].SetHighlighted(false);

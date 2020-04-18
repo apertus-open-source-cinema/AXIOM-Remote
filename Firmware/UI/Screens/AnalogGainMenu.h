@@ -8,6 +8,8 @@
 #ifndef ANALOGGAINMENU_H
 #define	ANALOGGAINMENU_H
 
+#include "IMenu.h"
+
 class AnalogGainMenu : public IMenu
 {
 public:

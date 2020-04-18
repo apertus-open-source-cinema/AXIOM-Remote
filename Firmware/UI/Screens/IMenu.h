@@ -10,6 +10,10 @@
 
 class IMenu : public IScreen
 {
+  public:
+    IMenu(IUSBDevice* usbDevice = nullptr) : IScreen(usbDevice)
+    {
+    }
 };
 
 #endif /* IMENU_H */

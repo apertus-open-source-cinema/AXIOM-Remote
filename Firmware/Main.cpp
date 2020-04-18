@@ -10,7 +10,7 @@
 #include "UI/MenuSystem.h"
 #include "UI/Screens/MainPage.h"
 #include "UI/Screens/SettingsMenu.h"
-#include "UI/AnalogGainMenu.h"
+#include "UI/Screens/AnalogGainMenu.h"
 
 #define DEBUG_DRAW
 #ifdef DEBUG_DRAW

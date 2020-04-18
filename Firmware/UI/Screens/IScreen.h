@@ -1,34 +1,42 @@
 #ifndef ISCREEN_H
 #define ISCREEN_H
 
-#include "../Color565.h"
 #include "../../Utils.h"
 
+#include "../Widgets/ButtonBar.h"
+
+class ButtonBar;
 class IUSBDevice;
 class IPainter;
 class IMenuSystem;
 
 enum class Button;
+enum class Color565;
+
+#define MAX_BUTTON_COUNT 3
 
 class IScreen
 {
+  protected:
+    IUSBDevice* _usbDevice;
+
+    ButtonBar _bottomButtonBar;
+
+    virtual void DrawCaption();
+
+    virtual void DrawTopButtonBar();
+    virtual void DrawBottomButtonBar(IPainter* painter);
+
+    virtual void SetBottomButton(ButtonPosition position, IButton* button);
+
   public:
-    virtual Color565 GetBackgroundColor()
-    {
-        return Color565::MenuBackground;
-    }
+    IScreen(IUSBDevice* usbDevice = nullptr);
+    virtual ~IScreen();
 
-    virtual void Draw(IPainter* painter)
-    {
-        UNUSED(painter);
-    }
+    virtual Color565 GetBackgroundColor();
+    virtual void Draw(IPainter* painter);
 
-    virtual void Update(Button button, int8_t knob, IMenuSystem* menuSystem)
-    {
-        UNUSED(button);
-        UNUSED(knob);
-        UNUSED(menuSystem);
-    }
+    virtual void Update(Button button, int8_t knob, IMenuSystem* menuSystem);
 };
 
 #endif // ISCREEN_H

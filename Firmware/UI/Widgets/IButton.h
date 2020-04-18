@@ -16,7 +16,8 @@ class IButton : public IWidget
     void (*_handlerPtr)(void*);
 
   public:
-    IButton() : _handlerPtr(nullptr)
+    IButton(uint16_t x = 0, uint16_t y = 0, uint16_t width = 0, uint16_t height = 0) :
+        IWidget(x, y, width, height), _handlerPtr(nullptr)
     {
     }
 

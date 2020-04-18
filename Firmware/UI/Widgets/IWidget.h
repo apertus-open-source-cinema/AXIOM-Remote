@@ -3,7 +3,7 @@
 
 #include "../../Utils.h"
 
-class Painter;
+class IPainter;
 
 class IWidget
 {
@@ -14,8 +14,17 @@ class IWidget
     uint16_t _height;
 
   public:
-    IWidget() : _x(0), _y(0), _width(0), _height(0)
+    IWidget(uint16_t x = 0, uint16_t y = 0, uint16_t width = 0, uint16_t height = 0) :
+        _x(x), _y(y), _width(width), _height(height)
     {
+    }
+
+    void SetDimensions(uint16_t x, uint16_t y, uint16_t width, uint16_t height)
+    {
+        _x = x;
+        _y = y;
+        _width = width;
+        _height = height;
     }
 
     virtual void Draw(IPainter* painter)

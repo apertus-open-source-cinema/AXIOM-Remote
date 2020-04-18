@@ -22,34 +22,39 @@ class DebugPainter : public Painter
     }
 
     void DrawText(uint16_t x, uint16_t y, const char* text, uint16_t color, TextAlign align,
-                  uint16_t textblockwidth) override
+                  uint16_t textBlockWidth) override
     {
+        _painter->DrawText(x, y, text, color, align, textBlockWidth);
+
         uint16_t textWidth = _painter->GetStringFramebufferWidth(text);
         uint16_t textHeight = GetCurrentFontHeight();
 
-        int16_t xoffset = 0;
+        int16_t xOffset = 0;
 
-        if ((align == TextAlign::TEXT_ALIGN_CENTER) && (textblockwidth > 0))
+        if ((align == TextAlign::TEXT_ALIGN_CENTER) && (textBlockWidth > 0))
         {
-            xoffset = -textWidth / 2 + textblockwidth / 2;
+            xOffset = -textWidth / 2 + textBlockWidth / 2;
         }
 
-        uint8_t boundingboxyoffset = 0;
+        uint8_t boundingBoxYOffset = 0;
         if (y > textHeight)
         {
-            boundingboxyoffset = y - textHeight;
+            boundingBoxYOffset = y - textHeight;
         }
 
+        // boundingBoxYOffset += 2;
+        //        x -= 1;
+        //      textWidth += 2;
+        // xOffset += 3;
+
         // draw bounding box
-        _painter->DrawRectangle(x + xoffset, boundingboxyoffset, textWidth, textHeight, (uint16_t)Color565::Red);
+        _painter->DrawRectangle(x + xOffset, boundingBoxYOffset, textWidth, textHeight, (uint16_t)Color565::Red);
 
         // draw text baseline
-        _painter->DrawLine(x + xoffset, y, x + xoffset + textWidth, y, (uint16_t)Color565::Green);
+        _painter->DrawLine(x + xOffset, y, x + xOffset + textWidth, y, (uint16_t)Color565::Green);
 
         // std::cout << "Text: " <<  text << " | x: " << x << " y: " << y << " width: " << textWidth << " height: " <<
         // textHeight << std::endl;
-
-        _painter->DrawText(x, y, text, color, align, textblockwidth);
     }
 };
 

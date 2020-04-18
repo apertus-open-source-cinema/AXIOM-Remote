@@ -51,7 +51,7 @@ class MainPageButton : public IButton
     // bool _hideValue;
 
   public:
-    MainPageButton() : _x(0), _y(0), _width(0)
+    MainPageButton() : IButton()
     {
     }
 

@@ -1,9 +1,11 @@
 #include "MenuSystem.h"
 
 #include "Painter/IPainter.h"
+#include "Screens/IScreen.h"
 
 MenuSystem::MenuSystem(IUSBDevice* usbDevice) :
-    _currentScreen(nullptr), _usbDevice(usbDevice), _mainPage(usbDevice), _settingsMenu(usbDevice)
+    _currentScreen(nullptr), _usbDevice(usbDevice), _mainPage(usbDevice), _settingsMenu(usbDevice),
+    _whiteBalance(usbDevice)
 {
     InitializeAvailableScreens();
 
@@ -29,6 +31,7 @@ void MenuSystem::InitializeAvailableScreens()
 {
     _availableScreens[0] = &_mainPage;
     _availableScreens[1] = &_settingsMenu;
+    _availableScreens[2] = &_whiteBalance;
 }
 
 void MenuSystem::Draw(IPainter* painter)

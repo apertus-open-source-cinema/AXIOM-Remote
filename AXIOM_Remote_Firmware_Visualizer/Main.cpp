@@ -17,13 +17,22 @@
 // Debug
 #include "UI/Painter/PainterDecorator.h"
 
-#define DEBUG_DRAW
+//#define DEBUG_DRAW
 #ifdef DEBUG_DRAW
 #include "UI/Painter/DebugPainter.h"
 #endif
 
 // Periphery
 #include "USBCDCTerminalDevice.h"
+
+#define FRAMEBUFFER_WIDTH 320
+#define FRAMEBUFFER_HEIGHT 240
+
+enum class GLTextureFilter
+{
+    Nearest,
+    Linear
+};
 
 void Shutdown(SDL_Window* win, SDL_Renderer* ren)
 {
@@ -74,9 +83,6 @@ void Initialization(SDL_Window** win, SDL_Renderer** renderer, SDL_GLContext& gl
     glContext = SDL_GL_CreateContext(*win);
 }
 
-#define FRAMEBUFFER_WIDTH 320
-#define FRAMEBUFFER_HEIGHT 240
-
 void RenderDisplay(uint16_t* sourceFramebuffer, uint8_t* targetFramebuffer, int width, int height)
 {
     unsigned int j = 0;
@@ -119,6 +125,25 @@ uint32_t CreateGLTexture(SDL_Surface* surface, GLint textureFilter = GL_LINEAR)
     return textureID;
 }
 
+void SetupGL()
+{
+    gl3wInit();
+
+    int majorVersionGL = 0;
+    int minorVersionGL = 0;
+    SDL_GL_GetAttribute(SDL_GL_CONTEXT_MAJOR_VERSION, &majorVersionGL);
+    SDL_GL_GetAttribute(SDL_GL_CONTEXT_MINOR_VERSION, &minorVersionGL);
+    std::cout << "GL Version: " << majorVersionGL << "." << minorVersionGL << std::endl;
+}
+
+void SetupImGui(SDL_Window* window, SDL_GLContext glContext)
+{
+    ImGui::CreateContext();
+
+    ImGui_ImplSDL2_InitForOpenGL(window, glContext);
+    ImGui_ImplOpenGL3_Init("#version 130");
+}
+
 int main()
 {
     std::cout << "AXIOM Remote Visualizer" << std::endl;
@@ -131,19 +156,11 @@ int main()
     SDL_GLContext glContext;
     Initialization(&window, &renderer, glContext);
 
-    gl3wInit();
+    SetupGL();
 
+    SetupImGui(window, glContext);
     ImGui::CreateContext();
     const ImGuiIO& io = ImGui::GetIO();
-
-    int majorVersionGL = 0;
-    int minorVersionGL = 0;
-    SDL_GL_GetAttribute(SDL_GL_CONTEXT_MAJOR_VERSION, &majorVersionGL);
-    SDL_GL_GetAttribute(SDL_GL_CONTEXT_MINOR_VERSION, &minorVersionGL);
-    std::cout << "GL Version: " << majorVersionGL << "." << minorVersionGL << std::endl;
-
-    ImGui_ImplSDL2_InitForOpenGL(window, glContext);
-    ImGui_ImplOpenGL3_Init("#version 130");
 
     SDL_Surface* displayTexture = SDL_CreateRGBSurface(0, FRAMEBUFFER_WIDTH, FRAMEBUFFER_HEIGHT, 24, 0, 0, 0, 0);
     uint32_t displayTextureID = CreateGLTexture(displayTexture, GL_NEAREST);
@@ -183,7 +200,7 @@ int main()
     int8_t knob;
 
     bool appIsRunning = true;
-    const int frames = 30;
+    const int frames = 60;
     SDL_Event events;
     while (appIsRunning)
     {

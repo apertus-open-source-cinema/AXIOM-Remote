@@ -7,7 +7,8 @@
 enum class AvailableScreens : uint8_t
 {
     MainPage,
-    SettingsMenu
+    SettingsMenu,
+    WhiteBalance
 };
 
-#endif //MENUDEFINITIONS_H
+#endif // MENUDEFINITIONS_H
