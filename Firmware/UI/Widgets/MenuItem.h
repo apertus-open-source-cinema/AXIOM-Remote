@@ -26,6 +26,7 @@ class MenuItem : public IWidget
     char const* _label;
     char const* _value;
     MenuItemType _type;
+    AvailableScreens _targetScreen;
 
     uint16_t _backgroundColor;
     uint16_t _backgroundHighlightColor;
@@ -77,6 +78,11 @@ class MenuItem : public IWidget
             _currentBackgroundColor = _backgroundColor;
             _currentTextColor = _textColor;
         }
+    }
+
+    void SetTargetScreen(AvailableScreens targetscreen)
+    {
+        _targetScreen = targetscreen;
     }
 
     bool IsDisabled()
@@ -206,6 +212,21 @@ class MenuItem : public IWidget
         {
             painter->DrawText(_x + 180, _y + _verticalLabelOffset, _value, _currentTextColor,
                               TextAlign::TEXT_ALIGN_RIGHT, 80);
+        }
+    }
+
+    void ExecuteAction(IMenuSystem* menuSystem)
+    {
+        switch (_type)
+        {
+        case MenuItemType::MENU_ITEM_TYPE_BACKLINK:
+            menuSystem->SetCurrentScreen(_targetScreen);
+            break;
+        case MenuItemType::MENU_ITEM_TYPE_PAGELINK:
+            menuSystem->SetCurrentScreen(_targetScreen);
+            break;
+        default:
+            break;
         }
     }
 };

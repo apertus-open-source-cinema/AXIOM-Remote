@@ -42,10 +42,11 @@ class SettingsMenu : public IMenu
     uint16_t _menuDisabledTextColor;
     uint16_t _menuSelectedTextColor;
 
-    MenuItem _menuItems[10] = {MenuItem("Test Item 1"), MenuItem("Test Item 2", true), MenuItem("Test Item 3"),
-                               MenuItem("Test Item 4"), MenuItem("Test Item 5"),       MenuItem("Test Item 6"),
-                               MenuItem("Test Item 7"), MenuItem("Test Item 8"),       MenuItem("Test Item 9"),
-                               MenuItem("Test Item 10")};
+    MenuItem _menuItems[10] = {MenuItem("Exit Menu"),     MenuItem("Disabled Item", true),
+                               MenuItem("Submenu 1"),     MenuItem("Submenu 2"),
+                               MenuItem("Fun"),           MenuItem("Funlevel"),
+                               MenuItem("Readonly Item"), MenuItem("Whitebalance Settings"),
+                               MenuItem("Test Item 9"),   MenuItem("Test Item 10")};
 
   public:
     // TODO: Add assignment of menu system to IMenu
@@ -55,12 +56,19 @@ class SettingsMenu : public IMenu
         // UNUSED(cdcDevice);
         //_usbDevice = cdcDevice;
 
-        _label = "Settings Menu";
-        _menuBreadcrumbs = "Settings Menu";
+        _label = "Menu";
+        _menuBreadcrumbs = "Menu";
 
         // Added for testing
+        _menuItems[0].SetMenuType(MenuItemType::MENU_ITEM_TYPE_BACKLINK);
+        _menuItems[0].SetTargetScreen(AvailableScreens::MainPage);
         _menuItems[1].SetDisabled(true);
         _menuItems[2].SetMenuType(MenuItemType::MENU_ITEM_TYPE_SUBMENU);
+        _menuItems[3].SetMenuType(MenuItemType::MENU_ITEM_TYPE_SUBMENU);
+        _menuItems[4].SetMenuType(MenuItemType::MENU_ITEM_TYPE_DROPDOWN);
+        _menuItems[5].SetMenuType(MenuItemType::MENU_ITEM_TYPE_DROPDOWN);
+        _menuItems[7].SetMenuType(MenuItemType::MENU_ITEM_TYPE_PAGELINK);
+        _menuItems[7].SetTargetScreen(AvailableScreens::WhiteBalance);
 
         // Color defintions
         _menuBackgroundColor = RGB565(180, 180, 180);
@@ -273,8 +281,16 @@ class SettingsMenu : public IMenu
             break;
         case Button::BUTTON_5_UP:
             _menuItems[_menuSelectionIndex].SetPressed(false);
+            _menuItems[_menuSelectionIndex].ExecuteAction(menuSystem);
             break;
         case Button::BUTTON_5_DOWN:
+            _menuItems[_menuSelectionIndex].SetPressed(true);
+            break;
+        case Button::E_1_UP:
+            _menuItems[_menuSelectionIndex].SetPressed(false);
+            _menuItems[_menuSelectionIndex].ExecuteAction(menuSystem);
+            break;
+        case Button::E_1_DOWN:
             _menuItems[_menuSelectionIndex].SetPressed(true);
             break;
         default:
