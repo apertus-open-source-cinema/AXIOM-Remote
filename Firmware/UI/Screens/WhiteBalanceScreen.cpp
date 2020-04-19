@@ -9,7 +9,7 @@
 #include "../../GlobalSettings.h"
 
 WhiteBalanceScreen::WhiteBalanceScreen(IUSBDevice* usbDevice) :
-    IScreen(usbDevice), _cancelButton("Home"), _addPresetButton("Add"), _setButton("Set")
+    IScreen(usbDevice), _cancelButton("Cancel"), _addPresetButton("Add"), _setButton("Set")
 {
     _cancelButton.SetHandler(&CancelButtonHandler);
     _bottomButtonBar.SetButton(ButtonPosition::Left, &_cancelButton);
@@ -17,7 +17,9 @@ WhiteBalanceScreen::WhiteBalanceScreen(IUSBDevice* usbDevice) :
     _addPresetButton.SetHandler(&AddPresetButtonHandler);
     _bottomButtonBar.SetButton(ButtonPosition::Center, &_addPresetButton);
 
+    // This is the primary button in this menu
     _setButton.SetHandler(&SetButtonHandler);
+    _setButton.SetBackgroundColor((uint16_t)Color565::AXIOM_Orange);
     _bottomButtonBar.SetButton(ButtonPosition::Right, &_setButton);
 }
 
@@ -40,7 +42,7 @@ void WhiteBalanceScreen::Drawheader(IPainter* painter)
     painter->DrawText(5, 20, "Whitebalance", (uint16_t)Color565::White, TextAlign::TEXT_ALIGN_LEFT, 0);
 
     // header separation lines
-    painter->DrawLine(0, 29, GlobalSettings::LCDWidth - 1, 29, (uint16_t)Color565::AXIOMOrange);
+    painter->DrawLine(0, 29, GlobalSettings::LCDWidth - 1, 29, (uint16_t)Color565::AXIOM_Orange);
 }
 
 // TODO: Evaluate if menu system should be sent as another argument
@@ -85,7 +87,7 @@ void WhiteBalanceScreen::Update(Button button, int8_t knob, IMenuSystem* menuSys
         break;
     case Button::BUTTON_6_UP:
         _setButton.SetHighlighted(false);
-        menuSystem->SetCurrentScreen(AvailableScreens::SettingsMenu);
+        menuSystem->SetCurrentScreen(AvailableScreens::MainPage);
         break;
     default:
         break;

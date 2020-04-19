@@ -67,7 +67,7 @@ class MainPageButton : public IButton
         currentValueTextColor = valueTextColor = (uint16_t)Color565::Black;
         currentValueBackgroundColor = valueBackgroundColor = (uint16_t)Color565::White;
 
-        backgroundHighlightColor = (uint16_t)Color565::AXIOMOrange;
+        backgroundHighlightColor = (uint16_t)Color565::AXIOM_Orange;
         textHighlightColor = (uint16_t)Color565::Black;
 
         _hightlighted = false;

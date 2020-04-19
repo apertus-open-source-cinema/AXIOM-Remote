@@ -23,7 +23,8 @@ enum class Color565
     GreenYellow = 0xAFE5,    ///< 173, 255,  47
     Pink = 0xFC18,           ///< 255, 128, 192
     MenuBackground = 0xB5B6, ///< 180, 180, 180
-    AXIOMOrange = 0xFBE0     ///< 255, 128, 0
+    AXIOM_Orange = 0xFBE0,   ///< 255, 128, 0
+    AXIOM_Blue = 0x03FF      ///< 0, 128, 255
 };
 
 #endif // COLOR565_H
