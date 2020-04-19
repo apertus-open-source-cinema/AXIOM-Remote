@@ -20,17 +20,19 @@ class ButtonBar : public IWidget
     IButton* _buttons[MAX_BUTTON_NUMBER] = {nullptr, nullptr, nullptr};
 
     uint16_t _backgroundColor;
-    uint8_t _verticalMargin;
+    uint8_t _marginTop;
+    uint8_t _buttonMargin;
 
   public:
     ButtonBar(uint16_t x, uint16_t y, uint16_t width, uint16_t height) :
-        IWidget(x, y, width, height), _backgroundColor(RGB565(97, 92, 91)), _verticalMargin(1)
+        IWidget(x, y, width, height), _backgroundColor(RGB565(97, 92, 91)), _marginTop(1), _buttonMargin(4)
     {
     }
 
     virtual void Draw(IPainter* painter)
     {
-        painter->DrawFillRectangle(_x, _y - _verticalMargin, _width, _height + _verticalMargin, _backgroundColor);
+        // background
+        painter->DrawFillRectangle(_x, _y - _marginTop, _width, _height + _marginTop, _backgroundColor);
 
         for (int i = 0; i < MAX_BUTTON_NUMBER; i++)
         {
@@ -48,8 +50,9 @@ class ButtonBar : public IWidget
     void SetButton(ButtonPosition position, IButton* button)
     {
         // Adjust positions of the button to correspond to the bar area
-        uint8_t buttonWidth = _width / MAX_BUTTON_NUMBER;
-        button->SetDimensions(_x + buttonWidth * (uint8_t)position, _y, buttonWidth, _height);
+        uint8_t buttonWidth = _width / MAX_BUTTON_NUMBER - _buttonMargin;
+        button->SetDimensions(_x + buttonWidth * (uint8_t)position + _buttonMargin * (uint8_t)position, _y, buttonWidth,
+                              _height);
 
         _buttons[(uint8_t)position] = button;
     }

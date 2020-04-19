@@ -9,16 +9,19 @@ class IUSBDevice;
 
 class WhiteBalanceScreen : public IScreen
 {
-    PushButton _homeButton;
-    PushButton _testButton;
+    PushButton _cancelButton;
+    PushButton _setButton;
+    PushButton _addPresetButton;
 
   public:
     explicit WhiteBalanceScreen(IUSBDevice* usbDevice);
 
     virtual void Draw(IPainter* painter);
 
-    static void HomeButtonHandler(void* sender);
-    static void TestButtonHandler(void* sender);
+    static void CancelButtonHandler(void* sender);
+    static void SetButtonHandler(void* sender);
+    static void AddPresetButtonHandler(void* sender);
+    void Drawheader(IPainter* painter);
 
     void Update(Button button, int8_t knob, IMenuSystem* menuSystem);
 };

@@ -4,8 +4,7 @@
 #include "../MenuSystem.h"
 
 // TODO: Add assignment of menu system to IMenu
-MainPage::MainPage(IUSBDevice* cdcDevice) :
-    IMenu(cdcDevice), _backgroundColor(Color565::MenuBackground)
+MainPage::MainPage(IUSBDevice* cdcDevice) : IMenu(cdcDevice), _backgroundColor(Color565::MenuBackground)
 {
     SetupButtons();
 }
@@ -61,10 +60,20 @@ void MainPage::DigitalGainButtonHandler(void* sender)
 
 void MainPage::Draw(IPainter* painter)
 {
-    painter->DrawIcon(apertus_text.pixel_data_text, 58, 89, apertus_text.width, apertus_text.height,
+    /*painter->DrawIcon(apertus_text.pixel_data_text, 58, 89, apertus_text.width, apertus_text.height,
                       RGB565(194, 191, 188));
     painter->DrawIcon(apertus_ring.pixel_data_ring, 58 + apertus_text.width, 89, apertus_ring.width,
                       apertus_ring.height, RGB565(244, 114, 72));
+                      */
+
+    painter->SetFont(Font::FreeSans9pt7b);
+    painter->DrawText(50, 80, "FreeSans9pt7b", (uint16_t)Color565::White, TextAlign::TEXT_ALIGN_LEFT, 0);
+    painter->SetFont(Font::FreeSans12pt7b);
+    painter->DrawText(50, 100, "FreeSans12pt7b", (uint16_t)Color565::White, TextAlign::TEXT_ALIGN_LEFT, 0);
+    painter->SetFont(Font::FreeSans18pt7b);
+    painter->DrawText(50, 130, "FreeSans18pt7b", (uint16_t)Color565::White, TextAlign::TEXT_ALIGN_LEFT, 0);
+    painter->SetFont(Font::FreeSans24pt7b);
+    painter->DrawText(50, 170, "FreeSans24pt7b", (uint16_t)Color565::White, TextAlign::TEXT_ALIGN_LEFT, 0);
 
     for (uint8_t index = 0; index < 6; index++)
     {

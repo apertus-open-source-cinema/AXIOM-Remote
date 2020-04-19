@@ -6,37 +6,60 @@
 #include "../../../Bootloader/Periphery/USB/IUSBDevice.h"
 #include "../IMenuSystem.h"
 
-WhiteBalanceScreen::WhiteBalanceScreen(IUSBDevice* usbDevice) :
-    IScreen(usbDevice), _homeButton("Home"), _testButton("Test")
-{
-    _homeButton.SetHandler(&HomeButtonHandler);
-    _bottomButtonBar.SetButton(ButtonPosition::Left, &_homeButton);
+#include "../../GlobalSettings.h"
 
-    _testButton.SetCornerRadius(3);
-    _testButton.SetHandler(&TestButtonHandler);
-    _bottomButtonBar.SetButton(ButtonPosition::Right, &_testButton);
+WhiteBalanceScreen::WhiteBalanceScreen(IUSBDevice* usbDevice) :
+    IScreen(usbDevice), _cancelButton("Home"), _addPresetButton("Add"), _setButton("Set")
+{
+    _cancelButton.SetHandler(&CancelButtonHandler);
+    _bottomButtonBar.SetButton(ButtonPosition::Left, &_cancelButton);
+
+    _addPresetButton.SetHandler(&AddPresetButtonHandler);
+    _bottomButtonBar.SetButton(ButtonPosition::Center, &_addPresetButton);
+
+    _setButton.SetHandler(&SetButtonHandler);
+    _bottomButtonBar.SetButton(ButtonPosition::Right, &_setButton);
 }
 
 void WhiteBalanceScreen::Draw(IPainter* painter)
 {
-    painter->DrawFillRectangle(20, 20, 70, 30, (uint16_t)Color565::Yellow);
+    Drawheader(painter);
+
+    painter->DrawFillRectangle(20, 50, 70, 30, (uint16_t)Color565::Yellow);
 
     DrawBottomButtonBar(painter);
 }
 
+void WhiteBalanceScreen::Drawheader(IPainter* painter)
+{
+    // header background
+    painter->DrawFillRectangle(0, 0, GlobalSettings::LCDWidth, 30, (uint16_t)Color565::Black);
+
+    //  header title
+    painter->SetFont(Font::FreeSans24pt7b);
+    painter->DrawText(5, 20, "Whitebalance", (uint16_t)Color565::White, TextAlign::TEXT_ALIGN_LEFT, 0);
+
+    // header separation lines
+    painter->DrawLine(0, 29, GlobalSettings::LCDWidth - 1, 29, (uint16_t)Color565::AXIOMOrange);
+}
+
 // TODO: Evaluate if menu system should be sent as another argument
-void WhiteBalanceScreen::HomeButtonHandler(void* sender)
+void WhiteBalanceScreen::CancelButtonHandler(void* sender)
 {
     WhiteBalanceScreen* screen = static_cast<WhiteBalanceScreen*>(sender);
-    // IMenuSystem* menuSystem = screen->GetMenuSystem();
+    // IMenuSystem* menuSystem = screen->
     // menuSystem->SetCurrentScreen(AvailableScreens::MainPage);
 }
 
-void WhiteBalanceScreen::TestButtonHandler(void* sender)
+void WhiteBalanceScreen::SetButtonHandler(void* sender)
 {
     WhiteBalanceScreen* screen = static_cast<WhiteBalanceScreen*>(sender);
     // IMenuSystem* menuSystem = screen->GetMenuSystem();
     // menuSystem->SetCurrentScreen(AvailableScreens::SettingsMenu);
+}
+
+void WhiteBalanceScreen::AddPresetButtonHandler(void* sender)
+{
 }
 
 // TODO: Check the handling of buttons and provide general example
@@ -45,17 +68,23 @@ void WhiteBalanceScreen::Update(Button button, int8_t knob, IMenuSystem* menuSys
     switch (button)
     {
     case Button::BUTTON_4_DOWN:
-        _homeButton.SetHighlighted(true);
+        _cancelButton.SetHighlighted(true);
         break;
     case Button::BUTTON_4_UP:
-        _homeButton.SetHighlighted(false);
+        _cancelButton.SetHighlighted(false);
         menuSystem->SetCurrentScreen(AvailableScreens::MainPage);
         break;
+    case Button::BUTTON_5_DOWN:
+        _addPresetButton.SetHighlighted(true);
+        break;
+    case Button::BUTTON_5_UP:
+        _addPresetButton.SetHighlighted(false);
+        break;
     case Button::BUTTON_6_DOWN:
-        _testButton.SetHighlighted(true);
+        _setButton.SetHighlighted(true);
         break;
     case Button::BUTTON_6_UP:
-        _testButton.SetHighlighted(false);
+        _setButton.SetHighlighted(false);
         menuSystem->SetCurrentScreen(AvailableScreens::SettingsMenu);
         break;
     default:

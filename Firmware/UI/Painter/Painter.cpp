@@ -36,15 +36,15 @@ void Painter::SetFont(Font font)
         break;
     case Font::FreeSans12pt7b:
         _currentFont = _fontList[1];
-        _currentFontHeight = 16;
+        _currentFontHeight = 15;
         break;
     case Font::FreeSans18pt7b:
         _currentFont = _fontList[2];
-        _currentFontHeight = 34;
+        _currentFontHeight = 24;
         break;
     case Font::FreeSans24pt7b:
         _currentFont = _fontList[3];
-        _currentFontHeight = 45;
+        _currentFontHeight = 28;
         break;
     }
 }
