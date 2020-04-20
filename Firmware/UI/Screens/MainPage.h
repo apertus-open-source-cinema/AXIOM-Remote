@@ -6,9 +6,9 @@
 
 #include "../Widgets/MainPageButton.h"
 
-#include "../../Media/Images/ApertusLogo.h"
-#include "../../Media/Images/ApertusText.h"
-#include "../../Media/Images/ApertusRing.h"
+#include "../../Media/Images/Logo/ApertusLogo.h"
+#include "../../Media/Images/Logo/ApertusText.h"
+#include "../../Media/Images/Logo/ApertusRing.h"
 
 #include "../ButtonDefinitions.h"
 
