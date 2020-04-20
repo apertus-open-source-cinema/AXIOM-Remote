@@ -160,7 +160,7 @@ int main()
     SetupGL();
 
     SetupImGui(window, glContext);
-    ImGui::CreateContext();
+
     const ImGuiIO& io = ImGui::GetIO();
 
     SDL_Surface* displayTexture = SDL_CreateRGBSurface(0, FRAMEBUFFER_WIDTH, FRAMEBUFFER_HEIGHT, 24, 0, 0, 0, 0);
