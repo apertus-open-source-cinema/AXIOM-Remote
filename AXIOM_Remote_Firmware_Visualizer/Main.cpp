@@ -78,7 +78,7 @@ void Initialization(SDL_Window** win, SDL_Renderer** renderer, SDL_GLContext& gl
     //SDL_GL_SetAttribute(SDL_GL_CONTEXT_PROFILE_MASK, SDL_GL_CONTEXT_PROFILE_CORE);
     SDL_GL_SetAttribute(SDL_GL_CONTEXT_PROFILE_MASK, SDL_GL_CONTEXT_PROFILE_COMPATIBILITY);
     SDL_GL_SetAttribute(SDL_GL_CONTEXT_MAJOR_VERSION, 3);
-    SDL_GL_SetAttribute(SDL_GL_CONTEXT_MINOR_VERSION, 3);
+    SDL_GL_SetAttribute(SDL_GL_CONTEXT_MINOR_VERSION, 0);
     SDL_GL_SetAttribute(SDL_GL_DOUBLEBUFFER, 1);
 
     glContext = SDL_GL_CreateContext(*win);
@@ -123,6 +123,7 @@ uint32_t CreateGLTexture(SDL_Surface* surface, GLint textureFilter = GL_LINEAR)
 
     glBindTexture(GL_TEXTURE_2D, 0);
 
+    std::cout << "Texture ID: " << textureID << std::endl;
     return textureID;
 }
 
@@ -188,7 +189,7 @@ int main()
     IPainter* painter = &generalPainter;
 
 #ifdef DEBUG_DRAW
-    DebugPainter debugPainter(&generalPainter);
+    DebugPainter<Painter> debugPainter(&generalPainter);
     painter = &debugPainter;
 #endif
 
@@ -198,7 +199,7 @@ int main()
 
     Button button = Button::BUTTON_NONE;
 
-    int8_t knob;
+    int8_t knobValue = 0;
 
     bool appIsRunning = true;
     const int frames = 60;
@@ -226,8 +227,8 @@ int main()
 
         button = Button::BUTTON_NONE;
         RenderUI(window, io, reinterpret_cast<ImTextureID>(knobTextureID),
-                 reinterpret_cast<ImTextureID>(displayTextureID), button);
-        menuSystem.Update(button, knob);
+                 reinterpret_cast<ImTextureID>(displayTextureID), button, knobValue);
+        menuSystem.Update(button, knobValue);
         ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());
 
         SDL_GL_SwapWindow(window);
