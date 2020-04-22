@@ -198,7 +198,7 @@ int main()
 
     Button button = Button::BUTTON_NONE;
 
-    int8_t knob;
+    int8_t knob = 0;
 
     bool appIsRunning = true;
     const int frames = 60;
