@@ -49,7 +49,7 @@ void ShowZoomTooltip(const ImGuiIO& io, ImTextureID displayTextureID)
     }
 }
 
-void RenderUI(SDL_Window* window, const ImGuiIO& io, ImTextureID knobTextureID, ImTextureID displayTextureID, Button& button, int8_t& knobValue)
+void RenderUI(SDL_Window* window, const ImGuiIO& io, ImTextureID knobTextureID, ImTextureID displayTextureID, Button& button)
 {
     ImGui_ImplOpenGL3_NewFrame();
     ImGui_ImplSDL2_NewFrame(window);
@@ -166,16 +166,22 @@ void RenderUI(SDL_Window* window, const ImGuiIO& io, ImTextureID knobTextureID, 
     ImGui::SetCursorPos(ImVec2(60, 140));
     if (ImGui::Knob("Test123", &value, (ImTextureID)knobTextureID))
     {
-        knobValue = -(value - lastValue);
-        lastValue = value;
+        /*float diff = value - lastValue;
+        lastValue = value;*/
+
+        /*if (current_page == PAGE_WB) {
+          wb_page_knob_handler(E1_ROT, diff);
+        }
+        if (current_page == PAGE_WB_HELP) {
+          wb_help_page_knob_handler(E1_ROT, diff);
+        }
+        if (current_menu != MENU_NONE) {
+          main_menu_knob_handler(E1_ROT, diff);
+        }*/
     }
 
     ImGui::SetCursorPos(ImVec2(400, 120));
     ShowZoomTooltip(io, displayTextureID);
-
-    bool debugOverlayEnabled = true;
-    ImGui::SetCursorPos(ImVec2(50, 400));
-    ImGui::ToggleButton("debug_overlay_switch", "Debug overlay", &debugOverlayEnabled);
 
     ImGui::PopStyleColor();
     ImGui::End();
