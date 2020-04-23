@@ -38,8 +38,8 @@ void WhiteBalanceScreen::Drawheader(IPainter* painter)
     painter->DrawFillRectangle(0, 0, GlobalSettings::LCDWidth, 30, (uint16_t)Color565::Black);
 
     //  header title
-    painter->SetFont(Font::FreeSans24pt7b);
-    painter->DrawText(5, 20, "Whitebalance", (uint16_t)Color565::White, TextAlign::TEXT_ALIGN_LEFT, 0);
+    painter->SetFont(Font::FreeSans12pt7b);
+    painter->DrawText(86, 22, "White Balance", (uint16_t)Color565::White, TextAlign::TEXT_ALIGN_LEFT, 0);
 
     // header separation lines
     painter->DrawLine(0, 29, GlobalSettings::LCDWidth - 1, 29, (uint16_t)Color565::AXIOM_Orange);
