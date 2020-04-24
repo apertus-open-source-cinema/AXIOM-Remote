@@ -47,3 +47,5 @@ Note that with the current hardware the PICKit2 needs to stay connected for norm
 
 We use Visual Studio Code (https://code.visualstudio.com/) as IDE and supply some configurations for it in /.vscode/ .
 This means its important to open the root folder of this repo in VS code. 
+
+We recommend installing the VsCode Action Buttons extension: https://marketplace.visualstudio.com/items?itemName=seunlanlege.action-buttons and configurations (.vscode/settings.json) to add buttons to compile and flash the AXIOM Remote.
