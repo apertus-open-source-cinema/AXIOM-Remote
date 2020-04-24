@@ -13,7 +13,15 @@
             "options": {
                 "cwd": "/usr/bin"
             }
-        }
+        },
+        {
+            "type": "shell",
+            "label": "Build firmware",
+            "command": "make clean && make -j8",
+            "options": {
+                "cwd": "${workspaceFolder}/Firmware",
+            }
+        },
     ],
     "version": "2.0.0"
 }
