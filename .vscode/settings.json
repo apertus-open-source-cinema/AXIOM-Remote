@@ -76,24 +76,25 @@
         "loadNpmCommands": false, // Disables automatic generation of actions for npm commands.
         "commands": [
             {
-                "cwd": "${workspaceFolder}/AXIOM-Remote/Firmware", // Terminal initial folder ${workspaceFolder} and os user home as defaults
                 "name": "Compile",
                 "color": "white",
                 "singleInstance": true,
-                "command": "make clean && make -j8",
+                "cwd": "${workspaceFolder}/Firmware", // Terminal initial folder ${workspaceFolder} and os user home as defaults
+                "command": "make clean && make -j8"
             },
             {
                 "name": "Flash Remote",
                 "color": "white",
                 "singleInstance": true,
-                "command": "cd build/ && sudo pic32prog AXIOM_Remote_Firmware.hex -S",
+                "cwd": "${workspaceFolder}/Firmware",
+                "command": "sudo pic32prog build/AXIOM_Remote_Firmware.hex -S"
             },
             {
-                "cwd": "${workspaceFolder}/AXIOM-Remote/Firmware", // Terminal initial folder ${workspaceFolder} and os user home as defaults
                 "name": "Compile & Flash",
                 "color": "white",
                 "singleInstance": true,
-                "command": "make clean && make -j8 && cd build/ && sudo pic32prog AXIOM_Remote_Firmware.hex -S",
+                "cwd": "${workspaceFolder}/Firmware", // Terminal initial folder ${workspaceFolder} and os user home as defaults
+                "command": "make clean && make -j8 && sudo pic32prog build/AXIOM_Remote_Firmware.hex -S"
             }
         ]
     }
