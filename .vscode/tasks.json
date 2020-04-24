@@ -1,27 +1,52 @@
 {
-    "tasks": [
-        {
-            "type": "shell",
-            "label": "clang++ build active file",
-            "command": "/usr/bin/clang++",
-            "args": [
-                "-g",
-                "${file}",
-                "-o",
-                "${fileDirname}/${fileBasenameNoExtension}"
-            ],
-            "options": {
-                "cwd": "/usr/bin"
-            }
-        },
-        {
-            "type": "shell",
-            "label": "Build firmware",
-            "command": "make clean && make -j8",
-            "options": {
-                "cwd": "${workspaceFolder}/Firmware",
-            }
-        },
-    ],
-    "version": "2.0.0"
+  "tasks": [
+    {
+      "type": "shell",
+      "label": "clang++ build active file",
+      "command": "/usr/bin/clang++",
+      "args": [
+        "-g",
+        "${file}",
+        "-o",
+        "${fileDirname}/${fileBasenameNoExtension}"
+      ],
+      "options": {
+        "cwd": "/usr/bin"
+      }
+    },
+    {
+      "type": "shell",
+      "group": "build",
+      "label": "Build firmware",
+      "command": "make clean && make -j8",
+      "options": {
+        "cwd": "${workspaceFolder}/Firmware"
+      }
+    },
+    {
+      "type": "shell",
+      "group": "build",
+      "label": "Flash firmware",
+      "command": "sudo pic32prog build/AXIOM_Remote_Firmware.hex -S",
+      "options": {
+        "cwd": "${workspaceFolder}/Firmware"
+      },
+      "dependsOn": [
+        "Build firmware"
+      ]
+    },
+    {
+      "type": "shell",
+      "group": "build",
+      "label": "Build and flash firmware",
+      "command": "sudo pic32prog build/AXIOM_Remote_Firmware.hex -S",
+      "dependsOn": [
+        "Build firmware",
+      ],
+      "options": {
+        "cwd": "${workspaceFolder}/Firmware"
+      }
+    }
+  ],
+  "version": "2.0.0"
 }
