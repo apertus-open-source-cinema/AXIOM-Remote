@@ -13,6 +13,25 @@ Good User Interface (UI) / User Experience (UX) principles:
 * Creating operating experience by using clear patterns for button placements. Eg. The CANCEL button is always at the bottom left, the primary action button always at the bottom right. The HOME and BACK buttons are always in the same place in the left sidebar. This makes learning the UI easy and fast, avoids confusion and creates trust.
 * Big camera manufacturer Sony is known for their "infamous" UI designs choices with their cameras. A main problem they have is that setting some options have wide reaching implications that are not made obvious in the UI. For example some codecs require more processing power than others resulting in higher battery drain so Sony dims the LCD brightness to reduce battery drain and processor overheating with that particular codec. The user is not supplied with any such information so starts to wonder why the LCD is suddenly darker after choosing another codec. -> Any implication an action has should always be communicated in the UI before executing such action - if there is no space/way to do it in the menu/page directly this can be done for example in a “confirm action screen” that pops up when the user chooses to execute a change. Also options that are disabled because of another setting should never just disappear, rather they should be read-only and show an explanation why this option is disabled, example: “100 fps - disabled because of codec choice ABC..”.
 
+## Terms used in GUI
+
+<p align="center">
+  <img src="https://lh6.googleusercontent.com/LAwx0tUKyB3_XFQIg46tdciVZxFjK_TwD84dJe8mCU8BmWBYeuxiuF2F-evQn0UwuPy8X4w085mN9Ti--YnOGHRjQyRjU95HS59ZCIPC">
+</p>
+
+Following terms can help understand the GUI better:
+
+- **Screen**: It refers to the entire content of the LCD visible at one time. Currently, there are two types of screens:
+		
+		- *Page*: A page refers to the display type where the 12 buttons around the TFT are utilized for 			navigation/operation. Each of the 6 page_items on screen is associated with one of the three buttons above or below the TFT. Pages could be seen like "desktops" on a PC with icons on them to click. (type: page_t)
+		
+		- *Menu*: It refers to a screen with a header (showing breadcrumbs) and 6 menu_items displayed at the same time on the LCD (scrollbars are automatically shown if more than 6 menu items are present. A menu is typically navigated with the rotary/push knob.
+
+- ****pageItem****: Each item on a page acts like a button and can execute an action or can lead to another page or menu when clicked
+
+- ****menuItem****: It refers to one option/line in the menu, can be hidden or disabled and can show readonly information, lead to another submenu or contain a boolean, numeric or dropdown list like selection.
+
+- ****parameterMenu****: This menu pops up when a menu item containing a numeric or dropdown list selection parameter is clicked.
 
 ## Usage instructions
 
