@@ -27,19 +27,16 @@
       "type": "shell",
       "group": "build",
       "label": "Flash firmware",
-      "command": "sudo pic32prog build/AXIOM_Remote_Firmware.hex -S",
+      "command": "pic32prog build/AXIOM_Remote_Firmware.hex -S",
       "options": {
         "cwd": "${workspaceFolder}/Firmware"
-      },
-      "dependsOn": [
-        "Build firmware"
-      ]
+      }
     },
     {
       "type": "shell",
       "group": "build",
       "label": "Build and flash firmware",
-      "command": "sudo pic32prog build/AXIOM_Remote_Firmware.hex -S",
+      "command": "pic32prog build/AXIOM_Remote_Firmware.hex -S",
       "dependsOn": [
         "Build firmware",
       ],
