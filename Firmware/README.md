@@ -4,6 +4,16 @@ This software runs bare metal on the PIC32MZ.
 Further documentation/hardware schematics please see:
 https://wiki.apertus.org/index.php/AXIOM_Remote
 
+## General UI Guidelines
+
+Good User Interface (UI) / User Experience (UX) principles:
+
+* any button/knob/dial (anything the user can interact with) should clearly show what will happen when it is pressed/turned/operated before doing so. Button labels should use actions like “Set” or “Start” instead of “OK” or “Yes”, etc. If turning the knob has an effect it should be clearly shown what will happen with icons/graphics/etc. No button should be called “User 1” or “A”, “B”, etc.
+* The different screens should have a clear hierarchy or layout structure (like a big map) so the user always knows “where am I currently”. This shall be achieved with breadcrumbs, scrollbars, navigation bars, clear headers, shifting animations when switching screens, etc.
+* Creating operating experience by using clear patterns for button placements. Eg. The CANCEL button is always at the bottom left, the primary action button always at the bottom right. The HOME and BACK buttons are always in the same place in the left sidebar. This makes learning the UI easy and fast, avoids confusion and creates trust.
+* Big camera manufacturer Sony is known for their "infamous" UI designs choices with their cameras. A main problem they have is that setting some options have wide reaching implications that are not made obvious in the UI. For example some codecs require more processing power than others resulting in higher battery drain so Sony dims the LCD brightness to reduce battery drain and processor overheating with that particular codec. The user is not supplied with any such information so starts to wonder why the LCD is suddenly darker after choosing another codec. -> Any implication an action has should always be communicated in the UI before executing such action - if there is no space/way to do it in the menu/page directly this can be done for example in a “confirm action screen” that pops up when the user chooses to execute a change. Also options that are disabled because of another setting should never just disappear, rather they should be read-only and show an explanation why this option is disabled, example: “100 fps - disabled because of codec choice ABC..”.
+
+
 ## Usage instructions
 
 - USB communication to/from the AXIOM Remote is done via a USB communications device class (CDC)
