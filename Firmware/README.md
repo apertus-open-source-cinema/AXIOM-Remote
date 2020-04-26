@@ -22,16 +22,14 @@ Good User Interface (UI) / User Experience (UX) principles:
 Following terms can help understand the GUI better:
 
 - **Screen**: It refers to the entire content of the LCD visible at one time. Currently, there are two types of screens:
-		
-		- *Page*: A page refers to the display type where the 12 buttons around the TFT are utilized for 			navigation/operation. Each of the 6 page_items on screen is associated with one of the three buttons above or below the TFT. Pages could be seen like "desktops" on a PC with icons on them to click. (type: page_t)
-		
-		- *Menu*: It refers to a screen with a header (showing breadcrumbs) and 6 menu_items displayed at the same time on the LCD (scrollbars are automatically shown if more than 6 menu items are present. A menu is typically navigated with the rotary/push knob.
+	- *Page*: A page refers to the display type where the 12 buttons around the TFT are utilized for navigation/operation. Each of the 6 page_items on screen is associated with one of the three buttons above or below the TFT. Pages could be seen like "desktops" on a PC with icons on them to click. (type: page_t)
+	- *Menu*: It refers to a screen with a header (showing breadcrumbs) and 6 menu_items displayed at the same time on the LCD (scrollbars are automatically shown if more than 6 menu items are present. A menu is typically navigated with the rotary/push knob.
 
-- ****pageItem****: Each item on a page acts like a button and can execute an action or can lead to another page or menu when clicked
+- ****PageItem****: Each item on a page acts like a button and can execute an action or can lead to another page or menu when clicked
 
-- ****menuItem****: It refers to one option/line in the menu, can be hidden or disabled and can show readonly information, lead to another submenu or contain a boolean, numeric or dropdown list like selection.
+- ****MenuItem****: It refers to one option/line in the menu, can be hidden or disabled and can show readonly information, lead to another submenu or contain a boolean, numeric or dropdown list like selection.
 
-- ****parameterMenu****: This menu pops up when a menu item containing a numeric or dropdown list selection parameter is clicked.
+- ****ParameterMenu****: This menu pops up when a menu item containing a numeric or dropdown list selection parameter is clicked.
 
 ## Usage instructions
 
