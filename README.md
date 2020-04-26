@@ -4,6 +4,34 @@
 
 A universal remote control with buttons, dials and an LCD for menu/settings (no live video) for AXIOM devices and potentially many other things as well.
 
+## License
+This program is free software; you can redistribute it and/or modify
+it under the terms of the GNU General Public License 2 as published 
+by the Free Software Foundation.
+for details see: LICENSE.txt
+
+## Folder Structure
+
+```/.vscode/``` contains configurations for VS code IDE. 
+
+```/Archive/``` contains old outdated projects related to the AXIOM Remote.
+
+```/AXIOM_Remote_Firmware_Visualizer/``` contains the AXIOM Remote Visualizer - a tool to emulate the actual code running on the PIC32 and pixels displayed on the 320x240 LCD on a PC.
+
+```/Bootloader/``` The Bootloader will be used to update the firmware of the main PIC32 and also the east and west PIC16s (key managers) without a dedicated programming hardware.
+
+
+```/Common/``` contains general code and definition that are used in several projects in this repository.
+
+```/datasheets/```  contains datasheets related to the used hardware (TFT and TFT controller, etc.).
+
+```/Docs/``` contains illustrations and drawings
+
+```/Firmware/``` contains the actual Firmware of the AXIOM Remote - this is the main folder of this repository.
+
+```/FirmwareTest/``` contains unit tests of the Firmware.
+
+
 ## Build status
 
 | master | dev |
