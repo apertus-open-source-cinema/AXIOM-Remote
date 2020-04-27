@@ -1,5 +1,5 @@
-#ifndef SETTINGSMENU_H
-#define SETTINGSMENU_H
+#ifndef SETTINGSSUBMENU1_H
+#define SETTINGSSUBMENU1_H
 
 #include <cstring>
 
@@ -17,7 +17,7 @@
 
 //#include <Helpers.h>
 
-class SettingsMenu : public IMenu
+class SettingsSubMenu1 : public IMenu
 {
     char const* _label;
     char const* _menuBreadcrumbs;
@@ -42,34 +42,22 @@ class SettingsMenu : public IMenu
     uint16_t _menuDisabledTextColor;
     uint16_t _menuSelectedTextColor;
 
-    MenuItem _menuItems[10] = {MenuItem("Exit Menu"),     MenuItem("Disabled Item", true),
-                               MenuItem("Submenu 1"),     MenuItem("Submenu 2"),
-                               MenuItem("Fun"),           MenuItem("Funlevel"),
-                               MenuItem("Readonly Item"), MenuItem("Whitebalance Settings"),
-                               MenuItem("Test Item 9"),   MenuItem("Test Item 10")};
+    MenuItem _menuItems[4] = {MenuItem("< Up"), MenuItem("Option 1"), MenuItem("Option 2"), MenuItem("Option 3")};
 
   public:
     // TODO: Add assignment of menu system to IMenu
-    explicit SettingsMenu(IUSBDevice* cdcDevice) :
-        IMenu(cdcDevice), _menuItemsCount(10), _menuSelectionIndex(0), _maxVisibleItems(7)
+    explicit SettingsSubMenu1(IUSBDevice* cdcDevice) :
+        IMenu(cdcDevice), _menuItemsCount(4), _menuSelectionIndex(0), _maxVisibleItems(7)
     {
         // UNUSED(cdcDevice);
         //_usbDevice = cdcDevice;
 
         _label = "Menu";
-        _menuBreadcrumbs = "Menu";
+        _menuBreadcrumbs = "Menu > SubMenu 1";
 
         // Added for testing
         _menuItems[0].SetMenuType(MenuItemType::MENU_ITEM_TYPE_BACKLINK);
-        _menuItems[0].SetTargetScreen(AvailableScreens::MainPage);
-        _menuItems[1].SetDisabled(true);
-        _menuItems[2].SetMenuType(MenuItemType::MENU_ITEM_TYPE_SUBMENU);
-        _menuItems[2].SetTargetScreen(AvailableScreens::SettingsSubMenu1);
-        _menuItems[3].SetMenuType(MenuItemType::MENU_ITEM_TYPE_SUBMENU);
-        _menuItems[4].SetMenuType(MenuItemType::MENU_ITEM_TYPE_DROPDOWN);
-        _menuItems[5].SetMenuType(MenuItemType::MENU_ITEM_TYPE_DROPDOWN);
-        _menuItems[7].SetMenuType(MenuItemType::MENU_ITEM_TYPE_PAGELINK);
-        _menuItems[7].SetTargetScreen(AvailableScreens::WhiteBalance);
+        _menuItems[0].SetTargetScreen(AvailableScreens::SettingsMenu);
 
         // Color defintions
         _menuBackgroundColor = RGB565(180, 180, 180);
@@ -304,4 +292,4 @@ class SettingsMenu : public IMenu
     }
 };
 
-#endif // SETTINGSMENU_H
+#endif // SETTINGSSUBMENU1_H

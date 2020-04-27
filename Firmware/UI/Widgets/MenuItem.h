@@ -225,6 +225,9 @@ class MenuItem : public IWidget
         case MenuItemType::MENU_ITEM_TYPE_PAGELINK:
             menuSystem->SetCurrentScreen(_targetScreen);
             break;
+        case MenuItemType::MENU_ITEM_TYPE_SUBMENU:
+            menuSystem->SetCurrentScreen(_targetScreen);
+            break;
         default:
             break;
         }
