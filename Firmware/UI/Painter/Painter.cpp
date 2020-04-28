@@ -26,6 +26,11 @@ Painter::Painter(volatile uint16_t* framebuffer, uint16_t framebufferWidth, uint
     SetFont(Font::FreeSans9pt7b);
 }
 
+void Painter::SetDebugOverlay(IDebugPainter* debugPainter)
+{
+    _debugPainter = debugPainter;
+}
+
 void Painter::SetFont(Font font)
 {
     switch (font)
@@ -318,6 +323,11 @@ void Painter::DrawIcon(const uint8_t* data, uint16_t x, uint16_t y, uint16_t wid
             b++;
         }
     }
+
+    if (_debugPainter != nullptr)
+    {
+        _debugPainter->DrawIcon(this, data, x, y, width, height, color);
+    }
 }
 
 /*****************************************/
@@ -475,6 +485,11 @@ void Painter::DrawText(uint16_t x, uint16_t y, const char* text, uint16_t color,
         //            DrawCharacter(c, _cursorX, _cursorY, color);
         //            _cursorX += size * 6; // Advance x one char
         //        }
+
+        if (_debugPainter != nullptr)
+        {
+            _debugPainter->DrawText(this, x, y, text, color, align, textblockwidth);
+        }
     }
 }
 

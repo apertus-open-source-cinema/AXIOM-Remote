@@ -4,6 +4,7 @@
 #include <stdint.h>
 
 #include "IPainter.h"
+#include "IDebugPainter.h"
 
 #include "../GFXFont.h"
 #include "../FontDefinitions.h"
@@ -19,6 +20,8 @@ class Painter : public IPainter
     uint16_t _cursorX;
     uint16_t _cursorY;
 
+    IDebugPainter* _debugPainter;
+
   protected:
     uint16_t _framebufferWidth;
     uint16_t _framebufferHeight;
@@ -27,6 +30,9 @@ class Painter : public IPainter
 
   public:
     Painter(volatile uint16_t* framebuffer, uint16_t framebufferWidth, uint8_t framebufferHeight);
+
+    // Debugging
+    void SetDebugOverlay(IDebugPainter* debugPainter);
 
     // Primitives
     void DrawLine(int16_t x0, int16_t y0, int16_t x1, int16_t y1, uint16_t color) override;

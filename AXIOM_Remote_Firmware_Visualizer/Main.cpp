@@ -15,9 +15,7 @@
 #include "UI/Painter/Painter.h"
 
 // Debug
-#include "UI/Painter/PainterDecorator.h"
-
-//#define DEBUG_DRAW
+#define DEBUG_DRAW
 #ifdef DEBUG_DRAW
 #include "UI/Painter/DebugPainter.h"
 #endif
@@ -75,7 +73,7 @@ void Initialization(SDL_Window** win, SDL_Renderer** renderer, SDL_GLContext& gl
         exit(2);
     }
 
-    //SDL_GL_SetAttribute(SDL_GL_CONTEXT_PROFILE_MASK, SDL_GL_CONTEXT_PROFILE_CORE);
+    // SDL_GL_SetAttribute(SDL_GL_CONTEXT_PROFILE_MASK, SDL_GL_CONTEXT_PROFILE_CORE);
     SDL_GL_SetAttribute(SDL_GL_CONTEXT_PROFILE_MASK, SDL_GL_CONTEXT_PROFILE_COMPATIBILITY);
     SDL_GL_SetAttribute(SDL_GL_CONTEXT_MAJOR_VERSION, 3);
     SDL_GL_SetAttribute(SDL_GL_CONTEXT_MINOR_VERSION, 3);
@@ -185,12 +183,11 @@ int main()
 
     SDL_GL_MakeCurrent(window, glContext);
 
-    Painter generalPainter(frameBuffer, FRAMEBUFFER_WIDTH, FRAMEBUFFER_HEIGHT);
-    IPainter* painter = &generalPainter;
+    Painter painter(frameBuffer, FRAMEBUFFER_WIDTH, FRAMEBUFFER_HEIGHT);
 
 #ifdef DEBUG_DRAW
-    DebugPainter<Painter> debugPainter(&generalPainter);
-    painter = &debugPainter;
+    DebugPainter debugPainter;
+    painter.SetDebugOverlay(&debugPainter);
 #endif
 
     USBCDCTerminalDevice cdcDevice;
@@ -200,6 +197,7 @@ int main()
     Button button = Button::BUTTON_NONE;
 
     int8_t knobValue = 0;
+    bool debugOverlayEnabled = false;
 
     bool appIsRunning = true;
     const int frames = 60;
@@ -215,9 +213,13 @@ int main()
             }
         }
 
+#ifdef DEBUG_DRAW
+        debugPainter.SetEnable(debugOverlayEnabled);
+#endif
+
         SDL_RenderClear(renderer);
 
-        menuSystem.Draw(painter);
+        menuSystem.Draw(&painter);
         RenderDisplay(frameBuffer, framebuffer, FRAMEBUFFER_WIDTH, FRAMEBUFFER_HEIGHT);
 
         glBindTexture(GL_TEXTURE_2D, displayTextureID);
@@ -227,7 +229,8 @@ int main()
 
         button = Button::BUTTON_NONE;
         RenderUI(window, io, reinterpret_cast<ImTextureID>(knobTextureID),
-                 reinterpret_cast<ImTextureID>(displayTextureID), button, knobValue);
+                 reinterpret_cast<ImTextureID>(displayTextureID), button, knobValue, debugOverlayEnabled);
+
         menuSystem.Update(button, knobValue);
         ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());
 
@@ -241,4 +244,3 @@ int main()
     Shutdown(window, renderer);
     return 0;
 }
-

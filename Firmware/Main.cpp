@@ -12,7 +12,7 @@
 #include "UI/Screens/SettingsMenu.h"
 #include "UI/Screens/AnalogGainMenu.h"
 
-#define DEBUG_DRAW
+//#define DEBUG_DRAW
 #ifdef DEBUG_DRAW
     #include "UI/Painter/DebugPainter.h"
 #endif

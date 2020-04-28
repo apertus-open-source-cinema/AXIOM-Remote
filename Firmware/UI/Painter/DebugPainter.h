@@ -3,31 +3,42 @@
 
 #include <stdint.h>
 
-#include "PainterDecorator.h"
+#include "IDebugPainter.h"
 
-// template <class T>
-class DebugPainter : public Painter
+class DebugPainter : public IDebugPainter
 {
-    Painter* _painter;
+    bool _enabled = false;
 
   public:
-    DebugPainter(Painter* painter) : Painter(*painter), _painter(painter)
+    DebugPainter()
     {
     }
 
-    void DrawIcon(const uint8_t* data, uint16_t x, uint16_t y, uint16_t width, uint16_t height, uint16_t color) override
+    void SetEnable(bool value)
     {
-        _painter->DrawIcon(data, x, y, width, height, color);
-        _painter->DrawRectangle(x, y, width, height, (uint16_t)Color565::Red);
+        _enabled = value;
     }
 
-    void DrawText(uint16_t x, uint16_t y, const char* text, uint16_t color, TextAlign align,
+    void DrawIcon(IPainter* painter, const uint8_t* data, uint16_t x, uint16_t y, uint16_t width, uint16_t height, uint16_t color) override
+    {
+        if (!_enabled)
+        {
+            return;
+        }
+
+        painter->DrawRectangle(x, y, width, height, (uint16_t)Color565::Red);
+    }
+
+    void DrawText(IPainter* painter, uint16_t x, uint16_t y, const char* text, uint16_t color, TextAlign align,
                   uint16_t textBlockWidth) override
     {
-        _painter->DrawText(x, y, text, color, align, textBlockWidth);
+        if (!_enabled)
+        {
+            return;
+        }
 
-        uint16_t textWidth = _painter->GetStringFramebufferWidth(text);
-        uint16_t textHeight = GetCurrentFontHeight();
+        uint16_t textWidth = painter->GetStringFramebufferWidth(text);
+        uint16_t textHeight = painter->GetCurrentFontHeight();
 
         int16_t xOffset = 0;
 
@@ -48,10 +59,10 @@ class DebugPainter : public Painter
         // xOffset += 3;
 
         // draw bounding box
-        _painter->DrawRectangle(x + xOffset, boundingBoxYOffset, textWidth, textHeight, (uint16_t)Color565::Red);
+        painter->DrawRectangle(x + xOffset, boundingBoxYOffset, textWidth, textHeight, (uint16_t)Color565::Red);
 
         // draw text baseline
-        _painter->DrawLine(x + xOffset, y, x + xOffset + textWidth, y, (uint16_t)Color565::Green);
+        painter->DrawLine(x + xOffset, y, x + xOffset + textWidth, y, (uint16_t)Color565::Green);
 
         // std::cout << "Text: " <<  text << " | x: " << x << " y: " << y << " width: " << textWidth << " height: " <<
         // textHeight << std::endl;

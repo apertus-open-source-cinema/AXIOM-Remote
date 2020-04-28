@@ -10,7 +10,7 @@
 
 enum class Button;
 
-void RenderUI(SDL_Window* window, const ImGuiIO& io, ImTextureID knoTextureID, ImTextureID displayTextureID, Button& button, int8_t& knobValue);
+void RenderUI(SDL_Window* window, const ImGuiIO& io, ImTextureID knoTextureID, ImTextureID displayTextureID, Button& button, int8_t& knobValue, bool& debugOverlayEnabled);
 
 #endif // VIRTUALUI_H
 

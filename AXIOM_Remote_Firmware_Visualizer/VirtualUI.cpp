@@ -49,7 +49,7 @@ void ShowZoomTooltip(const ImGuiIO& io, ImTextureID displayTextureID)
     }
 }
 
-void RenderUI(SDL_Window* window, const ImGuiIO& io, ImTextureID knobTextureID, ImTextureID displayTextureID, Button& button, int8_t& knobValue)
+void RenderUI(SDL_Window* window, const ImGuiIO& io, ImTextureID knobTextureID, ImTextureID displayTextureID, Button& button, int8_t& knobValue, bool& debugOverlayEnabled)
 {
     ImGui_ImplOpenGL3_NewFrame();
     ImGui_ImplSDL2_NewFrame(window);
@@ -173,7 +173,6 @@ void RenderUI(SDL_Window* window, const ImGuiIO& io, ImTextureID knobTextureID, 
     ImGui::SetCursorPos(ImVec2(400, 120));
     ShowZoomTooltip(io, displayTextureID);
 
-    bool debugOverlayEnabled = true;
     ImGui::SetCursorPos(ImVec2(50, 400));
     ImGui::ToggleButton("debug_overlay_switch", "Debug overlay", &debugOverlayEnabled);
 
