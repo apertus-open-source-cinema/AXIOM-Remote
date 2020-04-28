@@ -27,7 +27,7 @@ class MainPageButton : public IButton
     char* _value;
 
     bool _invertOrder;
-    bool _hightlighted;
+    bool _highlighted;
 
     Font _labelFont;
     Font _valueFont;
@@ -70,7 +70,7 @@ class MainPageButton : public IButton
         backgroundHighlightColor = (uint16_t)Color565::AXIOM_Orange;
         textHighlightColor = (uint16_t)Color565::Black;
 
-        _hightlighted = false;
+        _highlighted = false;
     }
 
     void Draw(IPainter* painter) override
@@ -167,10 +167,10 @@ class MainPageButton : public IButton
         _labelHeight = height;
     }
 
-    void SetHighlighted(bool hightlighted)
+    void SetHighlighted(bool highlighted)
     {
-        _hightlighted = hightlighted;
-        if (hightlighted)
+        _highlighted = highlighted;
+        if (highlighted)
         {
             currentLabelTextColor = textHighlightColor;
             currentLabelBackgroundColor = backgroundHighlightColor;
