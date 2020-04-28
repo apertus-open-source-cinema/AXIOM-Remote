@@ -122,7 +122,7 @@ extern char menu_breadcrumbs[64];*/
 extern uint16_t menu_dimmed_item_color;
 extern uint16_t _menu_disabled_item_color;
 extern uint16_t menu_selected_item_color;
-extern uint16_t _menu_hightlighted_item_color;
+extern uint16_t _menu_highlighted_item_color;
 extern uint16_t menu_background_color;
 extern uint16_t menu_text_color;
 extern uint16_t _menu_disabled_text_color;
