@@ -20,7 +20,7 @@
 Painter::Painter(volatile uint16_t* framebuffer, uint16_t framebufferWidth, uint8_t framebufferHeight) :
     _framebuffer(framebuffer), _framebufferWidth(framebufferWidth),
     _framebufferHeight(framebufferHeight), _fontList{FreeSans9pt7b, FreeSans12pt7b, FreeSans18pt7b, FreeSans24pt7b},
-    _cursorX(0), _cursorY(0)
+    _cursorX(0), _cursorY(0), _debugPainter(nullptr)
 {
     // Default font
     SetFont(Font::FreeSans9pt7b);
