@@ -10,7 +10,7 @@ class PushButton : public IButton
 {
     uint8_t _cornerRadius;
     const char* _label;
-    bool _hightlighted;
+    bool _highlighted;
 
     // Color Defintions
     uint16_t _TextColor;
@@ -24,7 +24,7 @@ class PushButton : public IButton
 
   public:
     PushButton(const char* caption, uint16_t x = 0, uint16_t y = 0, uint16_t width = 0, uint16_t height = 0) :
-        IButton(x, y, width, height), _label(caption), _cornerRadius(3), _hightlighted(false)
+        IButton(x, y, width, height), _label(caption), _cornerRadius(3), _highlighted(false)
     {
         _currentTextColor = _TextColor = (uint16_t)Color565::Black;
         _currentBackgroundColor = _BackgroundColor = RGB565(220, 220, 220);
@@ -51,31 +51,31 @@ class PushButton : public IButton
     void SetBackgroundColor(uint16_t color)
     {
         _BackgroundColor = color;
-        SetHighlighted(_hightlighted);
+        SetHighlighted(_highlighted);
     }
 
     void SetTextColor(uint16_t color)
     {
         _TextColor = color;
-        SetHighlighted(_hightlighted);
+        SetHighlighted(_highlighted);
     }
 
     void SetHighlightBackgroundColor(uint16_t color)
     {
         _backgroundHighlightColor = color;
-        SetHighlighted(_hightlighted);
+        SetHighlighted(_highlighted);
     }
 
     void SetHighlightTextColor(uint16_t color)
     {
         _textHighlightColor = color;
-        SetHighlighted(_hightlighted);
+        SetHighlighted(_highlighted);
     }
 
-    void SetHighlighted(bool hightlighted)
+    void SetHighlighted(bool highlighted)
     {
-        _hightlighted = hightlighted;
-        if (hightlighted)
+        _highlighted = highlighted;
+        if (highlighted)
         {
             _currentTextColor = _textHighlightColor;
             _currentBackgroundColor = _backgroundHighlightColor;
