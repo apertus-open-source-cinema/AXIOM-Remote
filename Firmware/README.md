@@ -1,8 +1,9 @@
 # AXIOM Remote Firmware
+
 This software runs bare metal on the PIC32MZ. 
 
 Further documentation/hardware schematics please see:
-https://wiki.apertus.org/index.php/AXIOM_Remote
+<https://wiki.apertus.org/index.php/AXIOM_Remote>
 
 ## General UI Guidelines
 
@@ -18,29 +19,72 @@ Good User Interface (UI) / User Experience (UX) principles:
 <p align="center">
   <img src="../Docs/Images/Structure/AXIOM_Remote_GUI.svg">
   <p style="text-align: center;font-style:italic;"></p>
-</p>
 
 Following terms can help understand the GUI better:
 
 - **Screen**: It refers to the entire content of the LCD visible at one time. Currently, there are two types of screens:
-	- *Page*: A page refers to the display type where the 12 buttons around the TFT are utilized for navigation/operation. Each of the 6 page_items on screen is associated with one of the three buttons above or below the TFT. Pages could be seen like "desktops" on a PC with icons on them to click. (type: page_t)
-	- *Menu*: It refers to a screen with a header (showing breadcrumbs) and 6 menu_items displayed at the same time on the LCD (scrollbars are automatically shown if more than 6 menu items are present. A menu is typically navigated with the rotary/push knob.
+    - **Page**: A page refers to the display type where the 12 buttons around the TFT are utilized for navigation/operation. Each of the 6 page_items on screen is associated with one of the three buttons above or below the TFT. Pages could be seen like "desktops" on a PC with icons on them to click. (type: page_t)
+    - **Menu**: It refers to a screen with a header (showing breadcrumbs) and 6 menu_items displayed at the same time on the LCD (scrollbars are automatically shown if more than 6 menu items are present. A menu is typically navigated with the rotary/push knob.
 
-- ****PageItem****: Each item on a page acts like a button and can execute an action or can lead to another page or menu when clicked
+- **PageItem**: Each item on a page acts like a button and can execute an action or can lead to another page or menu when clicked
 
-- ****MenuItem****: It refers to one option/line in the menu, can be hidden or disabled and can show readonly information, lead to another submenu or contain a boolean, numeric or dropdown list like selection.
+- **MenuItem**: It refers to one option/line in the menu, can be hidden or disabled and can show readonly information, lead to another submenu or contain a boolean, numeric or dropdown list like selection.
 
-- ****ParameterMenu****: This menu pops up when a menu item containing a numeric or dropdown list selection parameter is clicked.
+- **ParameterMenu**: This menu pops up when a menu item containing a numeric or dropdown list selection parameter is clicked.
 
 ## Usage instructions
 
 - USB communication to/from the AXIOM Remote is done via a USB communications device class (CDC)
 - **sudo minicom -D /dev/ttyACM0** (baud rate is not required)
 
+## Important classes
+
+* Interfaces start with capital i, e.g. _IButton_ or _IScreen_
+  * They should be used in most cases when passing data to classes, methods etc.
+
+| Interface | Description           | Usage examples               |
+| --------- | --------------------- | ---------------------------- |
+| IButton   | Interface for buttons | PushButton, ImageButton      |
+| IScreen   | Interface for screens | MainPage, WhiteBalanceScreen |
+
+* General functionality should be placed in the base class, like title drawing or button bar handling
+  * we do not have a strict division for now, which is normally done in OOP, so it's fine to extend the interface class, like IScreeen, with caption and button bar rendering and handling
+
+  * If different behavior is required, then it can easily be overridden in C++, see **virtual** and **override** keywords. One of the advantages is reduced probability of errors, because the code is only placed in one class.
+
 ## LCD
+
 The drawing origin (X,Y = 0,0) is located in the top left corner. The LCD is used in landscape (widescreen) mode.
 
+Currently whole display is updated at once, but in the future we will involve so called _dirty rectangles_ to reduce time which is required to update the screen, to improve the performance and lower the power usage. For this purpose the method _DrawPixel()_ in _Painter_ could store the min and max coordinates of requested drawing operations and when screen update will be called, the data range could be selected based on this coordinates.
+
+## Screens
+
+### General
+
+TODO
+
+### Buttons
+
+There are 12 buttons which are placed around the LCD, 3 on each side (see _Figure 1_), this is also why the ButtonBar has only 3 entries, like left, center and right.
+
+> It can be confusing for left and right bars, but they can be described as _left_ is _top_ and _right_ is _bottom_. Another possibility to change the _ButtonPosition_ enum to _First_, _Second_ and _Third_
+
+Like the example for the bottom button bar in _IScreen_, other ones can be created in the same way, as we know that the screens can’t have different structure, just different features are activated on individual screens, depending on the requirements.
+
+As every screen has different requirements, the methods which add buttons to the bars, like SetBottomButton() can be adjusted, so they set a variable, like
+
+```cpp
+if(!_showBottomBar)
+{
+ _showBottomBar = true;
+}
+```
+
+This would allow rendering the required bars automatically. If we have to deactivate the bars, then additional methods, like ShowBottomBar(bool show), can be implemented.
+
 ## Communication Protocol
+
 A simple ASCII based line prototcol is currently envisioned (not implemented yet):
 
 Format:
@@ -49,6 +93,7 @@ Xyyyzz FIELDS...
 ```
 
 where `X` indicates the request type, currently
+
 - `G` for get
 - `S` for set
 - `R` for return value / reply
@@ -72,10 +117,14 @@ example:
 The remote should use a timeout of `1s` for long running requests.
 
 ## Interfacing with the East/West PIC16
+
 Two additional smaller PIC16 are used for handling push button, rotary encoder and LED IO.
 
 They are connected to the PIC32MZ via i2c:
+
 ### PIC16F1718 West
+
+```
     Index   Bits    Function
     0x00    [7:0]   Port A Change
     0x01    [7:0]   Port B Change
@@ -112,8 +161,11 @@ They are connected to the PIC32MZ via i2c:
     0x34    [7:0]   Pattern Blue [7:0]
     0x35    [7:0]   Pattern Blue [15:8]
     0x36    [7:0]   Pattern Load
+```
 
 ### PIC16F1718 East
+
+```
     Index   Bits    Function
     0x00    [7:0]   Port A Change
     0x01    [7:0]   Port B Change
@@ -126,4 +178,4 @@ They are connected to the PIC32MZ via i2c:
     .
     .
     .
-
+```
