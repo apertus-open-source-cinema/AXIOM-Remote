@@ -16,7 +16,8 @@ Good User Interface (UI) / User Experience (UX) principles:
 ## Terms used in GUI
 
 <p align="center">
-  <img src="https://lh6.googleusercontent.com/LAwx0tUKyB3_XFQIg46tdciVZxFjK_TwD84dJe8mCU8BmWBYeuxiuF2F-evQn0UwuPy8X4w085mN9Ti--YnOGHRjQyRjU95HS59ZCIPC">
+  <img src="../Docs/Images/Structure/AXIOM_Remote_GUI.svg">
+  <p style="text-align: center;font-style:italic;"></p>
 </p>
 
 Following terms can help understand the GUI better:
