@@ -87,14 +87,14 @@
                 "color": "white",
                 "singleInstance": true,
                 "cwd": "${workspaceFolder}/Firmware",
-                "command": "sudo pic32prog build/AXIOM_Remote_Firmware.hex -S"
+                "command": "pic32prog build/AXIOM_Remote_Firmware.hex -S"
             },
             {
                 "name": "Compile & Flash",
                 "color": "white",
                 "singleInstance": true,
                 "cwd": "${workspaceFolder}/Firmware", // Terminal initial folder ${workspaceFolder} and os user home as defaults
-                "command": "make clean && make -j8 && sudo pic32prog build/AXIOM_Remote_Firmware.hex -S"
+                "command": "make clean && make -j8 && pic32prog build/AXIOM_Remote_Firmware.hex -S"
             }
         ]
     }
