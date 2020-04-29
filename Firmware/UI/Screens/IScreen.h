@@ -21,13 +21,16 @@ class IScreen
     IUSBDevice* _usbDevice;
 
     ButtonBar _bottomButtonBar;
+    ButtonBar _leftButtonBar;
 
     virtual void DrawCaption();
 
     virtual void DrawTopButtonBar();
     virtual void DrawBottomButtonBar(IPainter* painter);
+    virtual void DrawLeftButtonBar(IPainter* painter);
 
     virtual void SetBottomButton(ButtonPosition position, IButton* button);
+    virtual void SetLeftButton(ButtonPosition position, IButton* button);
 
   public:
     IScreen(IUSBDevice* usbDevice = nullptr);
