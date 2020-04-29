@@ -69,7 +69,19 @@ Note that with the current hardware the PICKit2 needs to stay connected for norm
 ### pic32prog
 
 - Acquire binary or build from source from: https://github.com/sergev/pic32prog to flash with PICKit2
-- run **sudo ./pic32prog yourfile.hex** and you should see a progress bar of the flashing/verification process
+- run **pic32prog yourfile.hex** and you should see a progress bar of the flashing/verification process
+
+If ```pic32prog``` only works with ```sudo``` add your user to the plugdev group and add the following udev rule to /etc/udev/rules.d/26-microchip.rules and reboot:
+
+```
+edit the file: ATTR{idVendor}=="04d8", MODE="664", GROUP="plugdev"
+```
+
+The idVendor should be looked up with ```lsusb```, in case of the PICkit2 it looks like this:
+```
+Bus 003 Device 002: ID 04d8:0033 Microchip Technology, Inc. PICkit2
+```
+
 
 ## Development Environment
 
