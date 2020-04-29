@@ -41,15 +41,15 @@ void Painter::SetFont(Font font)
         break;
     case Font::FreeSans12pt7b:
         _currentFont = _fontList[1];
-        _currentFontHeight = 15;
+        _currentFontHeight = 17;
         break;
     case Font::FreeSans18pt7b:
         _currentFont = _fontList[2];
-        _currentFontHeight = 24;
+        _currentFontHeight = 25;
         break;
     case Font::FreeSans24pt7b:
         _currentFont = _fontList[3];
-        _currentFontHeight = 28;
+        _currentFontHeight = 33;
         break;
     }
 }
@@ -569,10 +569,11 @@ uint16_t Painter::GetStringFramebufferWidth(const char* str)
     }
 
     // remove the gap after the last letter
-    if (width > 0)
+    /*if (width > 0)
     {
         width -= gap;
-    }
+    }*/
+
     // remove the xoffset before the first letter
     if (width > 0)
     {
