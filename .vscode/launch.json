@@ -11,7 +11,7 @@
             "program": "${workspaceFolder}/AXIOM_Remote_Firmware_Visualizer/build/AXIOM_Remote_Firmware_Visualizer",
             "args": [],
             "stopAtEntry": false,
-            "cwd": "${workspaceFolder}",
+            "cwd": "${workspaceFolder}/AXIOM_Remote_Firmware_Visualizer",
             "environment": [],
             "externalConsole": false,
             "MIMode": "gdb",
