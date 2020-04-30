@@ -61,6 +61,7 @@ class Painter : public IPainter
                           uint16_t color) override;
     uint16_t ProcessByte(uint8_t data, uint16_t x, uint16_t xIndex, uint16_t yPos, uint16_t height, uint16_t color);
     void Fill(uint16_t fillColor) override;
+    void Dim() override;
 
     // Text Related
     void SetFont(Font font) override;

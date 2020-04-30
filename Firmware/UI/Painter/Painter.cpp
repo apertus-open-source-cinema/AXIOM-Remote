@@ -5,6 +5,8 @@
 
 #include "../../Utils.h"
 
+#include "../../GlobalSettings.h"
+
 #include "../../Media/Fonts/FreeSans9pt7b.h"
 #include "../../Media/Fonts/FreeSans12pt7b.h"
 #include "../../Media/Fonts/FreeSans18pt7b.h"
@@ -595,6 +597,22 @@ void Painter::DrawPixel(uint16_t x, uint16_t y, uint16_t color)
 void Painter::Fill(uint16_t fillColor)
 {
     DrawFillRectangle(0, 0, _framebufferWidth, _framebufferHeight, fillColor);
+}
+
+void Painter::Dim()
+{
+    uint16_t dimColor = (uint16_t)Color565::LCD_DIM;
+
+    for (int i = 0; i < _framebufferWidth * _framebufferWidth; i++)
+    {
+        if (_framebuffer[i] < dimColor)
+        {
+            _framebuffer[i] = 0;
+            continue;
+        }
+
+        _framebuffer[i] -= dimColor;
+    }
 }
 
 uint16_t Painter::ProcessByte(uint8_t data, uint16_t x, uint16_t xIndex, uint16_t yPos, uint16_t height, uint16_t color)

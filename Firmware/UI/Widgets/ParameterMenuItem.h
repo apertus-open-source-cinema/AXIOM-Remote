@@ -1,5 +1,5 @@
-#ifndef MENUITEM_H
-#define MENUITEM_H
+#ifndef PARAMETERMENUITEM_H
+#define PARAMETERMENUITEM_H
 
 #include "IWidget.h"
 
@@ -7,17 +7,7 @@
 
 class IPainter;
 
-enum class MenuItemType
-{
-    MENU_ITEM_TYPE_SUBMENU,
-    MENU_ITEM_TYPE_PAGELINK,
-    MENU_ITEM_TYPE_BACKLINK,
-    MENU_ITEM_TYPE_READONLY,
-    MENU_ITEM_TYPE_NUMERIC,
-    MENU_ITEM_TYPE_DROPDOWN
-};
-
-class MenuItem : public IWidget
+class ParameterMenuItem : public IWidget
 {
     bool _disabled;
     bool _hidden;
@@ -25,8 +15,6 @@ class MenuItem : public IWidget
     bool _highlighted;
     char const* _label;
     char const* _value;
-    MenuItemType _type;
-    AvailableScreens _targetScreen;
 
     uint16_t _backgroundColor;
     uint16_t _backgroundHighlightColor;
@@ -45,15 +33,12 @@ class MenuItem : public IWidget
 
     uint8_t _verticalLabelOffset;
 
-    uint8_t _dropDownChoices;
-    char const* _choiceLabels[7];
-
   public:
-    MenuItem(const char* label = "...", bool disabled = false, const char* value = nullptr, bool hidden = false,
-             bool pressed = false, bool highlighted = false, MenuItemType type = MenuItemType::MENU_ITEM_TYPE_NUMERIC) :
+    ParameterMenuItem(const char* label = "...", bool disabled = false, const char* value = nullptr,
+                      bool hidden = false, bool pressed = false, bool highlighted = false) :
         _disabled(disabled),
         _hidden(hidden), _pressed(pressed), _highlighted(highlighted), _label(const_cast<char*>(label)),
-        _value(const_cast<char*>(value)), _type(type), _backgroundColor((uint16_t)Color565::White),
+        _value(const_cast<char*>(value)), _backgroundColor((uint16_t)Color565::White),
         _backgroundHighlightColor(RGB565(255, 128, 0)), _backgroundPressedColor(RGB565(0, 128, 255)),
         _backgroundDisabledColor(RGB565(180, 180, 180)), _textColor((uint16_t)Color565::Black),
         _textHighlightColor((uint16_t)Color565::White), _textPressedColor((uint16_t)Color565::White),
@@ -81,11 +66,6 @@ class MenuItem : public IWidget
             _currentBackgroundColor = _backgroundColor;
             _currentTextColor = _textColor;
         }
-    }
-
-    void SetTargetScreen(AvailableScreens targetscreen)
-    {
-        _targetScreen = targetscreen;
     }
 
     bool IsDisabled()
@@ -173,16 +153,6 @@ class MenuItem : public IWidget
         return _value;
     }
 
-    void SetMenuType(MenuItemType type)
-    {
-        _type = type;
-    }
-
-    MenuItemType GetMenuType()
-    {
-        return _type;
-    }
-
     void SetDimensions(uint16_t x, uint16_t y, uint16_t width, uint16_t height)
     {
         _x = x;
@@ -197,32 +167,6 @@ class MenuItem : public IWidget
         _y = y;
     }
 
-    void SetChoices(const char* choicelabels[], uint8_t choices)
-    {
-        _dropDownChoices = choices;
-        for (int8_t i = 0; i < choices; i++)
-        {
-            _choiceLabels[i] = choicelabels[i];
-        }
-    }
-    const char* GetChoice(uint8_t choiceindex)
-    {
-        return _choiceLabels[choiceindex];
-    }
-
-    uint8_t GetChoiceCount()
-    {
-        return _dropDownChoices;
-    }
-
-    void UpdateValue(uint8_t choiceindex)
-    {
-        if ((choiceindex >= 0) && (choiceindex < _dropDownChoices))
-        {
-            _value = _choiceLabels[choiceindex];
-        }
-    }
-
     void Draw(IPainter* painter) override
     {
         // Draw background
@@ -234,34 +178,12 @@ class MenuItem : public IWidget
             painter->DrawFillRectangle(_x, _y, _width, _height, _currentBackgroundColor);
         }
 
-        // Label
         painter->DrawText(_x + 5, _y + _verticalLabelOffset, _label, _currentTextColor, TextAlign::TEXT_ALIGN_LEFT, 0);
-
-        // value
-        if (_value != nullptr)
-        {
-            painter->DrawText(_x + 180, _y + _verticalLabelOffset, _value, _currentTextColor,
-                              TextAlign::TEXT_ALIGN_RIGHT, 80);
-        }
     }
 
     void ExecuteAction(IMenuSystem* menuSystem)
     {
-        switch (_type)
-        {
-        case MenuItemType::MENU_ITEM_TYPE_BACKLINK:
-            menuSystem->SetCurrentScreen(_targetScreen);
-            break;
-        case MenuItemType::MENU_ITEM_TYPE_PAGELINK:
-            menuSystem->SetCurrentScreen(_targetScreen);
-            break;
-        case MenuItemType::MENU_ITEM_TYPE_SUBMENU:
-            menuSystem->SetCurrentScreen(_targetScreen);
-            break;
-        default:
-            break;
-        }
     }
 };
 
-#endif /* MENUITEM_H */
+#endif /* PARAMETERMENUITEM_H */
