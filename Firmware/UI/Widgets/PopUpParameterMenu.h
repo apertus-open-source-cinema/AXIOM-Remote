@@ -39,7 +39,8 @@ class PopUpParameterMenu : public IWidget
         _highlightIndex = -1;
         _pressedIndex = -1;
         SetHighlighted(0);
-        _horizontalTextMargin = 5;
+        _previousChoiceIndex = 0;
+        _horizontalTextMargin = 10;
         init = false;
     }
 
@@ -61,6 +62,7 @@ class PopUpParameterMenu : public IWidget
             for (int8_t i = 0; i < choices; i++)
             {
                 _parameterMenuItem[i].SetLabel(choicelabels[i]);
+                _parameterMenuItem[i].SetHorizontalTextMargin(_horizontalTextMargin);
             }
         }
     }
@@ -79,9 +81,10 @@ class PopUpParameterMenu : public IWidget
     {
         if ((pressedindex >= 0) && (pressedindex < _choiceCount))
         {
-            UnPressAllMenuItems();
             _pressedIndex = pressedindex;
             _parameterMenuItem[pressedindex].SetPressed(true);
+            _previousChoiceIndex = pressedindex;
+            UnPressAllMenuItems();
         }
     }
 
@@ -137,12 +140,26 @@ class PopUpParameterMenu : public IWidget
         // draw the popup menu
         for (uint8_t itemIndex = 0; itemIndex < _choiceCount; itemIndex++)
         {
-            ParameterMenuItem currentMenuItem = _parameterMenuItem[itemIndex];
+            ParameterMenuItem currentParameterMenuItem = _parameterMenuItem[itemIndex];
 
             uint16_t y = _y - (itemIndex + 1) * 30;
-            currentMenuItem.SetDimensions(_x + _borderwidth, y, _width - 2 * _borderwidth, 29);
+            currentParameterMenuItem.SetDimensions(_x + _borderwidth, y, _width - 2 * _borderwidth, 29);
 
-            currentMenuItem.Draw(painter);
+            currentParameterMenuItem.Draw(painter);
+
+            // draw current (old) value indicator circle
+            if (_previousChoiceIndex == itemIndex)
+            {
+                if (_highlightIndex == itemIndex)
+                {
+                    painter->DrawFillCircle(_x + _borderwidth + 4, _y - itemIndex * 30 - 15, 3,
+                                            (uint16_t)Color565::White);
+                } else
+                {
+                    painter->DrawFillCircle(_x + _borderwidth + 4, _y - itemIndex * 30 - 15, 3,
+                                            (uint16_t)Color565::Black);
+                }
+            }
         }
     }
 
@@ -153,6 +170,7 @@ class PopUpParameterMenu : public IWidget
         {
             _parameterMenuItem[b].SetPressed(false);
         }
+        _pressedIndex = -1;
     }
 
     void UnhighlightAllMenuItems()

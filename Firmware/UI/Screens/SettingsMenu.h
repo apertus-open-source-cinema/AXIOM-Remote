@@ -361,6 +361,7 @@ class SettingsMenu : public IMenu
         {
             _popUpParameterMenuActive = -1;
             _menuItems[_menuSelectionIndex].UpdateValue(_popUpParameterMenu.GetHighlightIndex());
+            _popUpParameterMenu.SetPressed(_popUpParameterMenu.GetHighlightIndex());
         } else
         {
             _menuItems[_menuSelectionIndex].SetPressed(false);

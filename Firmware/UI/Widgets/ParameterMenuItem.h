@@ -32,6 +32,7 @@ class ParameterMenuItem : public IWidget
     uint16_t _currentTextColor;
 
     uint8_t _verticalLabelOffset;
+    uint8_t _horizontalTextMargin;
 
   public:
     ParameterMenuItem(const char* label = "...", bool disabled = false, const char* value = nullptr,
@@ -162,6 +163,11 @@ class ParameterMenuItem : public IWidget
         _height = height;
     }
 
+    void SetHorizontalTextMargin(uint8_t horizontalTextMargin)
+    {
+        _horizontalTextMargin = horizontalTextMargin;
+    }
+
     void SetY(uint16_t y)
     {
         _y = y;
@@ -178,7 +184,8 @@ class ParameterMenuItem : public IWidget
             painter->DrawFillRectangle(_x, _y, _width, _height, _currentBackgroundColor);
         }
 
-        painter->DrawText(_x + 5, _y + _verticalLabelOffset, _label, _currentTextColor, TextAlign::TEXT_ALIGN_LEFT, 0);
+        painter->DrawText(_x + _horizontalTextMargin, _y + _verticalLabelOffset, _label, _currentTextColor,
+                          TextAlign::TEXT_ALIGN_LEFT, 0);
     }
 
     void ExecuteAction(IMenuSystem* menuSystem)
