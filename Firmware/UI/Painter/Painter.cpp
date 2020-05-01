@@ -601,17 +601,10 @@ void Painter::Fill(uint16_t fillColor)
 
 void Painter::Dim()
 {
-    uint16_t dimColor = (uint16_t)Color565::LCD_DIM;
-
     for (int i = 0; i < _framebufferWidth * _framebufferHeight; i++)
     {
-        if (_framebuffer[i] < dimColor)
-        {
-            _framebuffer[i] = 0;
-            continue;
-        }
-
-        _framebuffer[i] -= dimColor;
+        // half the brightness: set LSB of each color schannel 0 and shiftright once
+        _framebuffer[i] = (_framebuffer[i] & 0xF7DE) >> 1;
     }
 }
 

@@ -378,7 +378,7 @@ class SettingsMenu : public IMenu
                 _popUpParameterMenu.SetChoices(choices, _menuItems[_menuSelectionIndex].GetChoiceCount());
                 int8_t displaySelectionIndex = _menuSelectionIndex - _menuOffset;
                 _popUpParameterMenuActive = _menuSelectionIndex;
-                _popUpParameterMenu.SetDimensions(200, 29 + (displaySelectionIndex + 1) * 30, 100, 200);
+                _popUpParameterMenu.SetPosition(200, 29 + (displaySelectionIndex + 1) * 30);
             }
         }
     }

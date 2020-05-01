@@ -21,7 +21,10 @@ class PopUpParameterMenu : public IWidget
     uint8_t _menuItemIndex; // this number indicates which menu item the parameter menu was launched from and affects
                             // location/choice positions
     uint8_t _borderwidth;
+    uint8_t _horizontalTextMargin;
+    bool init;
 
+    // use fixed number of maximum 7 choices for the popup menu as more would not fit on the screen at a time
     ParameterMenuItem _parameterMenuItem[7] = {
         ParameterMenuItem("..."), ParameterMenuItem("..."), ParameterMenuItem("..."), ParameterMenuItem("..."),
         ParameterMenuItem("..."), ParameterMenuItem("..."), ParameterMenuItem("...")};
@@ -36,6 +39,8 @@ class PopUpParameterMenu : public IWidget
         _highlightIndex = -1;
         _pressedIndex = -1;
         SetHighlighted(0);
+        _horizontalTextMargin = 5;
+        init = false;
     }
 
     void SetHighlighted(uint8_t highlightindex)
@@ -80,22 +85,49 @@ class PopUpParameterMenu : public IWidget
         }
     }
 
-    void SetDimensions(uint16_t x, uint16_t y, uint16_t width, uint16_t height)
+    void CalculateDimensions(IPainter* painter)
     {
-        _x = x - _borderwidth;
-        _y = y + _borderwidth;
-        _width = width;
+        // Calculate the pixel width of the longest choice label in the parameter menu
+        uint16_t maxchoicewidth = 0;
+        uint8_t width;
+
+        for (uint8_t itemIndex = 0; itemIndex < _choiceCount; itemIndex++)
+        {
+            width = painter->GetStringFramebufferWidth(_parameterMenuItem[itemIndex].GetLabel());
+            if (width > maxchoicewidth)
+            {
+                maxchoicewidth = width;
+            }
+        }
+        _width = maxchoicewidth + 2 * _horizontalTextMargin + 2 * _borderwidth;
+
         _height = _borderwidth * 2 + _choiceCount * 30;
 
-        // parameter menu would reach outside of screen so we move it down one line until it fits
+        // if parameter menu would reach outside of screen we move it down one line until it fits
         while ((_y - _height) < 0)
         {
             _y += 30;
         }
+
+        // move the parameter window right to border the scrollbar
+        _x = GlobalSettings::LCDWidth - 16 - _width;
+    }
+    void SetPosition(uint16_t x, uint16_t y)
+    {
+        _x = x - _borderwidth;
+        _y = y + _borderwidth;
+
+        init = false;
     }
 
     virtual void Draw(IPainter* painter)
     {
+        if (!init)
+        {
+            CalculateDimensions(painter);
+            init = true;
+        }
+
         // dim the rest of the LCD content
         painter->Dim(); // still needs tuning to avoid funky colors
 
