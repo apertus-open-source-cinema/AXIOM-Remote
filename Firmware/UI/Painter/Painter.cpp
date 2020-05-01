@@ -603,7 +603,7 @@ void Painter::Dim()
 {
     uint16_t dimColor = (uint16_t)Color565::LCD_DIM;
 
-    for (int i = 0; i < _framebufferWidth * _framebufferWidth; i++)
+    for (int i = 0; i < _framebufferWidth * _framebufferHeight; i++)
     {
         if (_framebuffer[i] < dimColor)
         {
