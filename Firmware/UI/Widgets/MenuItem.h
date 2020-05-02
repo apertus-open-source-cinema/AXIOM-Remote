@@ -14,7 +14,8 @@ enum class MenuItemType
     MENU_ITEM_TYPE_BACKLINK,
     MENU_ITEM_TYPE_READONLY,
     MENU_ITEM_TYPE_NUMERIC,
-    MENU_ITEM_TYPE_DROPDOWN
+    MENU_ITEM_TYPE_DROPDOWN,
+    MENU_ITEM_TYPE_CHECKBOX
 };
 
 class MenuItem : public IWidget
@@ -47,6 +48,7 @@ class MenuItem : public IWidget
 
     uint8_t _dropDownChoices;
     char const* _choiceLabels[7];
+    uint8_t _choiceIndex;
 
   public:
     MenuItem(const char* label = "...", bool disabled = false, const char* value = nullptr, bool hidden = false,
@@ -64,6 +66,7 @@ class MenuItem : public IWidget
         _y = 0;
         _width = 50;
         _height = 20;
+        _choiceIndex = 0;
     }
 
     void SetDisabled(bool disabled)
@@ -210,16 +213,22 @@ class MenuItem : public IWidget
         return _choiceLabels[choiceindex];
     }
 
+    uint8_t GetChoiceIndex()
+    {
+        return _choiceIndex;
+    }
+
     uint8_t GetChoiceCount()
     {
         return _dropDownChoices;
     }
 
-    void UpdateValue(uint8_t choiceindex)
+    void UpdateChoice(uint8_t choiceindex)
     {
         if ((choiceindex >= 0) && (choiceindex < _dropDownChoices))
         {
             _value = _choiceLabels[choiceindex];
+            _choiceIndex = choiceindex;
         }
     }
 
