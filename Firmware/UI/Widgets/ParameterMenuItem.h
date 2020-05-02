@@ -13,19 +13,18 @@ class ParameterMenuItem : public IWidget
     bool _hidden;
     bool _pressed;
     bool _highlighted;
+    bool _previousChoice;
     char const* _label;
     char const* _value;
 
     uint16_t _backgroundColor;
     uint16_t _backgroundHighlightColor;
     uint16_t _backgroundPressedColor;
-    uint16_t _backgroundDimmedColor;
     uint16_t _backgroundDisabledColor;
 
     uint16_t _textColor;
     uint16_t _textHighlightColor;
     uint16_t _textPressedColor;
-    uint16_t _textDimmedColor;
     uint16_t _textDisabledColor;
 
     uint16_t _currentBackgroundColor;
@@ -44,7 +43,7 @@ class ParameterMenuItem : public IWidget
         _backgroundDisabledColor(RGB565(180, 180, 180)), _textColor((uint16_t)Color565::Black),
         _textHighlightColor((uint16_t)Color565::White), _textPressedColor((uint16_t)Color565::White),
         _textDisabledColor(RGB565(180, 180, 180)), _currentBackgroundColor(_backgroundColor),
-        _currentTextColor(_textColor), _verticalLabelOffset(20)
+        _currentTextColor(_textColor), _verticalLabelOffset(20), _previousChoice(false)
     {
         _x = 0;
         _y = 0;
@@ -154,6 +153,11 @@ class ParameterMenuItem : public IWidget
         return _value;
     }
 
+    void SetPreviousChoice(bool previousChoice)
+    {
+        _previousChoice = previousChoice;
+    }
+
     void SetDimensions(uint16_t x, uint16_t y, uint16_t width, uint16_t height)
     {
         _x = x;
@@ -184,8 +188,15 @@ class ParameterMenuItem : public IWidget
             painter->DrawFillRectangle(_x, _y, _width, _height, _currentBackgroundColor);
         }
 
+        // draw label
         painter->DrawText(_x + _horizontalTextMargin, _y + _verticalLabelOffset, _label, _currentTextColor,
                           TextAlign::TEXT_ALIGN_LEFT, 0);
+
+        // draw current (old) value indicator circle
+        if (_previousChoice)
+        {
+            painter->DrawFillCircle(_x + 4, _y + 15, 3, _currentTextColor);
+        }
     }
 
     void ExecuteAction(IMenuSystem* menuSystem)

@@ -39,9 +39,13 @@ class PopUpParameterMenu : public IWidget
         _highlightIndex = -1;
         _pressedIndex = -1;
         SetHighlighted(0);
-        _previousChoiceIndex = 0;
+
         _horizontalTextMargin = 10;
         init = false;
+
+        _previousChoiceIndex = 0;
+        ClearPreviousChoice();
+        _parameterMenuItem[_previousChoiceIndex].SetPreviousChoice(true);
     }
 
     void SetHighlighted(uint8_t highlightindex)
@@ -83,7 +87,11 @@ class PopUpParameterMenu : public IWidget
         {
             _pressedIndex = pressedindex;
             _parameterMenuItem[pressedindex].SetPressed(true);
+            
             _previousChoiceIndex = pressedindex;
+            ClearPreviousChoice();
+            _parameterMenuItem[pressedindex].SetPreviousChoice(true);
+
             UnPressAllMenuItems();
         }
     }
@@ -146,20 +154,6 @@ class PopUpParameterMenu : public IWidget
             currentParameterMenuItem.SetDimensions(_x + _borderwidth, y, _width - 2 * _borderwidth, 29);
 
             currentParameterMenuItem.Draw(painter);
-
-            // draw current (old) value indicator circle
-            if (_previousChoiceIndex == itemIndex)
-            {
-                if (_highlightIndex == itemIndex)
-                {
-                    painter->DrawFillCircle(_x + _borderwidth + 4, _y - itemIndex * 30 - 15, 3,
-                                            (uint16_t)Color565::White);
-                } else
-                {
-                    painter->DrawFillCircle(_x + _borderwidth + 4, _y - itemIndex * 30 - 15, 3,
-                                            (uint16_t)Color565::Black);
-                }
-            }
         }
     }
 
@@ -179,6 +173,15 @@ class PopUpParameterMenu : public IWidget
         for (b = 0; b < _choiceCount; b++)
         {
             _parameterMenuItem[b].SetHighlighted(false);
+        }
+    }
+
+    void ClearPreviousChoice()
+    {
+        uint8_t b;
+        for (b = 0; b < _choiceCount; b++)
+        {
+            _parameterMenuItem[b].SetPreviousChoice(false);
         }
     }
 };
