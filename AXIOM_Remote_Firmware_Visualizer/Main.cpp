@@ -32,13 +32,8 @@ enum class GLTextureFilter
     Linear
 };
 
-void Shutdown(SDL_Window* win, SDL_Renderer* ren)
+void Shutdown(SDL_Window* win)
 {
-    if (ren != nullptr)
-    {
-        SDL_DestroyRenderer(ren);
-    }
-
     if (win != nullptr)
     {
         SDL_DestroyWindow(win);
@@ -47,38 +42,23 @@ void Shutdown(SDL_Window* win, SDL_Renderer* ren)
     SDL_Quit();
 }
 
-void Initialization(SDL_Window** win, SDL_Renderer** renderer, SDL_GLContext& glContext)
+void Initialization(SDL_Window** window)
 {
     // Initialize SDL
     if (SDL_Init(SDL_INIT_VIDEO) < 0)
     {
-        std::cout << "SDL could not initialize! SDL_Error: " << SDL_GetError() << std::endl;
+        std::cerr << "SDL could not initialize! SDL_Error: " << SDL_GetError() << std::endl;
+        exit(EXIT_FAILURE);
     }
 
-    SDL_GL_SetAttribute(SDL_GL_CONTEXT_PROFILE_MASK, 0);
-    SDL_GL_SetAttribute(SDL_GL_CONTEXT_MAJOR_VERSION, 3);
-    SDL_GL_SetAttribute(SDL_GL_CONTEXT_MINOR_VERSION, 3);
-    SDL_GL_SetAttribute(SDL_GL_DOUBLEBUFFER, 1);
-    
-    *win =
+    *window = 
         SDL_CreateWindow("AXIOM Remote Visualizer", 100, 100, 800, 480, SDL_WINDOW_OPENGL | SDL_WINDOW_ALLOW_HIGHDPI);
-    if (*win == nullptr)
+    if (*window == nullptr)
     {
-        std::cout << "SDL_CreateWindow Error: " << SDL_GetError() << std::endl;
-        Shutdown(nullptr, nullptr);
-        exit(1);
-    }
-
-    *renderer = SDL_CreateRenderer(*win, -1, 0);
-    if (*renderer == nullptr)
-    {
-        Shutdown(*win, nullptr);
-        std::cout << "SDL_CreateRenderer Error: " << SDL_GetError() << std::endl;
+        std::cerr << "SDL_CreateWindow Error: " << SDL_GetError() << std::endl;
         SDL_Quit();
-        exit(2);
+        exit(EXIT_FAILURE);
     }
-
-    glContext = SDL_GL_CreateContext(*win);
 }
 
 void RenderDisplay(uint16_t* sourceFramebuffer, uint8_t* targetFramebuffer, int width, int height)
@@ -111,7 +91,6 @@ uint32_t CreateGLTexture(SDL_Surface* surface, GLint textureFilter = GL_LINEAR)
         mode = GL_RGBA;
     }
 
-    // glTexStorage2D(GL_TEXTURE_2D, 1, GL_RGB, 320, 240);
     glTexImage2D(GL_TEXTURE_2D, 0, mode, surface->w, surface->h, 0, mode, GL_UNSIGNED_BYTE, surface->pixels);
 
     // Filtering
@@ -124,9 +103,16 @@ uint32_t CreateGLTexture(SDL_Surface* surface, GLint textureFilter = GL_LINEAR)
     return textureID;
 }
 
-void SetupGL()
+void SetupGL(SDL_Window* window, SDL_GLContext& glContext)
 {
     gl3wInit();
+
+    SDL_GL_SetAttribute(SDL_GL_CONTEXT_PROFILE_MASK, 0);
+    SDL_GL_SetAttribute(SDL_GL_CONTEXT_MAJOR_VERSION, 3);
+    SDL_GL_SetAttribute(SDL_GL_CONTEXT_MINOR_VERSION, 3);
+
+    glContext = SDL_GL_CreateContext(window);
+    SDL_GL_MakeCurrent(window, glContext);
 
     int majorVersionGL = 0;
     int minorVersionGL = 0;
@@ -151,12 +137,10 @@ int main()
     uint16_t* frameBuffer = new uint16_t[FRAMEBUFFER_WIDTH * FRAMEBUFFER_HEIGHT];
 
     SDL_Window* window;
-    SDL_Renderer* renderer;
     SDL_GLContext glContext;
-    Initialization(&window, &renderer, glContext);
 
-    SetupGL();
-
+    Initialization(&window);
+    SetupGL(window, glContext);
     SetupImGui(window, glContext);
 
     const ImGuiIO& io = ImGui::GetIO();
@@ -164,9 +148,6 @@ int main()
     SDL_Surface* displayTexture = SDL_CreateRGBSurface(0, FRAMEBUFFER_WIDTH, FRAMEBUFFER_HEIGHT, 24, 0, 0, 0, 0);
     uint32_t displayTextureID = CreateGLTexture(displayTexture, GL_NEAREST);
     SDL_FreeSurface(displayTexture);
-
-    void* textureData;
-    int pitch = 0;
 
     SDL_Rect texture_rect;
     texture_rect.x = 400;                    // the x coordinate
@@ -177,10 +158,6 @@ int main()
     SDL_Surface* surface = IMG_Load("images/knob_clean.png");
     uint32_t knobTextureID = CreateGLTexture(surface);
     SDL_FreeSurface(surface);
-
-    SDL_SetRenderDrawColor(renderer, 64, 64, 64, 255);
-
-    SDL_GL_MakeCurrent(window, glContext);
 
     Painter painter(frameBuffer, FRAMEBUFFER_WIDTH, FRAMEBUFFER_HEIGHT);
 
@@ -216,8 +193,6 @@ int main()
         debugPainter.SetEnable(debugOverlayEnabled);
 #endif
 
-        SDL_RenderClear(renderer);
-
         menuSystem.Draw(&painter);
         RenderDisplay(frameBuffer, framebuffer, FRAMEBUFFER_WIDTH, FRAMEBUFFER_HEIGHT);
 
@@ -235,11 +210,11 @@ int main()
 
         SDL_GL_SwapWindow(window);
 
-        // SDL_RenderPresent(renderer); // updates the renderer
-
         std::this_thread::sleep_for(std::chrono::milliseconds(1000 / frames));
     }
 
-    Shutdown(window, renderer);
+    Shutdown(window);
+
     return 0;
 }
+
