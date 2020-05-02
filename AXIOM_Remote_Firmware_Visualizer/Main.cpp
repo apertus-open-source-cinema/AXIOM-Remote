@@ -32,13 +32,8 @@ enum class GLTextureFilter
     Linear
 };
 
-void Shutdown(SDL_Window* win, SDL_Renderer* ren)
+void Shutdown(SDL_Window* win)
 {
-    if (ren != nullptr)
-    {
-        SDL_DestroyRenderer(ren);
-    }
-
     if (win != nullptr)
     {
         SDL_DestroyWindow(win);
@@ -47,12 +42,13 @@ void Shutdown(SDL_Window* win, SDL_Renderer* ren)
     SDL_Quit();
 }
 
-void Initialization(SDL_Window** win, SDL_Renderer** renderer, SDL_GLContext& glContext)
+void Initialization(SDL_Window** win, SDL_GLContext& glContext)
 {
     // Initialize SDL
     if (SDL_Init(SDL_INIT_VIDEO) < 0)
     {
         std::cout << "SDL could not initialize! SDL_Error: " << SDL_GetError() << std::endl;
+        exit(EXIT_FAILURE);
     }
 
     SDL_GL_SetAttribute(SDL_GL_CONTEXT_PROFILE_MASK, 0);
@@ -65,17 +61,8 @@ void Initialization(SDL_Window** win, SDL_Renderer** renderer, SDL_GLContext& gl
     if (*win == nullptr)
     {
         std::cout << "SDL_CreateWindow Error: " << SDL_GetError() << std::endl;
-        Shutdown(nullptr, nullptr);
-        exit(1);
-    }
-
-    *renderer = SDL_CreateRenderer(*win, -1, 0);
-    if (*renderer == nullptr)
-    {
-        Shutdown(*win, nullptr);
-        std::cout << "SDL_CreateRenderer Error: " << SDL_GetError() << std::endl;
         SDL_Quit();
-        exit(2);
+        exit(EXIT_FAILURE);
     }
 
     glContext = SDL_GL_CreateContext(*win);
@@ -111,7 +98,6 @@ uint32_t CreateGLTexture(SDL_Surface* surface, GLint textureFilter = GL_LINEAR)
         mode = GL_RGBA;
     }
 
-    // glTexStorage2D(GL_TEXTURE_2D, 1, GL_RGB, 320, 240);
     glTexImage2D(GL_TEXTURE_2D, 0, mode, surface->w, surface->h, 0, mode, GL_UNSIGNED_BYTE, surface->pixels);
 
     // Filtering
@@ -151,9 +137,8 @@ int main()
     uint16_t* frameBuffer = new uint16_t[FRAMEBUFFER_WIDTH * FRAMEBUFFER_HEIGHT];
 
     SDL_Window* window;
-    SDL_Renderer* renderer;
     SDL_GLContext glContext;
-    Initialization(&window, &renderer, glContext);
+    Initialization(&window, glContext);
 
     SetupGL();
 
@@ -177,8 +162,6 @@ int main()
     SDL_Surface* surface = IMG_Load("images/knob_clean.png");
     uint32_t knobTextureID = CreateGLTexture(surface);
     SDL_FreeSurface(surface);
-
-    SDL_SetRenderDrawColor(renderer, 64, 64, 64, 255);
 
     SDL_GL_MakeCurrent(window, glContext);
 
@@ -216,8 +199,6 @@ int main()
         debugPainter.SetEnable(debugOverlayEnabled);
 #endif
 
-        SDL_RenderClear(renderer);
-
         menuSystem.Draw(&painter);
         RenderDisplay(frameBuffer, framebuffer, FRAMEBUFFER_WIDTH, FRAMEBUFFER_HEIGHT);
 
@@ -235,11 +216,10 @@ int main()
 
         SDL_GL_SwapWindow(window);
 
-        // SDL_RenderPresent(renderer); // updates the renderer
-
         std::this_thread::sleep_for(std::chrono::milliseconds(1000 / frames));
     }
 
-    Shutdown(window, renderer);
+    Shutdown(window);
+
     return 0;
 }
