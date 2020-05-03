@@ -8,8 +8,10 @@
 
 #include "../../GlobalSettings.h"
 
+#include "../../Media/Icons/home_icon.h"
+
 WhiteBalanceScreen::WhiteBalanceScreen(IUSBDevice* usbDevice) :
-    IScreen(usbDevice), _cancelButton("Cancel"), _addPresetButton("Add"), _setButton("Set")
+    IScreen(usbDevice), _cancelButton("Cancel"), _addPresetButton("Add"), _setButton("Set"), _homeButton(home.home_data)
 {
     _cancelButton.SetHandler(&CancelButtonHandler);
     _bottomButtonBar.SetButton(ButtonPosition::Left, &_cancelButton);
@@ -21,6 +23,8 @@ WhiteBalanceScreen::WhiteBalanceScreen(IUSBDevice* usbDevice) :
     _setButton.SetHandler(&SetButtonHandler);
     _setButton.SetBackgroundColor((uint16_t)Color565::AXIOM_Orange);
     _bottomButtonBar.SetButton(ButtonPosition::Right, &_setButton);
+    
+    _leftButtonBar.SetButton(ButtonPosition::Left, &_homeButton);
 }
 
 void WhiteBalanceScreen::Draw(IPainter* painter)
@@ -30,6 +34,8 @@ void WhiteBalanceScreen::Draw(IPainter* painter)
     painter->DrawFillRectangle(20, 50, 70, 30, (uint16_t)Color565::Yellow);
 
     DrawBottomButtonBar(painter);
+    
+    DrawLeftButtonBar(painter);
 }
 
 void WhiteBalanceScreen::Drawheader(IPainter* painter)

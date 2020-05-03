@@ -3,6 +3,7 @@
 
 #include "IScreen.h"
 #include "../Widgets/PushButton.h"
+#include "../Widgets/ImageButton.h"
 
 class IPainter;
 class IUSBDevice;
@@ -12,6 +13,8 @@ class WhiteBalanceScreen : public IScreen
     PushButton _cancelButton;
     PushButton _setButton;
     PushButton _addPresetButton;
+  
+    ImageButton _homeButton;
 
   public:
     explicit WhiteBalanceScreen(IUSBDevice* usbDevice);
