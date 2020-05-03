@@ -4,6 +4,7 @@
 #include "IWidget.h"
 
 #include "../Color565.h"
+#include "../../GlobalSettings.h"
 
 class IPainter;
 
@@ -60,13 +61,12 @@ class MenuItem : public IWidget
         _backgroundDisabledColor(RGB565(180, 180, 180)), _textColor((uint16_t)Color565::Black),
         _textHighlightColor((uint16_t)Color565::White), _textPressedColor((uint16_t)Color565::White),
         _textDisabledColor(RGB565(180, 180, 180)), _currentBackgroundColor(_backgroundColor),
-        _currentTextColor(_textColor), _verticalLabelOffset(20)
+        _currentTextColor(_textColor), _verticalLabelOffset(20), _choiceIndex(0)
     {
         _x = 0;
         _y = 0;
         _width = 50;
         _height = 20;
-        _choiceIndex = 0;
     }
 
     void SetDisabled(bool disabled)
@@ -115,12 +115,19 @@ class MenuItem : public IWidget
 
         _pressed = pressed;
 
-        if (pressed)
+        if (_type == MenuItemType::MENU_ITEM_TYPE_READONLY)
+        {
+            _currentBackgroundColor = _backgroundColor;
+        } else if (pressed)
         {
             _currentBackgroundColor = _backgroundPressedColor;
         } else if (_highlighted)
         {
             _currentBackgroundColor = _backgroundHighlightColor;
+        } else if (_type == MenuItemType::MENU_ITEM_TYPE_READONLY)
+        {
+            //_currentTextColor = _textDisabledColor;
+            _currentBackgroundColor = _backgroundColor;
         } else
         {
             _currentBackgroundColor = _backgroundColor;
@@ -136,7 +143,11 @@ class MenuItem : public IWidget
     {
         _highlighted = highlighted;
 
-        if (highlighted)
+        if (_type == MenuItemType::MENU_ITEM_TYPE_READONLY)
+        {
+            _currentTextColor = _textDisabledColor;
+            _currentBackgroundColor = _backgroundColor;
+        } else if (highlighted)
         {
             _currentBackgroundColor = _backgroundHighlightColor;
             _currentTextColor = _textHighlightColor;
@@ -179,6 +190,10 @@ class MenuItem : public IWidget
     void SetMenuType(MenuItemType type)
     {
         _type = type;
+        if (type == MenuItemType::MENU_ITEM_TYPE_READONLY)
+        {
+            _currentTextColor = _textDisabledColor;
+        }
     }
 
     MenuItemType GetMenuType()
@@ -237,7 +252,13 @@ class MenuItem : public IWidget
         // Draw background
         if (_disabled)
         {
-            painter->DrawStripedRectangle(_x, _y, _width, _height, 0x8A01, 0x5120, 5, 12);
+            painter->DrawStripedRectangle(_x, _y, _width, _height, 0xE71C, 0xD69A, 5, 12);
+        } else if (_type == MenuItemType::MENU_ITEM_TYPE_READONLY && _highlighted)
+        {
+            painter->DrawFillRectangle(_x, _y, _width, _height, _currentBackgroundColor);
+            painter->DrawFillRectangle(_x, _y, 4, _height, _backgroundHighlightColor);
+            painter->DrawFillRectangle(GlobalSettings::LCDWidth - 20, _y, 4, _height, _backgroundHighlightColor);
+
         } else
         {
             painter->DrawFillRectangle(_x, _y, _width, _height, _currentBackgroundColor);

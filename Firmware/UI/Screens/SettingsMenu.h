@@ -51,7 +51,7 @@ class SettingsMenu : public IMenu
                                MenuItem("Submenu 2"),
                                MenuItem(),
                                MenuItem(),
-                               MenuItem("Readonly Item"),
+                               MenuItem(),
                                MenuItem("Whitebalance Settings"),
                                MenuItem("Test Item 9"),
                                MenuItem("Test Item 10")};
@@ -68,8 +68,9 @@ class SettingsMenu : public IMenu
         _menuBreadcrumbs = "Menu";
 
         // Added for testing
-        _menuItems[0].SetMenuType(MenuItemType::MENU_ITEM_TYPE_BACKLINK);
+        _menuItems[0].SetMenuType(MenuItemType::MENU_ITEM_TYPE_PAGELINK);
         _menuItems[0].SetTargetScreen(AvailableScreens::MainPage);
+
         _menuItems[1].SetDisabled(true);
         _menuItems[2].SetMenuType(MenuItemType::MENU_ITEM_TYPE_SUBMENU);
         _menuItems[2].SetTargetScreen(AvailableScreens::SettingsSubMenu1);
@@ -93,6 +94,9 @@ class SettingsMenu : public IMenu
         funlevelchoices[3] = "crazy";
         _menuItems[5].SetChoices(funlevelchoices, 4);
         _menuItems[5].UpdateChoice(0);
+
+        _menuItems[6].SetLabel("Read-only Setting");
+        _menuItems[6].SetMenuType(MenuItemType::MENU_ITEM_TYPE_READONLY);
 
         _menuItems[7].SetMenuType(MenuItemType::MENU_ITEM_TYPE_PAGELINK);
         _menuItems[7].SetTargetScreen(AvailableScreens::WhiteBalance);
