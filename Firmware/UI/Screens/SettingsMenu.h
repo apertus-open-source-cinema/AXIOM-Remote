@@ -399,10 +399,10 @@ class SettingsMenu : public IMenu
         if (_popUpParameterMenuActive >= 0)
         {
             _popUpParameterMenuActive = -1;
-            // PopUpMenuItem* test = dynamic_cast<PopUpMenuItem*>_menuItem[_menuSelectionIndex];
 
-            //<PopUpMenuItem> (_menuItem[_menuSelectionIndex])->
-            //_menuItem[_menuSelectionIndex]->UpdateChoice(_popUpParameterMenu.GetHighlightIndex());
+            PopUpMenuItem* currentPopUpMenuItem = (PopUpMenuItem*)_menuItem[_menuSelectionIndex];
+            currentPopUpMenuItem->UpdateChoice(_popUpParameterMenu.GetHighlightIndex());
+
             _popUpParameterMenu.SetPressed(_popUpParameterMenu.GetHighlightIndex());
         } else
         {

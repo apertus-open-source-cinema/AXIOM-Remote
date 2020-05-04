@@ -20,16 +20,6 @@ class PopUpMenuItem : public MenuItem
         _type = MenuItemType::MENU_ITEM_TYPE_DROPDOWN;
     }
 
-    /*void SetValue(bool value)
-    {
-        _checkboxValue = value;
-    }
-
-    bool GetValue()
-    {
-        return _checkboxValue;
-    }*/
-
     void SetChoices(const char* choicelabels[], uint8_t choices)
     {
         _dropDownChoices = choices;
@@ -78,7 +68,7 @@ class PopUpMenuItem : public MenuItem
         painter->DrawText(_x + 5, _y + _verticalLabelOffset, _label, _currentTextColor, TextAlign::TEXT_ALIGN_LEFT, 0);
 
         // value
-        painter->DrawText(_x + 180, _y + _verticalLabelOffset, "on", _currentTextColor, TextAlign::TEXT_ALIGN_RIGHT,
+        painter->DrawText(_x + 180, _y + _verticalLabelOffset, _value, _currentTextColor, TextAlign::TEXT_ALIGN_RIGHT,
                           80);
     }
 

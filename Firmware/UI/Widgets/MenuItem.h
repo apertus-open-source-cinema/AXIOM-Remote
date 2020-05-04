@@ -83,14 +83,14 @@ class MenuItem : public IWidget
         }
     }
 
-    void SetTargetScreen(AvailableScreens targetscreen)
-    {
-        _targetScreen = targetscreen;
-    }
-
     bool IsDisabled()
     {
         return _disabled;
+    }
+
+    void SetTargetScreen(AvailableScreens targetscreen)
+    {
+        _targetScreen = targetscreen;
     }
 
     void SetHidden(bool hide)
@@ -198,14 +198,14 @@ class MenuItem : public IWidget
         return _type;
     }
 
-    void SetDimensions(uint16_t x, uint16_t y, uint16_t width, uint16_t height)
+    /*void SetDimensions(uint16_t x, uint16_t y, uint16_t width, uint16_t height)
     {
         _x = x;
         _y = y;
 
         _width = width;
         _height = height;
-    }
+    }*/
 
     void SetY(uint16_t y)
     {
