@@ -21,6 +21,7 @@ enum class MenuItemType
 
 class MenuItem : public IWidget
 {
+  protected:
     bool _disabled;
     bool _hidden;
     bool _pressed;
@@ -47,10 +48,6 @@ class MenuItem : public IWidget
 
     uint8_t _verticalLabelOffset;
 
-    uint8_t _dropDownChoices;
-    char const* _choiceLabels[7];
-    uint8_t _choiceIndex;
-
   public:
     MenuItem(const char* label = "...", bool disabled = false, const char* value = nullptr, bool hidden = false,
              bool pressed = false, bool highlighted = false, MenuItemType type = MenuItemType::MENU_ITEM_TYPE_NUMERIC) :
@@ -61,7 +58,7 @@ class MenuItem : public IWidget
         _backgroundDisabledColor(RGB565(180, 180, 180)), _textColor((uint16_t)Color565::Black),
         _textHighlightColor((uint16_t)Color565::White), _textPressedColor((uint16_t)Color565::White),
         _textDisabledColor(RGB565(180, 180, 180)), _currentBackgroundColor(_backgroundColor),
-        _currentTextColor(_textColor), _verticalLabelOffset(20), _choiceIndex(0)
+        _currentTextColor(_textColor), _verticalLabelOffset(20)
     {
         _x = 0;
         _y = 0;
@@ -215,38 +212,6 @@ class MenuItem : public IWidget
         _y = y;
     }
 
-    void SetChoices(const char* choicelabels[], uint8_t choices)
-    {
-        _dropDownChoices = choices;
-        for (int8_t i = 0; i < choices; i++)
-        {
-            _choiceLabels[i] = choicelabels[i];
-        }
-    }
-    const char* GetChoice(uint8_t choiceindex)
-    {
-        return _choiceLabels[choiceindex];
-    }
-
-    uint8_t GetChoiceIndex()
-    {
-        return _choiceIndex;
-    }
-
-    uint8_t GetChoiceCount()
-    {
-        return _dropDownChoices;
-    }
-
-    void UpdateChoice(uint8_t choiceindex)
-    {
-        if ((choiceindex >= 0) && (choiceindex < _dropDownChoices))
-        {
-            _value = _choiceLabels[choiceindex];
-            _choiceIndex = choiceindex;
-        }
-    }
-
     void Draw(IPainter* painter) override
     {
         // Draw background
@@ -275,7 +240,7 @@ class MenuItem : public IWidget
         }
     }
 
-    void ExecuteAction(IMenuSystem* menuSystem)
+    virtual void ExecuteAction(IMenuSystem* menuSystem)
     {
         switch (_type)
         {

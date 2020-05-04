@@ -8,6 +8,8 @@
 #include "../Widgets/MenuItem.h"
 
 #include "../Widgets/PopUpParameterMenu.h"
+#include "../Widgets/CheckboxMenuItem.h"
+#include "../Widgets/PopUpMenuItem.h"
 
 #include "../ButtonDefinitions.h"
 
@@ -44,7 +46,11 @@ class SettingsMenu : public IMenu
 
     PopUpParameterMenu _popUpParameterMenu;
     int8_t _popUpParameterMenuActive;
+    CheckBoxMenuItem FunCheckboxMenuItem = CheckBoxMenuItem();
+    PopUpMenuItem FunLevelCheckboxMenuItem = PopUpMenuItem();
 
+    MenuItem* _menuItem[10] = {nullptr, nullptr, nullptr, nullptr, nullptr,
+                               nullptr, nullptr, nullptr, nullptr, nullptr};
     MenuItem _menuItems[10] = {MenuItem("Exit Menu"),
                                MenuItem("Disabled Item", true),
                                MenuItem("Submenu 1"),
@@ -68,38 +74,58 @@ class SettingsMenu : public IMenu
         _menuBreadcrumbs = "Menu";
 
         // Added for testing
+
         _menuItems[0].SetMenuType(MenuItemType::MENU_ITEM_TYPE_PAGELINK);
         _menuItems[0].SetTargetScreen(AvailableScreens::MainPage);
+        _menuItems[0].SetLabel("Exit Menu");
+        _menuItem[0] = &_menuItems[0];
 
         _menuItems[1].SetDisabled(true);
+        _menuItem[1] = &_menuItems[1];
+
         _menuItems[2].SetMenuType(MenuItemType::MENU_ITEM_TYPE_SUBMENU);
         _menuItems[2].SetTargetScreen(AvailableScreens::SettingsSubMenu1);
+        _menuItem[2] = &_menuItems[2];
+
         _menuItems[3].SetMenuType(MenuItemType::MENU_ITEM_TYPE_SUBMENU);
+        _menuItem[3] = &_menuItems[3];
 
-        _menuItems[4].SetMenuType(MenuItemType::MENU_ITEM_TYPE_CHECKBOX);
-        const char* funchoices[2];
-        funchoices[0] = "off";
-        funchoices[1] = "on";
-        _menuItems[4].SetChoices(funchoices, 2);
-        _menuItems[4].UpdateChoice(0);
-        _menuItems[4].SetLabel("Fun");
+        /*
+                _menuItems[4].SetMenuType(MenuItemType::MENU_ITEM_TYPE_CHECKBOX);
+                const char* funchoices[2];
+                funchoices[0] = "off";
+                funchoices[1] = "on";
+                _menuItems[4].SetChoices(funchoices, 2);
+                _menuItems[4].UpdateChoice(0);
+                _menuItems[4].SetLabel("Fun");
+                _menuItem[4] = &_menuItems[4];
+                */
 
-        _menuItems[5].SetMenuType(MenuItemType::MENU_ITEM_TYPE_DROPDOWN);
-        _menuItems[5].SetLabel("Funlevel");
+        FunCheckboxMenuItem.SetLabel("Fun");
+        _menuItem[4] = &FunCheckboxMenuItem;
 
+        FunLevelCheckboxMenuItem.SetLabel("Funlevel");
+        //_menuItems[5].SetMenuType(MenuItemType::MENU_ITEM_TYPE_DROPDOWN);
+        //_menuItems[5].SetLabel("Funlevel");
         const char* funlevelchoices[4];
         funlevelchoices[0] = "low";
         funlevelchoices[1] = "medium";
         funlevelchoices[2] = "high";
         funlevelchoices[3] = "crazy";
-        _menuItems[5].SetChoices(funlevelchoices, 4);
-        _menuItems[5].UpdateChoice(0);
+        FunLevelCheckboxMenuItem.SetChoices(funlevelchoices, 4);
+        FunLevelCheckboxMenuItem.UpdateChoice(0);
+        _menuItem[5] = &FunLevelCheckboxMenuItem;
 
         _menuItems[6].SetLabel("Read-only Setting");
         _menuItems[6].SetMenuType(MenuItemType::MENU_ITEM_TYPE_READONLY);
+        _menuItem[6] = &_menuItems[6];
 
         _menuItems[7].SetMenuType(MenuItemType::MENU_ITEM_TYPE_PAGELINK);
         _menuItems[7].SetTargetScreen(AvailableScreens::WhiteBalance);
+        _menuItem[7] = &_menuItems[7];
+
+        _menuItem[8] = &_menuItems[8];
+        _menuItem[9] = &_menuItems[9];
 
         // Color defintions
         _menuBackgroundColor = RGB565(180, 180, 180);
@@ -118,7 +144,7 @@ class SettingsMenu : public IMenu
         _menuOffset = 0;
 
         // Default selection is first item
-        _menuItems[_menuSelectionIndex].SetHighlighted(true);
+        _menuItem[_menuSelectionIndex]->SetHighlighted(true);
 
         _popUpParameterMenuActive = -1;
 
@@ -135,6 +161,11 @@ class SettingsMenu : public IMenu
     void SetLabel(char* value)
     {
         _label = value;
+    }
+
+    void SetMenuItem(uint8_t index, MenuItem* menuItem)
+    {
+        _menuItem[index] = menuItem;
     }
 
     const char* GetLabel()
@@ -207,15 +238,17 @@ class SettingsMenu : public IMenu
 
         for (uint8_t itemIndex = 0; itemIndex < displayItemsCount; itemIndex++)
         {
-            MenuItem currentMenuItem = _menuItems[itemIndex + _menuOffset];
+            MenuItem* currentMenuItem = _menuItem[itemIndex + _menuOffset];
 
-            // TODO: move this to the update() function
-            SetValue(currentMenuItem);
+            if (currentMenuItem == nullptr)
+            {
+                continue;
+            }
 
             uint16_t y = 31 + itemIndex * 30;
-            currentMenuItem.SetDimensions(31, y, GlobalSettings::LCDWidth - 30, 29);
+            currentMenuItem->SetDimensions(31, y, GlobalSettings::LCDWidth - 30, 29);
 
-            currentMenuItem.Draw(painter);
+            currentMenuItem->Draw(painter);
         }
     }
 
@@ -249,29 +282,12 @@ class SettingsMenu : public IMenu
         painter->DrawFillRectangle(GlobalSettings::LCDWidth - 14, scrollbarYOffset, 12, sliderHeight, _menuTextColor);
     }
 
-    void SetValue(MenuItem& menuItem)
-    {
-        switch (menuItem.GetMenuType())
-        {
-        case MenuItemType::MENU_ITEM_TYPE_SUBMENU:
-            menuItem.SetValue(">");
-            break;
-        default:
-            break;
-            /*case MenuItemType::MENU_ITEM_TYPE_PAGELINK:
-            case MenuItemType::MENU_ITEM_TYPE_BACKLINK:
-                break;
-            default:
-                value = _menuItems[item_index].GetValue();*/
-        }
-    }
-
     void UnselectAllMenuItems()
     {
         uint8_t b;
         for (b = 0; b < _menuItemsCount; b++)
         {
-            _menuItems[b].SetPressed(false);
+            _menuItem[b]->SetPressed(false);
         }
     }
 
@@ -280,12 +296,30 @@ class SettingsMenu : public IMenu
         uint8_t b;
         for (b = 0; b < _menuItemsCount; b++)
         {
-            _menuItems[b].SetHighlighted(false);
+            _menuItem[b]->SetHighlighted(false);
         }
     }
 
     void Update(Button button, int8_t knob, IMenuSystem* menuSystem) override
     {
+        /*if (_menuItem[_menuSelectionIndex] == nullptr)
+        {
+            return;
+        }*/
+        uint8_t b;
+        for (b = 0; b < _menuItemsCount; b++)
+        {
+
+            switch (_menuItem[b]->GetMenuType())
+            {
+            case MenuItemType::MENU_ITEM_TYPE_SUBMENU:
+                _menuItem[b]->SetValue(">");
+                break;
+            default:
+                break;
+            }
+        }
+
         if (knob != 0)
         {
             if (knob > 0)
@@ -295,16 +329,6 @@ class SettingsMenu : public IMenu
             {
                 SelectionDown(menuSystem);
             }
-            // char debugText[32];
-            // sprintf(debugText, "Knob: %d \r\n", knob);
-            // _usbDevice->Send((uint8_t*)debugText, 32);
-
-            // Remove highlighting from last selected item as new button event occured
-            /*_menuItems[_menuSelectionIndex].SetHighlighted(false);
-
-            _menuSelectionIndex -= knob;
-            _menuSelectionIndex = LimitRange(_menuSelectionIndex, 0, _menuItemsCount - 1);
-            _menuItems[_menuSelectionIndex].SetHighlighted(true);*/
         }
 
         switch (button)
@@ -317,17 +341,17 @@ class SettingsMenu : public IMenu
             break;
         case Button::BUTTON_5_UP:
             SelectionPress(menuSystem);
-            _menuItems[_menuSelectionIndex].SetPressed(false);
+            _menuItem[_menuSelectionIndex]->SetPressed(false);
             break;
         case Button::BUTTON_5_DOWN:
-            _menuItems[_menuSelectionIndex].SetPressed(true);
+            _menuItem[_menuSelectionIndex]->SetPressed(true);
             break;
         case Button::E_1_UP:
-            _menuItems[_menuSelectionIndex].SetPressed(false);
+            _menuItem[_menuSelectionIndex]->SetPressed(false);
             SelectionPress(menuSystem);
             break;
         case Button::E_1_DOWN:
-            _menuItems[_menuSelectionIndex].SetPressed(true);
+            _menuItem[_menuSelectionIndex]->SetPressed(true);
             break;
         default:
             break;
@@ -346,11 +370,11 @@ class SettingsMenu : public IMenu
         } else
         {
             // Remove highlighting from last selected item as new button event occured
-            _menuItems[_menuSelectionIndex].SetHighlighted(false);
+            _menuItem[_menuSelectionIndex]->SetHighlighted(false);
 
             _menuSelectionIndex--;
             _menuSelectionIndex = LimitRange(_menuSelectionIndex, 0, _menuItemsCount - 1);
-            _menuItems[_menuSelectionIndex].SetHighlighted(true);
+            _menuItem[_menuSelectionIndex]->SetHighlighted(true);
         }
     }
 
@@ -362,11 +386,11 @@ class SettingsMenu : public IMenu
         } else
         {
             // Remove highlighting from last selected item as new button event occured
-            _menuItems[_menuSelectionIndex].SetHighlighted(false);
+            _menuItem[_menuSelectionIndex]->SetHighlighted(false);
 
             _menuSelectionIndex++;
             _menuSelectionIndex = LimitRange(_menuSelectionIndex, 0, _menuItemsCount - 1);
-            _menuItems[_menuSelectionIndex].SetHighlighted(true);
+            _menuItem[_menuSelectionIndex]->SetHighlighted(true);
         }
     }
 
@@ -375,27 +399,31 @@ class SettingsMenu : public IMenu
         if (_popUpParameterMenuActive >= 0)
         {
             _popUpParameterMenuActive = -1;
-            _menuItems[_menuSelectionIndex].UpdateChoice(_popUpParameterMenu.GetHighlightIndex());
+            // PopUpMenuItem* test = dynamic_cast<PopUpMenuItem*>_menuItem[_menuSelectionIndex];
+
+            //<PopUpMenuItem> (_menuItem[_menuSelectionIndex])->
+            //_menuItem[_menuSelectionIndex]->UpdateChoice(_popUpParameterMenu.GetHighlightIndex());
             _popUpParameterMenu.SetPressed(_popUpParameterMenu.GetHighlightIndex());
         } else
         {
-            _menuItems[_menuSelectionIndex].SetPressed(false);
-            if ((_menuItems[_menuSelectionIndex].GetMenuType() == MenuItemType::MENU_ITEM_TYPE_SUBMENU) ||
-                (_menuItems[_menuSelectionIndex].GetMenuType() == MenuItemType::MENU_ITEM_TYPE_PAGELINK))
+            _menuItem[_menuSelectionIndex]->SetPressed(false);
+            if (_menuItem[_menuSelectionIndex]->GetMenuType() == MenuItemType::MENU_ITEM_TYPE_CHECKBOX)
             {
-                _menuItems[_menuSelectionIndex].ExecuteAction(menuSystem);
-            } else if (_menuItems[_menuSelectionIndex].GetMenuType() == MenuItemType::MENU_ITEM_TYPE_CHECKBOX)
+                _menuItem[_menuSelectionIndex]->ExecuteAction(menuSystem);
+            } else if ((_menuItem[_menuSelectionIndex]->GetMenuType() == MenuItemType::MENU_ITEM_TYPE_SUBMENU) ||
+                       (_menuItem[_menuSelectionIndex]->GetMenuType() == MenuItemType::MENU_ITEM_TYPE_PAGELINK))
             {
-                _menuItems[_menuSelectionIndex].UpdateChoice(!_menuItems[_menuSelectionIndex].GetChoiceIndex());
-            } else if (_menuItems[_menuSelectionIndex].GetMenuType() == MenuItemType::MENU_ITEM_TYPE_DROPDOWN)
+                _menuItem[_menuSelectionIndex]->ExecuteAction(menuSystem);
+            } else if (_menuItem[_menuSelectionIndex]->GetMenuType() == MenuItemType::MENU_ITEM_TYPE_DROPDOWN)
             {
+                PopUpMenuItem* currentPopUpMenuItem = (PopUpMenuItem*)_menuItem[_menuSelectionIndex];
                 const char* choices[7];
-                for (uint8_t i = 0; i < _menuItems[_menuSelectionIndex].GetChoiceCount(); i++)
+                for (uint8_t i = 0; i < currentPopUpMenuItem->GetChoiceCount(); i++)
                 {
-                    choices[i] = _menuItems[_menuSelectionIndex].GetChoice(i);
+                    choices[i] = currentPopUpMenuItem->GetChoice(i);
                 }
-                _popUpParameterMenu.SetChoices(choices, _menuItems[_menuSelectionIndex].GetChoiceCount());
-                _popUpParameterMenu.SetHighlighted(_menuItems[_menuSelectionIndex].GetChoiceIndex());
+                _popUpParameterMenu.SetChoices(choices, currentPopUpMenuItem->GetChoiceCount());
+                _popUpParameterMenu.SetHighlighted(currentPopUpMenuItem->GetChoiceIndex());
                 int8_t displaySelectionIndex = _menuSelectionIndex - _menuOffset;
                 _popUpParameterMenuActive = _menuSelectionIndex;
                 _popUpParameterMenu.SetPosition(200, 29 + (displaySelectionIndex + 1) * 30);
