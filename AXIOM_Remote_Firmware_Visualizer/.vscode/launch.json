@@ -5,13 +5,13 @@
     "version": "0.2.0",
     "configurations": [
         {
-            "name": "Launch visualiser debugging",
+            "name": "(gdb) Launch",
             "type": "cppdbg",
             "request": "launch",
-            "program": "${workspaceFolder}/AXIOM_Remote_Firmware_Visualizer/build/AXIOM_Remote_Firmware_Visualizer",
+            "program": "${workspaceFolder}/build/AXIOM_Remote_Firmware_Visualizer",
             "args": [],
             "stopAtEntry": false,
-            "cwd": "${workspaceFolder}/AXIOM_Remote_Firmware_Visualizer",
+            "cwd": "${workspaceFolder}",
             "environment": [],
             "externalConsole": false,
             "MIMode": "gdb",
@@ -21,8 +21,7 @@
                     "text": "-enable-pretty-printing",
                     "ignoreFailures": true
                 }
-            ],
-            "preLaunchTask": "Build visualiser"
+            ]
         }
     ]
 }

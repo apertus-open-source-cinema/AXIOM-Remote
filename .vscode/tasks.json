@@ -43,7 +43,16 @@
       "options": {
         "cwd": "${workspaceFolder}/Firmware"
       }
-    }
+    },
+    {
+      "type": "shell",
+      "group": "build",
+      "label": "Build visualiser",
+      "command": "make -j8",
+      "options": {
+        "cwd": "${workspaceFolder}/AXIOM_Remote_Firmware_Visualizer/build"
+      }
+    },
   ],
   "version": "2.0.0"
 }
