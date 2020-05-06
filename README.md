@@ -14,8 +14,7 @@ A universal remote control with buttons, dials and an LCD for menu/settings (no 
 ## License
 
 This program is free software; you can redistribute it and/or modify
-it under the terms of the GNU General Public License 2 as published 
-by the Free Software Foundation.
+it under the terms of the GNU General Public License 2 as published by the Free Software Foundation.
 for details see: LICENSE.txt
 
 ## Folder Structure
@@ -38,15 +37,13 @@ for details see: LICENSE.txt
 
 ```/FirmwareTest/``` contains unit tests of the Firmware.
 
-
-
 ## Build instructions
 
 ### Fetch the Microchip XC32/XC32++ compiler for your OS
 
 [https://www.microchip.com/mplab/compilers](https://www.microchip.com/mplab/compilers). We have tested the code on v2.4.
 
-To be able to build, the variable XC32_PATH in the Makefile of firmware and bootloader has to be adjusted to the actual install path of XC32.
+To be able to build, the variable **XC32_PATH** in the Makefile of firmware and bootloader has to be adjusted to the actual install path of XC32.
 
 ### Bootloader
 
@@ -72,7 +69,7 @@ Note that with the current hardware the PICKit2 needs to stay connected for norm
 
 ### pic32prog
 
-- Acquire binary or build from source from: https://github.com/sergev/pic32prog to flash with PICKit2
+- Acquire binary or build from source from: <https://github.com/sergev/pic32prog> to flash with PICKit2
 - run **pic32prog yourfile.hex** and you should see a progress bar of the flashing/verification process
 
 If ```pic32prog``` only works with ```sudo``` add your user to the plugdev group and add the following udev rule to /etc/udev/rules.d/26-microchip.rules and reboot:
@@ -82,6 +79,7 @@ edit the file: ATTR{idVendor}=="04d8", MODE="664", GROUP="plugdev"
 ```
 
 The idVendor should be looked up with ```lsusb```, in case of the PICkit2 it looks like this:
+
 ```
 Bus 003 Device 002: ID 04d8:0033 Microchip Technology, Inc. PICkit2
 ```
