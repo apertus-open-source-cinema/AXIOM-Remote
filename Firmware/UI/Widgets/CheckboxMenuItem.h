@@ -10,9 +10,9 @@ class CheckBoxMenuItem : public MenuItem
     bool _checkboxValue = false;
 
   public:
-    CheckBoxMenuItem(const char* label = "") : MenuItem(const_cast<char*>(label))
+    CheckBoxMenuItem(const char* label = "", bool checked = false) :
+        MenuItem(const_cast<char*>(label)), _checkboxValue(checked)
     {
-        _type = MenuItemType::MENU_ITEM_TYPE_CHECKBOX;
     }
 
     void SetValue(bool value)

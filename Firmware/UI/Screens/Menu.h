@@ -139,7 +139,18 @@ class Menu : public IMenu
         // draw parameter menu
         if (_popUpParameterMenuActive > -1)
         {
-            _popUpParameterMenu.Draw(painter);
+            // dim background
+            painter->Dim();
+
+            // draw the active menu item again, not optimal -> fixme
+            // int8_t displaySelectionIndex = _menuSelectionIndex - _menuOffset;
+            MenuItem* currentMenuItem = _menuItem[_menuSelectionIndex];
+
+            if (currentMenuItem != nullptr)
+            {
+                currentMenuItem->Draw(painter);
+                _popUpParameterMenu.Draw(painter);
+            }
         }
     }
 
@@ -189,7 +200,7 @@ class Menu : public IMenu
             }
 
             uint16_t y = 31 + itemIndex * 30;
-            currentMenuItem->SetDimensions(31, y, GlobalSettings::LCDWidth - 30, 29);
+            currentMenuItem->SetDimensions(31, y, GlobalSettings::LCDWidth - 16 - 31, 29);
 
             currentMenuItem->Draw(painter);
         }

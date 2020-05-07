@@ -10,11 +10,9 @@ class IPainter;
 
 enum class MenuItemType
 {
-    MENU_ITEM_TYPE_SCREENLINK,
     MENU_ITEM_TYPE_READONLY,
     MENU_ITEM_TYPE_NUMERIC,
-    MENU_ITEM_TYPE_DROPDOWN,
-    MENU_ITEM_TYPE_CHECKBOX
+    MENU_ITEM_TYPE_DROPDOWN
 };
 
 class MenuItem : public IWidget
@@ -84,8 +82,6 @@ class MenuItem : public IWidget
     {
         return _disabled;
     }
-
-
 
     void SetHidden(bool hide)
     {
@@ -251,7 +247,6 @@ class MenuItem : public IWidget
 
     virtual void ExecuteAction(IMenuSystem* menuSystem)
     {
-
     }
 };
 

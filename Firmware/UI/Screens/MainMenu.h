@@ -6,7 +6,7 @@
 #include "../Painter/Painter.h"
 #include "../Widgets/MenuItem.h"
 
-#include "../Widgets/PopUpParameterMenu.h"
+//#include "../Widgets/PopUpParameterMenu.h"
 #include "../Widgets/CheckboxMenuItem.h"
 #include "../Widgets/PopUpMenuItem.h"
 #include "../Widgets/ScreenLinkMenuItem.h"
@@ -28,6 +28,7 @@ class MainMenu : public Menu
     ScreenLinkMenuItem _exitLinkMenuItem;
     ScreenLinkMenuItem _subMenu1LinkMenuItem;
     ScreenLinkMenuItem _subMenu2LinkMenuItem;
+    ScreenLinkMenuItem _WBLinkMenuItem;
 
     // just for testing for now
     MenuItem _menuItems[10];
@@ -86,10 +87,8 @@ class MainMenu : public Menu
         _menuItems[6].SetMenuType(MenuItemType::MENU_ITEM_TYPE_READONLY);
         AddMenuItem(&_menuItems[6]);
 
-        _menuItems[7] = MenuItem("White Balance");
-        //_menuItems[7].SetMenuType(MenuItemType::MENU_ITEM_TYPE_SCREENLINK);
-        //_menuItems[7].SetTargetScreen(AvailableScreens::WhiteBalance);
-        AddMenuItem(&_menuItems[7]);
+        _WBLinkMenuItem = ScreenLinkMenuItem("White Balance", AvailableScreens::WhiteBalance);
+        AddMenuItem(&_WBLinkMenuItem);
 
         _menuItems[8] = MenuItem("Test Entry");
         AddMenuItem(&_menuItems[8]);
