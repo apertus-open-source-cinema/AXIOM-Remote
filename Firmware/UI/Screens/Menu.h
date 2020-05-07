@@ -1,5 +1,5 @@
-#ifndef SETTINGSMENU_H
-#define SETTINGSMENU_H
+#ifndef MENU_H
+#define MENU_H
 
 #include <cstring>
 
@@ -19,8 +19,9 @@
 
 //#include <Helpers.h>
 
-class SettingsMenu : public IMenu
+class Menu : public IMenu
 {
+  protected:
     char const* _label;
     char const* _menuBreadcrumbs;
 
@@ -46,86 +47,20 @@ class SettingsMenu : public IMenu
 
     PopUpParameterMenu _popUpParameterMenu;
     int8_t _popUpParameterMenuActive;
-    CheckBoxMenuItem FunCheckboxMenuItem = CheckBoxMenuItem();
-    PopUpMenuItem FunLevelCheckboxMenuItem = PopUpMenuItem();
 
-    MenuItem* _menuItem[10] = {nullptr, nullptr, nullptr, nullptr, nullptr,
-                               nullptr, nullptr, nullptr, nullptr, nullptr};
-    MenuItem _menuItems[10] = {MenuItem("Exit Menu"),
-                               MenuItem("Disabled Item", true),
-                               MenuItem("Submenu 1"),
-                               MenuItem("Submenu 2"),
-                               MenuItem(),
-                               MenuItem(),
-                               MenuItem(),
-                               MenuItem("Whitebalance Settings"),
-                               MenuItem("Test Item 9"),
-                               MenuItem("Test Item 10")};
+    MenuItem* _menuItem[1] = {nullptr};
+    MenuItem _menuItems[1] = {MenuItem()};
 
   public:
     // TODO: Add assignment of menu system to IMenu
-    explicit SettingsMenu(IUSBDevice* cdcDevice) :
-        IMenu(cdcDevice), _menuItemsCount(10), _menuSelectionIndex(0), _maxVisibleItems(7), _popUpParameterMenu(10, 10)
+    explicit Menu(IUSBDevice* cdcDevice) :
+        IMenu(cdcDevice), _menuItemsCount(0), _menuSelectionIndex(0), _maxVisibleItems(7), _popUpParameterMenu(10, 10)
     {
         // UNUSED(cdcDevice);
         //_usbDevice = cdcDevice;
 
         _label = "Menu";
         _menuBreadcrumbs = "Menu";
-
-        // Added for testing
-
-        _menuItems[0].SetMenuType(MenuItemType::MENU_ITEM_TYPE_PAGELINK);
-        _menuItems[0].SetTargetScreen(AvailableScreens::MainPage);
-        _menuItems[0].SetLabel("Exit Menu");
-        _menuItem[0] = &_menuItems[0];
-
-        _menuItems[1].SetDisabled(true);
-        _menuItem[1] = &_menuItems[1];
-
-        _menuItems[2].SetMenuType(MenuItemType::MENU_ITEM_TYPE_SUBMENU);
-        _menuItems[2].SetTargetScreen(AvailableScreens::SettingsSubMenu1);
-        _menuItem[2] = &_menuItems[2];
-
-        _menuItems[3].SetMenuType(MenuItemType::MENU_ITEM_TYPE_SUBMENU);
-        _menuItem[3] = &_menuItems[3];
-
-        /*
-                _menuItems[4].SetMenuType(MenuItemType::MENU_ITEM_TYPE_CHECKBOX);
-                const char* funchoices[2];
-                funchoices[0] = "off";
-                funchoices[1] = "on";
-                _menuItems[4].SetChoices(funchoices, 2);
-                _menuItems[4].UpdateChoice(0);
-                _menuItems[4].SetLabel("Fun");
-                _menuItem[4] = &_menuItems[4];
-                */
-
-        FunCheckboxMenuItem.SetLabel("Fun");
-        _menuItem[4] = &FunCheckboxMenuItem;
-
-        FunLevelCheckboxMenuItem.SetLabel("Funlevel");
-        //_menuItems[5].SetMenuType(MenuItemType::MENU_ITEM_TYPE_DROPDOWN);
-        //_menuItems[5].SetLabel("Funlevel");
-        const char* funlevelchoices[4];
-        funlevelchoices[0] = "low";
-        funlevelchoices[1] = "medium";
-        funlevelchoices[2] = "high";
-        funlevelchoices[3] = "crazy";
-        FunLevelCheckboxMenuItem.SetChoices(funlevelchoices, 4);
-        FunLevelCheckboxMenuItem.UpdateChoice(0);
-        _menuItem[5] = &FunLevelCheckboxMenuItem;
-
-        _menuItems[6].SetLabel("Read-only Setting");
-        _menuItems[6].SetMenuType(MenuItemType::MENU_ITEM_TYPE_READONLY);
-        _menuItem[6] = &_menuItems[6];
-
-        _menuItems[7].SetMenuType(MenuItemType::MENU_ITEM_TYPE_PAGELINK);
-        _menuItems[7].SetTargetScreen(AvailableScreens::WhiteBalance);
-        _menuItem[7] = &_menuItems[7];
-
-        _menuItem[8] = &_menuItems[8];
-        _menuItem[9] = &_menuItems[9];
 
         // Color defintions
         _menuBackgroundColor = RGB565(180, 180, 180);
@@ -144,18 +79,12 @@ class SettingsMenu : public IMenu
         _menuOffset = 0;
 
         // Default selection is first item
-        _menuItem[_menuSelectionIndex]->SetHighlighted(true);
+        if (_menuItem[_menuSelectionIndex] != nullptr)
+        {
+            _menuItem[_menuSelectionIndex]->SetHighlighted(true);
+        }
 
         _popUpParameterMenuActive = -1;
-
-        /*
-                _menuItems[2] = new MenuItem();
-                _menuItems[2].SetLabel("Test Item 3");
-
-                _menuButton.SetHandler(&MenuButtonHandler);
-
-                _analogGainButton.SetHandler(&AnalogGainButtonHandler);
-                _digitalGainButton.SetHandler(&DigitalGainButtonHandler);*/
     }
 
     void SetLabel(char* value)
@@ -165,7 +94,10 @@ class SettingsMenu : public IMenu
 
     void SetMenuItem(uint8_t index, MenuItem* menuItem)
     {
-        _menuItem[index] = menuItem;
+        if (_menuItem[index] != nullptr)
+        {
+            _menuItem[index] = menuItem;
+        }
     }
 
     const char* GetLabel()
@@ -179,7 +111,7 @@ class SettingsMenu : public IMenu
     }
 
   protected:
-    void Draw(IPainter* painter) override
+    virtual void Draw(IPainter* painter) override
     {
         painter->SetFont(Font::FreeSans9pt7b);
         DrawHeader(painter);
@@ -287,7 +219,10 @@ class SettingsMenu : public IMenu
         uint8_t b;
         for (b = 0; b < _menuItemsCount; b++)
         {
-            _menuItem[b]->SetPressed(false);
+            if (_menuItem[b] != nullptr)
+            {
+                _menuItem[b]->SetPressed(false);
+            }
         }
     }
 
@@ -296,29 +231,24 @@ class SettingsMenu : public IMenu
         uint8_t b;
         for (b = 0; b < _menuItemsCount; b++)
         {
-            _menuItem[b]->SetHighlighted(false);
+            if (_menuItem[b] != nullptr)
+            {
+                _menuItem[b]->SetHighlighted(false);
+            }
         }
     }
 
     void Update(Button button, int8_t knob, IMenuSystem* menuSystem) override
     {
+        if (_menuItem[_menuSelectionIndex] == nullptr)
+        {
+            return;
+        }
+
         /*if (_menuItem[_menuSelectionIndex] == nullptr)
         {
             return;
         }*/
-        uint8_t b;
-        for (b = 0; b < _menuItemsCount; b++)
-        {
-
-            switch (_menuItem[b]->GetMenuType())
-            {
-            case MenuItemType::MENU_ITEM_TYPE_SUBMENU:
-                _menuItem[b]->SetValue(">");
-                break;
-            default:
-                break;
-            }
-        }
 
         if (knob != 0)
         {
@@ -364,6 +294,11 @@ class SettingsMenu : public IMenu
 
     void SelectionUp(IMenuSystem* menuSystem)
     {
+        if (_menuItem[_menuSelectionIndex] == nullptr)
+        {
+            return;
+        }
+
         if (_popUpParameterMenuActive >= 0)
         {
             _popUpParameterMenu.SetHighlighted(_popUpParameterMenu.GetHighlightIndex() + 1);
@@ -380,6 +315,11 @@ class SettingsMenu : public IMenu
 
     void SelectionDown(IMenuSystem* menuSystem)
     {
+        if (_menuItem[_menuSelectionIndex] == nullptr)
+        {
+            return;
+        }
+
         if (_popUpParameterMenuActive >= 0)
         {
             _popUpParameterMenu.SetHighlighted(_popUpParameterMenu.GetHighlightIndex() - 1);
@@ -396,6 +336,11 @@ class SettingsMenu : public IMenu
 
     void SelectionPress(IMenuSystem* menuSystem)
     {
+        if (_menuItem[_menuSelectionIndex] == nullptr)
+        {
+            return;
+        }
+
         if (_popUpParameterMenuActive >= 0)
         {
             _popUpParameterMenuActive = -1;
@@ -410,8 +355,7 @@ class SettingsMenu : public IMenu
             if (_menuItem[_menuSelectionIndex]->GetMenuType() == MenuItemType::MENU_ITEM_TYPE_CHECKBOX)
             {
                 _menuItem[_menuSelectionIndex]->ExecuteAction(menuSystem);
-            } else if ((_menuItem[_menuSelectionIndex]->GetMenuType() == MenuItemType::MENU_ITEM_TYPE_SUBMENU) ||
-                       (_menuItem[_menuSelectionIndex]->GetMenuType() == MenuItemType::MENU_ITEM_TYPE_PAGELINK))
+            } else if (_menuItem[_menuSelectionIndex]->GetMenuType() == MenuItemType::MENU_ITEM_TYPE_SCREENLINK)
             {
                 _menuItem[_menuSelectionIndex]->ExecuteAction(menuSystem);
             } else if (_menuItem[_menuSelectionIndex]->GetMenuType() == MenuItemType::MENU_ITEM_TYPE_DROPDOWN)
@@ -432,4 +376,4 @@ class SettingsMenu : public IMenu
     }
 };
 
-#endif // SETTINGSMENU_H
+#endif // MENU_H
