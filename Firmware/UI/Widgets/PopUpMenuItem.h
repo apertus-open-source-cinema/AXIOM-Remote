@@ -15,7 +15,7 @@ class PopUpMenuItem : public MenuItem
     uint8_t _choiceIndex;
 
   public:
-    PopUpMenuItem() : _choiceIndex(0)
+    PopUpMenuItem(const char* label = "") : MenuItem(const_cast<char*>(label)), _choiceIndex(0)
     {
         _type = MenuItemType::MENU_ITEM_TYPE_DROPDOWN;
     }

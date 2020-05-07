@@ -22,19 +22,10 @@
 class MainMenu : public Menu
 {
 
-    CheckBoxMenuItem FunCheckboxMenuItem = CheckBoxMenuItem();
-    PopUpMenuItem FunLevelCheckboxMenuItem = PopUpMenuItem();
+    CheckBoxMenuItem FunCheckboxMenuItem;
+    PopUpMenuItem FunLevelCheckboxMenuItem;
 
-    MenuItem _menuItems[10] = {MenuItem(),
-                               MenuItem(),
-                               MenuItem(),
-                               MenuItem(),
-                               MenuItem(),
-                               MenuItem(),
-                               MenuItem(),
-                               MenuItem("Whitebalance Settings"),
-                               MenuItem("Test Item 9"),
-                               MenuItem("Test Item 10")};
+    MenuItem _menuItems[10];
 
   public:
     // TODO: Add assignment of menu system to IMenu
@@ -42,22 +33,22 @@ class MainMenu : public Menu
     {
         // Added for testing - demo menu items
 
+        _menuItems[0] = MenuItem("Exit Menu");
         _menuItems[0].SetMenuType(MenuItemType::MENU_ITEM_TYPE_SCREENLINK);
         _menuItems[0].SetTargetScreen(AvailableScreens::MainPage);
-        _menuItems[0].SetLabel("Exit Menu");
         _menuItem[0] = &_menuItems[0];
 
+        _menuItems[1] = MenuItem("Disabled Item");
         _menuItems[1].SetDisabled(true);
-        _menuItems[1].SetLabel("Disabled Item");
         _menuItem[1] = &_menuItems[1];
 
-        _menuItems[2].SetLabel("Submenu 1");
+        _menuItems[2] = MenuItem("Submenu 1");
         _menuItems[2].SetMenuType(MenuItemType::MENU_ITEM_TYPE_SCREENLINK);
         _menuItems[2].SetTargetScreen(AvailableScreens::SettingsSubMenu1);
         _menuItems[2].SetValue(">");
         _menuItem[2] = &_menuItems[2];
 
-        _menuItems[3].SetLabel("Submenu 2");
+        _menuItems[3] = MenuItem("Submenu 2");
         _menuItems[3].SetMenuType(MenuItemType::MENU_ITEM_TYPE_SCREENLINK);
         _menuItems[3].SetValue(">");
         _menuItem[3] = &_menuItems[3];
@@ -73,12 +64,10 @@ class MainMenu : public Menu
                 _menuItem[4] = &_menuItems[4];
                 */
 
-        FunCheckboxMenuItem.SetLabel("Fun");
+        FunCheckboxMenuItem = CheckBoxMenuItem("Fun");
         _menuItem[4] = &FunCheckboxMenuItem;
 
-        FunLevelCheckboxMenuItem.SetLabel("Funlevel");
-        //_menuItems[5].SetMenuType(MenuItemType::MENU_ITEM_TYPE_DROPDOWN);
-        //_menuItems[5].SetLabel("Funlevel");
+        FunLevelCheckboxMenuItem = PopUpMenuItem("Funlevel");
         const char* funlevelchoices[4];
         funlevelchoices[0] = "low";
         funlevelchoices[1] = "medium";
@@ -88,18 +77,22 @@ class MainMenu : public Menu
         FunLevelCheckboxMenuItem.UpdateChoice(0);
         _menuItem[5] = &FunLevelCheckboxMenuItem;
 
-        _menuItems[6].SetLabel("Read-only Setting");
+        _menuItems[6] = MenuItem("Read-only Setting");
         _menuItems[6].SetMenuType(MenuItemType::MENU_ITEM_TYPE_READONLY);
         _menuItem[6] = &_menuItems[6];
 
+        _menuItems[7] = MenuItem("White Balance");
         _menuItems[7].SetMenuType(MenuItemType::MENU_ITEM_TYPE_SCREENLINK);
         _menuItems[7].SetTargetScreen(AvailableScreens::WhiteBalance);
         _menuItem[7] = &_menuItems[7];
 
+        _menuItems[8] = MenuItem("Test Entry");
         _menuItem[8] = &_menuItems[8];
+
+        _menuItems[9] = MenuItem("Another Entry");
         _menuItem[9] = &_menuItems[9];
 
-        _menuItemsCount = 8;
+        _menuItemsCount = 10;
 
         // Color defintions
         _menuBackgroundColor = RGB565(180, 180, 180);
