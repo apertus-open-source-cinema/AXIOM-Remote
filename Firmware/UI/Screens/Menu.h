@@ -48,6 +48,7 @@ class Menu : public IMenu
     PopUpParameterMenu _popUpParameterMenu;
     int8_t _popUpParameterMenuActive;
 
+  private:
     // this array of pointers to menuItems allows a menu of up to 64 entries to be filled by inherited class
     MenuItem* _menuItem[64] = {nullptr};
 
@@ -78,26 +79,36 @@ class Menu : public IMenu
         _parameterSelectionIndex = 0;
         _menuOffset = 0;
 
-        // Default selection is first item
-        if (_menuItem[_menuSelectionIndex] != nullptr)
+        _popUpParameterMenuActive = -1;
+    }
+
+    void AddMenuItem(MenuItem* newMenuItem)
+    {
+        _menuItem[_menuItemsCount] = newMenuItem;
+
+        if (_menuItemsCount == 0)
         {
-            _menuItem[_menuSelectionIndex]->SetHighlighted(true);
+            // Default selection is first item
+            if (_menuItem[_menuItemsCount] != nullptr)
+            {
+                _menuItem[_menuItemsCount]->SetHighlighted(true);
+            }
         }
 
-        _popUpParameterMenuActive = -1;
+        _menuItemsCount++;
+    }
+
+    void SetMenuItem(uint8_t index, MenuItem* newMenuItem)
+    {
+        if ((index >= 0) && (index < _menuItemsCount))
+        {
+            _menuItem[_menuItemsCount] = newMenuItem;
+        }
     }
 
     void SetLabel(char* value)
     {
         _label = value;
-    }
-
-    void SetMenuItem(uint8_t index, MenuItem* menuItem)
-    {
-        if (_menuItem[index] != nullptr)
-        {
-            _menuItem[index] = menuItem;
-        }
     }
 
     const char* GetLabel()

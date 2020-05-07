@@ -36,22 +36,22 @@ class MainMenu : public Menu
         _menuItems[0] = MenuItem("Exit Menu");
         _menuItems[0].SetMenuType(MenuItemType::MENU_ITEM_TYPE_SCREENLINK);
         _menuItems[0].SetTargetScreen(AvailableScreens::MainPage);
-        _menuItem[0] = &_menuItems[0];
+        AddMenuItem(&_menuItems[0]);
 
         _menuItems[1] = MenuItem("Disabled Item");
         _menuItems[1].SetDisabled(true);
-        _menuItem[1] = &_menuItems[1];
+        AddMenuItem(&_menuItems[1]);
 
         _menuItems[2] = MenuItem("Submenu 1");
         _menuItems[2].SetMenuType(MenuItemType::MENU_ITEM_TYPE_SCREENLINK);
         _menuItems[2].SetTargetScreen(AvailableScreens::SettingsSubMenu1);
         _menuItems[2].SetValue(">");
-        _menuItem[2] = &_menuItems[2];
+        AddMenuItem(&_menuItems[2]);
 
         _menuItems[3] = MenuItem("Submenu 2");
         _menuItems[3].SetMenuType(MenuItemType::MENU_ITEM_TYPE_SCREENLINK);
         _menuItems[3].SetValue(">");
-        _menuItem[3] = &_menuItems[3];
+        AddMenuItem(&_menuItems[3]);
 
         /*
                 _menuItems[4].SetMenuType(MenuItemType::MENU_ITEM_TYPE_CHECKBOX);
@@ -65,7 +65,7 @@ class MainMenu : public Menu
                 */
 
         FunCheckboxMenuItem = CheckBoxMenuItem("Fun");
-        _menuItem[4] = &FunCheckboxMenuItem;
+        AddMenuItem(&FunCheckboxMenuItem);
 
         FunLevelCheckboxMenuItem = PopUpMenuItem("Funlevel");
         const char* funlevelchoices[4];
@@ -75,45 +75,22 @@ class MainMenu : public Menu
         funlevelchoices[3] = "crazy";
         FunLevelCheckboxMenuItem.SetChoices(funlevelchoices, 4);
         FunLevelCheckboxMenuItem.UpdateChoice(0);
-        _menuItem[5] = &FunLevelCheckboxMenuItem;
+        AddMenuItem(&FunLevelCheckboxMenuItem);
 
         _menuItems[6] = MenuItem("Read-only Setting");
         _menuItems[6].SetMenuType(MenuItemType::MENU_ITEM_TYPE_READONLY);
-        _menuItem[6] = &_menuItems[6];
+        AddMenuItem(&_menuItems[6]);
 
         _menuItems[7] = MenuItem("White Balance");
         _menuItems[7].SetMenuType(MenuItemType::MENU_ITEM_TYPE_SCREENLINK);
         _menuItems[7].SetTargetScreen(AvailableScreens::WhiteBalance);
-        _menuItem[7] = &_menuItems[7];
+        AddMenuItem(&_menuItems[7]);
 
         _menuItems[8] = MenuItem("Test Entry");
-        _menuItem[8] = &_menuItems[8];
+        AddMenuItem(&_menuItems[8]);
 
         _menuItems[9] = MenuItem("Another Entry");
-        _menuItem[9] = &_menuItems[9];
-
-        _menuItemsCount = 10;
-
-        // Color defintions
-        _menuBackgroundColor = RGB565(180, 180, 180);
-        _menuItemColor = (uint16_t)Color565::White;
-        _menuSelectedItemColor = RGB565(255, 128, 0);
-        _menuDimmedItemColor = RGB565(247, 251, 247);
-        _menuSelectedTextColor = RGB565(255, 255, 255);
-        _menuHightlightedItemColor = RGB565(0, 128, 255);
-        _menuTextColor = (uint16_t)Color565::Black;
-        _menuDisabledTextColor = RGB565(40, 40, 40);
-        _menuDisabledItemColor = RGB565(180, 180, 180);
-
-        // init menu selection indexes
-        _parameterMenuActive = 0;
-        _parameterSelectionIndex = 0;
-        _menuOffset = 0;
-
-        // Default selection is first item
-        _menuItem[_menuSelectionIndex]->SetHighlighted(true);
-
-        _popUpParameterMenuActive = -1;
+        AddMenuItem(&_menuItems[9]);
 
         /*
         _menuButton.SetHandler(&MenuButtonHandler);
