@@ -2,9 +2,6 @@
 #define CHECKBOXMENUITEM_H
 
 #include "MenuItem.h"
-/*
-#include "../Color565.h"
-#include "../../GlobalSettings.h"*/
 
 class IPainter;
 

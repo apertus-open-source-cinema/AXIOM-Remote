@@ -9,6 +9,7 @@
 #include "../Widgets/PopUpParameterMenu.h"
 #include "../Widgets/CheckboxMenuItem.h"
 #include "../Widgets/PopUpMenuItem.h"
+#include "../Widgets/ScreenLinkMenuItem.h"
 #include "Menu.h"
 
 #include "../ButtonDefinitions.h"
@@ -22,9 +23,13 @@
 class MainMenu : public Menu
 {
 
-    CheckBoxMenuItem FunCheckboxMenuItem;
-    PopUpMenuItem FunLevelCheckboxMenuItem;
+    CheckBoxMenuItem _funCheckboxMenuItem;
+    PopUpMenuItem _funLevelCheckboxMenuItem;
+    ScreenLinkMenuItem _exitLinkMenuItem;
+    ScreenLinkMenuItem _subMenu1LinkMenuItem;
+    ScreenLinkMenuItem _subMenu2LinkMenuItem;
 
+    // just for testing for now
     MenuItem _menuItems[10];
 
   public:
@@ -33,25 +38,25 @@ class MainMenu : public Menu
     {
         // Added for testing - demo menu items
 
-        _menuItems[0] = MenuItem("Exit Menu");
-        _menuItems[0].SetMenuType(MenuItemType::MENU_ITEM_TYPE_SCREENLINK);
-        _menuItems[0].SetTargetScreen(AvailableScreens::MainPage);
-        AddMenuItem(&_menuItems[0]);
+        _exitLinkMenuItem = ScreenLinkMenuItem("Exit Menu", AvailableScreens::MainPage, false);
+        //_menuItems[0].SetMenuType(MenuItemType::MENU_ITEM_TYPE_SCREENLINK);
+        //_menuItems[0].SetTargetScreen(AvailableScreens::MainPage);
+        AddMenuItem(&_exitLinkMenuItem);
 
         _menuItems[1] = MenuItem("Disabled Item");
         _menuItems[1].SetDisabled(true);
         AddMenuItem(&_menuItems[1]);
 
-        _menuItems[2] = MenuItem("Submenu 1");
-        _menuItems[2].SetMenuType(MenuItemType::MENU_ITEM_TYPE_SCREENLINK);
-        _menuItems[2].SetTargetScreen(AvailableScreens::SettingsSubMenu1);
-        _menuItems[2].SetValue(">");
-        AddMenuItem(&_menuItems[2]);
+        _subMenu1LinkMenuItem = ScreenLinkMenuItem("Submenu 1", AvailableScreens::SettingsSubMenu1);
+        //_menuItems[2].SetMenuType(MenuItemType::MENU_ITEM_TYPE_SCREENLINK);
+        //_menuItems[2].SetTargetScreen(AvailableScreens::SettingsSubMenu1);
+        //_menuItems[2].SetValue(">");
+        AddMenuItem(&_subMenu1LinkMenuItem);
 
-        _menuItems[3] = MenuItem("Submenu 2");
-        _menuItems[3].SetMenuType(MenuItemType::MENU_ITEM_TYPE_SCREENLINK);
-        _menuItems[3].SetValue(">");
-        AddMenuItem(&_menuItems[3]);
+        _subMenu2LinkMenuItem = ScreenLinkMenuItem("Submenu 2");
+        //_menuItems[3].SetMenuType(MenuItemType::MENU_ITEM_TYPE_SCREENLINK);
+        //_menuItems[3].SetValue(">");
+        AddMenuItem(&_subMenu2LinkMenuItem);
 
         /*
                 _menuItems[4].SetMenuType(MenuItemType::MENU_ITEM_TYPE_CHECKBOX);
@@ -64,26 +69,26 @@ class MainMenu : public Menu
                 _menuItem[4] = &_menuItems[4];
                 */
 
-        FunCheckboxMenuItem = CheckBoxMenuItem("Fun");
-        AddMenuItem(&FunCheckboxMenuItem);
+        _funCheckboxMenuItem = CheckBoxMenuItem("Fun");
+        AddMenuItem(&_funCheckboxMenuItem);
 
-        FunLevelCheckboxMenuItem = PopUpMenuItem("Funlevel");
+        _funLevelCheckboxMenuItem = PopUpMenuItem("Funlevel");
         const char* funlevelchoices[4];
         funlevelchoices[0] = "low";
         funlevelchoices[1] = "medium";
         funlevelchoices[2] = "high";
         funlevelchoices[3] = "crazy";
-        FunLevelCheckboxMenuItem.SetChoices(funlevelchoices, 4);
-        FunLevelCheckboxMenuItem.UpdateChoice(0);
-        AddMenuItem(&FunLevelCheckboxMenuItem);
+        _funLevelCheckboxMenuItem.SetChoices(funlevelchoices, 4);
+        _funLevelCheckboxMenuItem.UpdateChoice(0);
+        AddMenuItem(&_funLevelCheckboxMenuItem);
 
         _menuItems[6] = MenuItem("Read-only Setting");
         _menuItems[6].SetMenuType(MenuItemType::MENU_ITEM_TYPE_READONLY);
         AddMenuItem(&_menuItems[6]);
 
         _menuItems[7] = MenuItem("White Balance");
-        _menuItems[7].SetMenuType(MenuItemType::MENU_ITEM_TYPE_SCREENLINK);
-        _menuItems[7].SetTargetScreen(AvailableScreens::WhiteBalance);
+        //_menuItems[7].SetMenuType(MenuItemType::MENU_ITEM_TYPE_SCREENLINK);
+        //_menuItems[7].SetTargetScreen(AvailableScreens::WhiteBalance);
         AddMenuItem(&_menuItems[7]);
 
         _menuItems[8] = MenuItem("Test Entry");

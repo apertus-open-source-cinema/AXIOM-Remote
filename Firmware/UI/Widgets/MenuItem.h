@@ -27,7 +27,6 @@ class MenuItem : public IWidget
     char const* _label;
     char const* _value;
     MenuItemType _type;
-    AvailableScreens _targetScreen;
 
     uint16_t _backgroundColor;
     uint16_t _backgroundHighlightColor;
@@ -86,10 +85,7 @@ class MenuItem : public IWidget
         return _disabled;
     }
 
-    void SetTargetScreen(AvailableScreens targetscreen)
-    {
-        _targetScreen = targetscreen;
-    }
+
 
     void SetHidden(bool hide)
     {
@@ -255,14 +251,7 @@ class MenuItem : public IWidget
 
     virtual void ExecuteAction(IMenuSystem* menuSystem)
     {
-        switch (_type)
-        {
-        case MenuItemType::MENU_ITEM_TYPE_SCREENLINK:
-            menuSystem->SetCurrentScreen(_targetScreen);
-            break;
-        default:
-            break;
-        }
+
     }
 };
 

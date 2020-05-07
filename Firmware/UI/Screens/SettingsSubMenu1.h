@@ -6,6 +6,7 @@
 #include "Menu.h"
 #include "../Painter/Painter.h"
 #include "../Widgets/MenuItem.h"
+#include "../Widgets/ScreenLinkMenuItem.h"
 
 //#include "../Widgets/MainPageButton.h"
 
@@ -19,7 +20,7 @@
 
 class SettingsSubMenu1 : public Menu
 {
-    MenuItem _menuItemBack;
+    ScreenLinkMenuItem _menuItemBack;
     MenuItem _menuItemOpt1;
     MenuItem _menuItemOpt2;
     MenuItem _menuItemOpt3;
@@ -33,9 +34,9 @@ class SettingsSubMenu1 : public Menu
         _menuBreadcrumbs = "Menu > SubMenu 1";
 
         // Added for testing
-        _menuItemBack = MenuItem("< Up");
-        _menuItemBack.SetMenuType(MenuItemType::MENU_ITEM_TYPE_SCREENLINK);
-        _menuItemBack.SetTargetScreen(AvailableScreens::MainMenu);
+        _menuItemBack = ScreenLinkMenuItem("< Up", AvailableScreens::MainMenu, false);
+        /*_menuItemBack.SetMenuType(MenuItemType::MENU_ITEM_TYPE_SCREENLINK);
+        _menuItemBack.SetTargetScreen(AvailableScreens::MainMenu);*/
         AddMenuItem(&_menuItemBack);
 
         _menuItemOpt1 = MenuItem("Option 1");

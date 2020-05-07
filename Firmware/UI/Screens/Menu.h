@@ -363,13 +363,7 @@ class Menu : public IMenu
         } else
         {
             _menuItem[_menuSelectionIndex]->SetPressed(false);
-            if (_menuItem[_menuSelectionIndex]->GetMenuType() == MenuItemType::MENU_ITEM_TYPE_CHECKBOX)
-            {
-                _menuItem[_menuSelectionIndex]->ExecuteAction(menuSystem);
-            } else if (_menuItem[_menuSelectionIndex]->GetMenuType() == MenuItemType::MENU_ITEM_TYPE_SCREENLINK)
-            {
-                _menuItem[_menuSelectionIndex]->ExecuteAction(menuSystem);
-            } else if (_menuItem[_menuSelectionIndex]->GetMenuType() == MenuItemType::MENU_ITEM_TYPE_DROPDOWN)
+            if (_menuItem[_menuSelectionIndex]->GetMenuType() == MenuItemType::MENU_ITEM_TYPE_DROPDOWN)
             {
                 PopUpMenuItem* currentPopUpMenuItem = (PopUpMenuItem*)_menuItem[_menuSelectionIndex];
                 const char* choices[7];
@@ -382,6 +376,9 @@ class Menu : public IMenu
                 int8_t displaySelectionIndex = _menuSelectionIndex - _menuOffset;
                 _popUpParameterMenuActive = _menuSelectionIndex;
                 _popUpParameterMenu.SetPosition(200, 29 + (displaySelectionIndex + 1) * 30);
+            } else
+            {
+                _menuItem[_menuSelectionIndex]->ExecuteAction(menuSystem);
             }
         }
     }
