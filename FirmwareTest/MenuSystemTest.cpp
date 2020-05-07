@@ -12,9 +12,9 @@ TEST_CASE("SetCurrentScreen test")
 {
     DummyUSBDevice dummyUSBDevice;
     MenuSystem menuSystem(&dummyUSBDevice);
-    menuSystem.SetCurrentScreen(AvailableScreens::SettingsMenu);
+    menuSystem.SetCurrentScreen(AvailableScreens::MainMenu);
 
-    REQUIRE(menuSystem.GetCurrentScreen() == AvailableScreens::SettingsMenu);
+    REQUIRE(menuSystem.GetCurrentScreen() == AvailableScreens::MainMenu);
 }
 
 TEST_CASE("Draw test")

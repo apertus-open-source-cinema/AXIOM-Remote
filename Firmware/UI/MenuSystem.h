@@ -6,7 +6,7 @@
 #include "MenuDefinitions.h"
 
 #include "Screens/MainPage.h"
-#include "Screens/SettingsMenu.h"
+#include "Screens/MainMenu.h"
 #include "Screens/SettingsSubMenu1.h"
 #include "Screens/WhiteBalanceScreen.h"
 
@@ -27,7 +27,7 @@ class MenuSystem : public IMenuSystem
 
     // Menus, static init
     MainPage _mainPage;
-    SettingsMenu _settingsMenu;
+    MainMenu _MainMenu;
     SettingsSubMenu1 _settingsSubMenu1;
     WhiteBalanceScreen _whiteBalance;
 

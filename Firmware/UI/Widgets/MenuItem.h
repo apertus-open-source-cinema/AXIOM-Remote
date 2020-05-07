@@ -10,9 +10,7 @@ class IPainter;
 
 enum class MenuItemType
 {
-    MENU_ITEM_TYPE_SUBMENU,
-    MENU_ITEM_TYPE_PAGELINK,
-    MENU_ITEM_TYPE_BACKLINK,
+    MENU_ITEM_TYPE_SCREENLINK,
     MENU_ITEM_TYPE_READONLY,
     MENU_ITEM_TYPE_NUMERIC,
     MENU_ITEM_TYPE_DROPDOWN,
@@ -105,6 +103,11 @@ class MenuItem : public IWidget
 
     void SetPressed(bool pressed)
     {
+        if (this == nullptr)
+        {
+            return;
+        }
+
         if (_disabled)
         {
             return;
@@ -195,7 +198,10 @@ class MenuItem : public IWidget
 
     MenuItemType GetMenuType()
     {
-        return _type;
+        if (this != nullptr)
+        {
+            return _type;
+        }
     }
 
     /*void SetDimensions(uint16_t x, uint16_t y, uint16_t width, uint16_t height)
@@ -209,11 +215,18 @@ class MenuItem : public IWidget
 
     void SetY(uint16_t y)
     {
-        _y = y;
+        if (this != nullptr)
+        {
+            _y = y;
+        }
     }
 
     void Draw(IPainter* painter) override
     {
+        if (this == nullptr)
+        {
+            return;
+        }
         // Draw background
         if (_disabled)
         {
@@ -244,13 +257,7 @@ class MenuItem : public IWidget
     {
         switch (_type)
         {
-        case MenuItemType::MENU_ITEM_TYPE_BACKLINK:
-            menuSystem->SetCurrentScreen(_targetScreen);
-            break;
-        case MenuItemType::MENU_ITEM_TYPE_PAGELINK:
-            menuSystem->SetCurrentScreen(_targetScreen);
-            break;
-        case MenuItemType::MENU_ITEM_TYPE_SUBMENU:
+        case MenuItemType::MENU_ITEM_TYPE_SCREENLINK:
             menuSystem->SetCurrentScreen(_targetScreen);
             break;
         default:

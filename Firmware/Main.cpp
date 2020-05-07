@@ -9,7 +9,7 @@
 // Menus/Pages
 #include "UI/MenuSystem.h"
 #include "UI/Screens/MainPage.h"
-#include "UI/Screens/SettingsMenu.h"
+#include "UI/Screens/MainMenu.h"
 #include "UI/Screens/AnalogGainMenu.h"
 
 //#define DEBUG_DRAW
@@ -552,7 +552,7 @@ int main()
 #endif
 
     MainPage MainPage(&cdcDevice);
-    SettingsMenu SettingsMenu(&cdcDevice);
+    MainMenu MainMenu(&cdcDevice);
 
     // IMenu* currentMenu = &MainPage;
     // IMenu* currentMenu = &SettingsMenu;

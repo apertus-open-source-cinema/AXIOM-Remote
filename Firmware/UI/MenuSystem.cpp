@@ -4,7 +4,7 @@
 #include "Screens/IScreen.h"
 
 MenuSystem::MenuSystem(IUSBDevice* usbDevice) :
-    _currentScreen(nullptr), _usbDevice(usbDevice), _mainPage(usbDevice), _settingsMenu(usbDevice),
+    _currentScreen(nullptr), _usbDevice(usbDevice), _mainPage(usbDevice), _MainMenu(usbDevice),
     _settingsSubMenu1(usbDevice), _whiteBalance(usbDevice)
 {
     InitializeAvailableScreens();
@@ -30,7 +30,7 @@ AvailableScreens MenuSystem::GetCurrentScreen()
 void MenuSystem::InitializeAvailableScreens()
 {
     _availableScreens[0] = &_mainPage;
-    _availableScreens[1] = &_settingsMenu;
+    _availableScreens[1] = &_MainMenu;
     _availableScreens[2] = &_settingsSubMenu1;
     _availableScreens[3] = &_whiteBalance;
 }

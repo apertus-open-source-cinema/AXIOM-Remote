@@ -56,8 +56,8 @@ class SettingsSubMenu1 : public IMenu
         _menuBreadcrumbs = "Menu > SubMenu 1";
 
         // Added for testing
-        _menuItem[0].SetMenuType(MenuItemType::MENU_ITEM_TYPE_BACKLINK);
-        _menuItem[0].SetTargetScreen(AvailableScreens::SettingsMenu);
+        _menuItem[0].SetMenuType(MenuItemType::MENU_ITEM_TYPE_SCREENLINK);
+        _menuItem[0].SetTargetScreen(AvailableScreens::MainMenu);
 
         // Color defintions
         _menuBackgroundColor = RGB565(180, 180, 180);
@@ -203,7 +203,7 @@ class SettingsSubMenu1 : public IMenu
     {
         switch (menuItem.GetMenuType())
         {
-        case MenuItemType::MENU_ITEM_TYPE_SUBMENU:
+        case MenuItemType::MENU_ITEM_TYPE_SCREENLINK:
             menuItem.SetValue(">");
             break;
         default:
