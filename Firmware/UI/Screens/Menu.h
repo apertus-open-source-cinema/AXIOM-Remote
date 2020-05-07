@@ -48,8 +48,8 @@ class Menu : public IMenu
     PopUpParameterMenu _popUpParameterMenu;
     int8_t _popUpParameterMenuActive;
 
-    MenuItem* _menuItem[1] = {nullptr};
-    MenuItem _menuItems[1] = {MenuItem()};
+    // this array of pointers to menuItems allows a menu of up to 64 entries to be filled by inherited class
+    MenuItem* _menuItem[64] = {nullptr};
 
   public:
     // TODO: Add assignment of menu system to IMenu

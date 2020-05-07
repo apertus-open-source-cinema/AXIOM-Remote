@@ -25,8 +25,6 @@ class MainMenu : public Menu
     CheckBoxMenuItem FunCheckboxMenuItem = CheckBoxMenuItem();
     PopUpMenuItem FunLevelCheckboxMenuItem = PopUpMenuItem();
 
-    MenuItem* _menuItem[11] = {nullptr, nullptr, nullptr, nullptr, nullptr, nullptr,
-                               nullptr, nullptr, nullptr, nullptr, nullptr};
     MenuItem _menuItems[10] = {MenuItem(),
                                MenuItem(),
                                MenuItem(),
@@ -42,8 +40,7 @@ class MainMenu : public Menu
     // TODO: Add assignment of menu system to IMenu
     explicit MainMenu(IUSBDevice* cdcDevice) : Menu(cdcDevice)
     {
-
-        // Added for testing
+        // Added for testing - demo menu items
 
         _menuItems[0].SetMenuType(MenuItemType::MENU_ITEM_TYPE_SCREENLINK);
         _menuItems[0].SetTargetScreen(AvailableScreens::MainPage);
@@ -102,6 +99,8 @@ class MainMenu : public Menu
         _menuItem[8] = &_menuItems[8];
         _menuItem[9] = &_menuItems[9];
 
+        _menuItemsCount = 8;
+
         // Color defintions
         _menuBackgroundColor = RGB565(180, 180, 180);
         _menuItemColor = (uint16_t)Color565::White;
@@ -124,18 +123,10 @@ class MainMenu : public Menu
         _popUpParameterMenuActive = -1;
 
         /*
-                _menuItems[2] = new MenuItem();
-                _menuItems[2].SetLabel("Test Item 3");
-
-                _menuButton.SetHandler(&MenuButtonHandler);
-
-                _analogGainButton.SetHandler(&AnalogGainButtonHandler);
-                _digitalGainButton.SetHandler(&DigitalGainButtonHandler);*/
-    }
-
-    virtual void Draw(IPainter* painter) override
-    {
-        Menu::Draw(painter);
+        _menuButton.SetHandler(&MenuButtonHandler);
+        _analogGainButton.SetHandler(&AnalogGainButtonHandler);
+        _digitalGainButton.SetHandler(&DigitalGainButtonHandler);
+        */
     }
 };
 #endif // MAINMENU_H
