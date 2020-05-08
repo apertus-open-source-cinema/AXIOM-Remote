@@ -10,6 +10,7 @@
 #include "../Widgets/CheckboxMenuItem.h"
 #include "../Widgets/PopUpMenuItem.h"
 #include "../Widgets/ScreenLinkMenuItem.h"
+#include "../Widgets/ParameterListMenuItem.h"
 #include "Menu.h"
 
 #include "../ButtonDefinitions.h"
@@ -27,8 +28,8 @@ class MainMenu : public Menu
     PopUpMenuItem _funLevelCheckboxMenuItem;
     ScreenLinkMenuItem _exitLinkMenuItem;
     ScreenLinkMenuItem _subMenu1LinkMenuItem;
-    ScreenLinkMenuItem _subMenu2LinkMenuItem;
     ScreenLinkMenuItem _WBLinkMenuItem;
+    ParameterListMenuItem _funactivitiesItem;
 
     // just for testing for now
     MenuItem _menuItems[10];
@@ -40,8 +41,6 @@ class MainMenu : public Menu
         // Added for testing - demo menu items
 
         _exitLinkMenuItem = ScreenLinkMenuItem("Exit Menu", AvailableScreens::MainPage, false);
-        //_menuItems[0].SetMenuType(MenuItemType::MENU_ITEM_TYPE_SCREENLINK);
-        //_menuItems[0].SetTargetScreen(AvailableScreens::MainPage);
         AddMenuItem(&_exitLinkMenuItem);
 
         _menuItems[1] = MenuItem("Disabled Item");
@@ -49,26 +48,21 @@ class MainMenu : public Menu
         AddMenuItem(&_menuItems[1]);
 
         _subMenu1LinkMenuItem = ScreenLinkMenuItem("Submenu 1", AvailableScreens::SettingsSubMenu1);
-        //_menuItems[2].SetMenuType(MenuItemType::MENU_ITEM_TYPE_SCREENLINK);
-        //_menuItems[2].SetTargetScreen(AvailableScreens::SettingsSubMenu1);
-        //_menuItems[2].SetValue(">");
         AddMenuItem(&_subMenu1LinkMenuItem);
 
-        _subMenu2LinkMenuItem = ScreenLinkMenuItem("Submenu 2");
-        //_menuItems[3].SetMenuType(MenuItemType::MENU_ITEM_TYPE_SCREENLINK);
-        //_menuItems[3].SetValue(">");
-        AddMenuItem(&_subMenu2LinkMenuItem);
+        _funactivitiesItem = ParameterListMenuItem("Fun Activity");
+        const char* funactivitychoices[10];
+        funactivitychoices[0] = "Refill Sandbags";
+        funactivitychoices[1] = "Repolish Lenses";
+        funactivitychoices[2] = "Demagnetize Tapes";
+        funactivitychoices[3] = "Repaint Tallylights";
+        funactivitychoices[4] = "Fluidhead Oilchange";
+        _funactivitiesItem.SetOptions(funactivitychoices, 5);
+        _funactivitiesItem.UpdateChoice(0);
+        AddMenuItem(&_funactivitiesItem);
 
-        /*
-                _menuItems[4].SetMenuType(MenuItemType::MENU_ITEM_TYPE_CHECKBOX);
-                const char* funchoices[2];
-                funchoices[0] = "off";
-                funchoices[1] = "on";
-                _menuItems[4].SetChoices(funchoices, 2);
-                _menuItems[4].UpdateChoice(0);
-                _menuItems[4].SetLabel("Fun");
-                _menuItem[4] = &_menuItems[4];
-                */
+        //_subMenu2LinkMenuItem = ScreenLinkMenuItem("Numeric Menu", AvailableScreens::ParameterListScreen);
+        // AddMenuItem(&_subMenu2LinkMenuItem);
 
         _funCheckboxMenuItem = CheckBoxMenuItem("Fun");
         AddMenuItem(&_funCheckboxMenuItem);

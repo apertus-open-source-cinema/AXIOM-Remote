@@ -9,6 +9,7 @@
 
 #include "../Widgets/PopUpParameterMenu.h"
 #include "../Widgets/CheckboxMenuItem.h"
+#include "../Screens/ParameterListScreen.h"
 #include "../Widgets/PopUpMenuItem.h"
 
 #include "../ButtonDefinitions.h"
@@ -48,6 +49,9 @@ class Menu : public IMenu
     PopUpParameterMenu _popUpParameterMenu;
     int8_t _popUpParameterMenuActive;
 
+    ParameterListScreen _parameterListScreen;
+    int8_t _parameterListMenuActive;
+
   private:
     // this array of pointers to menuItems allows a menu of up to 64 entries to be filled by inherited class
     MenuItem* _menuItem[64] = {nullptr};
@@ -55,7 +59,8 @@ class Menu : public IMenu
   public:
     // TODO: Add assignment of menu system to IMenu
     explicit Menu(IUSBDevice* cdcDevice) :
-        IMenu(cdcDevice), _menuItemsCount(0), _menuSelectionIndex(0), _maxVisibleItems(7), _popUpParameterMenu(10, 10)
+        IMenu(cdcDevice), _menuItemsCount(0), _menuSelectionIndex(0), _maxVisibleItems(7), _popUpParameterMenu(10, 10),
+        _parameterListScreen(cdcDevice)
     {
         // UNUSED(cdcDevice);
         //_usbDevice = cdcDevice;
@@ -80,6 +85,7 @@ class Menu : public IMenu
         _menuOffset = 0;
 
         _popUpParameterMenuActive = -1;
+        _parameterListMenuActive = -1;
     }
 
     void AddMenuItem(MenuItem* newMenuItem)
@@ -124,32 +130,39 @@ class Menu : public IMenu
   protected:
     virtual void Draw(IPainter* painter) override
     {
-        painter->SetFont(Font::FreeSans9pt7b);
-        DrawHeader(painter);
-
-        // draw menu items
-        DrawMenuItems(painter);
-
-        // draw scroll bar indicator only if there are more than 7 menu items
-        if (_menuItemsCount > 7)
+        // draw parameter list menu
+        if (_parameterListMenuActive > -1)
         {
-            DrawScrollIndicator(painter);
-        }
-
-        // draw parameter menu
-        if (_popUpParameterMenuActive > -1)
+            _parameterListScreen.Draw(painter);
+        } else
         {
-            // dim background
-            painter->Dim();
+            painter->SetFont(Font::FreeSans9pt7b);
+            DrawHeader(painter);
 
-            // draw the active menu item again, not optimal -> fixme
-            // int8_t displaySelectionIndex = _menuSelectionIndex - _menuOffset;
-            MenuItem* currentMenuItem = _menuItem[_menuSelectionIndex];
+            // draw menu items
+            DrawMenuItems(painter);
 
-            if (currentMenuItem != nullptr)
+            // draw scroll bar indicator only if there are more than 7 menu items
+            if (_menuItemsCount > 7)
             {
-                currentMenuItem->Draw(painter);
-                _popUpParameterMenu.Draw(painter);
+                DrawScrollIndicator(painter);
+            }
+
+            // draw parameter popup menu
+            if (_popUpParameterMenuActive > -1)
+            {
+                // dim background
+                painter->Dim();
+
+                // draw the active menu item again, not optimal -> fixme
+                // int8_t displaySelectionIndex = _menuSelectionIndex - _menuOffset;
+                MenuItem* currentMenuItem = _menuItem[_menuSelectionIndex];
+
+                if (currentMenuItem != nullptr)
+                {
+                    currentMenuItem->Draw(painter);
+                    _popUpParameterMenu.Draw(painter);
+                }
             }
         }
     }
@@ -267,11 +280,6 @@ class Menu : public IMenu
             return;
         }
 
-        /*if (_menuItem[_menuSelectionIndex] == nullptr)
-        {
-            return;
-        }*/
-
         if (knob != 0)
         {
             if (knob > 0)
@@ -285,17 +293,29 @@ class Menu : public IMenu
 
         switch (button)
         {
-        case Button::BUTTON_3_UP:
+        case Button::BUTTON_10_UP:
             SelectionUp(menuSystem);
             break;
+        case Button::BUTTON_4_UP:
+            if (_parameterListMenuActive >= 0)
+            {
+                _parameterListMenuActive = -1;
+            }
+            break;
         case Button::BUTTON_6_UP:
+            if (_parameterListMenuActive >= 0)
+            {
+                SelectionPress(menuSystem);
+            }
+            break;
+        case Button::BUTTON_12_UP:
             SelectionDown(menuSystem);
             break;
-        case Button::BUTTON_5_UP:
+        case Button::BUTTON_11_UP:
             SelectionPress(menuSystem);
             _menuItem[_menuSelectionIndex]->SetPressed(false);
             break;
-        case Button::BUTTON_5_DOWN:
+        case Button::BUTTON_11_DOWN:
             _menuItem[_menuSelectionIndex]->SetPressed(true);
             break;
         case Button::E_1_UP:
@@ -321,7 +341,10 @@ class Menu : public IMenu
             return;
         }
 
-        if (_popUpParameterMenuActive >= 0)
+        if (_parameterListMenuActive >= 0)
+        {
+            _parameterListScreen.SetHighlighted(_parameterListScreen.GetHighlightIndex() - 1);
+        } else if (_popUpParameterMenuActive >= 0)
         {
             _popUpParameterMenu.SetHighlighted(_popUpParameterMenu.GetHighlightIndex() + 1);
         } else
@@ -342,7 +365,10 @@ class Menu : public IMenu
             return;
         }
 
-        if (_popUpParameterMenuActive >= 0)
+        if (_parameterListMenuActive >= 0)
+        {
+            _parameterListScreen.SetHighlighted(_parameterListScreen.GetHighlightIndex() + 1);
+        } else if (_popUpParameterMenuActive >= 0)
         {
             _popUpParameterMenu.SetHighlighted(_popUpParameterMenu.GetHighlightIndex() - 1);
         } else
@@ -362,8 +388,16 @@ class Menu : public IMenu
         {
             return;
         }
+        if (_parameterListMenuActive >= 0)
+        {
+            _parameterListMenuActive = -1;
 
-        if (_popUpParameterMenuActive >= 0)
+            ParameterListMenuItem* currentParameterListMenuItem =
+                (ParameterListMenuItem*)_menuItem[_menuSelectionIndex];
+            currentParameterListMenuItem->UpdateChoice(_parameterListScreen.GetHighlightIndex());
+
+            //_parameterListScreen.SetPressed(_popUpParameterMenu.GetHighlightIndex());
+        } else if (_popUpParameterMenuActive >= 0)
         {
             _popUpParameterMenuActive = -1;
 
@@ -374,7 +408,21 @@ class Menu : public IMenu
         } else
         {
             _menuItem[_menuSelectionIndex]->SetPressed(false);
-            if (_menuItem[_menuSelectionIndex]->GetMenuType() == MenuItemType::MENU_ITEM_TYPE_DROPDOWN)
+
+            if (_menuItem[_menuSelectionIndex]->GetMenuType() == MenuItemType::MENU_ITEM_TYPE_LIST)
+            {
+                ParameterListMenuItem* currentParameterListMenuItem =
+                    (ParameterListMenuItem*)_menuItem[_menuSelectionIndex];
+                const char* options[currentParameterListMenuItem->GetOptionCount()];
+
+                for (uint8_t i = 0; i < currentParameterListMenuItem->GetOptionCount(); i++)
+                {
+                    options[i] = currentParameterListMenuItem->GetOption(i);
+                }
+                _parameterListScreen.SetOptions(options, currentParameterListMenuItem->GetOptionCount());
+                _parameterListScreen.SetHeader(currentParameterListMenuItem->GetLabel());
+                _parameterListMenuActive = _menuSelectionIndex;
+            } else if (_menuItem[_menuSelectionIndex]->GetMenuType() == MenuItemType::MENU_ITEM_TYPE_DROPDOWN)
             {
                 PopUpMenuItem* currentPopUpMenuItem = (PopUpMenuItem*)_menuItem[_menuSelectionIndex];
                 const char* choices[7];

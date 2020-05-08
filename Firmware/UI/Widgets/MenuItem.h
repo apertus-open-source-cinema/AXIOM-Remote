@@ -12,7 +12,8 @@ enum class MenuItemType
 {
     MENU_ITEM_TYPE_READONLY,
     MENU_ITEM_TYPE_NUMERIC,
-    MENU_ITEM_TYPE_DROPDOWN
+    MENU_ITEM_TYPE_DROPDOWN,
+    MENU_ITEM_TYPE_LIST
 };
 
 class MenuItem : public IWidget

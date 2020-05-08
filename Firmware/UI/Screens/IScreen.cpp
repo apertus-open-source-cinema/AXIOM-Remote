@@ -2,7 +2,7 @@
 
 #include "../Color565.h"
 
-IScreen::IScreen(IUSBDevice* usbDevice) : _usbDevice(usbDevice), _bottomButtonBar(ButtonBar(0, 210, 320, 30)), _leftButtonBar(0, 30, 34, 180)
+IScreen::IScreen(IUSBDevice* usbDevice) : _usbDevice(usbDevice), _bottomButtonBar(ButtonBar(0, 210, 320, 30)), _leftButtonBar(0, 31, 34, 180)
 {
 }
 
