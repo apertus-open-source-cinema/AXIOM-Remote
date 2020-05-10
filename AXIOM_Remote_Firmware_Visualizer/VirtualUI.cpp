@@ -330,10 +330,14 @@ void VirtualUI::RenderUI(Button& button, int8_t& knobValue, bool& debugOverlayEn
     }
 
     ImGui::SetCursorPos(ImVec2(60, 140));
-    if (ImGui::Knob("Test123", &value, (ImTextureID)_knobTextureID))
+    if (ImGui::Knob("Test123", value, knobPressed, (ImTextureID)knobTextureID))
     {
         knobValue = -(value - lastValue);
         lastValue = value;
+    }
+    if (knobPressed)
+    {
+        button = Button::E_1_UP;
     }
 
     ImGui::SetCursorPos(ImVec2(400, 120));
