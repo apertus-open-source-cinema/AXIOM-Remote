@@ -163,11 +163,16 @@ void RenderUI(SDL_Window* window, const ImGuiIO& io, ImTextureID knobTextureID, 
     ImGui::SetCursorPos(ImVec2(340, 270));
     ImGui::Button("9", ImVec2(40, 30));*/
 
+    bool knobPressed = false;
     ImGui::SetCursorPos(ImVec2(60, 140));
-    if (ImGui::Knob("Test123", &value, (ImTextureID)knobTextureID))
+    if (ImGui::Knob("Test123", value, knobPressed, (ImTextureID)knobTextureID))
     {
         knobValue = -(value - lastValue);
         lastValue = value;
+    }
+    if (knobPressed)
+    {
+        button = Button::E_1_UP;
     }
 
     ImGui::SetCursorPos(ImVec2(400, 120));
