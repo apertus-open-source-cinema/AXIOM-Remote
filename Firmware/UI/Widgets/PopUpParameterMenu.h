@@ -139,7 +139,7 @@ class PopUpParameterMenu : public IWidget
         }
 
         // dim the rest of the LCD content
-        painter->Dim(); // still needs tuning to avoid funky colors
+        //painter->Dim(); // still needs tuning to avoid funky colors
 
         // draw background
         painter->DrawFillRectangle(_x, _y - _height + _borderwidth, _width, _height, _backgroundColor);

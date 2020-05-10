@@ -3,9 +3,10 @@
 
 #include <cstring>
 
-#include "IMenu.h"
+#include "Menu.h"
 #include "../Painter/Painter.h"
 #include "../Widgets/MenuItem.h"
+#include "../Widgets/ScreenLinkMenuItem.h"
 
 //#include "../Widgets/MainPageButton.h"
 
@@ -17,278 +18,35 @@
 
 //#include <Helpers.h>
 
-class SettingsSubMenu1 : public IMenu
+class SettingsSubMenu1 : public Menu
 {
-    char const* _label;
-    char const* _menuBreadcrumbs;
-
-    uint8_t _menuItemsCount;
-    uint8_t _menuSelectionIndex;
-
-    uint8_t _maxVisibleItems;
-
-    uint8_t _parameterSelectionIndex;
-    uint8_t _parameterMenuActive;
-    uint8_t _menuOffset;
-
-    // Color Defintions
-    uint16_t _menuBackgroundColor;
-    uint16_t _menuItemColor;
-    uint16_t _menuDimmedItemColor;
-    uint16_t _menuDisabledItemColor;
-    uint16_t _menuSelectedItemColor;
-    uint16_t _menuHightlightedItemColor;
-    uint16_t _menuTextColor;
-    uint16_t _menuDisabledTextColor;
-    uint16_t _menuSelectedTextColor;
-
-    MenuItem _menuItem[4] = {MenuItem("< Up"), MenuItem("Option 1"), MenuItem("Option 2"), MenuItem("Option 3")};
+    ScreenLinkMenuItem _menuItemBack;
+    MenuItem _menuItemOpt1;
+    MenuItem _menuItemOpt2;
+    MenuItem _menuItemOpt3;
 
   public:
     // TODO: Add assignment of menu system to IMenu
-    explicit SettingsSubMenu1(IUSBDevice* cdcDevice) :
-        IMenu(cdcDevice), _menuItemsCount(4), _menuSelectionIndex(0), _maxVisibleItems(7)
+    explicit SettingsSubMenu1(IUSBDevice* cdcDevice) : Menu(cdcDevice)
     {
-        // UNUSED(cdcDevice);
-        //_usbDevice = cdcDevice;
 
         _label = "Menu";
         _menuBreadcrumbs = "Menu > SubMenu 1";
 
         // Added for testing
-        _menuItem[0].SetMenuType(MenuItemType::MENU_ITEM_TYPE_SCREENLINK);
-        _menuItem[0].SetTargetScreen(AvailableScreens::MainMenu);
+        _menuItemBack = ScreenLinkMenuItem("< Up", AvailableScreens::MainMenu, false);
+        /*_menuItemBack.SetMenuType(MenuItemType::MENU_ITEM_TYPE_SCREENLINK);
+        _menuItemBack.SetTargetScreen(AvailableScreens::MainMenu);*/
+        AddMenuItem(&_menuItemBack);
 
-        // Color defintions
-        _menuBackgroundColor = RGB565(180, 180, 180);
-        _menuItemColor = (uint16_t)Color565::White;
-        _menuSelectedItemColor = RGB565(255, 128, 0);
-        _menuDimmedItemColor = RGB565(247, 251, 247);
-        _menuSelectedTextColor = RGB565(255, 255, 255);
-        _menuHightlightedItemColor = RGB565(0, 128, 255);
-        _menuTextColor = (uint16_t)Color565::Black;
-        _menuDisabledTextColor = RGB565(40, 40, 40);
-        _menuDisabledItemColor = RGB565(180, 180, 180);
+        _menuItemOpt1 = MenuItem("Option 1");
+        AddMenuItem(&_menuItemOpt1);
 
-        // init menu selection indexes
-        _parameterMenuActive = 0;
-        _parameterSelectionIndex = 0;
-        _menuOffset = 0;
+        _menuItemOpt2 = MenuItem("Option 2");
+        AddMenuItem(&_menuItemOpt2);
 
-        // Default selection is first item
-        _menuItem[_menuSelectionIndex].SetHighlighted(true);
-
-        /*
-                _menuItem[2] = new MenuItem();
-                _menuItem[2].SetLabel("Test Item 3");
-
-                _menuButton.SetHandler(&MenuButtonHandler);
-
-                _analogGainButton.SetHandler(&AnalogGainButtonHandler);
-                _digitalGainButton.SetHandler(&DigitalGainButtonHandler);*/
-    }
-
-    void SetLabel(char* value)
-    {
-        _label = value;
-    }
-
-    const char* GetLabel()
-    {
-        return _label;
-    }
-
-    int8_t GetMenuItemsCount()
-    {
-        return _menuItemsCount;
-    }
-
-  protected:
-    void Draw(IPainter* painter) override
-    {
-        painter->SetFont(Font::FreeSans9pt7b);
-        DrawHeader(painter);
-
-        // draw menu items
-        DrawMenuItems(painter);
-
-        // draw scroll bar indicator only if there are more than 7 menu items
-        if (_menuItemsCount > 7)
-        {
-            DrawScrollIndicator(painter);
-        }
-    }
-
-    void DrawHeader(IPainter* painter)
-    {
-        // draw header background
-        painter->DrawFillRectangle(0, 0, GlobalSettings::LCDWidth, 28, _menuItemColor);
-
-        // draw header bread crumbs
-        painter->SetFont(Font::FreeSans9pt7b);
-        painter->DrawText(5, 20, _menuBreadcrumbs, _menuTextColor, TextAlign::TEXT_ALIGN_LEFT, 0);
-
-        // two header separation lines
-        painter->DrawLine(0, 29, GlobalSettings::LCDWidth - 1, 29, _menuSelectedItemColor);
-
-        painter->DrawLine(0, 30, GlobalSettings::LCDWidth - 1, 30, _menuBackgroundColor);
-    }
-
-    void DrawMenuItems(IPainter* painter)
-    {
-        int8_t displaySelectionIndex = _menuSelectionIndex - _menuOffset;
-
-        // the _menuOffset is added to the item index and defines which item is the first one shown on screen
-
-        // scrolling up from the first item
-        if (displaySelectionIndex < 0)
-        {
-            _menuOffset -= 1;
-        }
-
-        // scrolling down from the last item
-        if (displaySelectionIndex >= 7)
-        {
-            _menuOffset += 1;
-        }
-
-        // only up to 7 menu items fit on screen at once
-        uint8_t displayItemsCount = LimitRange(_menuItemsCount, 0, 7);
-
-        for (uint8_t itemIndex = 0; itemIndex < displayItemsCount; itemIndex++)
-        {
-            MenuItem currentMenuItem = _menuItem[itemIndex + _menuOffset];
-
-            // TODO: move this to the update() function
-            SetValue(currentMenuItem);
-
-            uint16_t y = 31 + itemIndex * 30;
-            currentMenuItem.SetDimensions(31, y, GlobalSettings::LCDWidth - 30, 29);
-
-            currentMenuItem.Draw(painter);
-        }
-    }
-
-    void DrawScrollIndicator(IPainter* painter)
-    {
-        // start the scrollbar below the header
-        uint8_t scrollbarYOrigin = 31;
-
-        // maximum height is the screen without header area
-        uint8_t scrollbarHeight = GlobalSettings::LCDHeight - scrollbarYOrigin;
-
-        // height of the scroll indicator is defined by the ratio of number of items on screen vs total number of item.
-        // for example: if there are 7 items on screen of total 14 items the scroll indicator shall be 50% of the
-        // scrollbar height
-        uint8_t sliderHeight = scrollbarHeight * ((float)_maxVisibleItems / _menuItemsCount);
-
-        // Calculate offset of scrollbar for 1 item
-        float segmentOffset = (scrollbarHeight - sliderHeight) / (_menuItemsCount - _maxVisibleItems);
-
-        uint8_t scrollbarYOffset = scrollbarYOrigin + (_menuOffset * segmentOffset);
-
-        // Background
-        painter->DrawFillRectangle(GlobalSettings::LCDWidth - 16, scrollbarYOrigin, 16,
-                                   GlobalSettings::LCDHeight - scrollbarYOrigin, _menuItemColor);
-
-        // Thin Line
-        painter->DrawFillRectangle(GlobalSettings::LCDWidth - 10, scrollbarYOrigin, 4,
-                                   GlobalSettings::LCDHeight - scrollbarYOrigin, _menuTextColor);
-
-        // Draw slider as thick line
-        painter->DrawFillRectangle(GlobalSettings::LCDWidth - 14, scrollbarYOffset, 12, sliderHeight, _menuTextColor);
-    }
-
-    void SetValue(MenuItem& menuItem)
-    {
-        switch (menuItem.GetMenuType())
-        {
-        case MenuItemType::MENU_ITEM_TYPE_SCREENLINK:
-            menuItem.SetValue(">");
-            break;
-        default:
-            break;
-            /*case MenuItemType::MENU_ITEM_TYPE_PAGELINK:
-            case MenuItemType::MENU_ITEM_TYPE_BACKLINK:
-                break;
-            default:
-                value = _menuItem[item_index].GetValue();*/
-        }
-    }
-
-    void UnselectAllMenuItems()
-    {
-        uint8_t b;
-        for (b = 0; b < _menuItemsCount; b++)
-        {
-            _menuItem[b].SetPressed(false);
-        }
-    }
-
-    void UnhighlightAllMenuItems()
-    {
-        uint8_t b;
-        for (b = 0; b < _menuItemsCount; b++)
-        {
-            _menuItem[b].SetHighlighted(false);
-        }
-    }
-
-    void Update(Button button, int8_t knob, IMenuSystem* menuSystem) override
-    {
-        if (knob != 0)
-        {
-            // char debugText[32];
-            // sprintf(debugText, "Knob: %d \r\n", knob);
-            // _usbDevice->Send((uint8_t*)debugText, 32);
-
-            // Remove highlighting from last selected item as new button event occured
-            _menuItem[_menuSelectionIndex].SetHighlighted(false);
-
-            _menuSelectionIndex -= knob;
-            _menuSelectionIndex = LimitRange(_menuSelectionIndex, 0, _menuItemsCount - 1);
-            _menuItem[_menuSelectionIndex].SetHighlighted(true);
-        }
-
-        switch (button)
-        {
-        case Button::BUTTON_3_UP:
-            // Remove highlighting from last selected item as new button event occured
-            _menuItem[_menuSelectionIndex].SetHighlighted(false);
-
-            _menuSelectionIndex--;
-            _menuSelectionIndex = LimitRange(_menuSelectionIndex, 0, _menuItemsCount - 1);
-            _menuItem[_menuSelectionIndex].SetHighlighted(true);
-            break;
-        case Button::BUTTON_6_UP:
-            // Remove highlighting from last selected item as new button event occured
-            _menuItem[_menuSelectionIndex].SetHighlighted(false);
-
-            _menuSelectionIndex++;
-            _menuSelectionIndex = LimitRange(_menuSelectionIndex, 0, _menuItemsCount - 1);
-            _menuItem[_menuSelectionIndex].SetHighlighted(true);
-            break;
-        case Button::BUTTON_5_UP:
-            _menuItem[_menuSelectionIndex].SetPressed(false);
-            _menuItem[_menuSelectionIndex].ExecuteAction(menuSystem);
-            break;
-        case Button::BUTTON_5_DOWN:
-            _menuItem[_menuSelectionIndex].SetPressed(true);
-            break;
-        case Button::E_1_UP:
-            _menuItem[_menuSelectionIndex].SetPressed(false);
-            _menuItem[_menuSelectionIndex].ExecuteAction(menuSystem);
-            break;
-        case Button::E_1_DOWN:
-            _menuItem[_menuSelectionIndex].SetPressed(true);
-            break;
-        default:
-            break;
-        }
-
-        //_usbDevice->Send((uint8_t*)"Knob \r\n", 10);
-
-        UNUSED(menuSystem);
+        _menuItemOpt3 = MenuItem("Option 3");
+        AddMenuItem(&_menuItemOpt3);
     }
 };
 
