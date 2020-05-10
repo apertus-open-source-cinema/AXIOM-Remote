@@ -35,7 +35,7 @@ class ParameterListScreen : public IScreen
   public:
     explicit ParameterListScreen(IUSBDevice* usbDevice) :
         IScreen(usbDevice), _cancelButton("Cancel"), _setButton("Set"), _homeButton((Icon*)&home),
-        _header("Parameter Menu")
+        _header("Parameter Menu"), _previousOptionIndex(0), _highlightIndex(0)
     {
         //_cancelButton.SetHandler(&CancelButtonHandler);
         _bottomButtonBar.SetButton(ButtonPosition::Left, &_cancelButton);
@@ -72,6 +72,13 @@ class ParameterListScreen : public IScreen
             _highlightIndex = highlightindex;
         }
     }
+    void UpdateChoice(uint8_t choiceindex)
+    {
+        if ((choiceindex >= 0) && (choiceindex < _optionCount))
+        {
+            _previousOptionIndex = choiceindex;
+        }
+    }
 
     uint8_t GetHighlightIndex()
     {
@@ -101,7 +108,6 @@ class ParameterListScreen : public IScreen
         {
             if (_highlightIndex == i)
             {
-
                 painter->DrawFillRectangle(20, heightcenter, GlobalSettings::LCDWidth - 40, _optionLineHeight,
                                            _highlightColor);
                 painter->DrawText(30, heightcenter + fontcenter, _optionLabels[i], _highlightTextColor,
@@ -110,6 +116,21 @@ class ParameterListScreen : public IScreen
             {
                 painter->DrawText(30, heightcenter + (i - _highlightIndex) * _optionLineHeight + fontcenter,
                                   _optionLabels[i], _textColor, TextAlign::TEXT_ALIGN_LEFT, GlobalSettings::LCDWidth);
+            }
+
+            // draw current (old) value indicator circle
+            if (_previousOptionIndex == i)
+            {
+                if (_highlightIndex == i)
+                {
+                    painter->DrawFillCircle(25,
+                                            heightcenter + (i - _highlightIndex) * _optionLineHeight + fontcenter - 7,
+                                            3, _highlightTextColor);
+                } else
+                {
+                    painter->DrawFillCircle(
+                        25, heightcenter + (i - _highlightIndex) * _optionLineHeight + fontcenter - 7, 3, _textColor);
+                }
             }
         }
 

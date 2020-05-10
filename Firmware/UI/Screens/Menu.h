@@ -395,6 +395,7 @@ class Menu : public IMenu
             ParameterListMenuItem* currentParameterListMenuItem =
                 (ParameterListMenuItem*)_menuItem[_menuSelectionIndex];
             currentParameterListMenuItem->UpdateChoice(_parameterListScreen.GetHighlightIndex());
+            _parameterListScreen.UpdateChoice(_parameterListScreen.GetHighlightIndex());
 
             //_parameterListScreen.SetPressed(_popUpParameterMenu.GetHighlightIndex());
         } else if (_popUpParameterMenuActive >= 0)
