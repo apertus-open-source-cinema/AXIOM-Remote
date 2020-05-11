@@ -14,7 +14,7 @@ static const float halfP = static_cast<float>(M_PI) / 2.0f;
 // Knob dimensions
 static const float knobDiameter = 200.0f;
 static const float knobRadius = knobDiameter * 0.5f;
-static const float knobPressableDiameter = 0.5 * knobDiameter;
+static const float knobPressableDiameter = 0.3 * knobDiameter;
 static const float knobPressableRadiusSquared = 0.25 * knobPressableDiameter * knobPressableDiameter;
 static const ImVec2 knobPressableSize = ImVec2(knobPressableDiameter, knobPressableDiameter);
 static const float knobPressableOffset = 0.50 * (knobDiameter - knobPressableDiameter);
@@ -107,10 +107,13 @@ IMGUI_API bool Knob(const char* label, uint8_t& value, bool& pressed, ImTextureI
         ImVec2 knobPressableOrigin = ImVec2(knobOrigin.x + knobPressableOffset, knobOrigin.y + knobPressableOffset);
         ImGui::SetCursorPos(knobPressableOrigin);
         ImGui::BeginChild("pressableKnobOverlay", knobPressableSize, false);
-        if (ImGui::InvisibleButton("knobButton", knobPressableSize))
+        ImGui::PushStyleVar(ImGuiStyleVar_FrameRounding, knobPressableDiameter / 2);
+        if (ImGui::Button("Click", knobPressableSize))
         {
             pressed = true;
         }
+
+        ImGui::PopStyleVar();
         ImGui::EndChild();
     }
 
