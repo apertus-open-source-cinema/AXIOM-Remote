@@ -6,8 +6,6 @@
 
 #include "../Color565.h"
 
-#define MAX_BUTTON_NUMBER 3
-
 enum class ButtonPosition : uint8_t
 {
     Left = 0,
@@ -17,7 +15,8 @@ enum class ButtonPosition : uint8_t
 
 class ButtonBar : public IWidget
 {
-    IButton* _buttons[MAX_BUTTON_NUMBER] = {nullptr, nullptr, nullptr};
+    static const uint8_t maxButtonNumber = 3;
+    IButton* _buttons[maxButtonNumber] = {nullptr, nullptr, nullptr};
 
     uint16_t _backgroundColor;
     uint8_t _marginTop;
@@ -29,12 +28,12 @@ class ButtonBar : public IWidget
     {
     }
 
-    virtual void Draw(IPainter* painter)
+    virtual void Draw(IPainter* painter) override
     {
         // background
         painter->DrawFillRectangle(_x, _y - _marginTop, _width, _height + _marginTop, _backgroundColor);
 
-        for (int i = 0; i < MAX_BUTTON_NUMBER; i++)
+        for (int i = 0; i < maxButtonNumber; i++)
         {
             IButton* button = _buttons[i];
 
@@ -50,7 +49,7 @@ class ButtonBar : public IWidget
     void SetButton(ButtonPosition position, IButton* button)
     {
         // Adjust positions of the button to correspond to the bar area
-        uint8_t buttonWidth = _width / MAX_BUTTON_NUMBER - _buttonMargin;
+        uint8_t buttonWidth = _width / maxButtonNumber - _buttonMargin;
         button->SetDimensions(_x + buttonWidth * (uint8_t)position + _buttonMargin * ((uint8_t)position + 1), _y,
                               buttonWidth, _height);
 

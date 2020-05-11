@@ -24,7 +24,7 @@ class ImageButton : public IButton
     uint16_t _currentBackgroundColor;
 
   public:
-    ImageButton(Icon* icon, uint16_t x = 0, uint16_t y = 0, uint16_t width = 0, uint16_t height = 0) :
+    explicit ImageButton(Icon* icon, uint16_t x = 0, uint16_t y = 0, uint16_t width = 0, uint16_t height = 0) :
         IButton(x, y, width, height), _image(icon), _cornerRadius(3), _highlighted(false)
     {
         _currentBackgroundColor = RGB565(220, 220, 220);
@@ -38,7 +38,7 @@ class ImageButton : public IButton
         _cornerRadius = cornerRadius;
     }
 
-    virtual void Draw(IPainter* painter)
+    virtual void Draw(IPainter* painter) override
     {
         painter->DrawFillRoundRectangle(_x - 2, _y + 20, 30, 30, _cornerRadius, _currentBackgroundColor);
         painter->DrawIcon(_image->Data, _x + 1, _y + 23, _image->Width, _image->Height, _currentImageColor);

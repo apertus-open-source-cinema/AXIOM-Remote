@@ -49,7 +49,7 @@ class PopUpParameterMenu : public IWidget
 
     void SetHighlighted(uint8_t highlightindex)
     {
-        if ((highlightindex >= 0) && (highlightindex < _choiceCount))
+        if (highlightindex < _choiceCount)
         {
             UnhighlightAllMenuItems();
             _highlightIndex = highlightindex;
@@ -82,7 +82,7 @@ class PopUpParameterMenu : public IWidget
 
     void SetPressed(uint8_t pressedindex)
     {
-        if ((pressedindex >= 0) && (pressedindex < _choiceCount))
+        if (pressedindex < _choiceCount)
         {
             _pressedIndex = pressedindex;
             _parameterMenuItem[pressedindex].SetPressed(true);
@@ -99,14 +99,13 @@ class PopUpParameterMenu : public IWidget
     {
         // Calculate the pixel width of the longest choice label in the parameter menu
         uint16_t maxchoicewidth = 0;
-        uint8_t width;
 
         for (uint8_t itemIndex = 0; itemIndex < _choiceCount; itemIndex++)
         {
-            width = painter->GetStringFramebufferWidth(_parameterMenuItem[itemIndex].GetLabel());
-            if (width > maxchoicewidth)
+            uint8_t textWidth = painter->GetStringFramebufferWidth(_parameterMenuItem[itemIndex].GetLabel());
+            if (textWidth > maxchoicewidth)
             {
-                maxchoicewidth = width;
+                maxchoicewidth = textWidth;
             }
         }
         _width = maxchoicewidth + 2 * _horizontalTextMargin + 2 * _borderwidth;
@@ -130,7 +129,7 @@ class PopUpParameterMenu : public IWidget
         init = false;
     }
 
-    virtual void Draw(IPainter* painter)
+    virtual void Draw(IPainter* painter) override
     {
         if (!init)
         {

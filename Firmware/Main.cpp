@@ -231,8 +231,6 @@ Button PollButtons(USBCDCDevice* cdcDevice)
     {
         if (DEBUG)
         {
-            char debugText[32];
-
             sprintf(debugText, "data[0]: %02X \r\n", data[0]);
             cdcDevice->Send((uint8_t*)debugText, 32);
 
@@ -550,12 +548,6 @@ int main()
     DebugPainter debugPainter(&generalPainter);
     painter = &debugPainter;
 #endif
-
-    MainPage MainPage(&cdcDevice);
-    MainMenu MainMenu(&cdcDevice);
-
-    // IMenu* currentMenu = &MainPage;
-    // IMenu* currentMenu = &SettingsMenu;
 
     static uint8_t rgb[4];
     rgb[0] = 0x14;

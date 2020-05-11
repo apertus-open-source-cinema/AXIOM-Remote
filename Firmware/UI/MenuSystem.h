@@ -37,7 +37,7 @@ class MenuSystem : public IMenuSystem
     explicit MenuSystem(IUSBDevice* usbDevice);
     virtual ~MenuSystem();
 
-    void SetCurrentScreen(AvailableScreens menu);
+    void SetCurrentScreen(AvailableScreens menu) override;
     AvailableScreens GetCurrentScreen();
 
     void Draw(IPainter* painter);

@@ -54,16 +54,16 @@ void WhiteBalanceScreen::Drawheader(IPainter* painter)
 // TODO: Evaluate if menu system should be sent as another argument
 void WhiteBalanceScreen::CancelButtonHandler(void* sender)
 {
-    WhiteBalanceScreen* screen = static_cast<WhiteBalanceScreen*>(sender);
-    // IMenuSystem* menuSystem = screen->
-    // menuSystem->SetCurrentScreen(AvailableScreens::MainPage);
+    //WhiteBalanceScreen* screen = static_cast<WhiteBalanceScreen*>(sender);
+    //IMenuSystem* menuSystem = screen->
+    //menuSystem->SetCurrentScreen(AvailableScreens::MainPage);
 }
 
 void WhiteBalanceScreen::SetButtonHandler(void* sender)
 {
-    WhiteBalanceScreen* screen = static_cast<WhiteBalanceScreen*>(sender);
-    // IMenuSystem* menuSystem = screen->GetMenuSystem();
-    // menuSystem->SetCurrentScreen(AvailableScreens::SettingsMenu);
+    //WhiteBalanceScreen* screen = static_cast<WhiteBalanceScreen*>(sender);
+    //IMenuSystem* menuSystem = screen->GetMenuSystem();
+    //menuSystem->SetCurrentScreen(AvailableScreens::SettingsMenu);
 }
 
 void WhiteBalanceScreen::AddPresetButtonHandler(void* sender)
