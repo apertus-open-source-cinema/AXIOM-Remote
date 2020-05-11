@@ -7,7 +7,7 @@ struct Icon
 {
     uint16_t Width;
     uint16_t Height;
-    uint8_t Data[];
+    uint8_t Data[1];
 };
 
 #endif //ICON_H

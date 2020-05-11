@@ -8,13 +8,14 @@
 
 class ImageButton : public IButton
 {
-    uint8_t _cornerRadius;
     Icon* _image;
+
+    uint8_t _cornerRadius;
     bool _highlighted;
 
     // Color Defintions
-    uint16_t _ImageColor;
-    uint16_t _BackgroundColor;
+    uint16_t _imageColor;
+    uint16_t _backgroundColor;
 
     uint16_t _imageHighlightColor;
     uint16_t _backgroundHighlightColor;
@@ -26,7 +27,9 @@ class ImageButton : public IButton
     ImageButton(Icon* icon, uint16_t x = 0, uint16_t y = 0, uint16_t width = 0, uint16_t height = 0) :
         IButton(x, y, width, height), _image(icon), _cornerRadius(3), _highlighted(false)
     {
-        _currentBackgroundColor = _BackgroundColor = RGB565(220, 220, 220);
+        _currentBackgroundColor = RGB565(220, 220, 220);
+        _backgroundColor = _currentBackgroundColor;
+
         _backgroundHighlightColor = (uint16_t)Color565::AXIOM_Blue;
     }
 
@@ -43,26 +46,22 @@ class ImageButton : public IButton
 
     void SetBackgroundColor(uint16_t color)
     {
-        _BackgroundColor = color;
-        SetHighlighted(_highlighted);
+        _backgroundColor = color;
     }
 
     void SetImageColor(uint16_t color)
     {
-        _ImageColor = color;
-        SetHighlighted(_highlighted);
+        _imageColor = color;
     }
 
     void SetHighlightBackgroundColor(uint16_t color)
     {
         _backgroundHighlightColor = color;
-        SetHighlighted(_highlighted);
     }
 
     void SetHighlightImageColor(uint16_t color)
     {
         _imageHighlightColor = color;
-        SetHighlighted(_highlighted);
     }
 
     void SetHighlighted(bool highlighted)
@@ -75,8 +74,8 @@ class ImageButton : public IButton
 
         } else
         {
-            _currentImageColor = _ImageColor;
-            _currentBackgroundColor = _BackgroundColor;
+            _currentImageColor = _imageColor;
+            _currentBackgroundColor = _backgroundColor;
         }
     }
 };

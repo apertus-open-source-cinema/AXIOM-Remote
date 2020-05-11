@@ -67,14 +67,14 @@ class ParameterListScreen : public IScreen
 
     void SetHighlighted(uint8_t highlightindex)
     {
-        if ((highlightindex >= 0) && (highlightindex < _optionCount))
+        if (highlightindex < _optionCount)
         {
             _highlightIndex = highlightindex;
         }
     }
     void UpdateChoice(uint8_t choiceindex)
     {
-        if ((choiceindex >= 0) && (choiceindex < _optionCount))
+        if (choiceindex < _optionCount)
         {
             _previousOptionIndex = choiceindex;
         }
@@ -87,7 +87,7 @@ class ParameterListScreen : public IScreen
 
     void SetHeader(const char* value)
     {
-        _header = const_cast<char*>(value);
+        _header = value;
     }
 
     char const* GetHeader()

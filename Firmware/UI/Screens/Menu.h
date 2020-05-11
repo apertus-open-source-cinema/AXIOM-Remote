@@ -106,7 +106,7 @@ class Menu : public IMenu
 
     void SetMenuItem(uint8_t index, MenuItem* newMenuItem)
     {
-        if ((index >= 0) && (index < _menuItemsCount))
+        if (index < _menuItemsCount)
         {
             _menuItem[_menuItemsCount] = newMenuItem;
         }

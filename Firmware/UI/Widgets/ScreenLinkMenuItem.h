@@ -12,11 +12,11 @@ class ScreenLinkMenuItem : public MenuItem
 
   public:
     ScreenLinkMenuItem(const char* label = "", AvailableScreens targetscreen = AvailableScreens::MainPage,
-                       bool drawarrow = true) :
-        MenuItem(const_cast<char*>(label)),
+                       bool drawArrow = true) :
+        MenuItem(label),
         _targetScreen(targetscreen)
     {
-        if (drawarrow)
+        if (drawArrow)
         {
             _value = ">";
         }

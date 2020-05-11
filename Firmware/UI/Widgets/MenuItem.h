@@ -48,8 +48,8 @@ class MenuItem : public IWidget
     MenuItem(const char* label = "...", bool disabled = false, const char* value = nullptr, bool hidden = false,
              bool pressed = false, bool highlighted = false, MenuItemType type = MenuItemType::MENU_ITEM_TYPE_NUMERIC) :
         _disabled(disabled),
-        _hidden(hidden), _pressed(pressed), _highlighted(highlighted), _label(const_cast<char*>(label)),
-        _value(const_cast<char*>(value)), _type(type), _backgroundColor((uint16_t)Color565::White),
+        _hidden(hidden), _pressed(pressed), _highlighted(highlighted), _label(label),
+        _value(value), _type(type), _backgroundColor((uint16_t)Color565::White),
         _backgroundHighlightColor(RGB565(255, 128, 0)), _backgroundPressedColor(RGB565(0, 128, 255)),
         _backgroundDisabledColor(RGB565(180, 180, 180)), _textColor((uint16_t)Color565::Black),
         _textHighlightColor((uint16_t)Color565::White), _textPressedColor((uint16_t)Color565::White),
@@ -96,11 +96,6 @@ class MenuItem : public IWidget
 
     void SetPressed(bool pressed)
     {
-        if (this == nullptr)
-        {
-            return;
-        }
-
         if (_disabled)
         {
             return;
@@ -162,7 +157,7 @@ class MenuItem : public IWidget
 
     void SetLabel(const char* value)
     {
-        _label = const_cast<char*>(value);
+        _label = value;
     }
 
     char const* GetLabel()
@@ -191,10 +186,7 @@ class MenuItem : public IWidget
 
     MenuItemType GetMenuType()
     {
-        if (this != nullptr)
-        {
-            return _type;
-        }
+        return _type;
     }
 
     /*void SetDimensions(uint16_t x, uint16_t y, uint16_t width, uint16_t height)
@@ -208,18 +200,11 @@ class MenuItem : public IWidget
 
     void SetY(uint16_t y)
     {
-        if (this != nullptr)
-        {
-            _y = y;
-        }
+        _y = y;
     }
 
     void Draw(IPainter* painter) override
     {
-        if (this == nullptr)
-        {
-            return;
-        }
         // Draw background
         if (_disabled)
         {

@@ -13,7 +13,8 @@ class WhiteBalanceScreen : public IScreen
     PushButton _cancelButton;
     PushButton _setButton;
     PushButton _addPresetButton;
-  
+
+    // TODO: Move to base class as it exists in every screen, besides main page
     ImageButton _homeButton;
 
   public:

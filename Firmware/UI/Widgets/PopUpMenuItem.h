@@ -15,7 +15,7 @@ class PopUpMenuItem : public MenuItem
     uint8_t _choiceIndex;
 
   public:
-    PopUpMenuItem(const char* label = "") : MenuItem(const_cast<char*>(label)), _choiceIndex(0)
+    PopUpMenuItem(const char* label = "") : MenuItem(label), _choiceIndex(0)
     {
         _type = MenuItemType::MENU_ITEM_TYPE_DROPDOWN;
     }
@@ -46,7 +46,7 @@ class PopUpMenuItem : public MenuItem
 
     void UpdateChoice(uint8_t choiceindex)
     {
-        if ((choiceindex >= 0) && (choiceindex < _dropDownChoices))
+        if (choiceindex < _dropDownChoices)
         {
             _value = _choiceLabels[choiceindex];
             _choiceIndex = choiceindex;

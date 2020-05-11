@@ -8,8 +8,8 @@
 
 class PushButton : public IButton
 {
-    uint8_t _cornerRadius;
     const char* _label;
+    uint8_t _cornerRadius;
     bool _highlighted;
 
     // Color Defintions

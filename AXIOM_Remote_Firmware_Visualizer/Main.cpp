@@ -149,12 +149,6 @@ int main()
     uint32_t displayTextureID = CreateGLTexture(displayTexture, GL_NEAREST);
     SDL_FreeSurface(displayTexture);
 
-    SDL_Rect texture_rect;
-    texture_rect.x = 400;                    // the x coordinate
-    texture_rect.y = 120;                    // the y coordinate
-    texture_rect.w = FRAMEBUFFER_WIDTH * 4;  // the width of the texture
-    texture_rect.h = FRAMEBUFFER_HEIGHT * 4; // the height of the texture
-
     SDL_Surface* surface = IMG_Load("images/knob_clean.png");
     uint32_t knobTextureID = CreateGLTexture(surface);
     SDL_FreeSurface(surface);
