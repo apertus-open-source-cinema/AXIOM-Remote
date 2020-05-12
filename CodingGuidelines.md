@@ -20,7 +20,7 @@ In order to help everyone read and easily understand the code, it must adhere to
         uint16_t Width;
         uint16_t Height;
         ...
-  }
+  };
   ```
 
 - Interfaces should be prefixed with an upper case I.
@@ -33,7 +33,7 @@ In order to help everyone read and easily understand the code, it must adhere to
   public:
         virtual void SomeMethod() = 0;
         ...
-  }
+  };
 
   class DataProcessor : public IProcessor
   {
@@ -43,7 +43,7 @@ In order to help everyone read and easily understand the code, it must adhere to
                 ...
         }
         ...
-  }
+  };
   ```
 
 - Variables or attributes should start with a lower case letter and methods, classes, or interfaces with an upper case letter.
