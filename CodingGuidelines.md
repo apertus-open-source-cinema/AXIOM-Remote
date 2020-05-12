@@ -35,10 +35,10 @@ In order to help everyone read and easily understand the code, it must adhere to
         ...
   }
 
-  class DataProcessor
+  class DataProcessor : public IProcessor
   {
   public:
-        virtual void SomeMethod() override
+        void SomeMethod() override
         {
                 ...
         }
