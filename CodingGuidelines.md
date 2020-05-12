@@ -4,7 +4,7 @@ In order to help everyone read and easily understand the code, it must adhere to
 
 - Private/protected member variables (attributes) should be prefixed with an underscore ( _ ).
 
-  Example:
+  <sub>Example:</sub>
 
   ```cpp
   float _posX
@@ -12,7 +12,7 @@ In order to help everyone read and easily understand the code, it must adhere to
 
 - if public member variables (attributes) ar present, e.g. struct are public by default, then the names have to start with capital letter.
 
-  Example:
+  <sub>Example:</sub>
 
   ```cpp
   struct Icon
@@ -25,7 +25,7 @@ In order to help everyone read and easily understand the code, it must adhere to
 
 - Interfaces should be prefixed with an upper case I.
 
-  Example:
+  <sub>Example:</sub>
 
   ```cpp
   class IProcessor
@@ -48,7 +48,7 @@ In order to help everyone read and easily understand the code, it must adhere to
 
 - Variables or attributes should start with a lower case letter and methods, classes, or interfaces with an upper case letter.
 
-  Example:
+  <sub>Example:</sub>
 
   ```cpp
   int frameCount
@@ -60,7 +60,7 @@ In order to help everyone read and easily understand the code, it must adhere to
 
 - IF statements should always use curly braces - even for single lines.
 
-  Example:
+  <sub>Example:</sub>
 
   ```cpp
   if (condition)
