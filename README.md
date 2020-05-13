@@ -4,8 +4,8 @@
 
 | dev |
 |:------:|
-|[![CircleCI](https://circleci.com/gh/apertus-open-source-cinema/AXIOM-Remote/tree/dev.svg?style=svg)](https://circleci.com/gh/apertus-open-source-cinema/AXIOM-Remote/tree/dev)
-||[![codecov](https://codecov.io/gh/apertus-open-source-cinema/AXIOM-Remote/branch/dev/graph/badge.svg)](https://codecov.io/gh/apertus-open-source-cinema/AXIOM-Remote)
+|[![CircleCI](https://circleci.com/gh/apertus-open-source-cinema/AXIOM-Remote/tree/dev.svg?style=svg)](https://circleci.com/gh/apertus-open-source-cinema/AXIOM-Remote/tree/dev)|
+|[![codecov](https://codecov.io/gh/apertus-open-source-cinema/AXIOM-Remote/branch/dev/graph/badge.svg)](https://codecov.io/gh/apertus-open-source-cinema/AXIOM-Remote)
 
 ## Description
 
