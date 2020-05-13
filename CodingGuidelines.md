@@ -10,7 +10,7 @@ In order to help everyone read and easily understand the code, it must adhere to
   float _posX
   ```
 
-- if public member variables (attributes) ar present, e.g. struct are public by default, then the names have to start with capital letter.
+- if public member variables (attributes) are present, e.g. struct are public by default, then the names have to start with capital letter.
 
   <sub>Example:</sub>
 
