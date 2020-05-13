@@ -11,6 +11,7 @@
 #include "../Widgets/PopUpMenuItem.h"
 #include "../Widgets/ScreenLinkMenuItem.h"
 #include "../Widgets/ParameterListMenuItem.h"
+#include "../Widgets/NumericMenuItem.h"
 #include "Menu.h"
 
 #include "../ButtonDefinitions.h"
@@ -30,6 +31,7 @@ class MainMenu : public Menu
     ScreenLinkMenuItem _subMenu1LinkMenuItem;
     ScreenLinkMenuItem _WBLinkMenuItem;
     ParameterListMenuItem _funactivitiesItem;
+    NumericMenuItem _funCount;
 
     // just for testing for now
     MenuItem _menuItems[10];
@@ -81,14 +83,17 @@ class MainMenu : public Menu
         _menuItems[6].SetMenuType(MenuItemType::MENU_ITEM_TYPE_READONLY);
         AddMenuItem(&_menuItems[6]);
 
+        _funCount = NumericMenuItem("Fun Count", 100, 0, 100, "%");
+        AddMenuItem(&_funCount);
+
         _WBLinkMenuItem = ScreenLinkMenuItem("White Balance", AvailableScreens::WhiteBalance);
         AddMenuItem(&_WBLinkMenuItem);
 
         _menuItems[8] = MenuItem("Test Entry");
         AddMenuItem(&_menuItems[8]);
 
-        _menuItems[9] = MenuItem("Another Entry");
-        AddMenuItem(&_menuItems[9]);
+        /* _menuItems[9] = MenuItem("Another Entry");
+         AddMenuItem(&_menuItems[9]);*/
 
         /*
         _menuButton.SetHandler(&MenuButtonHandler);

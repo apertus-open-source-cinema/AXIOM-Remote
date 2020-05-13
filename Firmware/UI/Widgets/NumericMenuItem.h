@@ -1,0 +1,89 @@
+#ifndef NUMERICMENUITEM_H
+#define NUMERICMENUITEM_H
+
+#include "MenuItem.h"
+#include "../MenuDefinitions.h"
+
+#include <stdio.h>
+
+class IPainter;
+
+class NumericMenuItem : public MenuItem
+{
+    int16_t _previousvalue; // this item is the "old" selected choice but remains in effcet until the parameter
+    int16_t _value;
+    int16_t _minRange;
+    int16_t _maxRange;
+    char const* _suffix;
+    int16_t _stepSize;
+
+  public:
+    NumericMenuItem(const char* label = "", int16_t value = 0, int16_t minRange = 0, int16_t maxRange = 100,
+                    const char* suffix = "") :
+        MenuItem(label),
+        _minRange(minRange), _maxRange(maxRange), _value(value), _previousvalue(0), _stepSize(1), _suffix(suffix)
+    {
+        _type = MenuItemType::MENU_ITEM_TYPE_NUMERIC;
+    }
+
+    void SetValue(int16_t value)
+    {
+        if ((value >= _minRange) && (value <= _maxRange))
+        {
+            _value = value;
+            _previousvalue = value;
+        }
+    }
+
+    void SetSuffix(const char* value)
+    {
+        _suffix = value;
+    }
+
+    char const* GetSuffix()
+    {
+        return _suffix;
+    }
+
+    int16_t GetMaxRange()
+    {
+        return _maxRange;
+    }
+
+    int16_t GetMinRange()
+    {
+        return _minRange;
+    }
+
+    int16_t GetValue()
+    {
+        return _value;
+    }
+
+    void Draw(IPainter* painter) override
+    {
+        // Draw background
+        if (_disabled)
+        {
+            painter->DrawStripedRectangle(_x, _y, _width, _height, 0xE71C, 0xD69A, 5, 12);
+        } else
+        {
+            painter->DrawFillRectangle(_x, _y, _width, _height, _currentBackgroundColor);
+        }
+
+        // Label
+        painter->DrawText(_x + 5, _y + _verticalLabelOffset, _label, _currentTextColor, TextAlign::TEXT_ALIGN_LEFT, 0);
+
+        // value
+        char valuetext[8];
+        sprintf(valuetext, "%d%s", _value, _suffix);
+        painter->DrawText(_x + 180, _y + _verticalLabelOffset, valuetext, _currentTextColor,
+                          TextAlign::TEXT_ALIGN_RIGHT, 80);
+    }
+
+    virtual void ExecuteAction(IMenuSystem* menuSystem) override
+    {
+    }
+};
+
+#endif /* NUMERICMENUITEM_H */
