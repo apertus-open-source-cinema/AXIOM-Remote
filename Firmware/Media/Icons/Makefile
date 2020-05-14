@@ -1,18 +1,40 @@
 INPUT  := $(wildcard *_icon.svg)
 OUTPUT := $(INPUT:.svg=.h)
 
+define generate_header_file
+	cat sample.h > $(1)
+
+    	WIDTH=$$(sed -n "s/^.*width //p" $(2));	\
+    	sed -i "/data\[/ s/width/$$WIDTH/" $(1); \
+    	sed -i "/Width\ =\ / s/width/$$WIDTH/" $(1)
+    	
+    	HEIGHT=$$(sed -n "s/^.*height //p" $(2)); \
+    	sed -i "/*\ / s/height/$$HEIGHT/" $(1); \
+    	sed -i "/Height\ =\ / s/height/$$HEIGHT/" $(1)
+    		
+    	DATA=$$(sed -n "4,$$ p" $(2)); \
+	echo $$DATA >> "TempData.txt"
+	sed -i -e '/image_data/r TempData.txt' -i -e 's/image_data};//' $(1)
+	rm -rf TempData.txt
+endef
+
+.PHONY: all
+
 all: ApertusRingLogo.h ApertusTextLogo.h $(OUTPUT)
 
 ApertusRingLogo.h: 
 	sed "/#c2bfbc/ s/fill-opacity:1/fill-opacity:0/" ApertusLogo.svg > TempRing.svg
-	magick TempRing.svg -trim +repage -density 800 -filter point +negate -negate -threshold 50% -resize 14x14 xbm:$@
+	magick TempRing.svg -trim +repage -density 800 -filter point +negate -negate -threshold 50% -resize 14x14 $@.xbm
+	$(call generate_header_file, $@, $@.xbm)
 	
 ApertusTextLogo.h: 
 	sed "/#f47248/ s/fill-opacity:1/fill-opacity:0/" ApertusLogo.svg > TempText.svg
-	magick TempText.svg -trim +repage -density 800 -filter point +negate -negate -threshold 50% -resize 214x64 xbm:$@
+	magick TempText.svg -trim +repage -density 800 -filter point +negate -negate -threshold 50% -resize 214x64 $@.xbm
+	$(call generate_header_file, $@, $@.xbm)
 
 $(OUTPUT): $(INPUT)
-	magick -density 800 $< -filter point -threshold 50% -resize 24x24 xbm:$@
+	magick -density 800 $< -filter point -threshold 50% -resize 24x24 $@.xbm
+	$(call generate_header_file, $@, $@.xbm)
 
 clean:
-	rm -rf Temp*
+	rm -rf Temp* *.xbm
