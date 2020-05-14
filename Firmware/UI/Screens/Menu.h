@@ -417,6 +417,7 @@ class Menu : public IMenu
 
             NumericMenuItem* currentNumericMenuItem = (NumericMenuItem*)_menuItem[_menuSelectionIndex];
             currentNumericMenuItem->SetValue(_numericValueScreen.GetValue());
+            currentNumericMenuItem->Activate(&currentNumericMenuItem);
         } else if (_parameterListMenuActive >= 0)
         {
             _parameterListMenuActive = -1;

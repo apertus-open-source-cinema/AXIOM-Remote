@@ -109,9 +109,11 @@ class MainMenu : public Menu
 
     static void LCDBrightnessMenuItemHandler(void* sender)
     {
-        // MainPage* menu = static_cast<MainPage*>(sender);
+
+        NumericMenuItem* menuitem = static_cast<NumericMenuItem*>(sender);
         // ILI9341Display::SetBacklight(uint8_t percentage)
-        int i = 10;
+        menuitem->GetValue();
+        int i = 1;
     }
 };
 #endif // MAINMENU_H
