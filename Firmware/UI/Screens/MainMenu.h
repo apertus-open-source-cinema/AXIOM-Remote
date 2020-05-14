@@ -107,7 +107,7 @@ class MainMenu : public Menu
         */
     }
 
-    void LCDBrightnessMenuItemHandler(void* sender)
+    static void LCDBrightnessMenuItemHandler(void* sender)
     {
         // MainPage* menu = static_cast<MainPage*>(sender);
         // ILI9341Display::SetBacklight(uint8_t percentage)
