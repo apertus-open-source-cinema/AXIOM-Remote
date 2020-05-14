@@ -19,9 +19,9 @@ class NumericMenuItem : public MenuItem
 
   public:
     NumericMenuItem(const char* label = "", int16_t value = 0, int16_t minRange = 0, int16_t maxRange = 100,
-                    const char* suffix = "") :
+                    int16_t stepsize = 1, const char* suffix = "") :
         MenuItem(label),
-        _minRange(minRange), _maxRange(maxRange), _value(value), _previousvalue(0), _stepSize(1), _suffix(suffix)
+        _minRange(minRange), _maxRange(maxRange), _value(value), _previousvalue(0), _stepSize(stepsize), _suffix(suffix)
     {
         _type = MenuItemType::MENU_ITEM_TYPE_NUMERIC;
     }
@@ -43,6 +43,15 @@ class NumericMenuItem : public MenuItem
     char const* GetSuffix()
     {
         return _suffix;
+    }
+    void SetStepSize(int16_t newstepsize)
+    {
+        _stepSize = newstepsize;
+    }
+
+    int16_t GetStepSize()
+    {
+        return _stepSize;
     }
 
     int16_t GetMaxRange()

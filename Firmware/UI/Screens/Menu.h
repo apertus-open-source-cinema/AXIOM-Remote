@@ -446,6 +446,7 @@ class Menu : public IMenu
                                              currentNumericMenuItem->GetMaxRange());
                 _numericValueScreen.SetValue(currentNumericMenuItem->GetValue());
                 _numericValueScreen.SetSuffix(currentNumericMenuItem->GetSuffix());
+                _numericValueScreen.SetStepSize(currentNumericMenuItem->GetStepSize());
 
                 _numericValueScreen.SetHeader(currentNumericMenuItem->GetLabel());
                 _numericValueMenuActive = _menuSelectionIndex;

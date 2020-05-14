@@ -44,6 +44,8 @@ class MenuItem : public IWidget
 
     uint8_t _verticalLabelOffset;
 
+    void (*_handlerPtr)(void*);
+
   public:
     MenuItem(const char* label = "...", bool disabled = false, const char* value = nullptr, bool hidden = false,
              bool pressed = false, bool highlighted = false, MenuItemType type = MenuItemType::MENU_ITEM_TYPE_NUMERIC) :
@@ -76,6 +78,16 @@ class MenuItem : public IWidget
             _currentBackgroundColor = _backgroundColor;
             _currentTextColor = _textColor;
         }
+    }
+
+    virtual void SetHandler(void (*handler)(void*))
+    {
+        _handlerPtr = handler;
+    }
+
+    void Activate(void* sender)
+    {
+        _handlerPtr(sender);
     }
 
     bool IsDisabled()

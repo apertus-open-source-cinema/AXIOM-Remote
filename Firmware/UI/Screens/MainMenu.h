@@ -32,6 +32,7 @@ class MainMenu : public Menu
     ScreenLinkMenuItem _WBLinkMenuItem;
     ParameterListMenuItem _funactivitiesItem;
     NumericMenuItem _funCount;
+    NumericMenuItem _lcdBrightness;
 
     // just for testing for now
     MenuItem _menuItems[10];
@@ -48,6 +49,10 @@ class MainMenu : public Menu
         _menuItems[1] = MenuItem("Disabled Item");
         _menuItems[1].SetDisabled(true);
         AddMenuItem(&_menuItems[1]);
+
+        _lcdBrightness = NumericMenuItem("LCD Brightness", 100, 0, 100, 5, "%");
+        _lcdBrightness.SetHandler(&LCDBrightnessMenuItemHandler);
+        AddMenuItem(&_lcdBrightness);
 
         _subMenu1LinkMenuItem = ScreenLinkMenuItem("Submenu 1", AvailableScreens::SettingsSubMenu1);
         AddMenuItem(&_subMenu1LinkMenuItem);
@@ -83,7 +88,7 @@ class MainMenu : public Menu
         _menuItems[6].SetMenuType(MenuItemType::MENU_ITEM_TYPE_READONLY);
         AddMenuItem(&_menuItems[6]);
 
-        _funCount = NumericMenuItem("Fun Count", 100, 0, 100, "%");
+        _funCount = NumericMenuItem("Fun Count", 100, 0, 100, 1, "%");
         AddMenuItem(&_funCount);
 
         _WBLinkMenuItem = ScreenLinkMenuItem("White Balance", AvailableScreens::WhiteBalance);
@@ -100,6 +105,13 @@ class MainMenu : public Menu
         _analogGainButton.SetHandler(&AnalogGainButtonHandler);
         _digitalGainButton.SetHandler(&DigitalGainButtonHandler);
         */
+    }
+
+    void LCDBrightnessMenuItemHandler(void* sender)
+    {
+        // MainPage* menu = static_cast<MainPage*>(sender);
+        // ILI9341Display::SetBacklight(uint8_t percentage)
+        int i = 10;
     }
 };
 #endif // MAINMENU_H
