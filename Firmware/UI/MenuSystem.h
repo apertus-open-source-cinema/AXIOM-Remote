@@ -9,6 +9,7 @@
 #include "Screens/MainMenu.h"
 #include "Screens/SettingsSubMenu1.h"
 #include "Screens/WhiteBalanceScreen.h"
+#include "../../Bootloader/Periphery/ILI9341/ILI9341Device.h"
 
 class Painter;
 class IScreen;
@@ -24,6 +25,7 @@ class MenuSystem : public IMenuSystem
     IScreen* _availableScreens[4];
 
     IUSBDevice* _usbDevice;
+    //ILI9341Display* _display;
 
     // Menus, static init
     MainPage _mainPage;
@@ -34,7 +36,7 @@ class MenuSystem : public IMenuSystem
     void InitializeAvailableScreens();
 
   public:
-    explicit MenuSystem(IUSBDevice* usbDevice);
+    explicit MenuSystem(IUSBDevice* usbDevice, ILI9341Display* display);
     virtual ~MenuSystem();
 
     void SetCurrentScreen(AvailableScreens menu) override;

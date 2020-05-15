@@ -39,7 +39,7 @@ class MainMenu : public Menu
 
   public:
     // TODO: Add assignment of menu system to IMenu
-    explicit MainMenu(IUSBDevice* cdcDevice) : Menu(cdcDevice)
+    explicit MainMenu(IUSBDevice* cdcDevice, ILI9341Display* display) : Menu(cdcDevice, display)
     {
         // Added for testing - demo menu items
 
@@ -107,13 +107,10 @@ class MainMenu : public Menu
         */
     }
 
-    static void LCDBrightnessMenuItemHandler(void* sender)
+    static void LCDBrightnessMenuItemHandler(void* sender, ILI9341Display* display)
     {
-
         NumericMenuItem* menuitem = static_cast<NumericMenuItem*>(sender);
-        // ILI9341Display::SetBacklight(uint8_t percentage)
-        menuitem->GetValue();
-        int i = 1;
+        display->SetBacklight((uint8_t)menuitem->GetValue());
     }
 };
 #endif // MAINMENU_H

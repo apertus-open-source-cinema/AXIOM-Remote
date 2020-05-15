@@ -5,6 +5,7 @@
 
 #include "../Color565.h"
 #include "../../GlobalSettings.h"
+#include "../../../Bootloader/Periphery/ILI9341/ILI9341Device.h"
 
 class IPainter;
 
@@ -44,7 +45,7 @@ class MenuItem : public IWidget
 
     uint8_t _verticalLabelOffset;
 
-    void (*_handlerPtr)(void*);
+    void (*_handlerPtr)(void*, ILI9341Display*);
 
   public:
     MenuItem(const char* label = "...", bool disabled = false, const char* value = nullptr, bool hidden = false,
@@ -80,14 +81,14 @@ class MenuItem : public IWidget
         }
     }
 
-    virtual void SetHandler(void (*handler)(void*))
+    virtual void SetHandler(void (*handler)(void*, ILI9341Display*))
     {
         _handlerPtr = handler;
     }
 
-    void Activate(void* sender)
+    void Activate(void* sender, ILI9341Display* display)
     {
-        _handlerPtr(sender);
+        _handlerPtr(sender, display);
     }
 
     bool IsDisabled()

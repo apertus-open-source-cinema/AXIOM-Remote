@@ -539,7 +539,7 @@ int main()
 
     // display.SetBacklight(GlobalSettings::brightnessPercentage);
 
-    MenuSystem menuSystem(&cdcDevice);
+    MenuSystem menuSystem(&cdcDevice, &display);
 
     Painter generalPainter(display.GetFramebuffer(), display.GetWidth(), display.GetHeight());
     IPainter* painter = &generalPainter;

@@ -18,6 +18,7 @@
 #include "../../GlobalSettings.h"
 
 #include "../../../Bootloader/Periphery/USB/IUSBDevice.h"
+#include "../../../Bootloader/Periphery/ILI9341/ILI9341Device.h"
 
 //#include <Helpers.h>
 
@@ -56,15 +57,17 @@ class Menu : public IMenu
     NumericValueScreen _numericValueScreen;
     int8_t _numericValueMenuActive;
 
+    ILI9341Display* _display;
+
   private:
     // this array of pointers to menuItems allows a menu of up to 64 entries to be filled by inherited class
     MenuItem* _menuItem[64] = {nullptr};
 
   public:
     // TODO: Add assignment of menu system to IMenu
-    explicit Menu(IUSBDevice* cdcDevice) :
+    explicit Menu(IUSBDevice* cdcDevice, ILI9341Display* display) :
         IMenu(cdcDevice), _menuItemsCount(0), _menuSelectionIndex(0), _maxVisibleItems(7), _popUpParameterMenu(10, 10),
-        _parameterListScreen(cdcDevice), _numericValueScreen(cdcDevice)
+        _parameterListScreen(cdcDevice), _numericValueScreen(cdcDevice), _display(display)
     {
         // UNUSED(cdcDevice);
         //_usbDevice = cdcDevice;
@@ -417,7 +420,7 @@ class Menu : public IMenu
 
             NumericMenuItem* currentNumericMenuItem = (NumericMenuItem*)_menuItem[_menuSelectionIndex];
             currentNumericMenuItem->SetValue(_numericValueScreen.GetValue());
-            currentNumericMenuItem->Activate(&currentNumericMenuItem);
+            currentNumericMenuItem->Activate(&currentNumericMenuItem, _display);
         } else if (_parameterListMenuActive >= 0)
         {
             _parameterListMenuActive = -1;

@@ -28,7 +28,7 @@ class NumericMenuItem : public MenuItem
 
     void SetValue(int16_t value)
     {
-        if ((value >= _minRange) && (value <= _maxRange))
+        if ((value >= _minRange) & (value <= _maxRange))
         {
             _value = value;
             _previousvalue = value;
