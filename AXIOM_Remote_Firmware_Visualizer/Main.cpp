@@ -23,6 +23,8 @@
 // Periphery
 #include "USBCDCTerminalDevice.h"
 
+//#include "CentralDB.h"
+
 #define FRAMEBUFFER_WIDTH 320
 #define FRAMEBUFFER_HEIGHT 240
 
@@ -51,7 +53,7 @@ void Initialization(SDL_Window** window)
         exit(EXIT_FAILURE);
     }
 
-    *window = 
+    *window =
         SDL_CreateWindow("AXIOM Remote Visualizer", 100, 100, 800, 480, SDL_WINDOW_OPENGL | SDL_WINDOW_ALLOW_HIGHDPI);
     if (*window == nullptr)
     {
@@ -162,7 +164,13 @@ int main()
 
     USBCDCTerminalDevice cdcDevice;
 
-    MenuSystem menuSystem(&cdcDevice);
+    CentralDB centralDB;
+
+    MenuSystem menuSystem(&cdcDevice, &centralDB);
+
+    /*TestObs test(&centralDB);
+centralDB.SetLCDBrightness(5);
+uint8_t test1 = test.getvalue();*/
 
     Button button = Button::BUTTON_NONE;
 
@@ -211,4 +219,3 @@ int main()
 
     return 0;
 }
-

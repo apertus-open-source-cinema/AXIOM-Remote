@@ -39,7 +39,7 @@ class MainMenu : public Menu
 
   public:
     // TODO: Add assignment of menu system to IMenu
-    explicit MainMenu(IUSBDevice* cdcDevice) : Menu(cdcDevice)
+    explicit MainMenu(IUSBDevice* cdcDevice, CentralDB* centraldb) : Menu(cdcDevice, centraldb)
     {
         // Added for testing - demo menu items
 

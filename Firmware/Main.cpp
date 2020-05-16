@@ -18,7 +18,7 @@
 #endif
 
 #include "GlobalSettings.h"
-#include "CentralDB.h"
+//#include "CentralDB.h"
 
 #include <Helpers.h>
 
@@ -536,15 +536,15 @@ int main()
     USBCDCDevice cdcDevice;
 
     CentralDB centralDB;
-    TestObs test(&centralDB);
-    centralDB.SetLCDBrightness(5);
-    uint8_t test1 = test.getvalue();
+    /*  TestObs test(&centralDB);
+      centralDB.SetLCDBrightness(5);
+      uint8_t test1 = test.getvalue();*/
 
     Setup(display, cdcDevice);
 
     // display.SetBacklight(GlobalSettings::brightnessPercentage);
 
-    MenuSystem menuSystem(&cdcDevice);
+    MenuSystem menuSystem(&cdcDevice, &centralDB);
 
     Painter generalPainter(display.GetFramebuffer(), display.GetWidth(), display.GetHeight());
     IPainter* painter = &generalPainter;

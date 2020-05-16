@@ -3,9 +3,10 @@
 #include "Painter/IPainter.h"
 #include "Screens/IScreen.h"
 
-MenuSystem::MenuSystem(IUSBDevice* usbDevice) :
-    _currentScreen(nullptr), _usbDevice(usbDevice), _mainPage(usbDevice), _MainMenu(usbDevice),
-    _settingsSubMenu1(usbDevice), _whiteBalance(usbDevice)
+
+MenuSystem::MenuSystem(IUSBDevice* usbDevice, CentralDB* centraldb) :
+    _currentScreen(nullptr), _usbDevice(usbDevice), _mainPage(usbDevice), _MainMenu(usbDevice, centraldb),
+    _settingsSubMenu1(usbDevice, centraldb), _whiteBalance(usbDevice)
 {
     InitializeAvailableScreens();
 

@@ -20,6 +20,8 @@
 #include "../../../Bootloader/Periphery/USB/IUSBDevice.h"
 #include "../../../Bootloader/Periphery/ILI9341/ILI9341Device.h"
 
+#include "../../CentralDB.h"
+
 //#include <Helpers.h>
 
 class Menu : public IMenu
@@ -57,15 +59,17 @@ class Menu : public IMenu
     NumericValueScreen _numericValueScreen;
     int8_t _numericValueMenuActive;
 
+    CentralDB* _db;
+
   private:
     // this array of pointers to menuItems allows a menu of up to 64 entries to be filled by inherited class
     MenuItem* _menuItem[64] = {nullptr};
 
   public:
     // TODO: Add assignment of menu system to IMenu
-    explicit Menu(IUSBDevice* cdcDevice) :
+    explicit Menu(IUSBDevice* cdcDevice, CentralDB* centraldb) :
         IMenu(cdcDevice), _menuItemsCount(0), _menuSelectionIndex(0), _maxVisibleItems(7), _popUpParameterMenu(10, 10),
-        _parameterListScreen(cdcDevice), _numericValueScreen(cdcDevice)
+        _parameterListScreen(cdcDevice), _numericValueScreen(cdcDevice), _db(centraldb)
     {
         // UNUSED(cdcDevice);
         //_usbDevice = cdcDevice;

@@ -2,14 +2,14 @@
 #define CENTRALDB_H
 
 #include <stdint.h>
-#include <vector>
+//#include <vector>
 
 class CentralDB
 {
     // std::vector<class CentralDBObserver*> _views;
     class CentralDBObserver* _views[16];
     uint8_t _viewscount = 0;
-    static uint8_t _lcdBrightnessPercentage;
+    uint8_t _lcdBrightnessPercentage;
 
   public:
     void attach(CentralDBObserver* obs)
@@ -54,17 +54,13 @@ class CentralDBObserver
 
 void CentralDB::Notify()
 {
-    /*for (uint8_t i = 0; i < _views.size(); i++)
-    {
-        _views[i]->update();
-    }*/
     for (uint8_t i = 0; i < _viewscount; i++)
     {
         _views[i]->update();
     }
 }
 
-class TestObs : public CentralDBObserver
+/*class TestObs : public CentralDBObserver
 {
     uint8_t _value;
 
@@ -80,6 +76,6 @@ class TestObs : public CentralDBObserver
     {
         return _value;
     }
-};
+};*/
 
 #endif /* CENTRALDB_H */
