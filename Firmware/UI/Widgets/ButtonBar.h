@@ -54,18 +54,15 @@ class ButtonBar : public IWidget
     void SetButton(ButtonPosition position, IButton* button)
     {
         // Adjust positions of the button to correspond to the bar area
-        if (_width > _height)
+        uint8_t buttonDimension = SetDimension(_width);
+        uint8_t buttonMargin = buttonDimension * (uint8_t)position + _buttonMargin * ((uint8_t)position + 1);
+        button->SetDimensions(_x + buttonMargin, _y, buttonDimension, _height);  
+      
+        if (_width < _height)
         {
-            uint8_t buttonWidth = SetDimension(_width);
-            button->SetDimensions(_x + buttonWidth * (uint8_t)position + _buttonMargin * ((uint8_t)position + 1), _y,
-                              buttonWidth, _height);                  
-        }
-        
-        else
-        {
-            uint8_t buttonHeight = SetDimension(_height);
-            button->SetDimensions(_x, _y + buttonHeight * (uint8_t)position + _buttonMargin * ((uint8_t)position + 1),
-                              _width, buttonHeight);  
+            buttonDimension = SetDimension(_height);
+            buttonMargin = buttonDimension * (uint8_t)position + _buttonMargin * ((uint8_t)position + 1);
+            button->SetDimensions(_x, _y + buttonMargin, _width, buttonDimension);  
         }
         
         _buttons[(uint8_t)position] = button;
