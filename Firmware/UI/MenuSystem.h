@@ -25,7 +25,6 @@ class MenuSystem : public IMenuSystem
     IScreen* _availableScreens[4];
 
     IUSBDevice* _usbDevice;
-    //ILI9341Display* _display;
 
     // Menus, static init
     MainPage _mainPage;
@@ -36,7 +35,7 @@ class MenuSystem : public IMenuSystem
     void InitializeAvailableScreens();
 
   public:
-    explicit MenuSystem(IUSBDevice* usbDevice, ILI9341Display* display);
+    explicit MenuSystem(IUSBDevice* usbDevice);
     virtual ~MenuSystem();
 
     void SetCurrentScreen(AvailableScreens menu) override;

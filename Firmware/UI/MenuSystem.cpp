@@ -3,9 +3,9 @@
 #include "Painter/IPainter.h"
 #include "Screens/IScreen.h"
 
-MenuSystem::MenuSystem(IUSBDevice* usbDevice, ILI9341Display* display) :
-    _currentScreen(nullptr), _usbDevice(usbDevice), _mainPage(usbDevice), _MainMenu(usbDevice, display),
-    _settingsSubMenu1(usbDevice, display), _whiteBalance(usbDevice)
+MenuSystem::MenuSystem(IUSBDevice* usbDevice) :
+    _currentScreen(nullptr), _usbDevice(usbDevice), _mainPage(usbDevice), _MainMenu(usbDevice),
+    _settingsSubMenu1(usbDevice), _whiteBalance(usbDevice)
 {
     InitializeAvailableScreens();
 

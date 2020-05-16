@@ -45,7 +45,7 @@ class MenuItem : public IWidget
 
     uint8_t _verticalLabelOffset;
 
-    void (*_handlerPtr)(void*, ILI9341Display*);
+    void (*_handlerPtr)(void*);
 
   public:
     MenuItem(const char* label = "...", bool disabled = false, const char* value = nullptr, bool hidden = false,
@@ -81,14 +81,14 @@ class MenuItem : public IWidget
         }
     }
 
-    virtual void SetHandler(void (*handler)(void*, ILI9341Display*))
+    virtual void SetHandler(void (*handler)(void*))
     {
         _handlerPtr = handler;
     }
 
-    void Activate(void* sender, ILI9341Display* display)
+    void Activate(void* sender)
     {
-        _handlerPtr(sender, display);
+        _handlerPtr(sender);
     }
 
     bool IsDisabled()
