@@ -144,8 +144,7 @@ class Menu : public IMenu
         if (_parameterListMenuActive > -1)
         {
             _parameterListScreen.Draw(painter);
-        }
-        if (_numericValueMenuActive > -1)
+        } else if (_numericValueMenuActive > -1)
         {
             _numericValueScreen.Draw(painter);
         } else
@@ -422,6 +421,7 @@ class Menu : public IMenu
 
             NumericMenuItem* currentNumericMenuItem = (NumericMenuItem*)_menuItem[_menuSelectionIndex];
             currentNumericMenuItem->SetValue(_numericValueScreen.GetValue());
+            // currentNumericMenuItem->Activate(&currentNumericMenuItem, &_db);
             currentNumericMenuItem->Activate(&currentNumericMenuItem);
         } else if (_parameterListMenuActive >= 0)
         {
@@ -482,7 +482,7 @@ class Menu : public IMenu
                 int8_t displaySelectionIndex = _menuSelectionIndex - _menuOffset;
                 _popUpParameterMenuActive = _menuSelectionIndex;
                 _popUpParameterMenu.SetPosition(200, 29 + (displaySelectionIndex + 1) * 30);
-            } else
+            } else if (_menuItem[_menuSelectionIndex]->GetMenuType() == MenuItemType::MENU_ITEM_TYPE_CHECKBOX)
             {
                 _menuItem[_menuSelectionIndex]->ExecuteAction(menuSystem);
             }

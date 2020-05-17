@@ -6,6 +6,7 @@
 #include "../Color565.h"
 #include "../../GlobalSettings.h"
 #include "../../../Bootloader/Periphery/ILI9341/ILI9341Device.h"
+#include "../../CentralDB.h"
 
 class IPainter;
 
@@ -14,10 +15,11 @@ enum class MenuItemType
     MENU_ITEM_TYPE_READONLY,
     MENU_ITEM_TYPE_NUMERIC,
     MENU_ITEM_TYPE_DROPDOWN,
-    MENU_ITEM_TYPE_LIST
+    MENU_ITEM_TYPE_LIST,
+    MENU_ITEM_TYPE_CHECKBOX
 };
 
-class MenuItem : public IWidget
+class MenuItem : public IWidget, public CentralDBObserver
 {
   protected:
     bool _disabled;
@@ -48,15 +50,17 @@ class MenuItem : public IWidget
     void (*_handlerPtr)(void*);
 
   public:
-    MenuItem(const char* label = "...", bool disabled = false, const char* value = nullptr, bool hidden = false,
-             bool pressed = false, bool highlighted = false, MenuItemType type = MenuItemType::MENU_ITEM_TYPE_NUMERIC) :
+    MenuItem(CentralDB* centralDB = nullptr, const char* label = "...", bool disabled = false,
+             const char* value = nullptr, bool hidden = false, bool pressed = false, bool highlighted = false,
+             MenuItemType type = MenuItemType::MENU_ITEM_TYPE_NUMERIC) :
         _disabled(disabled),
         _hidden(hidden), _pressed(pressed), _highlighted(highlighted), _label(label), _value(value), _type(type),
         _backgroundColor((uint16_t)Color565::White), _backgroundHighlightColor(RGB565(255, 128, 0)),
         _backgroundPressedColor(RGB565(0, 128, 255)), _backgroundDisabledColor(RGB565(180, 180, 180)),
         _textColor((uint16_t)Color565::Black), _textHighlightColor((uint16_t)Color565::White),
         _textPressedColor((uint16_t)Color565::White), _textDisabledColor(RGB565(180, 180, 180)),
-        _currentBackgroundColor(_backgroundColor), _currentTextColor(_textColor), _verticalLabelOffset(20)
+        _currentBackgroundColor(_backgroundColor), _currentTextColor(_textColor), _verticalLabelOffset(20),
+        CentralDBObserver(centralDB)
     {
         _x = 0;
         _y = 0;
@@ -240,6 +244,10 @@ class MenuItem : public IWidget
     }
 
     virtual void ExecuteAction(IMenuSystem* menuSystem)
+    {
+    }
+
+    void update()
     {
     }
 };
