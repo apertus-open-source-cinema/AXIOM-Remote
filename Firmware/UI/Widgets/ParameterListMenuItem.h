@@ -17,7 +17,7 @@ class ParameterListMenuItem : public MenuItem
     uint8_t _choiceIndex;
 
   public:
-    ParameterListMenuItem(const char* label = "") : MenuItem(label)
+    ParameterListMenuItem(CentralDB* centralDB = nullptr, const char* label = "") : MenuItem(centralDB, label)
     {
         _type = MenuItemType::MENU_ITEM_TYPE_LIST;
     }

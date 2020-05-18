@@ -4,6 +4,8 @@
 #include <stdint.h>
 //#include <vector>
 
+class CentralDBObserver;
+
 class CentralDB
 {
     // std::vector<class CentralDBObserver*> _views;
@@ -39,8 +41,11 @@ class CentralDBObserver
   public:
     CentralDBObserver(CentralDB* db)
     {
-        _db = db;
-        _db->attach(this);
+        if (db != nullptr)
+        {
+            _db = db;
+            _db->attach(this);
+        }
     }
 
     virtual void update() = 0;
@@ -51,14 +56,6 @@ class CentralDBObserver
         return _db;
     }
 };
-
-void CentralDB::Notify()
-{
-    for (uint8_t i = 0; i < _viewscount; i++)
-    {
-        _views[i]->update();
-    }
-}
 
 /*class TestObs : public CentralDBObserver
 {

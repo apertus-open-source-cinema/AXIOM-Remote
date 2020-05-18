@@ -10,9 +10,10 @@ class CheckBoxMenuItem : public MenuItem
     bool _checkboxValue = false;
 
   public:
-    CheckBoxMenuItem(const char* label = "", bool checked = false) :
-        MenuItem(label), _checkboxValue(checked)
+    CheckBoxMenuItem(CentralDB* centralDB = nullptr, const char* label = "", bool checked = false) :
+        MenuItem(centralDB, label), _checkboxValue(checked)
     {
+        _type = MenuItemType::MENU_ITEM_TYPE_CHECKBOX;
     }
 
     void SetValue(bool value)
@@ -46,8 +47,8 @@ class CheckBoxMenuItem : public MenuItem
             stateText = "on";
         }
 
-        painter->DrawText(_x + 180, _y + _verticalLabelOffset, stateText, _currentTextColor, TextAlign::TEXT_ALIGN_RIGHT,
-                              80);
+        painter->DrawText(_x + 180, _y + _verticalLabelOffset, stateText, _currentTextColor,
+                          TextAlign::TEXT_ALIGN_RIGHT, 80);
     }
 
     void ExecuteAction(IMenuSystem* menuSystem) override

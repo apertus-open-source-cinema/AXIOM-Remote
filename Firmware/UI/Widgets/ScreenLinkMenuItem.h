@@ -9,11 +9,12 @@ class IPainter;
 class ScreenLinkMenuItem : public MenuItem
 {
     AvailableScreens _targetScreen;
+    CentralDB* _db;
 
   public:
-    ScreenLinkMenuItem(const char* label = "", AvailableScreens targetscreen = AvailableScreens::MainPage,
-                       bool drawArrow = true) :
-        MenuItem(label),
+    ScreenLinkMenuItem(CentralDB* centralDB = nullptr, const char* label = "",
+                       AvailableScreens targetscreen = AvailableScreens::MainPage, bool drawArrow = true) :
+        MenuItem(centralDB, label),
         _targetScreen(targetscreen)
     {
         if (drawArrow)

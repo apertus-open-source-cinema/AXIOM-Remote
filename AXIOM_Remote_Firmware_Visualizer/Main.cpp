@@ -168,10 +168,6 @@ int main()
 
     MenuSystem menuSystem(&cdcDevice, &centralDB);
 
-    /*TestObs test(&centralDB);
-centralDB.SetLCDBrightness(5);
-uint8_t test1 = test.getvalue();*/
-
     Button button = Button::BUTTON_NONE;
 
     int8_t knobValue = 0;
