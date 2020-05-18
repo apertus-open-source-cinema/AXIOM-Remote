@@ -2,6 +2,18 @@
 
 In order to help everyone read and easily understand the code, it must adhere to certain style rules:
 
+- Variables or attributes should start with a lower case letter and methods, classes, or interfaces with an upper case letter.
+
+  <sub>Example:</sub>
+
+  ```cpp
+  int frameCount
+
+  void Process()
+
+  class FrameProcessor
+  ```
+
 - Private/protected member variables (attributes) should be prefixed with an underscore ( _ ).
 
   <sub>Example:</sub>
@@ -44,18 +56,6 @@ In order to help everyone read and easily understand the code, it must adhere to
         }
         ...
   };
-  ```
-
-- Variables or attributes should start with a lower case letter and methods, classes, or interfaces with an upper case letter.
-
-  <sub>Example:</sub>
-
-  ```cpp
-  int frameCount
-
-  void Process()
-
-  class FrameProcessor
   ```
 
 - IF statements should always use curly braces - even for single lines.
