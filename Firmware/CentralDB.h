@@ -2,16 +2,16 @@
 #define CENTRALDB_H
 
 #include <stdint.h>
-//#include <vector>
+#include <vector>
 
 class CentralDBObserver;
 
 class CentralDB
 {
     // std::vector<class CentralDBObserver*> _views;
-    class CentralDBObserver* _views[16];
+    CentralDBObserver* _views[16];
     uint8_t _viewscount = 0;
-    uint8_t _lcdBrightnessPercentage;
+    static uint8_t _lcdBrightnessPercentage;
 
   public:
     void attach(CentralDBObserver* obs)
@@ -39,11 +39,10 @@ class CentralDBObserver
     CentralDB* _db;
 
   public:
-    CentralDBObserver(CentralDB* db)
+    CentralDBObserver(CentralDB* db) : _db(db)
     {
-        if (db != nullptr)
+        if (_db != nullptr)
         {
-            _db = db;
             _db->attach(this);
         }
     }
