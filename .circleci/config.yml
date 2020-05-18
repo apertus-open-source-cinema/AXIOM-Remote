@@ -15,16 +15,24 @@ jobs:
             cd Firmware
             export MP_CC="/opt/microchip/xc32/v2.30/bin/xc32-gcc" 
             export MP_CC_DIR="/opt/microchip/xc32/v2.30/bin/"
+            mkdir /tmp/artifacts
             make -j8
       - run:
+          name: Copy firmware artifacts
           command: |
-            mkdir /tmp/artefacts
             cd Firmware/build
             mv AXIOM_Remote_Firmware.hex AXIOM_Remote_Firmware_${CIRCLE_BUILD_NUM}.hex
             md5sum AXIOM_Remote_Firmware_${CIRCLE_BUILD_NUM}.hex > AXIOM_Remote_Firmware_${CIRCLE_BUILD_NUM}.hex.md5
-            cp *.hex *.md5 /tmp/artefacts
+            cp *.hex *.md5 /tmp/artifacts
+      - run:
+          name: Copy bootloader artifacts
+          command: |
+            cd Bootloader/build
+            mv AXIOM_Remote_Bootloader.hex AXIOM_Remote_Bootloader_${CIRCLE_BUILD_NUM}.hex
+            md5sum AXIOM_Remote_Bootloader_${CIRCLE_BUILD_NUM}.hex > AXIOM_Remote_Bootloader_${CIRCLE_BUILD_NUM}.hex.md5
+            cp *.hex *.md5 /tmp/artifacts
       - store_artifacts:
-          path: /tmp/artefacts
+          path: /tmp/artifacts
   test:
     docker:
       - image: tangramor/cpptools:latest
