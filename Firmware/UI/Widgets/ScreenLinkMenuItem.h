@@ -17,6 +17,8 @@ class ScreenLinkMenuItem : public MenuItem
         MenuItem(centralDB, label),
         _targetScreen(targetscreen)
     {
+        _type = MenuItemType::MENU_ITEM_TYPE_LINK;
+
         if (drawArrow)
         {
             _value = ">";

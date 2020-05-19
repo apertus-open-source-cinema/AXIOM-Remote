@@ -415,6 +415,7 @@ class Menu : public IMenu
         {
             return;
         }
+
         if (_numericValueMenuActive >= 0)
         {
             _numericValueMenuActive = -1;
@@ -483,6 +484,9 @@ class Menu : public IMenu
                 _popUpParameterMenuActive = _menuSelectionIndex;
                 _popUpParameterMenu.SetPosition(200, 29 + (displaySelectionIndex + 1) * 30);
             } else if (_menuItem[_menuSelectionIndex]->GetMenuType() == MenuItemType::MENU_ITEM_TYPE_CHECKBOX)
+            {
+                _menuItem[_menuSelectionIndex]->ExecuteAction(menuSystem);
+            } else if (_menuItem[_menuSelectionIndex]->GetMenuType() == MenuItemType::MENU_ITEM_TYPE_LINK)
             {
                 _menuItem[_menuSelectionIndex]->ExecuteAction(menuSystem);
             }

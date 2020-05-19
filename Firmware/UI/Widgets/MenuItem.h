@@ -16,7 +16,8 @@ enum class MenuItemType
     MENU_ITEM_TYPE_NUMERIC,
     MENU_ITEM_TYPE_DROPDOWN,
     MENU_ITEM_TYPE_LIST,
-    MENU_ITEM_TYPE_CHECKBOX
+    MENU_ITEM_TYPE_CHECKBOX,
+    MENU_ITEM_TYPE_LINK
 };
 
 class MenuItem : public IWidget, public CentralDBObserver
