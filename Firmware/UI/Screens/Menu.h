@@ -319,6 +319,12 @@ class Menu : public IMenu
                 _numericValueMenuActive = -1;
             }
             break;
+        case Button::BUTTON_5_UP:
+            if (_numericValueMenuActive >= 0)
+            {
+                _numericValueScreen.ToggleLiveSet();
+            }
+            break;
         case Button::BUTTON_6_UP:
             if (_parameterListMenuActive >= 0)
             {

@@ -23,8 +23,8 @@ class PushButton : public IButton
     uint16_t _currentBackgroundColor;
 
   public:
-    explicit PushButton(const char* caption, uint16_t x = 0, uint16_t y = 0, uint16_t width = 0, uint16_t height = 0) :
-        IButton(x, y, width, height), _label(caption), _cornerRadius(3), _highlighted(false)
+    explicit PushButton(const char* label, uint16_t x = 0, uint16_t y = 0, uint16_t width = 0, uint16_t height = 0) :
+        IButton(x, y, width, height), _label(label), _cornerRadius(3), _highlighted(false)
     {
         _currentTextColor = _TextColor = (uint16_t)Color565::Black;
         _currentBackgroundColor = _BackgroundColor = RGB565(220, 220, 220);
@@ -36,6 +36,11 @@ class PushButton : public IButton
     void SetCornerRadius(uint8_t cornerRadius)
     {
         _cornerRadius = cornerRadius;
+    }
+
+    void SetLabel(const char* label)
+    {
+        _label = label;
     }
 
     virtual void Draw(IPainter* painter) override

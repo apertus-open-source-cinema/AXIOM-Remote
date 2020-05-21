@@ -8,6 +8,7 @@
 #include "../MenuDefinitions.h"
 #include "../IMenuSystem.h"
 #include "../../GlobalSettings.h"
+#include "../Widgets/ToggleButton.h"
 //#include "../../Media/Icons/home_icon.h"
 
 #include <stdio.h>
@@ -19,6 +20,7 @@ class NumericValueScreen : public IScreen
 {
     char const* _header;
     PushButton _cancelButton;
+    ToggleButton _liveButton;
     PushButton _setButton;
     uint16_t _backgroundColor;
     uint16_t _textColor;
@@ -35,8 +37,8 @@ class NumericValueScreen : public IScreen
 
   public:
     explicit NumericValueScreen(IUSBDevice* usbDevice) :
-        IScreen(usbDevice), _cancelButton("Cancel"), _setButton("Set"), _homeButton((Icon*)&home),
-        _header("Parameter Menu"), _value(0), _stepSize(1), _suffix("")
+        IScreen(usbDevice), _cancelButton("Cancel"), _setButton("Set"), _liveButton("LIVE", "SET"),
+        _homeButton((Icon*)&home), _header("Parameter Menu"), _value(0), _stepSize(1), _suffix("")
     {
         //_cancelButton.SetHandler(&CancelButtonHandler);
         _bottomButtonBar.SetButton(ButtonPosition::Left, &_cancelButton);
@@ -45,6 +47,8 @@ class NumericValueScreen : public IScreen
         //_setButton.SetHandler(&SetButtonHandler);
         _setButton.SetBackgroundColor((uint16_t)Color565::AXIOM_Orange);
         _bottomButtonBar.SetButton(ButtonPosition::Right, &_setButton);
+
+        _bottomButtonBar.SetButton(ButtonPosition::Center, &_liveButton);
 
         _leftButtonBar.SetButton(ButtonPosition::Left, &_homeButton);
 
@@ -65,14 +69,14 @@ class NumericValueScreen : public IScreen
         _value = value;
     }
 
-    void SetSuffix(const char* suffix)
-    {
-        _suffix = suffix;
-    }
-
     int16_t GetValue()
     {
         return _value;
+    }
+
+    void SetSuffix(const char* suffix)
+    {
+        _suffix = suffix;
     }
 
     void SetStepSize(uint16_t value)
@@ -106,6 +110,16 @@ class NumericValueScreen : public IScreen
         {
             _value = _minRange;
         }
+    }
+
+    void ToggleLiveSet(bool toggle)
+    {
+        _liveButton.SetToggle(toggle);
+    }
+
+    void ToggleLiveSet()
+    {
+        _liveButton.SetToggle(!_liveButton.GetToggle());
     }
 
     void Draw(IPainter* painter) override
