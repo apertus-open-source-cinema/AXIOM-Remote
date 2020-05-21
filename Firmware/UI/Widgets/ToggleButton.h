@@ -3,9 +3,14 @@
 
 #include "IButton.h"
 #include "../Painter/Painter.h"
+<<<<<<< HEAD
 #include "../../../Firmware/Media/Icons/checkboxfalse_icon.h"
 #include "../../../Firmware/Media/Icons/checkboxtrue_icon.h"
 
+=======
+#include "Icon.h"
+//#include "../../Media/Icons/home_icon.h"
+>>>>>>> 3c8cf9d (new approach for T1202)
 
 class ToggleButton : public IButton
 {
@@ -25,7 +30,11 @@ class ToggleButton : public IButton
 
     bool _checked;
     const char* _label;
+<<<<<<< HEAD
     const Icon* _checkboxIcon;
+=======
+    Icon* _checkboxIcon;
+>>>>>>> 3c8cf9d (new approach for T1202)
 
   public:
     explicit ToggleButton(const char* label, uint16_t x = 0, uint16_t y = 0, uint16_t width = 0, uint16_t height = 0) :
@@ -37,6 +46,8 @@ class ToggleButton : public IButton
         _checked = true;
         _backgroundHighlightColor = (uint16_t)Color565::AXIOM_Blue;
         _textHighlightColor = (uint16_t)Color565::Black;
+
+        _checkboxIcon = (Icon*)&home;
     }
 
     void SetCornerRadius(uint8_t cornerRadius)
