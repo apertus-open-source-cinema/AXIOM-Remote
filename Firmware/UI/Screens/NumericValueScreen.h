@@ -37,8 +37,8 @@ class NumericValueScreen : public IScreen
 
   public:
     explicit NumericValueScreen(IUSBDevice* usbDevice) :
-        IScreen(usbDevice), _cancelButton("Cancel"), _setButton("Set"), _liveButton("LIVE", "SET"),
-        _homeButton((Icon*)&home), _header("Parameter Menu"), _value(0), _stepSize(1), _suffix("")
+        IScreen(usbDevice), _cancelButton("Cancel"), _setButton("Set"), _liveButton("Live"), _homeButton((Icon*)&home),
+        _header("Parameter Menu"), _value(0), _stepSize(1), _suffix("")
     {
         //_cancelButton.SetHandler(&CancelButtonHandler);
         _bottomButtonBar.SetButton(ButtonPosition::Left, &_cancelButton);
@@ -114,12 +114,12 @@ class NumericValueScreen : public IScreen
 
     void ToggleLiveSet(bool toggle)
     {
-        _liveButton.SetToggle(toggle);
+        _liveButton.SetChecked(toggle);
     }
 
     void ToggleLiveSet()
     {
-        _liveButton.SetToggle(!_liveButton.GetToggle());
+        _liveButton.SetChecked(!_liveButton.GetChecked());
     }
 
     void Draw(IPainter* painter) override

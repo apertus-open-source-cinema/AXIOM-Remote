@@ -3,8 +3,8 @@
 
 #include "IButton.h"
 #include "../Painter/Painter.h"
-
-//#include <cstring>
+#include "Icon.h"
+//#include "../../Media/Icons/home_icon.h"
 
 class ToggleButton : public IButton
 {
@@ -22,15 +22,13 @@ class ToggleButton : public IButton
     uint16_t _currentTextColor;
     uint16_t _currentBackgroundColor;
 
-    bool _toggle;
-    const char* _label1;
-    const char* _label2;
+    bool _checked;
+    const char* _label;
+    Icon* _checkboxIcon;
 
   public:
-    explicit ToggleButton(const char* label1, const char* label2, uint16_t x = 0, uint16_t y = 0, uint16_t width = 0,
-                          uint16_t height = 0) :
-        IButton(x, y, width, height),
-        _label1(label1), _label2(label2), _cornerRadius(3), _highlighted(false), _toggle(false)
+    explicit ToggleButton(const char* label, uint16_t x = 0, uint16_t y = 0, uint16_t width = 0, uint16_t height = 0) :
+        IButton(x, y, width, height), _label(label), _cornerRadius(3), _highlighted(false), _checked(false)
     {
         _currentTextColor = _TextColor = (uint16_t)Color565::Black;
         _currentBackgroundColor = _BackgroundColor = RGB565(220, 220, 220);
@@ -38,6 +36,8 @@ class ToggleButton : public IButton
 
         _backgroundHighlightColor = (uint16_t)Color565::AXIOM_Blue;
         _textHighlightColor = (uint16_t)Color565::Black;
+
+        _checkboxIcon = (Icon*)&home;
     }
 
     void SetCornerRadius(uint8_t cornerRadius)
@@ -45,69 +45,45 @@ class ToggleButton : public IButton
         _cornerRadius = cornerRadius;
     }
 
-    void SetLabels(const char* label1, const char* label2)
+    void SetLabel(const char* label)
     {
-        _label1 = label1;
-        _label2 = label2;
+        _label = label;
     }
 
     virtual void Draw(IPainter* painter) override
     {
         painter->DrawFillRoundRectangle(_x, _y, _width, _height, _cornerRadius, _currentBackgroundColor);
 
-        painter->SetFont(Font::FreeSans9pt7b);
+        painter->SetFont(Font::FreeSans12pt7b);
         uint8_t textPosY = _height / 2 + painter->GetCurrentFontHeight() / 2;
         uint8_t gap = 8;
-        uint8_t totaltextwidth =
-            painter->GetStringFramebufferWidth(_label1) + gap + painter->GetStringFramebufferWidth(_label2);
-        uint8_t rect_margin = 8;
-        if (_toggle)
+        uint8_t totaltextwidth = painter->GetStringFramebufferWidth(_label) + gap + _checkboxIcon->Width;
+
+        painter->DrawText(_x + _width / 2 - totaltextwidth / 2, _y + textPosY, _label, _currentTextColor,
+                          TextAlign::TEXT_ALIGN_LEFT, 0);
+
+        painter->DrawIcon(_checkboxIcon->Data,
+                          _x + _width / 2 - totaltextwidth / 2 + painter->GetStringFramebufferWidth(_label) + gap,
+                          _y + _height / 2 - _checkboxIcon->Height / 2, _checkboxIcon->Width, _checkboxIcon->Height,
+                          _currentTextColor);
+    }
+
+    void SetChecked(bool checked)
+    {
+        _checked = checked;
+
+        if (_checked)
         {
-            painter->DrawFillRoundRectangle(_x + _width / 2 - totaltextwidth / 2 - rect_margin / 2,
-                                            _y + textPosY - painter->GetCurrentFontHeight() - rect_margin / 2 + 1,
-                                            painter->GetStringFramebufferWidth(_label1) + rect_margin,
-                                            painter->GetCurrentFontHeight() + rect_margin, 2, _TextColor);
-
-            painter->DrawText(_x + _width / 2 - totaltextwidth / 2, _y + textPosY, _label1,
-                              (uint16_t)Color565::AXIOM_Orange, TextAlign::TEXT_ALIGN_LEFT, 0);
-
-            painter->DrawText(_x + _width / 2 - totaltextwidth / 2 + painter->GetStringFramebufferWidth(_label1) + gap,
-                              _y + textPosY, _label2, _textDisabledColor, TextAlign::TEXT_ALIGN_LEFT, 0);
+            _currentTextColor = _TextColor;
         } else
         {
-            painter->DrawFillRoundRectangle(_x + _width / 2 - totaltextwidth / 2 +
-                                                painter->GetStringFramebufferWidth(_label1) + gap - rect_margin / 2,
-                                            _y + textPosY - painter->GetCurrentFontHeight() - rect_margin / 2 + 1,
-                                            painter->GetStringFramebufferWidth(_label1) + rect_margin,
-                                            painter->GetCurrentFontHeight() + rect_margin, 2, _TextColor);
-
-            painter->DrawText(_x + _width / 2 - totaltextwidth / 2, _y + textPosY, _label1, _textDisabledColor,
-                              TextAlign::TEXT_ALIGN_LEFT, 0);
-
-            painter->DrawText(_x + _width / 2 - totaltextwidth / 2 + painter->GetStringFramebufferWidth(_label1) + gap,
-                              _y + textPosY, _label2, (uint16_t)Color565::AXIOM_Orange, TextAlign::TEXT_ALIGN_LEFT, 0);
+            _currentTextColor = _textDisabledColor;
         }
     }
 
-    void SetToggle(bool toggle)
+    bool GetChecked()
     {
-        _toggle = toggle;
-    }
-
-    bool GetToggle()
-    {
-        return _toggle;
-    }
-
-    const char* GetOption()
-    {
-        if (_toggle)
-        {
-            return _label1;
-        } else
-        {
-            return _label2;
-        }
+        return _checked;
     }
 
     void SetBackgroundColor(uint16_t color)
