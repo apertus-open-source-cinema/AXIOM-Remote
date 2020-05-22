@@ -114,12 +114,12 @@ class NumericValueScreen : public IScreen
 
     void ToggleLiveSet(bool toggle)
     {
-        _liveButton.SetToggle(toggle);
+        _liveButton.SetChecked(toggle);
     }
 
     void ToggleLiveSet()
     {
-        _liveButton.SetToggle(!_liveButton.GetToggle());
+        _liveButton.SetChecked(!_liveButton.GetChecked());
     }
 
     void Draw(IPainter* painter) override
