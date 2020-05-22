@@ -26,16 +26,16 @@ all: ApertusRingLogo.h ApertusTextLogo.h $(OUTPUT)
 ApertusRingLogo.h: 
 	sed "/#c2bfbc/ s/fill-opacity:1/fill-opacity:0/" ApertusLogo.svg > TempRing.svg
 	magick -density 800 TempRing.svg -trim +repage -filter point +negate -negate -threshold 50% -resize 14x14 $@.xbm
-	$(call generate_header_file, $@, $@.xbm)
+	$(call generate_header_file,$@,$@.xbm)
 	
 ApertusTextLogo.h: 
 	sed "/#f47248/ s/fill-opacity:1/fill-opacity:0/" ApertusLogo.svg > TempText.svg
 	magick -density 800 TempText.svg -trim +repage -filter point +negate -negate -threshold 50% -resize 214x64 $@.xbm
-	$(call generate_header_file, $@, $@.xbm)
+	$(call generate_header_file,$@,$@.xbm)
 
 $(OUTPUT): %_icon.h: %_icon.svg
 	magick -density 800 $< -filter point -threshold 50% -resize 24x24 $@.xbm
-	$(call generate_header_file, $@, $@.xbm)
+	$(call generate_header_file,$@,$@.xbm)
 
 clean:
 	rm -rf Temp* *.xbm
