@@ -2,14 +2,14 @@
 
 #include "../../UI/Widgets/Icon.h"
  
-struct IconName : public Icon {
+static const struct IconName : public Icon {
  
-    uint8_t data[width * height] = {image_data};
+    uint8_t data[%WIDTH% * %HEIGHT%] = {%IMAGE_DATA%};
  
     IconName()
     {
-        Icon::Width = width;
-        Icon::Height = height;
+        Icon::Width = %WIDTH%;
+        Icon::Height = %HEIGHT%;
         Icon::Data = &data[0];
     }
-};
+}icon;

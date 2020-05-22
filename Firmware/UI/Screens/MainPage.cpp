@@ -60,21 +60,9 @@ void MainPage::DigitalGainButtonHandler(void* sender)
 
 void MainPage::Draw(IPainter* painter)
 {
-    painter->DrawIcon(apertus_text.pixel_data_text, 58, 89, apertus_text.width, apertus_text.height,
-                      RGB565(194, 191, 188));
-    painter->DrawIcon(apertus_ring.pixel_data_ring, 58 + apertus_text.width, 89, apertus_ring.width,
-                      apertus_ring.height, RGB565(244, 114, 72));
-                      
-
-    /*painter->SetFont(Font::FreeSans9pt7b);
-    painter->DrawText(50, 80, "FreeSans9pt7b", (uint16_t)Color565::White, TextAlign::TEXT_ALIGN_LEFT, 0);
-    painter->SetFont(Font::FreeSans12pt7b);
-    painter->DrawText(50, 100, "FreeSans12pt7b", (uint16_t)Color565::White, TextAlign::TEXT_ALIGN_LEFT, 0);
-    painter->SetFont(Font::FreeSans18pt7b);
-    painter->DrawText(50, 130, "FreeSans18pt7b", (uint16_t)Color565::White, TextAlign::TEXT_ALIGN_LEFT, 0);
-    painter->SetFont(Font::FreeSans24pt7b);
-    painter->DrawText(50, 170, "FreeSans24pt7b", (uint16_t)Color565::White, TextAlign::TEXT_ALIGN_LEFT, 0);*/
-
+    painter->DrawIcon(ApertusTextLogo.Data, 58, 89, ApertusTextLogo.Width, ApertusTextLogo.Height, RGB565(194, 191, 188));
+    painter->DrawIcon(ApertusRingLogo.Data, 58 + ApertusTextLogo.Width, 89, ApertusRingLogo.Width, ApertusRingLogo.Height, RGB565(244, 114, 72));
+                     
     for (uint8_t index = 0; index < 6; index++)
     {
         IWidget* widget = _widgetArray[index];

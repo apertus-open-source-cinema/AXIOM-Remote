@@ -3,18 +3,19 @@ OUTPUT := $(INPUT:.svg=.h)
 
 define generate_header_file
 	cat sample.h > $(1)
+	sed -i -e 's/icon/$(1)/;s/IconName/$(1)/;/$(1)/ s/\.h//' $(1)
 
     	WIDTH=$$(sed -n "s/^.*width //p" $(2));	\
-    	sed -i "/data\[/ s/width/$$WIDTH/" $(1); \
-    	sed -i "/Width\ =\ / s/width/$$WIDTH/" $(1)
+    	sed -i "/data\[/ s/%WIDTH%/$$WIDTH/" $(1); \
+    	sed -i "/Width\ =\ / s/%WIDTH%/$$WIDTH/" $(1)
     	
     	HEIGHT=$$(sed -n "s/^.*height //p" $(2)); \
-    	sed -i "/*\ / s/height/$$HEIGHT/" $(1); \
-    	sed -i "/Height\ =\ / s/height/$$HEIGHT/" $(1)
+    	sed -i "/*\ / s/%HEIGHT%/$$HEIGHT/" $(1); \
+    	sed -i "/Height\ =\ / s/%HEIGHT%/$$HEIGHT/" $(1)
     		
     	DATA=$$(sed -n "4,$$ p" $(2)); \
 	echo $$DATA >> "TempData.txt"
-	sed -i -e '/image_data/r TempData.txt' -i -e 's/image_data};//' $(1)
+	sed -i -e '/%IMAGE_DATA%/r TempData.txt' -i -e 's/%IMAGE_DATA%};//' $(1)
 	rm -rf TempData.txt
 endef
 
@@ -32,7 +33,7 @@ ApertusTextLogo.h:
 	magick TempText.svg -trim +repage -density 800 -filter point +negate -negate -threshold 50% -resize 214x64 $@.xbm
 	$(call generate_header_file, $@, $@.xbm)
 
-$(OUTPUT): $(INPUT)
+$(OUTPUT): %_icon.h: %_icon.svg
 	magick -density 800 $< -filter point -threshold 50% -resize 24x24 $@.xbm
 	$(call generate_header_file, $@, $@.xbm)
 
