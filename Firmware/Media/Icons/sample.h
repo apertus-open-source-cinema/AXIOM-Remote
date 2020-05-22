@@ -2,7 +2,7 @@
 
 #include "../../UI/Widgets/Icon.h"
  
-static const struct IconName : public Icon {
+static struct IconName : public Icon {
  
     uint8_t data[%WIDTH% * %HEIGHT%] = {%IMAGE_DATA%};
  

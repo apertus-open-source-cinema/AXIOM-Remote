@@ -38,7 +38,7 @@ class NumericValueScreen : public IScreen
   public:
     explicit NumericValueScreen(IUSBDevice* usbDevice) :
         IScreen(usbDevice), _cancelButton("Cancel"), _setButton("Set"), _liveButton("LIVE", "SET"),
-        _homeButton((Icon*)&home_icon), _header("Parameter Menu"), _value(0), _stepSize(1), _suffix("")
+        _homeButton(&home_icon), _header("Parameter Menu"), _value(0), _stepSize(1), _suffix("")
     {
         //_cancelButton.SetHandler(&CancelButtonHandler);
         _bottomButtonBar.SetButton(ButtonPosition::Left, &_cancelButton);

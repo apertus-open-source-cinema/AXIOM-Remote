@@ -37,7 +37,7 @@ class ToggleButton : public IButton
         _backgroundHighlightColor = (uint16_t)Color565::AXIOM_Blue;
         _textHighlightColor = (uint16_t)Color565::Black;
 
-        _checkboxIcon = (Icon*)&home;
+        _checkboxIcon = &home_icon;
     }
 
     void SetCornerRadius(uint8_t cornerRadius)
