@@ -11,7 +11,7 @@ class CentralDB
     // std::vector<class CentralDBObserver*> _views;
     CentralDBObserver* _views[16];
     uint8_t _viewscount = 0;
-    uint8_t _lcdBrightnessPercentage = 0;
+    uint8_t _lcdBrightnessPercentage;
 
   public:
     CentralDB() : _views()

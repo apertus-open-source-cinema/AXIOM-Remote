@@ -54,6 +54,7 @@ class MenuItem : public IWidget
     void (*_handlerPtr)(void*);
 
     TestObs _observer;
+    CentralDB* _db;
 
   public:
     MenuItem(CentralDB* centralDB = nullptr, const char* label = "...", bool disabled = false,
@@ -66,7 +67,13 @@ class MenuItem : public IWidget
         _textColor((uint16_t)Color565::Black), _textHighlightColor((uint16_t)Color565::White),
         _textPressedColor((uint16_t)Color565::White), _textDisabledColor(RGB565(180, 180, 180)),
         _currentBackgroundColor(_backgroundColor), _currentTextColor(_textColor), _verticalLabelOffset(20),
+<<<<<<< HEAD
         _db(centralDB), _handlerPtr(nullptr), _observer(centralDB)
+||||||| parent of 953c54b... T1200 fixed & minor centraldb pogress
+        CentralDBObserver(centralDB)
+=======
+        _db(centralDB), _observer(centralDB)
+>>>>>>> 953c54b... T1200 fixed & minor centraldb pogress
     {
         _x = 0;
         _y = 0;
@@ -231,10 +238,20 @@ class MenuItem : public IWidget
     void Draw(IPainter* painter) override
     {
         // Draw background
+<<<<<<< HEAD
         if (_disabled && !(_highlighted))
         {
             painter->DrawStripedRectangle(_x, _y, _width, _height, 0xE71C, 0xD69A, 3, 7);
         } else if (_disabled && _highlighted)
+||||||| parent of 953c54b... T1200 fixed & minor centraldb pogress
+        if (_disabled)
+=======
+        if (_disabled && !(_highlighted))
+            {
+                painter->DrawStripedRectangle(_x, _y, _width, _height, 0xE71C, 0xD69A, 3, 7);
+            }
+        else if (_disabled && _highlighted)
+>>>>>>> 953c54b... T1200 fixed & minor centraldb pogress
         {
             painter->DrawStripedRectangle(_x, _y, _width, _height, 0xE71C, 0xD69A, 3, 7);
             painter->DrawFillRectangle(_x, _y, 4, _height, _backgroundHighlightColor);
