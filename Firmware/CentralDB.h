@@ -11,7 +11,7 @@ class CentralDB
     // std::vector<class CentralDBObserver*> _views;
     CentralDBObserver* _views[16];
     uint8_t _viewscount = 0;
-    static uint8_t _lcdBrightnessPercentage;
+    uint8_t _lcdBrightnessPercentage;
 
   public:
     void attach(CentralDBObserver* obs)
@@ -41,10 +41,6 @@ class CentralDBObserver
   public:
     CentralDBObserver(CentralDB* db) : _db(db)
     {
-        if (_db != nullptr)
-        {
-            _db->attach(this);
-        }
     }
 
     virtual void update() = 0;
@@ -56,7 +52,7 @@ class CentralDBObserver
     }
 };
 
-/*class TestObs : public CentralDBObserver
+class TestObs : public CentralDBObserver
 {
     uint8_t _value;
 
@@ -72,6 +68,6 @@ class CentralDBObserver
     {
         return _value;
     }
-};*/
+};
 
 #endif /* CENTRALDB_H */

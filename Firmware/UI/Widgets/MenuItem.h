@@ -20,7 +20,7 @@ enum class MenuItemType
     MENU_ITEM_TYPE_LINK
 };
 
-class MenuItem : public IWidget, public CentralDBObserver
+class MenuItem : public IWidget
 {
   protected:
     bool _disabled;
@@ -50,6 +50,9 @@ class MenuItem : public IWidget, public CentralDBObserver
 
     void (*_handlerPtr)(void*);
 
+    TestObs _observer;
+    CentralDB* _db;
+
   public:
     MenuItem(CentralDB* centralDB = nullptr, const char* label = "...", bool disabled = false,
              const char* value = nullptr, bool hidden = false, bool pressed = false, bool highlighted = false,
@@ -61,7 +64,7 @@ class MenuItem : public IWidget, public CentralDBObserver
         _textColor((uint16_t)Color565::Black), _textHighlightColor((uint16_t)Color565::White),
         _textPressedColor((uint16_t)Color565::White), _textDisabledColor(RGB565(180, 180, 180)),
         _currentBackgroundColor(_backgroundColor), _currentTextColor(_textColor), _verticalLabelOffset(20),
-        CentralDBObserver(centralDB)
+        _db(centralDB), _observer(centralDB)
     {
         _x = 0;
         _y = 0;
@@ -94,6 +97,13 @@ class MenuItem : public IWidget, public CentralDBObserver
     void Activate(void* sender)
     {
         _handlerPtr(sender);
+    }
+    void attachObserver()
+    {
+        /* if (_db != nullptr)
+         {
+             _db->attach(&_observer);
+         }*/
     }
 
     bool IsDisabled()
@@ -219,9 +229,15 @@ class MenuItem : public IWidget, public CentralDBObserver
     void Draw(IPainter* painter) override
     {
         // Draw background
-        if (_disabled)
+        if (_disabled && !(_highlighted))
+            {
+                painter->DrawStripedRectangle(_x, _y, _width, _height, 0xE71C, 0xD69A, 3, 7);
+            }
+        else if (_disabled && _highlighted)
         {
-            painter->DrawStripedRectangle(_x, _y, _width, _height, 0xE71C, 0xD69A, 5, 12);
+            painter->DrawStripedRectangle(_x, _y, _width, _height, 0xE71C, 0xD69A, 3, 7);
+            painter->DrawFillRectangle(_x, _y, 4, _height, _backgroundHighlightColor);
+            painter->DrawFillRectangle(GlobalSettings::LCDWidth - 20, _y, 4, _height, _backgroundHighlightColor);
         } else if (_type == MenuItemType::MENU_ITEM_TYPE_READONLY && _highlighted)
         {
             painter->DrawFillRectangle(_x, _y, _width, _height, _currentBackgroundColor);

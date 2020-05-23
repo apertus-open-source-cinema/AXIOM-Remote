@@ -53,6 +53,7 @@ class MainMenu : public Menu
         _lcdBrightness = NumericMenuItem(_db, "LCD Brightness", 100, 0, 100, 5, "%");
         //_lcdBrightness.SetHandler(&LCDBrightnessMenuItemHandler);
         AddMenuItem(&_lcdBrightness);
+        _lcdBrightness.attachObserver(); // TODO: add which value to subscribe to as parameter
 
         _subMenu1LinkMenuItem = ScreenLinkMenuItem(_db, "Submenu 1", AvailableScreens::SettingsSubMenu1);
         AddMenuItem(&_subMenu1LinkMenuItem);
