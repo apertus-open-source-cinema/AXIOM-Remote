@@ -37,7 +37,7 @@ class ToggleButton : public IButton
         _backgroundHighlightColor = (uint16_t)Color565::AXIOM_Blue;
         _textHighlightColor = (uint16_t)Color565::Black;
 
-        _checkboxIcon = (Icon*)&home;
+        _checkboxIcon = &home_icon;
     }
 
     void SetCornerRadius(uint8_t cornerRadius)
@@ -62,10 +62,9 @@ class ToggleButton : public IButton
         painter->DrawText(_x + _width / 2 - totaltextwidth / 2, _y + textPosY, _label, _currentTextColor,
                           TextAlign::TEXT_ALIGN_LEFT, 0);
 
-        painter->DrawIcon(_checkboxIcon->Data,
+        painter->DrawIcon(_checkboxIcon,
                           _x + _width / 2 - totaltextwidth / 2 + painter->GetStringFramebufferWidth(_label) + gap,
-                          _y + _height / 2 - _checkboxIcon->Height / 2, _checkboxIcon->Width, _checkboxIcon->Height,
-                          _currentTextColor);
+                          _y + _height / 2 - _checkboxIcon->Height / 2, _currentTextColor);
     }
 
     void SetChecked(bool checked)

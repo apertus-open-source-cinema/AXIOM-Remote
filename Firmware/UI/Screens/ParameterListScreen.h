@@ -34,7 +34,7 @@ class ParameterListScreen : public IScreen
 
   public:
     explicit ParameterListScreen(IUSBDevice* usbDevice) :
-        IScreen(usbDevice), _cancelButton("Cancel"), _setButton("Set"), _homeButton((Icon*)&home),
+        IScreen(usbDevice), _cancelButton("Cancel"), _setButton("Set"), _homeButton(&home_icon),
         _header("Parameter Menu"), _previousOptionIndex(0), _highlightIndex(0)
     {
         //_cancelButton.SetHandler(&CancelButtonHandler);

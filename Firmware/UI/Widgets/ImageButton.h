@@ -41,7 +41,7 @@ class ImageButton : public IButton
     virtual void Draw(IPainter* painter) override
     {
         painter->DrawFillRoundRectangle(_x - 2, _y + 20, 30, 30, _cornerRadius, _currentBackgroundColor);
-        painter->DrawIcon(_image->Data, _x + 1, _y + 23, _image->Width, _image->Height, _currentImageColor);
+        painter->DrawIcon(_image, _x + 1, _y + 23, _currentImageColor);
     }
 
     void SetBackgroundColor(uint16_t color)
