@@ -65,14 +65,14 @@ class ImageButton : public IButton
             uint8_t imagePosX = _width / 2 - totalWidth / 2;
             uint8_t textPosX = imagePosX + _image->Width + _gap;
             
-            painter->DrawIcon(_image->Data, _x + imagePosX, _y + _height / 2 - _image->Height / 2, _image->Width, _image->Height, _currentImageColor);
+            painter->DrawIcon(_image, _x + imagePosX, _y + _height / 2 - _image->Height / 2, _currentImageColor);
             painter->DrawText(_x + textPosX, _y + textPosY, _label, _currentTextColor, TextAlign::TEXT_ALIGN_LEFT,
                               strlen(_label));
         }
       
         else
         {
-            painter->DrawIcon(_image->Data, _x + _width / 2 - _image->Width / 2, _y + _height / 2 - _image->Height / 2, _image->Width, _image->Height, _currentImageColor);
+            painter->DrawIcon(_image, _x + _width / 2 - _image->Width / 2, _y + _height / 2 - _image->Height / 2, _currentImageColor);
         }
     }
 
