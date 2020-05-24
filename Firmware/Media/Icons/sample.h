@@ -1,3 +1,6 @@
+#ifndef SAMPLE_H
+#define SAMPLE_H
+
 #include <stdint.h>
 
 #include "../../UI/Widgets/Icon.h"
@@ -13,3 +16,5 @@ static struct IconName : public Icon {
         Icon::Data = &data[0];
     }
 }icon;
+
+#endif // SAMPLE_H

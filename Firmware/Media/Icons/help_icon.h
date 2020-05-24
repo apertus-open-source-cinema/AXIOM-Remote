@@ -1,3 +1,6 @@
+#ifndef HELP_ICON_H
+#define HELP_ICON_H
+
 #include <stdint.h>
 
 #include "../../UI/Widgets/Icon.h"
@@ -14,3 +17,5 @@ static struct help_icon : public Icon {
         Icon::Data = &data[0];
     }
 }help_icon;
+
+#endif // HELP_ICON_H

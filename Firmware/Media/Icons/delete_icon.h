@@ -1,3 +1,6 @@
+#ifndef DELETE_ICON_H
+#define DELETE_ICON_H
+
 #include <stdint.h>
 
 #include "../../UI/Widgets/Icon.h"
@@ -14,3 +17,5 @@ static struct delete_icon : public Icon {
         Icon::Data = &data[0];
     }
 }delete_icon;
+
+#endif // DELETE_ICON_H

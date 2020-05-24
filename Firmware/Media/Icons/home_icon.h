@@ -1,3 +1,6 @@
+#ifndef HOME_ICON_H
+#define HOME_ICON_H
+
 #include <stdint.h>
 
 #include "../../UI/Widgets/Icon.h"
@@ -14,3 +17,5 @@ static struct home_icon : public Icon {
         Icon::Data = &data[0];
     }
 }home_icon;
+
+#endif // HOME_ICON_H

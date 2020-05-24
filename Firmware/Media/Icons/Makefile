@@ -3,7 +3,7 @@ OUTPUT := $(INPUT:.svg=.h)
 
 define generate_header_file
 	cat sample.h > $(1)
-	sed -i -e 's/icon/$(1)/;s/IconName/$(1)/;/$(1)/ s/\.h//' $(1)
+	sed -i -e 's/icon/$(1)/;s/IconName/$(1)/;s/SAMPLE/$(1)/;s/$(1)\_H/\U&/;/$(1)/ s/\.h//;s/\.H//' $(1)
 
     	WIDTH=$$(sed -n "s/^.*width //p" $(2));	\
     	sed -i "/data\[/ s/%WIDTH%/$$WIDTH/" $(1); \
