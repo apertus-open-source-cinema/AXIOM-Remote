@@ -1,3 +1,6 @@
+#ifndef BACK_ICON_H
+#define BACK_ICON_H
+
 #include <stdint.h>
 
 #include "../../UI/Widgets/Icon.h"
@@ -14,3 +17,5 @@ static struct back_icon : public Icon {
         Icon::Data = &data[0];
     }
 }back_icon;
+
+#endif // BACK_ICON_H

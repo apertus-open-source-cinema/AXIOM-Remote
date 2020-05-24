@@ -1,3 +1,6 @@
+#ifndef UP_ICON_H
+#define UP_ICON_H
+
 #include <stdint.h>
 
 #include "../../UI/Widgets/Icon.h"
@@ -14,3 +17,5 @@ static struct up_icon : public Icon {
         Icon::Data = &data[0];
     }
 }up_icon;
+
+#endif // UP_ICON_H

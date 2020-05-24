@@ -1,3 +1,6 @@
+#ifndef APERTUSRINGLOGO_H
+#define APERTUSRINGLOGO_H
+
 #include <stdint.h>
 
 #include "../../UI/Widgets/Icon.h"
@@ -14,3 +17,5 @@ static struct ApertusRingLogo : public Icon {
         Icon::Data = &data[0];
     }
 }ApertusRingLogo;
+
+#endif // APERTUSRINGLOGO_H

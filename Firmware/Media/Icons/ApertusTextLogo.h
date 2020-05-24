@@ -1,3 +1,6 @@
+#ifndef APERTUSTEXTLOGO_H
+#define APERTUSTEXTLOGO_H
+
 #include <stdint.h>
 
 #include "../../UI/Widgets/Icon.h"
@@ -14,3 +17,5 @@ static struct ApertusTextLogo : public Icon {
         Icon::Data = &data[0];
     }
 }ApertusTextLogo;
+
+#endif // APERTUSTEXTLOGO_H

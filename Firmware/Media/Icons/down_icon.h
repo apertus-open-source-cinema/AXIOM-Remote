@@ -1,3 +1,6 @@
+#ifndef DOWN_ICON_H
+#define DOWN_ICON_H
+
 #include <stdint.h>
 
 #include "../../UI/Widgets/Icon.h"
@@ -14,3 +17,5 @@ static struct down_icon : public Icon {
         Icon::Data = &data[0];
     }
 }down_icon;
+
+#endif // DOWN_ICON_H
