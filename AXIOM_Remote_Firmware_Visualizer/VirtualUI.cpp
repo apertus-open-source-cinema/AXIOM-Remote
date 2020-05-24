@@ -22,8 +22,8 @@ void ShowZoomTooltip(const ImGuiIO& io, ImTextureID displayTextureID)
     ImVec2 pos = ImGui::GetCursorScreenPos();
     int16_t textureWidth = 320;
     int16_t textureHeight = 240;
-    ImGui::Image(displayTextureID, ImVec2(textureWidth, textureHeight), ImVec2(0, 0), ImVec2(1, 1), ImVec4(1.0f, 1.0f, 1.0f, 1.0f),
-                 ImVec4(1.0f, 1.0f, 1.0f, 0.5f));
+    ImGui::Image(displayTextureID, ImVec2(textureWidth, textureHeight), ImVec2(0, 0), ImVec2(1, 1),
+                 ImVec4(1.0f, 1.0f, 1.0f, 1.0f), ImVec4(1.0f, 1.0f, 1.0f, 0.5f));
     if (ImGui::IsItemHovered())
     {
         ImGui::BeginTooltip();
@@ -49,7 +49,8 @@ void ShowZoomTooltip(const ImGuiIO& io, ImTextureID displayTextureID)
     }
 }
 
-void RenderUI(SDL_Window* window, const ImGuiIO& io, ImTextureID knobTextureID, ImTextureID displayTextureID, Button& button, int8_t& knobValue, bool& debugOverlayEnabled)
+void RenderUI(SDL_Window* window, const ImGuiIO& io, ImTextureID knobTextureID, ImTextureID displayTextureID,
+              Button& button, int8_t& knobValue, bool& debugOverlayEnabled)
 {
     ImGui_ImplOpenGL3_NewFrame();
     ImGui_ImplSDL2_NewFrame(window);
@@ -89,28 +90,28 @@ void RenderUI(SDL_Window* window, const ImGuiIO& io, ImTextureID knobTextureID, 
         button = Button::BUTTON_6_UP;
     }
 
-    if (RenderButton("7", 340, 170))
+    if (RenderButton("7", 340, 176))
     {
         button = Button::BUTTON_7_UP;
     }
-    if (RenderButton("8", 340, 220))
+    if (RenderButton("8", 340, 226))
     {
         button = Button::BUTTON_8_UP;
     }
-    if (RenderButton("9", 340, 270))
+    if (RenderButton("9", 340, 276))
     {
         button = Button::BUTTON_9_UP;
     }
 
-    if (RenderButton("10", 740, 170))
+    if (RenderButton("10", 740, 176))
     {
         button = Button::BUTTON_10_UP;
     }
-    if (RenderButton("11", 740, 220))
+    if (RenderButton("11", 740, 226))
     {
         button = Button::BUTTON_11_UP;
     }
-    if (RenderButton("12", 740, 270))
+    if (RenderButton("12", 740, 276))
     {
         button = Button::BUTTON_12_UP;
     }
