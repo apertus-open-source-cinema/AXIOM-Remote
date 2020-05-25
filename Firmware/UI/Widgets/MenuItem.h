@@ -2,7 +2,7 @@
 #define MENUITEM_H
 
 #include "IWidget.h"
-#include "../UI/Painter/Painter.h"
+#include "../Painter/Painter.h"
 #include "../IMenuSystem.h"
 
 #include "../Color565.h"
