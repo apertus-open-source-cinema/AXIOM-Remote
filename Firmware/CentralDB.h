@@ -2,7 +2,7 @@
 #define CENTRALDB_H
 
 #include <stdint.h>
-#include <vector>
+//#include <vector>
 
 class CentralDBObserver;
 
@@ -11,9 +11,17 @@ class CentralDB
     // std::vector<class CentralDBObserver*> _views;
     CentralDBObserver* _views[16];
     uint8_t _viewscount = 0;
-    uint8_t _lcdBrightnessPercentage;
+    uint8_t _lcdBrightnessPercentage = 0;
 
   public:
+    CentralDB() : _views()
+    {
+        for (uint8_t i = 0; i < 16; i++)
+        {
+            _views[i] = nullptr;
+        }
+    }
+
     void attach(CentralDBObserver* obs)
     {
         //_views.push_back(obs);
@@ -39,7 +47,7 @@ class CentralDBObserver
     CentralDB* _db;
 
   public:
-    CentralDBObserver(CentralDB* db) : _db(db)
+    explicit CentralDBObserver(CentralDB* db) : _db(db)
     {
     }
 
@@ -54,12 +62,13 @@ class CentralDBObserver
 
 class TestObs : public CentralDBObserver
 {
-    uint8_t _value;
+    uint8_t _value = 0;
 
   public:
-    TestObs(CentralDB* db) : CentralDBObserver(db)
+    explicit TestObs(CentralDB* db) : CentralDBObserver(db)
     {
     }
+
     void update()
     {
         _value = GetDB()->GetLCDBrightness();

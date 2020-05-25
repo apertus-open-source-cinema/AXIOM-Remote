@@ -25,10 +25,9 @@ class Painter : public IPainter
     IDebugPainter* _debugPainter;
 
   protected:
+    volatile uint16_t* _framebuffer;
     uint16_t _framebufferWidth;
     uint16_t _framebufferHeight;
-
-    volatile uint16_t* _framebuffer;
 
   public:
     Painter(volatile uint16_t* framebuffer, uint16_t framebufferWidth, uint8_t framebufferHeight);

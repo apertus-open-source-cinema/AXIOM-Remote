@@ -2,6 +2,8 @@
 #define MENUITEM_H
 
 #include "IWidget.h"
+#include "../UI/Painter/Painter.h"
+#include "../IMenuSystem.h"
 
 #include "../Color565.h"
 #include "../../GlobalSettings.h"
@@ -23,6 +25,7 @@ enum class MenuItemType
 class MenuItem : public IWidget
 {
   protected:
+    CentralDB* _db;
     bool _disabled;
     bool _hidden;
     bool _pressed;
@@ -34,13 +37,13 @@ class MenuItem : public IWidget
     uint16_t _backgroundColor;
     uint16_t _backgroundHighlightColor;
     uint16_t _backgroundPressedColor;
-    uint16_t _backgroundDimmedColor;
+    // uint16_t _backgroundDimmedColor;
     uint16_t _backgroundDisabledColor;
 
     uint16_t _textColor;
     uint16_t _textHighlightColor;
     uint16_t _textPressedColor;
-    uint16_t _textDimmedColor;
+    // uint16_t _textDimmedColor;
     uint16_t _textDisabledColor;
 
     uint16_t _currentBackgroundColor;
@@ -51,7 +54,6 @@ class MenuItem : public IWidget
     void (*_handlerPtr)(void*);
 
     TestObs _observer;
-    CentralDB* _db;
 
   public:
     MenuItem(CentralDB* centralDB = nullptr, const char* label = "...", bool disabled = false,
@@ -64,7 +66,7 @@ class MenuItem : public IWidget
         _textColor((uint16_t)Color565::Black), _textHighlightColor((uint16_t)Color565::White),
         _textPressedColor((uint16_t)Color565::White), _textDisabledColor(RGB565(180, 180, 180)),
         _currentBackgroundColor(_backgroundColor), _currentTextColor(_textColor), _verticalLabelOffset(20),
-        _db(centralDB), _observer(centralDB)
+        _db(centralDB), _handlerPtr(nullptr), _observer(centralDB)
     {
         _x = 0;
         _y = 0;
@@ -130,7 +132,7 @@ class MenuItem : public IWidget
 
         _pressed = pressed;
 
-        if (_type == MenuItemType::MENU_ITEM_TYPE_READONLY || _type == MenuItemType::MENU_ITEM_TYPE_READONLY)
+        if (_type == MenuItemType::MENU_ITEM_TYPE_READONLY)
         {
             _currentBackgroundColor = _backgroundColor;
         } else if (pressed)
@@ -230,10 +232,9 @@ class MenuItem : public IWidget
     {
         // Draw background
         if (_disabled && !(_highlighted))
-            {
-                painter->DrawStripedRectangle(_x, _y, _width, _height, 0xE71C, 0xD69A, 3, 7);
-            }
-        else if (_disabled && _highlighted)
+        {
+            painter->DrawStripedRectangle(_x, _y, _width, _height, 0xE71C, 0xD69A, 3, 7);
+        } else if (_disabled && _highlighted)
         {
             painter->DrawStripedRectangle(_x, _y, _width, _height, 0xE71C, 0xD69A, 3, 7);
             painter->DrawFillRectangle(_x, _y, 4, _height, _backgroundHighlightColor);
