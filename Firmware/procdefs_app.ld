@@ -73,7 +73,6 @@ _GEN_EXCPT_ADDR               = _ebase_address + 0x180;
 MEMORY
 {
   kseg0_program_mem      (rx) : ORIGIN = 0x9D000000, LENGTH = 256K
-  kseg0_static_mem      (r) : ORIGIN = 0x9D000000 + 256K, LENGTH = 64K
 
   /* first half of boot flash */
   kseg0_boot_mem              : ORIGIN = 0x9FC004B0, LENGTH = 0x0
@@ -96,7 +95,7 @@ SECTIONS {
 
   .kseg0_static_data :
   {
-  } > kseg0_static_mem
+  } > kseg0_program_mem
 
   /* Boot Sections */
   .reset _RESET_ADDR :
