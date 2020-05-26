@@ -8,10 +8,8 @@
 
 #include "../../GlobalSettings.h"
 
-#include "../../Media/Icons/home_icon.h"
-
 WhiteBalanceScreen::WhiteBalanceScreen(IUSBDevice* usbDevice) :
-    IScreen(usbDevice), _cancelButton("Cancel"), _addPresetButton("Add"), _setButton("Set"), _homeButton(&home_icon)
+    IScreen(usbDevice), _cancelButton("Cancel"), _addPresetButton("Add"), _setButton("Set")
 {
     _cancelButton.SetHandler(&CancelButtonHandler);
     _bottomButtonBar.SetButton(ButtonPosition::Left, &_cancelButton);

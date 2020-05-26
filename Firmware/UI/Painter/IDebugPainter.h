@@ -11,7 +11,7 @@ class IDebugPainter
 {
   public:
     // Images
-    virtual void DrawIcon(IPainter* painter, Icon* image, uint16_t x, uint16_t y, uint16_t color) = 0;
+    virtual void DrawIcon(IPainter* painter, const Icon* image, uint16_t x, uint16_t y, uint16_t color) = 0;
 
     // Text Related
     virtual void DrawText(IPainter* painter, uint16_t x, uint16_t y, const char* text, uint16_t color, TextAlign align,

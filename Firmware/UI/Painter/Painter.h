@@ -58,7 +58,7 @@ class Painter : public IPainter
     // Misc
     void DrawImage(const uint8_t* data, uint16_t x, uint16_t y, uint16_t width, uint16_t height) override;
     void DrawPixel(uint16_t x, uint16_t y, uint16_t color) override;
-    virtual void DrawIcon(Icon* image, uint16_t x, uint16_t y, uint16_t color) override;
+    virtual void DrawIcon(const Icon* image, uint16_t x, uint16_t y, uint16_t color) override;
     uint16_t ProcessByte(uint8_t data, uint16_t x, uint16_t xIndex, uint16_t yPos, uint16_t height, uint16_t color);
     void Fill(uint16_t fillColor) override;
     void Dim() override;

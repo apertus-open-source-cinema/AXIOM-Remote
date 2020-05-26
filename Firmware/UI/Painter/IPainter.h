@@ -42,7 +42,7 @@ class IPainter
     // Misc
     virtual void DrawImage(const uint8_t* data, uint16_t x, uint16_t y, uint16_t width, uint16_t height) = 0;
     virtual void DrawPixel(uint16_t x, uint16_t y, uint16_t color) = 0;
-    virtual void DrawIcon(Icon* image, uint16_t x, uint16_t y, uint16_t color) = 0;
+    virtual void DrawIcon(const Icon* image, uint16_t x, uint16_t y, uint16_t color) = 0;
     virtual void Fill(uint16_t fillColor) = 0;
     virtual void Dim() = 0;
 

@@ -29,8 +29,6 @@ class MainPage : public IMenu
                                 &_menuButton, &_shutterButton,    &_whiteBalanceButton};
 
     Color565 _backgroundColor;
-    Icon* _text;
-    Icon* _ring;
 
     void SetupButtons();
 

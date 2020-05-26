@@ -4,7 +4,6 @@
 #include "IButton.h"
 #include "../Painter/Painter.h"
 #include "Icon.h"
-//#include "../../Media/Icons/home_icon.h"
 
 class ToggleButton : public IButton
 {
@@ -24,7 +23,7 @@ class ToggleButton : public IButton
 
     bool _checked;
     const char* _label;
-    Icon* _checkboxIcon;
+    const Icon* _checkboxIcon;
 
   public:
     explicit ToggleButton(const char* label, uint16_t x = 0, uint16_t y = 0, uint16_t width = 0, uint16_t height = 0) :
@@ -37,7 +36,7 @@ class ToggleButton : public IButton
         _backgroundHighlightColor = (uint16_t)Color565::AXIOM_Blue;
         _textHighlightColor = (uint16_t)Color565::Black;
 
-        _checkboxIcon = &home_icon;
+        //_checkboxIcon = &h_icon;
     }
 
     void SetCornerRadius(uint8_t cornerRadius)

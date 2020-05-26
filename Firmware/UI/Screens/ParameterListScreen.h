@@ -8,7 +8,6 @@
 #include "../MenuDefinitions.h"
 #include "../IMenuSystem.h"
 #include "../../GlobalSettings.h"
-#include "../../Media/Icons/home_icon.h"
 
 class IPainter;
 class IUSBDevice;
@@ -30,11 +29,9 @@ class ParameterListScreen : public IScreen
     char const* _optionLabels[64];
     uint8_t _optionLineHeight;
 
-    ImageButton _homeButton;
-
   public:
     explicit ParameterListScreen(IUSBDevice* usbDevice) :
-        IScreen(usbDevice), _cancelButton("Cancel"), _setButton("Set"), _homeButton(&home_icon),
+        IScreen(usbDevice), _cancelButton("Cancel"), _setButton("Set"),
         _header("Parameter Menu"), _previousOptionIndex(0), _highlightIndex(0)
     {
         //_cancelButton.SetHandler(&CancelButtonHandler);
@@ -44,8 +41,6 @@ class ParameterListScreen : public IScreen
         //_setButton.SetHandler(&SetButtonHandler);
         _setButton.SetBackgroundColor((uint16_t)Color565::AXIOM_Orange);
         _bottomButtonBar.SetButton(ButtonPosition::Right, &_setButton);
-
-        _leftButtonBar.SetButton(ButtonPosition::Left, &_homeButton);
 
         _backgroundColor = (uint16_t)Color565::White;
         _textColor = (uint16_t)Color565::Black;

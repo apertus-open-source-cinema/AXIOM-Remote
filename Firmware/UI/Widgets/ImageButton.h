@@ -8,7 +8,7 @@
 
 class ImageButton : public IButton
 {
-    Icon* _image;
+    const Icon* _image;
 
     uint8_t _cornerRadius;
     bool _highlighted;
@@ -24,7 +24,7 @@ class ImageButton : public IButton
     uint16_t _currentBackgroundColor;
 
   public:
-    explicit ImageButton(Icon* icon, uint16_t x = 0, uint16_t y = 0, uint16_t width = 0, uint16_t height = 0) :
+    explicit ImageButton(const Icon* icon, uint16_t x = 0, uint16_t y = 0, uint16_t width = 0, uint16_t height = 0) :
         IButton(x, y, width, height), _image(icon), _cornerRadius(3), _highlighted(false)
     {
         _currentBackgroundColor = RGB565(220, 220, 220);

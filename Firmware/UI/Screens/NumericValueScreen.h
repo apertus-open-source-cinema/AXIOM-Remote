@@ -9,7 +9,6 @@
 #include "../IMenuSystem.h"
 #include "../../GlobalSettings.h"
 #include "../Widgets/ToggleButton.h"
-//#include "../../Media/Icons/home_icon.h"
 
 #include <stdio.h>
 
@@ -33,12 +32,11 @@ class NumericValueScreen : public IScreen
     uint16_t _stepSize;
     char const* _suffix;
 
-    ImageButton _homeButton;
 
   public:
     explicit NumericValueScreen(IUSBDevice* usbDevice) :
         IScreen(usbDevice), _cancelButton("Cancel"), _setButton("Set"), _liveButton("Live"),
-        _homeButton(&home_icon), _header("Parameter Menu"), _value(0), _stepSize(1), _suffix("")
+        _header("Parameter Menu"), _value(0), _stepSize(1), _suffix("")
     {
         //_cancelButton.SetHandler(&CancelButtonHandler);
         _bottomButtonBar.SetButton(ButtonPosition::Left, &_cancelButton);
@@ -49,8 +47,6 @@ class NumericValueScreen : public IScreen
         _bottomButtonBar.SetButton(ButtonPosition::Right, &_setButton);
 
         _bottomButtonBar.SetButton(ButtonPosition::Center, &_liveButton);
-
-        _leftButtonBar.SetButton(ButtonPosition::Left, &_homeButton);
 
         _backgroundColor = (uint16_t)Color565::White;
         _textColor = (uint16_t)Color565::Black;

@@ -311,7 +311,7 @@ void Painter::DrawImage(const uint8_t* data, uint16_t x, uint16_t y, uint16_t wi
 
 /*************** Draw Icon ***************/
 
-void Painter::DrawIcon(Icon* image, uint16_t x, uint16_t y, uint16_t color)
+void Painter::DrawIcon(const Icon* image, uint16_t x, uint16_t y, uint16_t color)
 {
     int b = 0;
 

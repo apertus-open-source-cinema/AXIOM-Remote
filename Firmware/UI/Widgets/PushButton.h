@@ -90,7 +90,7 @@ class PushButton : public IButton
             _currentTextColor = _TextColor;
             _currentBackgroundColor = _BackgroundColor;
         }
-    };
+    }
 };
 
 #endif // PUSHBUTTON_H

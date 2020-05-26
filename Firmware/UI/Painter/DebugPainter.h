@@ -19,7 +19,7 @@ class DebugPainter : public IDebugPainter
         _enabled = value;
     }
 
-    void DrawIcon(IPainter* painter, Icon* image, uint16_t x, uint16_t y, uint16_t color) override
+    void DrawIcon(IPainter* painter, const Icon* image, uint16_t x, uint16_t y, uint16_t color) override
     {
         if (!_enabled)
         {
