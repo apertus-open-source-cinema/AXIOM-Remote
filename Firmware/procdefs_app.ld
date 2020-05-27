@@ -97,6 +97,7 @@ SECTIONS {
   {
   } > kseg0_program_mem
 
+
   /* Boot Sections */
   .reset _RESET_ADDR :
   {
