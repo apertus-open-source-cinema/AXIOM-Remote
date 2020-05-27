@@ -7,8 +7,8 @@
 
 struct Icon
 {
-    uint16_t Width;
-    uint16_t Height;
+    const uint16_t Width;
+    const uint16_t Height;
     const uint8_t* Data;
 };
 

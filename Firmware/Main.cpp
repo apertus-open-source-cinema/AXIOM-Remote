@@ -542,7 +542,7 @@ int main()
 
     Setup(display, cdcDevice);
 
-    // display.SetBacklight(GlobalSettings::brightnessPercentage);
+    display.SetBacklight(GlobalSettings::brightnessPercentage);
 
     MenuSystem menuSystem(&cdcDevice, &centralDB);
 

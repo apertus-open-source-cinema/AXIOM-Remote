@@ -9,7 +9,7 @@ eval $(cat "$XBM" | tr '\n\r' '\n' | sed '
 	s/^#define.*_width /WIDTH=/;
 	s/^#define.*_height /HEIGHT=/;
 	s/^static char.*{/DATA="/;
-	s/.*};/"/')
+	s/\s*};/"/')
 
 BASE="${OUT%.h}"
 DATA=$(echo "$DATA" | sed 's/^\s*//;s/,\s*$//')
