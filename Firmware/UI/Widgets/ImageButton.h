@@ -29,16 +29,8 @@ class ImageButton : public IButton
     uint16_t _currentBackgroundColor;
 
   public:
-<<<<<<< HEAD
-    explicit ImageButton(const Icon* icon, uint16_t x = 0, uint16_t y = 0, uint16_t width = 0, uint16_t height = 0) :
-        IButton(x, y, width, height), _image(icon), _cornerRadius(3), _highlighted(false)
-||||||| parent of 38a6538... -ImageButton now can have both image and text
-    explicit ImageButton(Icon* icon, uint16_t x = 0, uint16_t y = 0, uint16_t width = 0, uint16_t height = 0) :
-        IButton(x, y, width, height), _image(icon), _cornerRadius(3), _highlighted(false)
-=======
     explicit ImageButton(Icon* icon, const char* caption = "", uint16_t x = 0, uint16_t y = 0, uint16_t width = 0, uint16_t height = 0) :
         IButton(x, y, width, height), _image(icon), _cornerRadius(3), _highlighted(false), _label(caption)
->>>>>>> 38a6538... -ImageButton now can have both image and text
     {
         _currentBackgroundColor = RGB565(220, 220, 220);
         _backgroundColor = _currentBackgroundColor;
