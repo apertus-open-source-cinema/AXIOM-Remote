@@ -12,15 +12,15 @@ class CentralDBObserver;
 
 class CentralDB
 {
-  private:
     struct ObserverAttributePair
     {
         CentralDBObserver* observer;
         Attribute::ID attributeId;
     };
     static const int MAX_OBSERVER_ATTRIBUTE_PAIRS = 16;
+    static const int NUM_ATTRIBUTES = (int) Attribute::ID::NUM_ATTRIBUTES;
 
-    Attribute _attributes[size_t(Attribute::ID::NUM_ATTRIBUTES)];
+    Attribute _attributes[NUM_ATTRIBUTES];
     ObserverAttributePair _observerAttributePairs[MAX_OBSERVER_ATTRIBUTE_PAIRS];
     uint8_t _observerAttributePairsCount;
 

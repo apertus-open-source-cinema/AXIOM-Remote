@@ -1,5 +1,8 @@
 #include "CentralDB.h"
 
+#include <algorithm>
+#include <array>
+
 CentralDB::CentralDB() :
     _attributes{Attribute(Attribute::ID::UNKNOWN, Attribute::Type::UNKNOWN),
                 Attribute(Attribute::ID::WHITE_BALANCE, Attribute::Type::STRING)},
@@ -19,36 +22,34 @@ void CentralDB::Attach(const Attribute::ID attributeId, CentralDBObserver* const
 
 const void* CentralDB::GetValue(const Attribute::ID attributeId) const
 {
-    for (auto& attribute : _attributes)
-    {
-        if (attribute.GetId() == attributeId)
-        {
-            return attribute.GetValue();
-        }
-    }
-    return nullptr;
+    auto attribute =
+        std::find_if(std::begin(_attributes), std::end(_attributes),
+                     [attributeId](const Attribute& attribute) { return attribute.GetId() == attributeId; });
+
+    return attribute ? attribute->GetValue() : nullptr;
 }
 
 void CentralDB::SetValue(const Attribute::ID attributeId, const void* value)
 {
-    for (auto& attribute : _attributes)
+    auto attribute =
+        std::find_if(std::begin(_attributes), std::end(_attributes),
+                     [attributeId](const Attribute& attribute) { return attribute.GetId() == attributeId; });
+
+    if (attribute)
     {
-        if (attribute.GetId() == attributeId)
-        {
-            attribute.SetValue(value);
-            Notify(attributeId);
-            return;
-        }
+        attribute->SetValue(value);
+        Notify(attributeId);
     }
 }
 
 void CentralDB::Notify(const Attribute::ID attributeId) const
 {
-    for (uint8_t i = 0; i < _observerAttributePairsCount; i++)
+    auto observerAttributePair = std::find_if(
+        std::begin(_observerAttributePairs), std::begin(_observerAttributePairs) + _observerAttributePairsCount,
+        [attributeId](const ObserverAttributePair& pair) { return pair.attributeId == attributeId && pair.observer; });
+
+    if (observerAttributePair)
     {
-        if (_observerAttributePairs[i].attributeId == attributeId && _observerAttributePairs[i].observer)
-        {
-            _observerAttributePairs[i].observer->Update(this);
-        }
+        observerAttributePair->observer->Update(*this);
     }
 }

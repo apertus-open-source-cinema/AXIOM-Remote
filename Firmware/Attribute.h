@@ -4,7 +4,6 @@
 #include "Utils.h"
 
 #include <cstdint>
-#include <cstring>
 
 class Attribute
 {
@@ -91,3 +90,4 @@ class Attribute
 };
 
 #endif // ATTRIBUTE_H
+
