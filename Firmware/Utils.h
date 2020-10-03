@@ -1,7 +1,9 @@
 #ifndef UTILS_H
 #define UTILS_H
 
-#include <stdint.h>
+#include <cstddef>
+#include <cstdint>
+#include <cstring>
 
 #define UNUSED(x) (void)(x)
 
@@ -21,6 +23,19 @@ static inline int8_t LimitRange(int8_t in, int8_t min, int8_t max)
         return min;
     }
     return in;
+}
+
+namespace utils {
+    inline void CopyString(char* destination, const char* source, const size_t max_size)
+    {
+        memset(destination, 0, max_size);
+        size_t len = strlen(destination);
+        if (len > max_size)
+        {
+            len = max_size;
+        }
+        strncpy(destination, source, len);
+    }
 }
 
 #endif // UTILS_H

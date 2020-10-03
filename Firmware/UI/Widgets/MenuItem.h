@@ -9,6 +9,7 @@
 #include "../../GlobalSettings.h"
 #include "../../../Bootloader/Periphery/ILI9341/ILI9341Device.h"
 #include "../../CentralDB.h"
+#include "../../CentralDBObserver.h"
 
 class IPainter;
 
@@ -53,9 +54,6 @@ class MenuItem : public IWidget
 
     void (*_handlerPtr)(void*);
 
-    TestObs _observer;
-    CentralDB* _db;
-
   public:
     MenuItem(CentralDB* centralDB = nullptr, const char* label = "...", bool disabled = false,
              const char* value = nullptr, bool hidden = false, bool pressed = false, bool highlighted = false,
@@ -67,13 +65,7 @@ class MenuItem : public IWidget
         _textColor((uint16_t)Color565::Black), _textHighlightColor((uint16_t)Color565::White),
         _textPressedColor((uint16_t)Color565::White), _textDisabledColor(RGB565(180, 180, 180)),
         _currentBackgroundColor(_backgroundColor), _currentTextColor(_textColor), _verticalLabelOffset(20),
-<<<<<<< HEAD
-        _db(centralDB), _handlerPtr(nullptr), _observer(centralDB)
-||||||| parent of 953c54b... T1200 fixed & minor centraldb pogress
-        CentralDBObserver(centralDB)
-=======
-        _db(centralDB), _observer(centralDB)
->>>>>>> 953c54b... T1200 fixed & minor centraldb pogress
+        _db(centralDB), _handlerPtr(nullptr)
     {
         _x = 0;
         _y = 0;
