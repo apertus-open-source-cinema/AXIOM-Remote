@@ -17,6 +17,7 @@
 
 uint8_t value = 0;
 uint8_t lastValue = 0;
+uint8_t brightnessLevel = 0;
 
 VirtualUI::VirtualUI(SDL_Window* window, uint32_t displayTextureID) :
     _window(window), _io(ImGui::GetIO()), _displayTextureID(reinterpret_cast<ImTextureID>(displayTextureID))
@@ -110,6 +111,7 @@ void VirtualUI::CompileShader()
     }
 
     _cameraPreviewTexture = glGetUniformLocation(_programID, "cameraPreviewTexture");
+    _analogGainShader = glGetUniformLocation(_programID, "analogGain");
 }
 
 uint32_t VirtualUI::LoadShader(std::string shaderFilePath, uint32_t shaderID)
@@ -194,6 +196,10 @@ void VirtualUI::RenderCameraPreviewToFBO()
     glBindTexture(GL_TEXTURE_2D, _cameraPreviewTextureID);
     // Set our "renderedTexture" sampler to use Texture Unit 0
     glUniform1i(_cameraPreviewTexture, 0);
+
+    float brightness = 0.1f * brightnessLevel;
+    std::cout << "Brightness: " << brightness << std::endl;
+    glUniform1f(_analogGainShader, brightness);
 
     // glBindTexture(GL_TEXTURE_2D, 1); // (GLuint)(intptr_t)cmd->TextureId - 1);
 
@@ -330,9 +336,16 @@ void VirtualUI::RenderUI(Button& button, int8_t& knobValue, bool& debugOverlayEn
     }
 
     ImGui::SetCursorPos(ImVec2(60, 140));
-    if (ImGui::Knob("Test123", value, knobPressed, (ImTextureID)knobTextureID))
+    bool knobPressed = false;
+    if (ImGui::Knob("Test123", value, knobPressed, (ImTextureID)_knobTextureID))
     {
         knobValue = -(value - lastValue);
+        brightnessLevel -= knobValue;
+        if(brightnessLevel < 0)
+        {
+            brightnessLevel = 0;
+        }
+
         lastValue = value;
     }
     if (knobPressed)
