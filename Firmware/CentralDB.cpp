@@ -1,55 +1,121 @@
 #include "CentralDB.h"
 
 #include <algorithm>
+#include "CentralDB.h"
+
+#include <algorithm>
 #include <array>
 
 CentralDB::CentralDB() :
-    _attributes{Attribute(Attribute::ID::UNKNOWN, Attribute::Type::UNKNOWN),
-                Attribute(Attribute::ID::WHITE_BALANCE, Attribute::Type::STRING)},
-    _observerAttributePairsCount{0}
+    _observers{}, _observerCount{0}, _attributes{{Attribute::Id::FRAME_RATE, Attribute::Type::FLOAT},
+                                                 {Attribute::Id::APERTURE, Attribute::Type::FLOAT},
+                                                 {Attribute::Id::WHITE_BALANCE, Attribute::Type::UINT32},
+                                                 {Attribute::Id::TEST_STRING, Attribute::Type::STRING},
+                                                 {Attribute::Id::TEST_BOOLEAN, Attribute::Type::BOOLEAN},
+                                                 {Attribute::Id::TEST_INT32, Attribute::Type::INT32}}
+    // TODO: add any missing attributes
 {
 }
 
-void CentralDB::Attach(const Attribute::ID attributeId, CentralDBObserver* const observer)
+void CentralDB::Attach(CentralDBObserver* const observer)
 {
-    if (_observerAttributePairsCount < MAX_OBSERVER_ATTRIBUTE_PAIRS)
+    if (observer && _observerCount < MAX_NUM_OBSERVERS)
     {
-        _observerAttributePairs[_observerAttributePairsCount].attributeId = attributeId;
-        _observerAttributePairs[_observerAttributePairsCount].observer = observer;
-        _observerAttributePairsCount++;
+        // Only add observers of attributes that exist in the DB
+        if (GetAttribute(observer->ObservedAttribute()))
+        {
+            _observers[_observerCount] = observer;
+            _observerCount++;
+        }
     }
 }
 
-const void* CentralDB::GetValue(const Attribute::ID attributeId) const
+Attribute* CentralDB::GetAttribute(const Attribute::Id& attributeId)
 {
-    auto attribute =
-        std::find_if(std::begin(_attributes), std::end(_attributes),
-                     [attributeId](const Attribute& attribute) { return attribute.GetId() == attributeId; });
-
-    return attribute ? attribute->GetValue() : nullptr;
+    return std::find_if(std::begin(_attributes), std::end(_attributes),
+                        [&attributeId](const Attribute& attribute) { return attribute.GetId() == attributeId; });
 }
 
-void CentralDB::SetValue(const Attribute::ID attributeId, const void* value)
+const Attribute* CentralDB::GetAttribute(const Attribute::Id& attributeId) const
 {
-    auto attribute =
-        std::find_if(std::begin(_attributes), std::end(_attributes),
-                     [attributeId](const Attribute& attribute) { return attribute.GetId() == attributeId; });
+    return std::find_if(std::begin(_attributes), std::end(_attributes),
+                        [&attributeId](const Attribute& attribute) { return attribute.GetId() == attributeId; });
+}
 
-    if (attribute)
+const void* CentralDB::GetValue(const Attribute::Id& attributeId, const Attribute::Type& type) const
+{
+    const Attribute* attribute = GetAttribute(attributeId);
+
+    return attribute ? attribute->GetValue(type) : Attribute::DefaultValue(type);
+}
+
+void CentralDB::SetValue(const Attribute::Id& attributeId, const Attribute::Type& type, const void* value)
+{
+    auto attribute = GetAttribute(attributeId);
+
+    if (attribute && attribute->SetValue(type, value))
     {
-        attribute->SetValue(value);
         Notify(attributeId);
     }
 }
 
-void CentralDB::Notify(const Attribute::ID attributeId) const
+bool CentralDB::GetBoolean(const Attribute::Id& attributeId) const
 {
-    auto observerAttributePair = std::find_if(
-        std::begin(_observerAttributePairs), std::begin(_observerAttributePairs) + _observerAttributePairsCount,
-        [attributeId](const ObserverAttributePair& pair) { return pair.attributeId == attributeId && pair.observer; });
+    return *((bool*)GetValue(attributeId, Attribute::Type::BOOLEAN));
+}
 
-    if (observerAttributePair)
+int32_t CentralDB::GetInt32(const Attribute::Id& attributeId) const
+{
+    return *((int32_t*)GetValue(attributeId, Attribute::Type::INT32));
+}
+
+uint32_t CentralDB::GetUint32(const Attribute::Id& attributeId) const
+{
+    return *((uint32_t*)GetValue(attributeId, Attribute::Type::UINT32));
+}
+
+float CentralDB::GetFloat(const Attribute::Id& attributeId) const
+{
+    return *((float*)GetValue(attributeId, Attribute::Type::FLOAT));
+}
+
+const char* CentralDB::GetString(const Attribute::Id& attributeId) const
+{
+    return (char*)GetValue(attributeId, Attribute::Type::STRING);
+}
+
+void CentralDB::SetBoolean(const Attribute::Id& attributeId, const bool value)
+{
+    SetValue(attributeId, Attribute::Type::BOOLEAN, (void*)(&value));
+}
+
+void CentralDB::SetInt32(const Attribute::Id& attributeId, const int32_t value)
+{
+    SetValue(attributeId, Attribute::Type::INT32, (void*)(&value));
+}
+
+void CentralDB::SetUint32(const Attribute::Id& attributeId, const uint32_t value)
+{
+    SetValue(attributeId, Attribute::Type::UINT32, (void*)(&value));
+}
+
+void CentralDB::SetFloat(const Attribute::Id& attributeId, const float value)
+{
+    SetValue(attributeId, Attribute::Type::FLOAT, (void*)(&value));
+}
+
+void CentralDB::SetString(const Attribute::Id& attributeId, const char* value)
+{
+    SetValue(attributeId, Attribute::Type::STRING, (void*)(value));
+}
+
+void CentralDB::Notify(const Attribute::Id& attributeId) const
+{
+    for (uint8_t i = 0; i < _observerCount; ++i)
     {
-        observerAttributePair->observer->Update(*this);
+        if (attributeId == _observers[i]->ObservedAttribute())
+        {
+            _observers[i]->Update(*this);
+        }
     }
 }
