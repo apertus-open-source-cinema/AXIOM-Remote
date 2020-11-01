@@ -29,6 +29,8 @@ FILE(GLOB GL3W_SOURCES "${CMAKE_SOURCE_DIR}/3rdParty/gl3w/GL/gl3w.c")
 FILE(GLOB FIRMWARE_SOURCES "${CMAKE_CURRENT_SOURCE_DIR}/../Firmware/UI/*.cpp"
                            "${CMAKE_CURRENT_SOURCE_DIR}/../Firmware/UI/Painter/*.cpp"
                            "${CMAKE_CURRENT_SOURCE_DIR}/../Firmware/UI/Screens/*.cpp"
+                           "${CMAKE_CURRENT_SOURCE_DIR}/../Firmware/CentralDB.cpp"
+                           "${CMAKE_CURRENT_SOURCE_DIR}/../Firmware/CentralDBObserver.cpp"
                            "${CMAKE_CURRENT_SOURCE_DIR}/../Firmware/GlobalSettings.cpp")
 MESSAGE(STATUS "Firmware files: ${FIRMWARE_SOURCES}")
 

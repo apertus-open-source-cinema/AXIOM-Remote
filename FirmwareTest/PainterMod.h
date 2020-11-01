@@ -6,8 +6,6 @@
 
 #include "../Firmware/UI/Painter/Painter.h"
 
-#include "Images/logo.h"
-
 #define FRAMEBUFFER_WIDTH 320
 #define FRAMEBUFFER_HEIGHT 240
 
@@ -43,7 +41,7 @@ class PainterMod : public Painter
         currentY = y;
     }
 
-    uint16_t GetPixel(uint16_t x, uint16_t y)
+    uint16_t GetPixel(uint16_t x, uint16_t y) const
     {
         if(x < FRAMEBUFFER_WIDTH && y < FRAMEBUFFER_HEIGHT)
         {

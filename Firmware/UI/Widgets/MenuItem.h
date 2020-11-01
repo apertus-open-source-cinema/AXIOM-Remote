@@ -2,9 +2,14 @@
 #define MENUITEM_H
 
 #include "IWidget.h"
+#include "../Painter/Painter.h"
+#include "../IMenuSystem.h"
 
 #include "../Color565.h"
 #include "../../GlobalSettings.h"
+#include "../../../Bootloader/Periphery/ILI9341/ILI9341Device.h"
+#include "../../CentralDB.h"
+#include "../../CentralDBObserver.h"
 
 class IPainter;
 
@@ -13,12 +18,15 @@ enum class MenuItemType
     MENU_ITEM_TYPE_READONLY,
     MENU_ITEM_TYPE_NUMERIC,
     MENU_ITEM_TYPE_DROPDOWN,
-    MENU_ITEM_TYPE_LIST
+    MENU_ITEM_TYPE_LIST,
+    MENU_ITEM_TYPE_CHECKBOX,
+    MENU_ITEM_TYPE_LINK
 };
 
 class MenuItem : public IWidget
 {
   protected:
+    CentralDB* _db;
     bool _disabled;
     bool _hidden;
     bool _pressed;
@@ -30,13 +38,13 @@ class MenuItem : public IWidget
     uint16_t _backgroundColor;
     uint16_t _backgroundHighlightColor;
     uint16_t _backgroundPressedColor;
-    uint16_t _backgroundDimmedColor;
+    // uint16_t _backgroundDimmedColor;
     uint16_t _backgroundDisabledColor;
 
     uint16_t _textColor;
     uint16_t _textHighlightColor;
     uint16_t _textPressedColor;
-    uint16_t _textDimmedColor;
+    // uint16_t _textDimmedColor;
     uint16_t _textDisabledColor;
 
     uint16_t _currentBackgroundColor;
@@ -44,17 +52,20 @@ class MenuItem : public IWidget
 
     uint8_t _verticalLabelOffset;
 
+    void (*_handlerPtr)(void*);
+
   public:
-    MenuItem(const char* label = "...", bool disabled = false, const char* value = nullptr, bool hidden = false,
-             bool pressed = false, bool highlighted = false, MenuItemType type = MenuItemType::MENU_ITEM_TYPE_NUMERIC) :
+    MenuItem(CentralDB* centralDB = nullptr, const char* label = "...", bool disabled = false,
+             const char* value = nullptr, bool hidden = false, bool pressed = false, bool highlighted = false,
+             MenuItemType type = MenuItemType::MENU_ITEM_TYPE_NUMERIC) :
         _disabled(disabled),
-        _hidden(hidden), _pressed(pressed), _highlighted(highlighted), _label(const_cast<char*>(label)),
-        _value(const_cast<char*>(value)), _type(type), _backgroundColor((uint16_t)Color565::White),
-        _backgroundHighlightColor(RGB565(255, 128, 0)), _backgroundPressedColor(RGB565(0, 128, 255)),
-        _backgroundDisabledColor(RGB565(180, 180, 180)), _textColor((uint16_t)Color565::Black),
-        _textHighlightColor((uint16_t)Color565::White), _textPressedColor((uint16_t)Color565::White),
-        _textDisabledColor(RGB565(180, 180, 180)), _currentBackgroundColor(_backgroundColor),
-        _currentTextColor(_textColor), _verticalLabelOffset(20)
+        _hidden(hidden), _pressed(pressed), _highlighted(highlighted), _label(label), _value(value), _type(type),
+        _backgroundColor((uint16_t)Color565::White), _backgroundHighlightColor(RGB565(255, 128, 0)),
+        _backgroundPressedColor(RGB565(0, 128, 255)), _backgroundDisabledColor(RGB565(180, 180, 180)),
+        _textColor((uint16_t)Color565::Black), _textHighlightColor((uint16_t)Color565::White),
+        _textPressedColor((uint16_t)Color565::White), _textDisabledColor(RGB565(180, 180, 180)),
+        _currentBackgroundColor(_backgroundColor), _currentTextColor(_textColor), _verticalLabelOffset(20),
+        _db(centralDB), _handlerPtr(nullptr)
     {
         _x = 0;
         _y = 0;
@@ -79,6 +90,23 @@ class MenuItem : public IWidget
         }
     }
 
+    virtual void SetHandler(void (*handler)(void*))
+    {
+        _handlerPtr = handler;
+    }
+
+    void Activate(void* sender)
+    {
+        _handlerPtr(sender);
+    }
+    void attachObserver()
+    {
+        /* if (_db != nullptr)
+         {
+             _db->attach(&_observer);
+         }*/
+    }
+
     bool IsDisabled()
     {
         return _disabled;
@@ -96,11 +124,6 @@ class MenuItem : public IWidget
 
     void SetPressed(bool pressed)
     {
-        if (this == nullptr)
-        {
-            return;
-        }
-
         if (_disabled)
         {
             return;
@@ -117,10 +140,6 @@ class MenuItem : public IWidget
         } else if (_highlighted)
         {
             _currentBackgroundColor = _backgroundHighlightColor;
-        } else if (_type == MenuItemType::MENU_ITEM_TYPE_READONLY)
-        {
-            //_currentTextColor = _textDisabledColor;
-            _currentBackgroundColor = _backgroundColor;
         } else
         {
             _currentBackgroundColor = _backgroundColor;
@@ -162,7 +181,7 @@ class MenuItem : public IWidget
 
     void SetLabel(const char* value)
     {
-        _label = const_cast<char*>(value);
+        _label = value;
     }
 
     char const* GetLabel()
@@ -191,10 +210,7 @@ class MenuItem : public IWidget
 
     MenuItemType GetMenuType()
     {
-        if (this != nullptr)
-        {
-            return _type;
-        }
+        return _type;
     }
 
     /*void SetDimensions(uint16_t x, uint16_t y, uint16_t width, uint16_t height)
@@ -208,22 +224,20 @@ class MenuItem : public IWidget
 
     void SetY(uint16_t y)
     {
-        if (this != nullptr)
-        {
-            _y = y;
-        }
+        _y = y;
     }
 
     void Draw(IPainter* painter) override
     {
-        if (this == nullptr)
-        {
-            return;
-        }
         // Draw background
-        if (_disabled)
+        if (_disabled && !(_highlighted))
         {
-            painter->DrawStripedRectangle(_x, _y, _width, _height, 0xE71C, 0xD69A, 5, 12);
+            painter->DrawStripedRectangle(_x, _y, _width, _height, 0xE71C, 0xD69A, 3, 7);
+        } else if (_disabled && _highlighted)
+        {
+            painter->DrawStripedRectangle(_x, _y, _width, _height, 0xE71C, 0xD69A, 3, 7);
+            painter->DrawFillRectangle(_x, _y, 4, _height, _backgroundHighlightColor);
+            painter->DrawFillRectangle(GlobalSettings::LCDWidth - 20, _y, 4, _height, _backgroundHighlightColor);
         } else if (_type == MenuItemType::MENU_ITEM_TYPE_READONLY && _highlighted)
         {
             painter->DrawFillRectangle(_x, _y, _width, _height, _currentBackgroundColor);
@@ -247,6 +261,10 @@ class MenuItem : public IWidget
     }
 
     virtual void ExecuteAction(IMenuSystem* menuSystem)
+    {
+    }
+
+    void update()
     {
     }
 };

@@ -17,7 +17,7 @@ class ParameterListMenuItem : public MenuItem
     uint8_t _choiceIndex;
 
   public:
-    ParameterListMenuItem(const char* label = "") : MenuItem(const_cast<char*>(label))
+    ParameterListMenuItem(CentralDB* centralDB = nullptr, const char* label = "") : MenuItem(centralDB, label)
     {
         _type = MenuItemType::MENU_ITEM_TYPE_LIST;
     }
@@ -39,7 +39,7 @@ class ParameterListMenuItem : public MenuItem
 
     void UpdateChoice(uint8_t choiceindex)
     {
-        if ((choiceindex >= 0) && (choiceindex < _optionCount))
+        if (choiceindex < _optionCount)
         {
             _value = _optionLabels[choiceindex];
             _choiceIndex = choiceindex;

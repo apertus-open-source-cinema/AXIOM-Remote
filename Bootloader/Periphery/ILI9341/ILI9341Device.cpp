@@ -331,7 +331,7 @@ void ILI9341Display::Initialize()
     LCDPumpWrite16(0);
     LCDPumpWrite16(ILI9341_TFTHEIGHT - 1);
 
-    //SetupBacklightControl();
+    SetupBacklightControl();
 
     // Switch backlight on
     //LCD_BLT_O = 1;

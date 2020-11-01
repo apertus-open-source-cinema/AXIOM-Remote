@@ -4,6 +4,7 @@
 #include "../../Utils.h"
 
 #include "../Widgets/ButtonBar.h"
+#include "../Widgets/ImageButton.h"
 
 class ButtonBar;
 class IUSBDevice;
@@ -22,6 +23,8 @@ class IScreen
 
     ButtonBar _bottomButtonBar;
     ButtonBar _leftButtonBar;
+
+    ImageButton _homeButton;
 
     virtual void DrawCaption();
 

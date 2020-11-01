@@ -33,7 +33,7 @@ class MainPage : public IMenu
     void SetupButtons();
 
   public:
-    MainPage(IUSBDevice* cdcDevice);
+    explicit MainPage(IUSBDevice* cdcDevice);
 
   protected:
     virtual Color565 GetBackgroundColor() override;

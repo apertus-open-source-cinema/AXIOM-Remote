@@ -28,6 +28,8 @@
 // Periphery
 #include "USBCDCTerminalDevice.h"
 
+//#include "CentralDB.h"
+
 #define FRAMEBUFFER_WIDTH 320
 #define FRAMEBUFFER_HEIGHT 240
 
@@ -184,7 +186,9 @@ int main(int argc, char* argv[])
 
     USBCDCTerminalDevice cdcDevice;
 
-    MenuSystem menuSystem(&cdcDevice);
+    CentralDB centralDB;
+
+    MenuSystem menuSystem(&cdcDevice, &centralDB);
 
     Button button = Button::BUTTON_NONE;
 

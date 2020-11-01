@@ -14,10 +14,11 @@
 
 //#define DEBUG_DRAW
 #ifdef DEBUG_DRAW
-    #include "UI/Painter/DebugPainter.h"
+#include "UI/Painter/DebugPainter.h"
 #endif
 
 #include "GlobalSettings.h"
+//#include "CentralDB.h"
 
 #include <Helpers.h>
 
@@ -116,7 +117,6 @@ static uint8_t data[16];
 static uint8_t data_status[16];
 uint16_t knob_position[2] = {0, 0};
 
-
 char debugText[32];
 bool DEBUG = true;
 
@@ -173,7 +173,7 @@ Button PollButtons(USBCDCDevice* cdcDevice)
      *  i.e. a bit set there shows that something on the respective input (port A,B or C) changed
      *  so, a button pressed or a button released will trigger a bit change there
      *
-     *  register 4 to 6 (i2c3_getn(0x04, data_status, 3) data_status[0], data_status[1], data_status[2]) contain the 
+     *  register 4 to 6 (i2c3_getn(0x04, data_status, 3) data_status[0], data_status[1], data_status[2]) contain the
      *  status registers of each button/knobs current state
      */
 
@@ -231,8 +231,6 @@ Button PollButtons(USBCDCDevice* cdcDevice)
     {
         if (DEBUG)
         {
-            char debugText[32];
-
             sprintf(debugText, "data[0]: %02X \r\n", data[0]);
             cdcDevice->Send((uint8_t*)debugText, 32);
 
@@ -537,11 +535,16 @@ int main()
     ILI9341Display display(framebuffer);
     USBCDCDevice cdcDevice;
 
+    CentralDB centralDB;
+    /*  TestObs test(&centralDB);
+      centralDB.SetLCDBrightness(5);
+      uint8_t test1 = test.getvalue();*/
+
     Setup(display, cdcDevice);
 
-    // display.SetBacklight(GlobalSettings::brightnessPercentage);
+    display.SetBacklight(GlobalSettings::brightnessPercentage);
 
-    MenuSystem menuSystem(&cdcDevice);
+    MenuSystem menuSystem(&cdcDevice, &centralDB);
 
     Painter generalPainter(display.GetFramebuffer(), display.GetWidth(), display.GetHeight());
     IPainter* painter = &generalPainter;
@@ -550,12 +553,6 @@ int main()
     DebugPainter debugPainter(&generalPainter);
     painter = &debugPainter;
 #endif
-
-    MainPage MainPage(&cdcDevice);
-    MainMenu MainMenu(&cdcDevice);
-
-    // IMenu* currentMenu = &MainPage;
-    // IMenu* currentMenu = &SettingsMenu;
 
     static uint8_t rgb[4];
     rgb[0] = 0x14;

@@ -76,14 +76,14 @@ MEMORY
 
   /* first half of boot flash */
   kseg0_boot_mem              : ORIGIN = 0x9FC004B0, LENGTH = 0x0
-  
+
   /* Interrupt vector table */
   exception_mem               : ORIGIN = 0x9FC01000, LENGTH = 0x1000
 
   /* other half of boot flash <*/
   kseg1_boot_mem              : ORIGIN = 0xBFC00000, LENGTH = 0x490
   kseg1_boot_mem_4B0          : ORIGIN = 0xBFC004B0, LENGTH = (0x1000 - 0x4B0)
-  
+
   framebuffer_mem      (w!x)  : ORIGIN = 0xA0000000, LENGTH = 150K        /* 150K -> 153600 -> 0x25800 */
   /*fifo_queue_mem         (w!x)  : ORIGIN = 0x80000000 + 150K, LENGTH = 40   /* 2 bytes for counters, 38 bytes for 2 x fifo queues */
   kseg0_data_mem       (w!x)  : ORIGIN = 0x80000000 + 150K + 40, LENGTH = 16K
@@ -92,7 +92,12 @@ MEMORY
 SECTIONS {
   /* LCD */
   framebuffer = ORIGIN(framebuffer_mem);
-  
+
+  .kseg0_static_data :
+  {
+  } > kseg0_program_mem
+
+
   /* Boot Sections */
   .reset _RESET_ADDR :
   {

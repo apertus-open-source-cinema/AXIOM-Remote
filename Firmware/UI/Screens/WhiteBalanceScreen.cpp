@@ -8,10 +8,8 @@
 
 #include "../../GlobalSettings.h"
 
-#include "../../Media/Icons/home_icon.h"
-
 WhiteBalanceScreen::WhiteBalanceScreen(IUSBDevice* usbDevice) :
-    IScreen(usbDevice), _cancelButton("Cancel"), _addPresetButton("Add"), _setButton("Set"), _homeButton((Icon*)&home)
+    IScreen(usbDevice), _cancelButton("Cancel"), _addPresetButton("Add"), _setButton("Set")
 {
     _cancelButton.SetHandler(&CancelButtonHandler);
     _bottomButtonBar.SetButton(ButtonPosition::Left, &_cancelButton);
@@ -54,16 +52,16 @@ void WhiteBalanceScreen::Drawheader(IPainter* painter)
 // TODO: Evaluate if menu system should be sent as another argument
 void WhiteBalanceScreen::CancelButtonHandler(void* sender)
 {
-    WhiteBalanceScreen* screen = static_cast<WhiteBalanceScreen*>(sender);
-    // IMenuSystem* menuSystem = screen->
-    // menuSystem->SetCurrentScreen(AvailableScreens::MainPage);
+    //WhiteBalanceScreen* screen = static_cast<WhiteBalanceScreen*>(sender);
+    //IMenuSystem* menuSystem = screen->
+    //menuSystem->SetCurrentScreen(AvailableScreens::MainPage);
 }
 
 void WhiteBalanceScreen::SetButtonHandler(void* sender)
 {
-    WhiteBalanceScreen* screen = static_cast<WhiteBalanceScreen*>(sender);
-    // IMenuSystem* menuSystem = screen->GetMenuSystem();
-    // menuSystem->SetCurrentScreen(AvailableScreens::SettingsMenu);
+    //WhiteBalanceScreen* screen = static_cast<WhiteBalanceScreen*>(sender);
+    //IMenuSystem* menuSystem = screen->GetMenuSystem();
+    //menuSystem->SetCurrentScreen(AvailableScreens::SettingsMenu);
 }
 
 void WhiteBalanceScreen::AddPresetButtonHandler(void* sender)

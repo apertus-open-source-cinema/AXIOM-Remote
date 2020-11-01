@@ -10,6 +10,7 @@
 #include "../Widgets/PopUpParameterMenu.h"
 #include "../Widgets/CheckboxMenuItem.h"
 #include "../Screens/ParameterListScreen.h"
+#include "../Screens/NumericValueScreen.h"
 #include "../Widgets/PopUpMenuItem.h"
 
 #include "../ButtonDefinitions.h"
@@ -17,6 +18,9 @@
 #include "../../GlobalSettings.h"
 
 #include "../../../Bootloader/Periphery/USB/IUSBDevice.h"
+#include "../../../Bootloader/Periphery/ILI9341/ILI9341Device.h"
+
+#include "../../CentralDB.h"
 
 //#include <Helpers.h>
 
@@ -52,15 +56,20 @@ class Menu : public IMenu
     ParameterListScreen _parameterListScreen;
     int8_t _parameterListMenuActive;
 
+    NumericValueScreen _numericValueScreen;
+    int8_t _numericValueMenuActive;
+
+    CentralDB* _db;
+
   private:
     // this array of pointers to menuItems allows a menu of up to 64 entries to be filled by inherited class
     MenuItem* _menuItem[64] = {nullptr};
 
   public:
     // TODO: Add assignment of menu system to IMenu
-    explicit Menu(IUSBDevice* cdcDevice) :
+    explicit Menu(IUSBDevice* cdcDevice, CentralDB* centraldb) :
         IMenu(cdcDevice), _menuItemsCount(0), _menuSelectionIndex(0), _maxVisibleItems(7), _popUpParameterMenu(10, 10),
-        _parameterListScreen(cdcDevice)
+        _parameterListScreen(cdcDevice), _numericValueScreen(cdcDevice), _db(centraldb)
     {
         // UNUSED(cdcDevice);
         //_usbDevice = cdcDevice;
@@ -86,6 +95,7 @@ class Menu : public IMenu
 
         _popUpParameterMenuActive = -1;
         _parameterListMenuActive = -1;
+        _numericValueMenuActive = -1;
     }
 
     void AddMenuItem(MenuItem* newMenuItem)
@@ -106,7 +116,7 @@ class Menu : public IMenu
 
     void SetMenuItem(uint8_t index, MenuItem* newMenuItem)
     {
-        if ((index >= 0) && (index < _menuItemsCount))
+        if (index < _menuItemsCount)
         {
             _menuItem[_menuItemsCount] = newMenuItem;
         }
@@ -134,6 +144,9 @@ class Menu : public IMenu
         if (_parameterListMenuActive > -1)
         {
             _parameterListScreen.Draw(painter);
+        } else if (_numericValueMenuActive > -1)
+        {
+            _numericValueScreen.Draw(painter);
         } else
         {
             painter->SetFont(Font::FreeSans9pt7b);
@@ -301,9 +314,23 @@ class Menu : public IMenu
             {
                 _parameterListMenuActive = -1;
             }
+            if (_numericValueMenuActive >= 0)
+            {
+                _numericValueMenuActive = -1;
+            }
+            break;
+        case Button::BUTTON_5_UP:
+            if (_numericValueMenuActive >= 0)
+            {
+                _numericValueScreen.ToggleLiveSet();
+            }
             break;
         case Button::BUTTON_6_UP:
             if (_parameterListMenuActive >= 0)
+            {
+                SelectionPress(menuSystem);
+            }
+            if (_numericValueMenuActive >= 0)
             {
                 SelectionPress(menuSystem);
             }
@@ -341,7 +368,10 @@ class Menu : public IMenu
             return;
         }
 
-        if (_parameterListMenuActive >= 0)
+        if (_numericValueMenuActive >= 0)
+        {
+            _numericValueScreen.DecreaseValueStep();
+        } else if (_parameterListMenuActive >= 0)
         {
             _parameterListScreen.SetHighlighted(_parameterListScreen.GetHighlightIndex() - 1);
         } else if (_popUpParameterMenuActive >= 0)
@@ -365,7 +395,10 @@ class Menu : public IMenu
             return;
         }
 
-        if (_parameterListMenuActive >= 0)
+        if (_numericValueMenuActive >= 0)
+        {
+            _numericValueScreen.IncreaseValueStep();
+        } else if (_parameterListMenuActive >= 0)
         {
             _parameterListScreen.SetHighlighted(_parameterListScreen.GetHighlightIndex() + 1);
         } else if (_popUpParameterMenuActive >= 0)
@@ -388,13 +421,23 @@ class Menu : public IMenu
         {
             return;
         }
-        if (_parameterListMenuActive >= 0)
+
+        if (_numericValueMenuActive >= 0)
+        {
+            _numericValueMenuActive = -1;
+
+            NumericMenuItem* currentNumericMenuItem = (NumericMenuItem*)_menuItem[_menuSelectionIndex];
+            currentNumericMenuItem->SetValue(_numericValueScreen.GetValue());
+            // currentNumericMenuItem->Activate(&currentNumericMenuItem, &_db);
+            currentNumericMenuItem->Activate(&currentNumericMenuItem);
+        } else if (_parameterListMenuActive >= 0)
         {
             _parameterListMenuActive = -1;
 
             ParameterListMenuItem* currentParameterListMenuItem =
                 (ParameterListMenuItem*)_menuItem[_menuSelectionIndex];
             currentParameterListMenuItem->UpdateChoice(_parameterListScreen.GetHighlightIndex());
+            _parameterListScreen.UpdateChoice(_parameterListScreen.GetHighlightIndex());
 
             //_parameterListScreen.SetPressed(_popUpParameterMenu.GetHighlightIndex());
         } else if (_popUpParameterMenuActive >= 0)
@@ -409,7 +452,18 @@ class Menu : public IMenu
         {
             _menuItem[_menuSelectionIndex]->SetPressed(false);
 
-            if (_menuItem[_menuSelectionIndex]->GetMenuType() == MenuItemType::MENU_ITEM_TYPE_LIST)
+            if (_menuItem[_menuSelectionIndex]->GetMenuType() == MenuItemType::MENU_ITEM_TYPE_NUMERIC)
+            {
+                NumericMenuItem* currentNumericMenuItem = (NumericMenuItem*)_menuItem[_menuSelectionIndex];
+                _numericValueScreen.SetRange(currentNumericMenuItem->GetMinRange(),
+                                             currentNumericMenuItem->GetMaxRange());
+                _numericValueScreen.SetValue(currentNumericMenuItem->GetValue());
+                _numericValueScreen.SetSuffix(currentNumericMenuItem->GetSuffix());
+                _numericValueScreen.SetStepSize(currentNumericMenuItem->GetStepSize());
+
+                _numericValueScreen.SetHeader(currentNumericMenuItem->GetLabel());
+                _numericValueMenuActive = _menuSelectionIndex;
+            } else if (_menuItem[_menuSelectionIndex]->GetMenuType() == MenuItemType::MENU_ITEM_TYPE_LIST)
             {
                 ParameterListMenuItem* currentParameterListMenuItem =
                     (ParameterListMenuItem*)_menuItem[_menuSelectionIndex];
@@ -435,7 +489,10 @@ class Menu : public IMenu
                 int8_t displaySelectionIndex = _menuSelectionIndex - _menuOffset;
                 _popUpParameterMenuActive = _menuSelectionIndex;
                 _popUpParameterMenu.SetPosition(200, 29 + (displaySelectionIndex + 1) * 30);
-            } else
+            } else if (_menuItem[_menuSelectionIndex]->GetMenuType() == MenuItemType::MENU_ITEM_TYPE_CHECKBOX)
+            {
+                _menuItem[_menuSelectionIndex]->ExecuteAction(menuSystem);
+            } else if (_menuItem[_menuSelectionIndex]->GetMenuType() == MenuItemType::MENU_ITEM_TYPE_LINK)
             {
                 _menuItem[_menuSelectionIndex]->ExecuteAction(menuSystem);
             }

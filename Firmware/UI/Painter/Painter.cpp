@@ -311,24 +311,24 @@ void Painter::DrawImage(const uint8_t* data, uint16_t x, uint16_t y, uint16_t wi
 
 /*************** Draw Icon ***************/
 
-void Painter::DrawIcon(const uint8_t* data, uint16_t x, uint16_t y, uint16_t width, uint16_t height, uint16_t color)
+void Painter::DrawIcon(const Icon* image, uint16_t x, uint16_t y, uint16_t color)
 {
     int b = 0;
 
-    for (uint16_t yIndex = 0; yIndex < height; yIndex++)
+    for (uint16_t yIndex = 0; yIndex < image->Height; yIndex++)
     {
         uint16_t yPos = y + yIndex;
 
-        for (uint16_t xIndex = 0; xIndex < width;)
+        for (uint16_t xIndex = 0; xIndex < image->Width;)
         {
-            xIndex = ProcessByte(data[b], x, xIndex, yPos, height, color);
+            xIndex = ProcessByte(image->Data[b], x, xIndex, yPos, image->Height, color);
             b++;
         }
     }
 
     if (_debugPainter != nullptr)
     {
-        _debugPainter->DrawIcon(this, data, x, y, width, height, color);
+        _debugPainter->DrawIcon(this, image, x, y, color);
     }
 }
 

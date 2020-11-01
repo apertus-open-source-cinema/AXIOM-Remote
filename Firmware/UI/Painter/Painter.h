@@ -11,6 +11,8 @@
 
 #include "../Color565.h"
 
+#include "../Widgets/Icon.h"
+
 class Painter : public IPainter
 {
     GFXfont _fontList[4];
@@ -23,10 +25,9 @@ class Painter : public IPainter
     IDebugPainter* _debugPainter;
 
   protected:
+    volatile uint16_t* _framebuffer;
     uint16_t _framebufferWidth;
     uint16_t _framebufferHeight;
-
-    volatile uint16_t* _framebuffer;
 
   public:
     Painter(volatile uint16_t* framebuffer, uint16_t framebufferWidth, uint8_t framebufferHeight);
@@ -57,8 +58,7 @@ class Painter : public IPainter
     // Misc
     void DrawImage(const uint8_t* data, uint16_t x, uint16_t y, uint16_t width, uint16_t height) override;
     void DrawPixel(uint16_t x, uint16_t y, uint16_t color) override;
-    virtual void DrawIcon(const uint8_t* data, uint16_t x, uint16_t y, uint16_t width, uint16_t height,
-                          uint16_t color) override;
+    virtual void DrawIcon(const Icon* image, uint16_t x, uint16_t y, uint16_t color) override;
     uint16_t ProcessByte(uint8_t data, uint16_t x, uint16_t xIndex, uint16_t yPos, uint16_t height, uint16_t color);
     void Fill(uint16_t fillColor) override;
     void Dim() override;

@@ -8,7 +8,6 @@
 #include "../MenuDefinitions.h"
 #include "../IMenuSystem.h"
 #include "../../GlobalSettings.h"
-#include "../../Media/Icons/home_icon.h"
 
 class IPainter;
 class IUSBDevice;
@@ -30,12 +29,10 @@ class ParameterListScreen : public IScreen
     char const* _optionLabels[64];
     uint8_t _optionLineHeight;
 
-    ImageButton _homeButton;
-
   public:
     explicit ParameterListScreen(IUSBDevice* usbDevice) :
-        IScreen(usbDevice), _cancelButton("Cancel"), _setButton("Set"), _homeButton((Icon*)&home),
-        _header("Parameter Menu")
+        IScreen(usbDevice), _cancelButton("Cancel"), _setButton("Set"),
+        _header("Parameter Menu"), _previousOptionIndex(0), _highlightIndex(0)
     {
         //_cancelButton.SetHandler(&CancelButtonHandler);
         _bottomButtonBar.SetButton(ButtonPosition::Left, &_cancelButton);
@@ -44,8 +41,6 @@ class ParameterListScreen : public IScreen
         //_setButton.SetHandler(&SetButtonHandler);
         _setButton.SetBackgroundColor((uint16_t)Color565::AXIOM_Orange);
         _bottomButtonBar.SetButton(ButtonPosition::Right, &_setButton);
-
-        _leftButtonBar.SetButton(ButtonPosition::Left, &_homeButton);
 
         _backgroundColor = (uint16_t)Color565::White;
         _textColor = (uint16_t)Color565::Black;
@@ -67,9 +62,16 @@ class ParameterListScreen : public IScreen
 
     void SetHighlighted(uint8_t highlightindex)
     {
-        if ((highlightindex >= 0) && (highlightindex < _optionCount))
+        if (highlightindex < _optionCount)
         {
             _highlightIndex = highlightindex;
+        }
+    }
+    void UpdateChoice(uint8_t choiceindex)
+    {
+        if (choiceindex < _optionCount)
+        {
+            _previousOptionIndex = choiceindex;
         }
     }
 
@@ -80,7 +82,7 @@ class ParameterListScreen : public IScreen
 
     void SetHeader(const char* value)
     {
-        _header = const_cast<char*>(value);
+        _header = value;
     }
 
     char const* GetHeader()
@@ -101,7 +103,6 @@ class ParameterListScreen : public IScreen
         {
             if (_highlightIndex == i)
             {
-
                 painter->DrawFillRectangle(20, heightcenter, GlobalSettings::LCDWidth - 40, _optionLineHeight,
                                            _highlightColor);
                 painter->DrawText(30, heightcenter + fontcenter, _optionLabels[i], _highlightTextColor,
@@ -110,6 +111,21 @@ class ParameterListScreen : public IScreen
             {
                 painter->DrawText(30, heightcenter + (i - _highlightIndex) * _optionLineHeight + fontcenter,
                                   _optionLabels[i], _textColor, TextAlign::TEXT_ALIGN_LEFT, GlobalSettings::LCDWidth);
+            }
+
+            // draw current (old) value indicator circle
+            if (_previousOptionIndex == i)
+            {
+                if (_highlightIndex == i)
+                {
+                    painter->DrawFillCircle(25,
+                                            heightcenter + (i - _highlightIndex) * _optionLineHeight + fontcenter - 7,
+                                            3, _highlightTextColor);
+                } else
+                {
+                    painter->DrawFillCircle(
+                        25, heightcenter + (i - _highlightIndex) * _optionLineHeight + fontcenter - 7, 3, _textColor);
+                }
             }
         }
 

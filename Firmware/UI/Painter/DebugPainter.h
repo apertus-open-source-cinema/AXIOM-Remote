@@ -19,14 +19,14 @@ class DebugPainter : public IDebugPainter
         _enabled = value;
     }
 
-    void DrawIcon(IPainter* painter, const uint8_t* data, uint16_t x, uint16_t y, uint16_t width, uint16_t height, uint16_t color) override
+    void DrawIcon(IPainter* painter, const Icon* image, uint16_t x, uint16_t y, uint16_t color) override
     {
         if (!_enabled)
         {
             return;
         }
 
-        painter->DrawRectangle(x, y, width, height, (uint16_t)Color565::Red);
+        painter->DrawRectangle(x, y, image->Width, image->Height, (uint16_t)Color565::Red);
     }
 
     void DrawText(IPainter* painter, uint16_t x, uint16_t y, const char* text, uint16_t color, TextAlign align,
