@@ -1,14 +1,150 @@
 #include "VirtualUI.h"
 
+#include <fstream>
 #include <iostream>
+#include <vector>
+
+#include <GL/gl3w.h>
+
+#include <SDL2/SDL_image.h>
 
 // Additional controls, like knob
 #include "imgui_modules/imgui_user.h"
 
 #include "UI/ButtonDefinitions.h"
 
+#include "HelpersGL.h"
+
 uint8_t value = 0;
 uint8_t lastValue = 0;
+uint8_t brightnessLevel = 0;
+
+VirtualUI::VirtualUI(SDL_Window* window, uint32_t displayTextureID) :
+    _window(window), _io(ImGui::GetIO()), _displayTextureID(reinterpret_cast<ImTextureID>(displayTextureID))
+{
+    SDL_Surface* surface = IMG_Load("images/knob_clean.png");
+    _knobTextureID = CreateGLTextureFromSurface(surface);
+    SDL_FreeSurface(surface);
+
+    surface = IMG_Load("images/camera_preview.png");
+    _cameraPreviewTextureID = CreateGLTextureFromSurface(surface);
+    SDL_FreeSurface(surface);
+
+    CreateFBO();
+
+    uint32_t vertexArrayID;
+    glGenVertexArrays(1, &vertexArrayID);
+    glBindVertexArray(vertexArrayID);
+    static const float vertexBufferData[] = {
+        -1.0f, -1.0f, 0.0f, //
+        1.0f,  -1.0f, 0.0f, //
+        -1.0f, 1.0f,  0.0f, //
+        -1.0f, 1.0f,  0.0f, //
+        1.0f,  -1.0f, 0.0f, //
+        1.0f,  1.0f,  0.0f, //
+    };
+
+    // Generate 1 buffer, put the resulting identifier in vertexbuffer
+    glGenBuffers(1, &_vertexbuffer);
+    // The following commands will talk about our 'vertexbuffer' buffer
+    glBindBuffer(GL_ARRAY_BUFFER, _vertexbuffer);
+    // Give our vertices to OpenGL.
+    glBufferData(GL_ARRAY_BUFFER, sizeof(vertexBufferData), vertexBufferData, GL_STATIC_DRAW);
+
+    CompileShader();
+}
+
+void VirtualUI::CreateFBO()
+{
+    glGenFramebuffers(1, &_cameraFBO);
+    glBindFramebuffer(GL_FRAMEBUFFER, _cameraFBO);
+
+    _fboTextureID = CreateGLTexture(800, 480);
+
+    // Set "renderedTexture" as our colour attachment #0
+    glFramebufferTexture(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, _fboTextureID, 0);
+
+    // Set the list of draw buffers.
+    uint32_t drawBuffers[1] = {GL_COLOR_ATTACHMENT0};
+    glDrawBuffers(1, drawBuffers); // "1" is the size of DrawBuffers
+
+    if (glCheckFramebufferStatus(GL_FRAMEBUFFER) != GL_FRAMEBUFFER_COMPLETE)
+    {
+        std::cout << "FBO init failed" << std::endl;
+    }
+}
+
+void VirtualUI::CompileShader()
+{
+    uint32_t vertexShaderID = glCreateShader(GL_VERTEX_SHADER);
+    LoadShader("shaders/camera_preview.vert", vertexShaderID);
+    std::cout << "Vert ID: " << vertexShaderID << std::endl;
+
+    uint32_t fragmentShaderID = glCreateShader(GL_FRAGMENT_SHADER);
+    LoadShader("shaders/camera_preview.frag", fragmentShaderID);
+    std::cout << "Frag ID: " << fragmentShaderID << std::endl;
+
+    //     // Link the program
+    std::cout << "Linking program" << std::endl;
+
+    _programID = glCreateProgram();
+    glAttachShader(_programID, vertexShaderID);
+    glAttachShader(_programID, fragmentShaderID);
+    glLinkProgram(_programID);
+    // glUseProgram(_programID);
+
+    std::cout << "Program ID: " << _programID << std::endl;
+
+    // Check the program
+    // ShowShaderLog(_programID);
+
+    GLint success = GL_TRUE;
+    glValidateProgram(_programID);
+    glGetProgramiv(_programID, GL_VALIDATE_STATUS, &success);
+    if (success == GL_FALSE)
+    {
+        GLchar errorLog[1024] = {0};
+        glGetProgramInfoLog(_programID, 1024, nullptr, errorLog);
+        int i = 0;
+        // checkForErrors();
+        // Log::error(std::string() + "error validating shader program; Details: " + errorLog);
+    }
+
+    _cameraPreviewTexture = glGetUniformLocation(_programID, "cameraPreviewTexture");
+    _analogGainShader = glGetUniformLocation(_programID, "analogGain");
+}
+
+uint32_t VirtualUI::LoadShader(std::string shaderFilePath, uint32_t shaderID)
+{
+    std::ifstream shaderStream(shaderFilePath, std::ios::in);
+    std::string shaderCode((std::istreambuf_iterator<char>(shaderStream)), std::istreambuf_iterator<char>());
+
+    // Compile shader
+    std::cout << "Compiling shader: " << shaderFilePath << std::endl;
+    char const* sourcePointer = shaderCode.c_str();
+
+    glShaderSource(shaderID, 1, &sourcePointer, nullptr);
+    glCompileShader(shaderID);
+
+    // Check shader compilation
+    ShowShaderLog(shaderID);
+
+    return shaderID;
+}
+
+void VirtualUI::ShowShaderLog(uint32_t shaderID)
+{
+    int result = 0;
+    int infoLogLength = 0;
+    glGetShaderiv(shaderID, GL_COMPILE_STATUS, &result);
+    glGetShaderiv(shaderID, GL_INFO_LOG_LENGTH, &infoLogLength);
+    if (infoLogLength > 0)
+    {
+        std::vector<char> shaderErrorMessage(infoLogLength + 1);
+        glGetShaderInfoLog(shaderID, infoLogLength, nullptr, shaderErrorMessage.data());
+        std::cout << std::string(begin(shaderErrorMessage), end(shaderErrorMessage)) << std::endl;
+    }
+}
 
 bool RenderButton(std::string name, uint16_t x, uint16_t y, uint16_t width = 40, uint16_t height = 30)
 {
@@ -17,23 +153,25 @@ bool RenderButton(std::string name, uint16_t x, uint16_t y, uint16_t width = 40,
 }
 
 // Grabbed from the ImGui examples
-void ShowZoomTooltip(const ImGuiIO& io, ImTextureID displayTextureID)
+void VirtualUI::ShowZoomTooltip()
 {
     ImVec2 pos = ImGui::GetCursorScreenPos();
     int16_t textureWidth = 320;
     int16_t textureHeight = 240;
-    ImGui::Image(displayTextureID, ImVec2(textureWidth, textureHeight), ImVec2(0, 0), ImVec2(1, 1),
-                 ImVec4(1.0f, 1.0f, 1.0f, 1.0f), ImVec4(1.0f, 1.0f, 1.0f, 0.5f));
+
+    ImGui::Image(_displayTextureID, ImVec2(textureWidth, textureHeight), ImVec2(0, 0), ImVec2(1, 1),
+    
+    ImVec4(1.0f, 1.0f, 1.0f, 1.0f), ImVec4(1.0f, 1.0f, 1.0f, 0.5f));
     if (ImGui::IsItemHovered())
     {
         ImGui::BeginTooltip();
         float region_sz = 48.0f;
-        float region_x = io.MousePos.x - pos.x - region_sz * 0.5f;
+        float region_x = _io.MousePos.x - pos.x - region_sz * 0.5f;
         if (region_x < 0.0f)
             region_x = 0.0f;
         else if (region_x > textureWidth - region_sz)
             region_x = textureWidth - region_sz;
-        float region_y = io.MousePos.y - pos.y - region_sz * 0.5f;
+        float region_y = _io.MousePos.y - pos.y - region_sz * 0.5f;
         if (region_y < 0.0f)
             region_y = 0.0f;
         else if (region_y > textureHeight - region_sz)
@@ -43,26 +181,109 @@ void ShowZoomTooltip(const ImGuiIO& io, ImTextureID displayTextureID)
         ImGui::Text("Max: (%.2f, %.2f)", region_x + region_sz, region_y + region_sz);
         ImVec2 uv0 = ImVec2((region_x) / textureWidth, (region_y) / textureHeight);
         ImVec2 uv1 = ImVec2((region_x + region_sz) / textureWidth, (region_y + region_sz) / textureHeight);
-        ImGui::Image(displayTextureID, ImVec2(region_sz * zoom, region_sz * zoom), uv0, uv1,
+        ImGui::Image(_displayTextureID, ImVec2(region_sz * zoom, region_sz * zoom), uv0, uv1,
                      ImVec4(1.0f, 1.0f, 1.0f, 1.0f), ImVec4(1.0f, 1.0f, 1.0f, 0.5f));
         ImGui::EndTooltip();
     }
 }
+void VirtualUI::RenderCameraPreviewToFBO()
+{
+    glBindFramebuffer(GL_FRAMEBUFFER, _cameraFBO);
+    glViewport(0, 0, 800, 480);
 
-void RenderUI(SDL_Window* window, const ImGuiIO& io, ImTextureID knobTextureID, ImTextureID displayTextureID,
-              Button& button, int8_t& knobValue, bool& debugOverlayEnabled)
+    glUseProgram(_programID);
+
+    // Bind our texture in Texture Unit 0
+    glActiveTexture(GL_TEXTURE0);
+    glBindTexture(GL_TEXTURE_2D, _cameraPreviewTextureID);
+    // Set our "renderedTexture" sampler to use Texture Unit 0
+    glUniform1i(_cameraPreviewTexture, 0);
+
+    float brightness = 0.1f * brightnessLevel;
+    std::cout << "Brightness: " << brightness << std::endl;
+    glUniform1f(_analogGainShader, brightness);
+
+    // glBindTexture(GL_TEXTURE_2D, 1); // (GLuint)(intptr_t)cmd->TextureId - 1);
+
+    // glDrawElements(GL_TRIANGLES, (GLsizei)cmd->ElemCount, sizeof(ImDrawIdx) == 2 ? GL_UNSIGNED_SHORT :
+    // GL_UNSIGNED_INT,
+    //                (void*)cmd->IdxOffset);
+    // 1st attribute buffer : vertices
+    glEnableVertexAttribArray(0);
+    glBindBuffer(GL_ARRAY_BUFFER, _vertexbuffer);
+    glVertexAttribPointer(0,        // attribute 0. No particular reason for 0, but must match the layout in the shader.
+                          3,        // size
+                          GL_FLOAT, // type
+                          GL_FALSE, // normalized?
+                          0,        // stride
+                          (void*)0  // array buffer offset
+    );
+    // Draw the triangle !
+    glDrawArrays(GL_TRIANGLES, 0, 6); // Starting from vertex 0; 3 vertices total -> 1 triangle
+    glDisableVertexAttribArray(0);
+
+    // Disable shader and FBO to revert to previous OpenGL state
+    glUseProgram(0);
+    glBindFramebuffer(GL_FRAMEBUFFER, 0);
+}
+
+void RenderOverlay()
+{
+    // Set darker background and semi-transparent
+    ImGui::PushStyleColor(ImGuiCol_ChildBg, (ImU32)ImColor(16, 16, 16, 196));
+
+    ImGui::BeginChild("Parameters", ImVec2(120.0f, 400.0f), true);
+
+    ImGui::SetWindowFontScale(1.5f);
+
+    ImGui::SetCursorPos(ImVec2(20, 20));
+    ImGui::PushStyleVar(ImGuiStyleVar_FrameBorderSize, 1.0f);
+    ImGui::Text("WB\nN/A");
+    ImGui::PopStyleVar();
+
+    ImGui::SetCursorPos(ImVec2(20, 120));
+    ImGui::Text("Analog\nGain\nN/A");
+
+    ImGui::SetCursorPos(ImVec2(20, 220));
+    ImGui::Text("Digital\nGain\nN/A");
+
+    ImGui::PopStyleColor();
+    ImGui::EndChild();
+}
+
+void VirtualUI::RenderVirtualCamera()
+{
+    RenderCameraPreviewToFBO();
+
+    ImGui::GetStyle().WindowPadding = ImVec2(0, 0);
+    ImGui::SetNextWindowPos(ImVec2(0, 480));
+    ImGui::SetNextWindowSize(ImVec2(800, 480));
+    // ImGui::SetNextWindowContentSize(ImVec2(800, 480));
+
+    ImGui::Begin("Image2", nullptr, ImGuiWindowFlags_NoDecoration);
+    ImGui::PushStyleVar(ImGuiStyleVar_WindowRounding, 0.0f);
+
+    ImGui::Image(reinterpret_cast<ImTextureID>(_fboTextureID), ImVec2(800, 480), ImVec2(0, 0), ImVec2(1, 1),
+                 ImVec4(1.0f, 1.0f, 1.0f, 1.0f), ImVec4(1.0f, 1.0f, 1.0f, 0.5f));
+
+    ImGui::SetCursorPos(ImVec2(650, 30));
+    RenderOverlay();
+
+    ImGui::PopStyleVar();
+    ImGui::End();
+}
+
+void VirtualUI::RenderUI(Button& button, int8_t& knobValue, bool& debugOverlayEnabled)
 {
     ImGui_ImplOpenGL3_NewFrame();
-    ImGui_ImplSDL2_NewFrame(window);
+    ImGui_ImplSDL2_NewFrame(_window);
 
     ImGui::NewFrame();
 
     ImGui::SetNextWindowPos(ImVec2(0, 0));
     ImGui::SetNextWindowSize(ImVec2(800, 480));
     ImGui::PushStyleColor(ImGuiCol_WindowBg, (ImU32)ImColor(96, 96, 96, 255));
-    ImGui::Begin("Image", nullptr,
-                 ImGuiWindowFlags_NoTitleBar | ImGuiWindowFlags_NoResize | ImGuiWindowFlags_NoMove |
-                     ImGuiWindowFlags_NoScrollbar | ImGuiWindowFlags_NoScrollWithMouse);
+    ImGui::Begin("Image", nullptr, ImGuiWindowFlags_NoDecoration);
 
     if (RenderButton("1", 434, 70))
     {
@@ -116,59 +337,17 @@ void RenderUI(SDL_Window* window, const ImGuiIO& io, ImTextureID knobTextureID, 
         button = Button::BUTTON_12_UP;
     }
 
-    // ImGui::SetCursorPos(ImVec2(450, 70));
-    // ImGui::Button("1", ImVec2(40, 30));
-    // ImGui::SetCursorPos(ImVec2(530, 70));
-    // ImGui::Button("2", ImVec2(40, 30));
-    // ImGui::SetCursorPos(ImVec2(610, 70));
-    // ImGui::Button("3", ImVec2(40, 30));
-
-    // ImGui::SetCursorPos(ImVec2(450, 380));
-    // ImGui::Button("4", ImVec2(40, 30));
-    // ImGui::SetCursorPos(ImVec2(530, 380));
-    // ImGui::Button("5", ImVec2(40, 30));
-    // ImGui::SetCursorPos(ImVec2(610, 380));
-    // ImGui::Button("6", ImVec2(40, 30));
-
-    /*ImGui::SetCursorPos(ImVec2(740, 170));
-    ImGui::Button("10", ImVec2(40, 30));
-    ImGui::SetCursorPos(ImVec2(740, 220));
-    ImGui::Button("11", ImVec2(40, 30));
-    ImGui::SetCursorPos(ImVec2(740, 270));
-    ImGui::Button("12", ImVec2(40, 30));*/
-
-    /*ImGui::SetCursorPos(ImVec2(340, 170));
-    if (ImGui::Button("7", ImVec2(40, 30)))
-    {
-      //     // main_page_button_press_handler(ButtonID::P7);
-      //     main_menu_button_press_handler(ButtonID::P7);
-      //     btn_P7_pressed = true;
-      //   } else {
-      //     // main_page_button_release_handler(ButtonID::P7);
-      //     if (btn_P7_pressed) {
-      //       main_menu_button_release_handler(ButtonID::P7);
-      //       btn_P7_pressed = false;
-      //     }
-      //   }
-      //   ImGui::SetCursorPos(ImVec2(340, 220));
-      //   if (ImGui::Button("8", ImVec2(40, 30))) {
-      //     main_menu_button_press_handler(ButtonID::P8);
-      //     btn_P8_pressed = true;
-      //   } else {
-      //     if (btn_P8_pressed) {
-      //       main_menu_button_release_handler(ButtonID::P8);
-      //       btn_P8_pressed = false;
-      //     }
-    }
-
-    ImGui::SetCursorPos(ImVec2(340, 270));
-    ImGui::Button("9", ImVec2(40, 30));*/
-
-    bool knobPressed = false;
     ImGui::SetCursorPos(ImVec2(60, 140));
-    if (ImGui::Knob("Test123", value, knobPressed, (ImTextureID)knobTextureID))
+    bool knobPressed = false;
+    if (ImGui::Knob("Test123", value, knobPressed, (ImTextureID)_knobTextureID))
     {
         knobValue = -(value - lastValue);
+        brightnessLevel -= knobValue;
+        if(brightnessLevel < 0)
+        {
+            brightnessLevel = 0;
+        }
+
         lastValue = value;
     }
     if (knobPressed)
@@ -177,13 +356,17 @@ void RenderUI(SDL_Window* window, const ImGuiIO& io, ImTextureID knobTextureID, 
     }
 
     ImGui::SetCursorPos(ImVec2(400, 120));
-    ShowZoomTooltip(io, displayTextureID);
+    ShowZoomTooltip();
 
     ImGui::SetCursorPos(ImVec2(50, 400));
     ImGui::ToggleButton("debug_overlay_switch", "Debug overlay", &debugOverlayEnabled);
 
     ImGui::PopStyleColor();
+
     ImGui::End();
+
+    RenderVirtualCamera();
+
     ImGui::EndFrame();
 
     ImGui::Render();
