@@ -17,6 +17,8 @@ class VirtualUI {
 
     uint32_t _knobTextureID;
     ImTextureID _displayTextureID;
+    ImTextureID _backgroundTextureID;
+
     uint32_t _cameraPreviewTextureID;
 
     uint32_t _programID;
@@ -42,7 +44,7 @@ class VirtualUI {
     void RenderVirtualCamera();
 
   public:
-    VirtualUI(SDL_Window* window, uint32_t displayTextureID);
+    VirtualUI(SDL_Window* window, uint32_t displayTextureID, uint32_t backgroundTextureID);
 
     void RenderUI(Button& button, int8_t& knobValue, bool& debugOverlayEnabled);
 };

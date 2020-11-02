@@ -9,6 +9,7 @@
 #include <memory>
 
 #include <SDL2/SDL.h>
+#include <SDL2/SDL_image.h>
 
 #include <GL/gl3w.h>
 #include <GL/gl.h>
@@ -171,6 +172,10 @@ int main(int argc, char* argv[])
 
     uint32_t displayTextureID = CreateGLTexture(FRAMEBUFFER_WIDTH, FRAMEBUFFER_HEIGHT, nullptr, GL_RGB, GL_NEAREST);
 
+    SDL_Surface* backgroundTexture = IMG_Load("images/enclosure.png");
+    uint32_t backgroundTextureID = CreateGLTextureFromSurface(backgroundTexture);
+    SDL_FreeSurface(backgroundTexture);
+
     SDL_Rect texture_rect;
     texture_rect.x = 400;                    // the x coordinate
     texture_rect.y = 120;                    // the y coordinate
@@ -195,7 +200,7 @@ int main(int argc, char* argv[])
     int8_t knobValue = 0;
     bool debugOverlayEnabled = false;
 
-    std::shared_ptr<VirtualUI> virtualUI = std::make_shared<VirtualUI>(window, displayTextureID);
+    std::shared_ptr<VirtualUI> virtualUI = std::make_shared<VirtualUI>(window, displayTextureID, backgroundTextureID);
 
     bool appIsRunning = true;
     const int frames = 60;

@@ -19,8 +19,9 @@ uint8_t value = 0;
 uint8_t lastValue = 0;
 uint8_t brightnessLevel = 0;
 
-VirtualUI::VirtualUI(SDL_Window* window, uint32_t displayTextureID) :
-    _window(window), _io(ImGui::GetIO()), _displayTextureID(reinterpret_cast<ImTextureID>(displayTextureID))
+VirtualUI::VirtualUI(SDL_Window* window, uint32_t displayTextureID, uint32_t backgroundTextureID) :
+    _window(window), _io(ImGui::GetIO()), _displayTextureID(reinterpret_cast<ImTextureID>(displayTextureID)),
+    _backgroundTextureID(reinterpret_cast<ImTextureID>(backgroundTextureID))
 {
     SDL_Surface* surface = IMG_Load("images/knob_clean.png");
     _knobTextureID = CreateGLTextureFromSurface(surface);
@@ -160,8 +161,8 @@ void VirtualUI::ShowZoomTooltip()
     int16_t textureHeight = 240;
 
     ImGui::Image(_displayTextureID, ImVec2(textureWidth, textureHeight), ImVec2(0, 0), ImVec2(1, 1),
-    
-    ImVec4(1.0f, 1.0f, 1.0f, 1.0f), ImVec4(1.0f, 1.0f, 1.0f, 0.5f));
+                 ImVec4(1.0f, 1.0f, 1.0f, 1.0f), ImVec4(1.0f, 1.0f, 1.0f, 0.5f));
+                 
     if (ImGui::IsItemHovered())
     {
         ImGui::BeginTooltip();
@@ -260,7 +261,7 @@ void VirtualUI::RenderVirtualCamera()
     ImGui::SetNextWindowSize(ImVec2(800, 480));
     // ImGui::SetNextWindowContentSize(ImVec2(800, 480));
 
-    ImGui::Begin("Image2", nullptr, ImGuiWindowFlags_NoDecoration);
+    ImGui::Begin("Image2", nullptr, ImGuiWindowFlags_NoDecoration | ImGuiWindowFlags_NoBackground);
     ImGui::PushStyleVar(ImGuiStyleVar_WindowRounding, 0.0f);
 
     ImGui::Image(reinterpret_cast<ImTextureID>(_fboTextureID), ImVec2(800, 480), ImVec2(0, 0), ImVec2(1, 1),
@@ -282,8 +283,12 @@ void VirtualUI::RenderUI(Button& button, int8_t& knobValue, bool& debugOverlayEn
 
     ImGui::SetNextWindowPos(ImVec2(0, 0));
     ImGui::SetNextWindowSize(ImVec2(800, 480));
-    ImGui::PushStyleColor(ImGuiCol_WindowBg, (ImU32)ImColor(96, 96, 96, 255));
-    ImGui::Begin("Image", nullptr, ImGuiWindowFlags_NoDecoration);
+    ImGui::PushStyleColor(ImGuiCol_WindowBg, (ImU32)ImColor(255, 0, 0, 255));
+    ImGui::PushStyleVar(ImGuiStyleVar_WindowPadding, ImVec2(0, 0));
+    ImGui::Begin("Image", nullptr, ImGuiWindowFlags_NoDecoration | ImGuiWindowFlags_NoBackground);
+
+    ImGui::SetCursorPos(ImVec2(0, 0));
+    ImGui::Image(_backgroundTextureID, ImVec2(800, 480));
 
     if (RenderButton("1", 434, 70))
     {
@@ -337,13 +342,13 @@ void VirtualUI::RenderUI(Button& button, int8_t& knobValue, bool& debugOverlayEn
         button = Button::BUTTON_12_UP;
     }
 
-    ImGui::SetCursorPos(ImVec2(60, 140));
+    ImGui::SetCursorPos(ImVec2(40, 140));
     bool knobPressed = false;
     if (ImGui::Knob("Test123", value, knobPressed, (ImTextureID)_knobTextureID))
     {
         knobValue = -(value - lastValue);
         brightnessLevel -= knobValue;
-        if(brightnessLevel < 0)
+        if (brightnessLevel < 0)
         {
             brightnessLevel = 0;
         }
@@ -355,12 +360,13 @@ void VirtualUI::RenderUI(Button& button, int8_t& knobValue, bool& debugOverlayEn
         button = Button::E_1_UP;
     }
 
-    ImGui::SetCursorPos(ImVec2(400, 120));
+    ImGui::SetCursorPos(ImVec2(338, 119));
     ShowZoomTooltip();
 
     ImGui::SetCursorPos(ImVec2(50, 400));
     ImGui::ToggleButton("debug_overlay_switch", "Debug overlay", &debugOverlayEnabled);
 
+    ImGui::PopStyleVar();
     ImGui::PopStyleColor();
 
     ImGui::End();
