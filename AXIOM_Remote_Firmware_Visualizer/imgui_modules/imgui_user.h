@@ -166,5 +166,39 @@ void ToggleButton(const char* str_id, const char* label, bool* v)
     ImU32 col32text = ImGui::GetColorU32(ImGuiCol_Text);
     draw_list->AddText(textpos, col32text, label);
 }
+
+bool CustomImageButton(const char* id, ImTextureID texture_id, ImTextureID pressed_texture_id, const ImVec2& size,
+                       const ImVec2& uv0 = ImVec2(0, 0), const ImVec2& uv1 = ImVec2(1, 1))
+{
+    ImGuiContext& g = *GImGui;
+    ImGuiWindow* window = GetCurrentWindow();
+    if (window->SkipItems)
+        return false;
+
+    const ImRect bb(window->DC.CursorPos, window->DC.CursorPos + size);
+    ItemSize(bb);
+    if (!ItemAdd(bb, GetID(id)))
+    {
+        return false;
+    }
+
+    bool hovered, held;
+    bool pressed = ButtonBehavior(bb, GetID(id), &hovered, &held, ImGuiButtonFlags_PressedOnClickRelease);
+
+    ImU32 tint = IM_COL32(200, 200, 200, 255);
+    if (hovered)
+    {
+        tint = IM_COL32(255, 255, 255, 255);
+    }
+    if (hovered && held)
+    {
+        texture_id = pressed_texture_id;
+    }
+
+    window->DrawList->AddImage(texture_id, bb.Min, bb.Max, uv0, uv1, tint);
+
+    return pressed;
+}
+
 } // namespace ImGui
 #endif // IMGUI_USER_H

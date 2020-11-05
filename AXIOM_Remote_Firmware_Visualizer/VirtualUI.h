@@ -18,6 +18,11 @@ class VirtualUI {
     uint32_t _knobTextureID;
     ImTextureID _displayTextureID;
     ImTextureID _backgroundTextureID;
+    
+    ImTextureID _buttonTextureID;
+    ImTextureID _buttonPressedTextureID;
+    ImTextureID _buttonRoundTextureID;
+    ImTextureID _buttonRoundPressedTextureID;
 
     uint32_t _cameraPreviewTextureID;
 
