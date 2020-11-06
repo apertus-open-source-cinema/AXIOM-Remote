@@ -43,6 +43,22 @@ VirtualUI::VirtualUI(SDL_Window* window, uint32_t displayTextureID, uint32_t bac
     _buttonRoundPressedTextureID = (ImTextureID)CreateGLTextureFromSurface(buttonTexture);
     SDL_FreeSurface(buttonTexture);
 
+    buttonTexture = IMG_Load("images/photo_button_normal.png");
+    _buttonPhotoTextureID = (ImTextureID)CreateGLTextureFromSurface(buttonTexture);
+    SDL_FreeSurface(buttonTexture);
+
+    buttonTexture = IMG_Load("images/photo_button_pressed.png");
+    _buttonPhotoPressedTextureID = (ImTextureID)CreateGLTextureFromSurface(buttonTexture);
+    SDL_FreeSurface(buttonTexture);
+
+    buttonTexture = IMG_Load("images/record_button_normal.png");
+    _buttonRecordTextureID = (ImTextureID)CreateGLTextureFromSurface(buttonTexture);
+    SDL_FreeSurface(buttonTexture);
+
+    buttonTexture = IMG_Load("images/record_button_pressed.png");
+    _buttonRecordPressedTextureID = (ImTextureID)CreateGLTextureFromSurface(buttonTexture);
+    SDL_FreeSurface(buttonTexture);
+
     surface = IMG_Load("images/camera_preview.png");
     _cameraPreviewTextureID = CreateGLTextureFromSurface(surface);
     SDL_FreeSurface(surface);
@@ -299,9 +315,9 @@ void VirtualUI::RenderUI(Button& button, int8_t& knobValue, bool& debugOverlayEn
 
     ImGui::SetNextWindowPos(ImVec2(0, 0));
     ImGui::SetNextWindowSize(ImVec2(800, 480));
-    ImGui::PushStyleColor(ImGuiCol_WindowBg, (ImU32)ImColor(255, 0, 0, 255));
+    ImGui::PushStyleColor(ImGuiCol_WindowBg, (ImU32)ImColor(0, 255, 0, 255));
     ImGui::PushStyleVar(ImGuiStyleVar_WindowPadding, ImVec2(0, 0));
-    ImGui::Begin("Image", nullptr, ImGuiWindowFlags_NoDecoration | ImGuiWindowFlags_NoBackground);
+    ImGui::Begin("Image", nullptr, ImGuiWindowFlags_NoDecoration);
 
     ImGui::SetCursorPos(ImVec2(0, 0));
     ImGui::Image(_backgroundTextureID, ImVec2(800, 480));
@@ -324,6 +340,12 @@ void VirtualUI::RenderUI(Button& button, int8_t& knobValue, bool& debugOverlayEn
         button = Button::E_1_UP;
     }
 
+    uint16_t buttonPhotoWidth = 46;
+    uint16_t buttonPhotoHeight = 46;
+
+    uint16_t buttonRecordWidth = 68;
+    uint16_t buttonRecordHeight = 68;
+
     uint16_t buttonWidth = 46;
     uint16_t buttonHeight = 30;
 
@@ -332,12 +354,28 @@ void VirtualUI::RenderUI(Button& button, int8_t& knobValue, bool& debugOverlayEn
 
     // Special buttons (top-left)
     ImGui::SetCursorPos(ImVec2(55, 22));
-    if (ImGui::CustomImageButton("SPECIAL_1", _buttonTextureID, _buttonPressedTextureID, ImVec2(buttonWidth, buttonHeight)))
+    if (ImGui::CustomImageButton("SPECIAL_1", _buttonTextureID, _buttonPressedTextureID,
+                                 ImVec2(buttonWidth, buttonHeight)))
     {
     }
 
     ImGui::SetCursorPos(ImVec2(148, 22));
-    if (ImGui::CustomImageButton("SPECIAL_2", _buttonTextureID, _buttonPressedTextureID, ImVec2(buttonWidth, buttonHeight)))
+    if (ImGui::CustomImageButton("SPECIAL_2", _buttonTextureID, _buttonPressedTextureID,
+                                 ImVec2(buttonWidth, buttonHeight)))
+    {
+    }
+
+    // Button PHOTO
+    ImGui::SetCursorPos(ImVec2(236, 367));
+    if (ImGui::CustomImageButton("PHOTO", _buttonPhotoTextureID, _buttonPhotoPressedTextureID,
+                                 ImVec2(buttonPhotoWidth, buttonPhotoHeight)))
+    {
+    }
+
+    // Button RECORD
+    ImGui::SetCursorPos(ImVec2(225, 56));
+    if (ImGui::CustomImageButton("PHOTO", _buttonRecordTextureID, _buttonRecordPressedTextureID,
+                                 ImVec2(buttonRecordWidth, buttonRecordHeight)))
     {
     }
 
@@ -379,41 +417,46 @@ void VirtualUI::RenderUI(Button& button, int8_t& knobValue, bool& debugOverlayEn
         button = Button::BUTTON_6_UP;
     }
 
-
     // Button 7-9
     ImGui::SetCursorPos(ImVec2(249, 170));
-    if (ImGui::CustomImageButton("7", _buttonRoundTextureID, _buttonRoundPressedTextureID, ImVec2(buttonRoundWidth, buttonRoundHeight)))
+    if (ImGui::CustomImageButton("7", _buttonRoundTextureID, _buttonRoundPressedTextureID,
+                                 ImVec2(buttonRoundWidth, buttonRoundHeight)))
     {
         button = Button::BUTTON_7_UP;
     }
 
     ImGui::SetCursorPos(ImVec2(249, 225));
-    if (ImGui::CustomImageButton("8", _buttonRoundTextureID, _buttonRoundPressedTextureID, ImVec2(buttonRoundWidth, buttonRoundHeight)))
+    if (ImGui::CustomImageButton("8", _buttonRoundTextureID, _buttonRoundPressedTextureID,
+                                 ImVec2(buttonRoundWidth, buttonRoundHeight)))
     {
         button = Button::BUTTON_8_UP;
     }
 
     ImGui::SetCursorPos(ImVec2(249, 281));
-    if (ImGui::CustomImageButton("9", _buttonRoundTextureID, _buttonRoundPressedTextureID, ImVec2(buttonRoundWidth, buttonRoundHeight)))
+    if (ImGui::CustomImageButton("9", _buttonRoundTextureID, _buttonRoundPressedTextureID,
+                                 ImVec2(buttonRoundWidth, buttonRoundHeight)))
     {
         button = Button::BUTTON_9_UP;
     }
 
     // Button 10-12
     ImGui::SetCursorPos(ImVec2(717, 170));
-    if (ImGui::CustomImageButton("10", _buttonRoundTextureID, _buttonRoundPressedTextureID, ImVec2(buttonRoundWidth, buttonRoundHeight)))
+    if (ImGui::CustomImageButton("10", _buttonRoundTextureID, _buttonRoundPressedTextureID,
+                                 ImVec2(buttonRoundWidth, buttonRoundHeight)))
     {
         button = Button::BUTTON_10_UP;
     }
 
     ImGui::SetCursorPos(ImVec2(717, 225));
-    if (ImGui::CustomImageButton("8", _buttonRoundTextureID, _buttonRoundPressedTextureID, ImVec2(buttonRoundWidth, buttonRoundHeight)))
+    if (ImGui::CustomImageButton("8", _buttonRoundTextureID, _buttonRoundPressedTextureID,
+                                 ImVec2(buttonRoundWidth, buttonRoundHeight)))
     {
         button = Button::BUTTON_11_UP;
     }
 
     ImGui::SetCursorPos(ImVec2(717, 281));
-    if (ImGui::CustomImageButton("9", _buttonRoundTextureID, _buttonRoundPressedTextureID, ImVec2(buttonRoundWidth, buttonRoundHeight)))
+    if (ImGui::CustomImageButton("9", _buttonRoundTextureID, _buttonRoundPressedTextureID,
+                                 ImVec2(buttonRoundWidth, buttonRoundHeight)))
     {
         button = Button::BUTTON_12_UP;
     }
