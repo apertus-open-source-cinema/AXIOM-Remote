@@ -17,7 +17,7 @@
 
 uint8_t value = 0;
 uint8_t lastValue = 0;
-uint8_t brightnessLevel = 0;
+uint8_t brightnessLevel = 16;
 
 VirtualUI::VirtualUI(SDL_Window* window, uint32_t displayTextureID, uint32_t backgroundTextureID) :
     _window(window), _io(ImGui::GetIO()), _displayTextureID(reinterpret_cast<ImTextureID>(displayTextureID)),
@@ -315,9 +315,9 @@ void VirtualUI::RenderUI(Button& button, int8_t& knobValue, bool& debugOverlayEn
 
     ImGui::SetNextWindowPos(ImVec2(0, 0));
     ImGui::SetNextWindowSize(ImVec2(800, 480));
-    ImGui::PushStyleColor(ImGuiCol_WindowBg, (ImU32)ImColor(0, 255, 0, 255));
+    ImGui::PushStyleColor(ImGuiCol_WindowBg, (ImU32)ImColor(0, 0, 0, 255));
     ImGui::PushStyleVar(ImGuiStyleVar_WindowPadding, ImVec2(0, 0));
-    ImGui::Begin("Image", nullptr, ImGuiWindowFlags_NoDecoration);
+    ImGui::Begin("Image", nullptr, ImGuiWindowFlags_NoDecoration | ImGuiWindowFlags_NoBackground);
 
     ImGui::SetCursorPos(ImVec2(0, 0));
     ImGui::Image(_backgroundTextureID, ImVec2(800, 480));
