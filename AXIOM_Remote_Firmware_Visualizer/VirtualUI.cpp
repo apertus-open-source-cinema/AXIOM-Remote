@@ -339,7 +339,7 @@ void VirtualUI::RenderUI(Button& button, int8_t& knobValue, bool& debugOverlayEn
 
     ImGui::SetCursorPos(ImVec2(40, 140));
     bool knobPressed = false;
-    if (ImGui::Knob("Test123", value, knobPressed, (ImTextureID)_knobTextureID, 20))
+    if (ImGui::Knob("Test123", value, knobPressed, (ImTextureID)_knobTextureID))
     {
         knobValue = -(value - lastValue);
         brightnessLevel -= knobValue;

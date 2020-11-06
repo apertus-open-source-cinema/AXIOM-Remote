@@ -19,7 +19,7 @@ static const float knobPressableDiameter = 0.3 * knobDiameter;
 static const float knobPressableRadiusSquared = 0.25 * knobPressableDiameter * knobPressableDiameter;
 static const ImVec2 knobPressableSize = ImVec2(knobPressableDiameter, knobPressableDiameter);
 static const float knobPressableOffset = 0.50 * (knobDiameter - knobPressableDiameter);
-static const float knobValueTextOffset = -20.0f; // slight offset to prevent overlap with knob
+static const float knobValueTextOffset = 200.0f; // slight offset to prevent overlap with knob
 
 static float oldAngle = 0;
 
