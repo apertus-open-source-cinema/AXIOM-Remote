@@ -59,6 +59,14 @@ VirtualUI::VirtualUI(SDL_Window* window, uint32_t displayTextureID, uint32_t bac
     _buttonRecordPressedTextureID = (ImTextureID)CreateGLTextureFromSurface(buttonTexture);
     SDL_FreeSurface(buttonTexture);
 
+    buttonTexture = IMG_Load("images/LED_off.png");
+    _ledTextureID = (ImTextureID)CreateGLTextureFromSurface(buttonTexture);
+    SDL_FreeSurface(buttonTexture);
+
+    buttonTexture = IMG_Load("images/LED_glow2.png");
+    _ledGlowTextureID = (ImTextureID)CreateGLTextureFromSurface(buttonTexture);
+    SDL_FreeSurface(buttonTexture);
+
     surface = IMG_Load("images/camera_preview.png");
     _cameraPreviewTextureID = CreateGLTextureFromSurface(surface);
     SDL_FreeSurface(surface);
@@ -306,6 +314,13 @@ void VirtualUI::RenderVirtualCamera()
     ImGui::End();
 }
 
+void EnableBlending(const ImDrawList* parent_list, const ImDrawCmd* cmd) { glBlendFunc(GL_ONE, GL_ONE); }
+
+void DisableBlending(const ImDrawList* parent_list, const ImDrawCmd* cmd)
+{
+    glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+}
+
 void VirtualUI::RenderUI(Button& button, int8_t& knobValue, bool& debugOverlayEnabled)
 {
     ImGui_ImplOpenGL3_NewFrame();
@@ -324,7 +339,7 @@ void VirtualUI::RenderUI(Button& button, int8_t& knobValue, bool& debugOverlayEn
 
     ImGui::SetCursorPos(ImVec2(40, 140));
     bool knobPressed = false;
-    if (ImGui::Knob("Test123", value, knobPressed, (ImTextureID)_knobTextureID))
+    if (ImGui::Knob("Test123", value, knobPressed, (ImTextureID)_knobTextureID, 20))
     {
         knobValue = -(value - lastValue);
         brightnessLevel -= knobValue;
@@ -466,6 +481,23 @@ void VirtualUI::RenderUI(Button& button, int8_t& knobValue, bool& debugOverlayEn
 
     ImGui::SetCursorPos(ImVec2(50, 400));
     ImGui::ToggleButton("debug_overlay_switch", "Debug overlay", &debugOverlayEnabled);
+
+    // Render RGB LEDs
+    ImGui::SetCursorPos(ImVec2(63, 70));
+    ImGui::Image(_ledTextureID, ImVec2(30, 29), ImVec2(0, 0), ImVec2(1, 1), ImColor(255, 255, 255, 255));
+
+    ImGui::SetCursorPos(ImVec2(63, 109));
+    ImGui::Image(_ledTextureID, ImVec2(30, 29), ImVec2(0, 0), ImVec2(1, 1), ImColor(255, 255, 255, 255));
+
+    ImGui::GetWindowDrawList()->ImDrawList::AddCallback(EnableBlending, nullptr);
+
+    ImGui::SetCursorPos(ImVec2(58, 65));
+    ImGui::Image(_ledGlowTextureID, ImVec2(40, 40), ImVec2(0, 0), ImVec2(1, 1), ImColor(255, 32, 32, 255));
+
+    ImGui::SetCursorPos(ImVec2(58, 104));
+    ImGui::Image(_ledGlowTextureID, ImVec2(40, 40), ImVec2(0, 0), ImVec2(1, 1), ImColor(64, 64, 255, 255));
+
+    ImGui::GetWindowDrawList()->ImDrawList::AddCallback(DisableBlending, nullptr);
 
     ImGui::PopStyleVar();
     ImGui::PopStyleColor();
