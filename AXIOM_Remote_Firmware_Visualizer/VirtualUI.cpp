@@ -63,7 +63,7 @@ VirtualUI::VirtualUI(SDL_Window* window, uint32_t displayTextureID, uint32_t bac
     _ledTextureID = (ImTextureID)CreateGLTextureFromSurface(buttonTexture);
     SDL_FreeSurface(buttonTexture);
 
-    buttonTexture = IMG_Load("images/LED_glow2.png");
+    buttonTexture = IMG_Load("images/LED_glow.png");
     _ledGlowTextureID = (ImTextureID)CreateGLTextureFromSurface(buttonTexture);
     SDL_FreeSurface(buttonTexture);
 
