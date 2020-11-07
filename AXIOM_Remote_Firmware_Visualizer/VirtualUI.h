@@ -49,10 +49,16 @@ class VirtualUI {
     void CompileShader();
     void ShowShaderLog(uint32_t shaderID);
 
+    void LoadTextures();
+
     void CreateFBO();
 
     void RenderCameraPreviewToFBO();
     void RenderVirtualCamera();
+
+    void RenderKnob(int8_t& knobValue, Button& button);
+    void RenderButtons(Button& button);
+    void RenderLED(int8_t glowValue);
 
   public:
     VirtualUI(SDL_Window* window, uint32_t displayTextureID, uint32_t backgroundTextureID);

@@ -23,6 +23,34 @@ VirtualUI::VirtualUI(SDL_Window* window, uint32_t displayTextureID, uint32_t bac
     _window(window), _io(ImGui::GetIO()), _displayTextureID(reinterpret_cast<ImTextureID>(displayTextureID)),
     _backgroundTextureID(reinterpret_cast<ImTextureID>(backgroundTextureID))
 {
+    LoadTextures();
+
+    CreateFBO();
+
+    uint32_t vertexArrayID;
+    glGenVertexArrays(1, &vertexArrayID);
+    glBindVertexArray(vertexArrayID);
+    static const float vertexBufferData[] = {
+        -1.0f, -1.0f, 0.0f, //
+        1.0f,  -1.0f, 0.0f, //
+        -1.0f, 1.0f,  0.0f, //
+        -1.0f, 1.0f,  0.0f, //
+        1.0f,  -1.0f, 0.0f, //
+        1.0f,  1.0f,  0.0f, //
+    };
+
+    // Generate 1 buffer, put the resulting identifier in vertexbuffer
+    glGenBuffers(1, &_vertexbuffer);
+    // The following commands will talk about our 'vertexbuffer' buffer
+    glBindBuffer(GL_ARRAY_BUFFER, _vertexbuffer);
+    // Give our vertices to OpenGL.
+    glBufferData(GL_ARRAY_BUFFER, sizeof(vertexBufferData), vertexBufferData, GL_STATIC_DRAW);
+
+    CompileShader();
+}
+
+void VirtualUI::LoadTextures()
+{
     SDL_Surface* surface = IMG_Load("images/knob.png");
     _knobTextureID = CreateGLTextureFromSurface(surface);
     SDL_FreeSurface(surface);
@@ -70,29 +98,6 @@ VirtualUI::VirtualUI(SDL_Window* window, uint32_t displayTextureID, uint32_t bac
     surface = IMG_Load("images/camera_preview.png");
     _cameraPreviewTextureID = CreateGLTextureFromSurface(surface);
     SDL_FreeSurface(surface);
-
-    CreateFBO();
-
-    uint32_t vertexArrayID;
-    glGenVertexArrays(1, &vertexArrayID);
-    glBindVertexArray(vertexArrayID);
-    static const float vertexBufferData[] = {
-        -1.0f, -1.0f, 0.0f, //
-        1.0f,  -1.0f, 0.0f, //
-        -1.0f, 1.0f,  0.0f, //
-        -1.0f, 1.0f,  0.0f, //
-        1.0f,  -1.0f, 0.0f, //
-        1.0f,  1.0f,  0.0f, //
-    };
-
-    // Generate 1 buffer, put the resulting identifier in vertexbuffer
-    glGenBuffers(1, &_vertexbuffer);
-    // The following commands will talk about our 'vertexbuffer' buffer
-    glBindBuffer(GL_ARRAY_BUFFER, _vertexbuffer);
-    // Give our vertices to OpenGL.
-    glBufferData(GL_ARRAY_BUFFER, sizeof(vertexBufferData), vertexBufferData, GL_STATIC_DRAW);
-
-    CompileShader();
 }
 
 void VirtualUI::CreateFBO()
@@ -187,11 +192,11 @@ void VirtualUI::ShowShaderLog(uint32_t shaderID)
     }
 }
 
-bool RenderButton(std::string name, uint16_t x, uint16_t y, uint16_t width = 40, uint16_t height = 30)
+/*bool RenderButton(std::string name, uint16_t x, uint16_t y, uint16_t width = 40, uint16_t height = 30)
 {
     ImGui::SetCursorPos(ImVec2(x, y));
     return ImGui::Button(name.c_str(), ImVec2(width, height));
-}
+}*/
 
 // Grabbed from the ImGui examples
 void VirtualUI::ShowZoomTooltip()
@@ -314,29 +319,8 @@ void VirtualUI::RenderVirtualCamera()
     ImGui::End();
 }
 
-void EnableBlending(const ImDrawList* parent_list, const ImDrawCmd* cmd) { glBlendFunc(GL_ONE, GL_ONE); }
-
-void DisableBlending(const ImDrawList* parent_list, const ImDrawCmd* cmd)
+void VirtualUI::RenderKnob(int8_t& knobValue, Button& button)
 {
-    glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
-}
-
-void VirtualUI::RenderUI(Button& button, int8_t& knobValue, bool& debugOverlayEnabled)
-{
-    ImGui_ImplOpenGL3_NewFrame();
-    ImGui_ImplSDL2_NewFrame(_window);
-
-    ImGui::NewFrame();
-
-    ImGui::SetNextWindowPos(ImVec2(0, 0));
-    ImGui::SetNextWindowSize(ImVec2(800, 480));
-    ImGui::PushStyleColor(ImGuiCol_WindowBg, (ImU32)ImColor(0, 0, 0, 255));
-    ImGui::PushStyleVar(ImGuiStyleVar_WindowPadding, ImVec2(0, 0));
-    ImGui::Begin("Image", nullptr, ImGuiWindowFlags_NoDecoration | ImGuiWindowFlags_NoBackground);
-
-    ImGui::SetCursorPos(ImVec2(0, 0));
-    ImGui::Image(_backgroundTextureID, ImVec2(800, 480));
-
     ImGui::SetCursorPos(ImVec2(40, 140));
     bool knobPressed = false;
     if (ImGui::Knob("Test123", value, knobPressed, (ImTextureID)_knobTextureID))
@@ -354,7 +338,10 @@ void VirtualUI::RenderUI(Button& button, int8_t& knobValue, bool& debugOverlayEn
     {
         button = Button::E_1_UP;
     }
+}
 
+void VirtualUI::RenderButtons(Button& button)
+{
     uint16_t buttonPhotoWidth = 46;
     uint16_t buttonPhotoHeight = 46;
 
@@ -475,29 +462,67 @@ void VirtualUI::RenderUI(Button& button, int8_t& knobValue, bool& debugOverlayEn
     {
         button = Button::BUTTON_12_UP;
     }
+}
 
-    ImGui::SetCursorPos(ImVec2(337, 119));
-    ShowZoomTooltip();
+void EnableBlending(const ImDrawList* parent_list, const ImDrawCmd* cmd) { glBlendFunc(GL_ONE, GL_ONE); }
 
-    ImGui::SetCursorPos(ImVec2(50, 400));
-    ImGui::ToggleButton("debug_overlay_switch", "Debug overlay", &debugOverlayEnabled);
+void DisableBlending(const ImDrawList* parent_list, const ImDrawCmd* cmd)
+{
+    glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+}
 
-    // Render RGB LEDs
+// Render RGB LEDs
+void VirtualUI::RenderLED(int8_t glowValue)
+{
+    // Render off state
     ImGui::SetCursorPos(ImVec2(63, 70));
     ImGui::Image(_ledTextureID, ImVec2(30, 29), ImVec2(0, 0), ImVec2(1, 1), ImColor(255, 255, 255, 255));
 
     ImGui::SetCursorPos(ImVec2(63, 109));
     ImGui::Image(_ledTextureID, ImVec2(30, 29), ImVec2(0, 0), ImVec2(1, 1), ImColor(255, 255, 255, 255));
 
+
+    // Render LED light
     ImGui::GetWindowDrawList()->ImDrawList::AddCallback(EnableBlending, nullptr);
 
     ImGui::SetCursorPos(ImVec2(58, 65));
-    ImGui::Image(_ledGlowTextureID, ImVec2(40, 40), ImVec2(0, 0), ImVec2(1, 1), ImColor(255, 32, 32, 255));
+    ImGui::Image(_ledGlowTextureID, ImVec2(40, 40), ImVec2(0, 0), ImVec2(1, 1), ImColor(255, 32, 32, 255 - glowValue));
 
     ImGui::SetCursorPos(ImVec2(58, 104));
-    ImGui::Image(_ledGlowTextureID, ImVec2(40, 40), ImVec2(0, 0), ImVec2(1, 1), ImColor(64, 64, 255, 255));
+    ImGui::Image(_ledGlowTextureID, ImVec2(40, 40), ImVec2(0, 0), ImVec2(1, 1), ImColor(64, 64, 255, glowValue));
 
     ImGui::GetWindowDrawList()->ImDrawList::AddCallback(DisableBlending, nullptr);
+}
+
+int glowValue = 0;
+
+void VirtualUI::RenderUI(Button& button, int8_t& knobValue, bool& debugOverlayEnabled)
+{
+    ImGui_ImplOpenGL3_NewFrame();
+    ImGui_ImplSDL2_NewFrame(_window);
+
+    ImGui::NewFrame();
+
+    ImGui::SetNextWindowPos(ImVec2(0, 0));
+    ImGui::SetNextWindowSize(ImVec2(800, 480));
+    ImGui::PushStyleColor(ImGuiCol_WindowBg, (ImU32)ImColor(0, 0, 0, 255));
+    ImGui::PushStyleVar(ImGuiStyleVar_WindowPadding, ImVec2(0, 0));
+    ImGui::Begin("Image", nullptr, ImGuiWindowFlags_NoDecoration | ImGuiWindowFlags_NoBackground);
+
+    ImGui::SetCursorPos(ImVec2(0, 0));
+    ImGui::Image(_backgroundTextureID, ImVec2(800, 480));
+
+    RenderKnob(knobValue, button);
+    RenderButtons(button);
+
+    glowValue += knobValue;
+    RenderLED(glowValue);
+
+    ImGui::SetCursorPos(ImVec2(337, 119));
+    ShowZoomTooltip();
+
+    ImGui::SetCursorPos(ImVec2(50, 400));
+    ImGui::ToggleButton("debug_overlay_switch", "Debug overlay", &debugOverlayEnabled);
 
     ImGui::PopStyleVar();
     ImGui::PopStyleColor();
