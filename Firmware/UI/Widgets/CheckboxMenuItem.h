@@ -43,7 +43,8 @@ class CheckBoxMenuItem : public MenuItem
         painter->DrawText(_x + 5, _y + _verticalLabelOffset, _label, _currentTextColor, TextAlign::TEXT_ALIGN_LEFT, 0);
 
         //Conditional statement for Checkbox Draw Fuction using ternary operator 
-        (_checkboxValue) ? painter->DrawIcon(&checkboxtrue_icon, _x + 235 , _y + _verticalLabelOffset - 17, _currentTextColor) : painter->DrawIcon(&checkboxfalse_icon, _x + 235 , _y + _verticalLabelOffset - 17, _currentTextColor);
+        auto checkbox = (_checkboxValue) ? checkboxtrue_icon : checkboxfalse_icon;
+        painter->DrawIcon(&checkbox, _x + 235 , _y + _verticalLabelOffset - 17, _currentTextColor);
         
 
     }
