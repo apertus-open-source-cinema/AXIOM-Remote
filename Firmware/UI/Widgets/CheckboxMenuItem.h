@@ -2,6 +2,8 @@
 #define CHECKBOXMENUITEM_H
 
 #include "MenuItem.h"
+#include "../../../Firmware/Media/Icons/checkboxfalse_icon.h"
+#include "../../../Firmware/Media/Icons/checkboxtrue_icon.h"
 
 class IPainter;
 
@@ -40,15 +42,10 @@ class CheckBoxMenuItem : public MenuItem
         // Label
         painter->DrawText(_x + 5, _y + _verticalLabelOffset, _label, _currentTextColor, TextAlign::TEXT_ALIGN_LEFT, 0);
 
-        // value
-        const char* stateText = "off";
-        if (_checkboxValue)
-        {
-            stateText = "on";
-        }
+        //Conditional statement for Checkbox Draw Fuction using ternary operator 
+        (_checkboxValue) ? painter->DrawIcon(&checkboxtrue_icon, _x + 235 , _y + _verticalLabelOffset - 17, _currentTextColor) : painter->DrawIcon(&checkboxfalse_icon, _x + 235 , _y + _verticalLabelOffset - 17, _currentTextColor);
+        
 
-        painter->DrawText(_x + 180, _y + _verticalLabelOffset, stateText, _currentTextColor,
-                          TextAlign::TEXT_ALIGN_RIGHT, 80);
     }
 
     void ExecuteAction(IMenuSystem* menuSystem) override
