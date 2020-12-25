@@ -89,7 +89,7 @@ A simple ASCII based line prototcol is currently envisioned (not implemented yet
 
 Format:
 ```
-Xyyyzz FIELDS...
+Xyyyy(<RS>FIELD)*<EOT>zz<NUL>
 ```
 
 where `X` indicates the request type, currently
@@ -100,18 +100,20 @@ where `X` indicates the request type, currently
 
 Get / set requests are initiated by the remote and answered asynchronously by the beta with a `R`
 
-`yyy` is a alphanumeric id, for example a counter formatted in hex counting up
-`zz` is the CRC8 (polynomial `0x7`, initial value `0x0`) in hex of everything coming after that, including the RS and the EOT (end of transmission - ASCII code 0x04)) character indicating the end of the message.
-and `FIELDS` is a RS (Record Seperator - ASCII code 0x1E) seperated list of fields
+`yyyy` is a alphanumeric id, for example a counter formatted in hex counting up
 
-for replies the id matches the id of the (get or set) request
+`zz` is the CRC8 (polynomial `0x7`, initial value `0x0`) in hex of everything, including the RS and the EOT (end of transmission - ASCII code 0x04) character.
+
+After the id a variable number of fields can follow. Each field is prefixed by RS and can contain any byte but RS (ASCII code 0x1E) and EOT (ASCII code 0x04). The end of the fields is indicated by EOT and the end of the message (after the two CRC bytes) is indicated by NUL (ASCII code 0x00).
+
+For replies the id matches the id of the (get or set) request. The replies are allowed to occur out of order.
 
 example:
 ```
-[remote to beta] G123459 analog_gain
-[remote to beta] S1235FB analog_gain 5
-[beta to remote] R12352F ERR set 4
-[beta to remote] R12344B OK 1
+[remote to beta] G0000<RS>analog_gain<EOT>35<NUL>
+[remote to beta] G0001<RS>analog_gain<EOT>d0<NUL>
+[beta to remote] R0001<RS>OK<RS>1.2<EOT>eb<NUL>
+[beta to remote] R0000<RS>OK<RS>1.4<EOT>ec<NUL>
 ```
 
 The remote should use a timeout of `1s` for long running requests.

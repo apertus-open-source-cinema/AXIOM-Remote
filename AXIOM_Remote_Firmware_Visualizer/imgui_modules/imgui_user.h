@@ -11,6 +11,7 @@ namespace ImGui {
 static const float fullCircleRad = 2 * M_PI;
 static const float tick = fullCircleRad / 12; // 30°, 12 -> possible detents of real rotary encoder
 static const float halfP = static_cast<float>(M_PI) / 2.0f;
+
 // Knob dimensions
 static const float knobDiameter = 200.0f;
 static const float knobRadius = knobDiameter * 0.5f;

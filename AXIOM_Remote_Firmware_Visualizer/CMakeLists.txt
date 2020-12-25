@@ -29,6 +29,8 @@ FILE(GLOB GL3W_SOURCES "${CMAKE_SOURCE_DIR}/3rdParty/gl3w/GL/gl3w.c")
 FILE(GLOB FIRMWARE_SOURCES "${CMAKE_CURRENT_SOURCE_DIR}/../Firmware/UI/*.cpp"
                            "${CMAKE_CURRENT_SOURCE_DIR}/../Firmware/UI/Painter/*.cpp"
                            "${CMAKE_CURRENT_SOURCE_DIR}/../Firmware/UI/Screens/*.cpp"
+                           "${CMAKE_CURRENT_SOURCE_DIR}/../Firmware/CentralDB.cpp"
+                           "${CMAKE_CURRENT_SOURCE_DIR}/../Firmware/CentralDBObserver.cpp"
                            "${CMAKE_CURRENT_SOURCE_DIR}/../Firmware/GlobalSettings.cpp")
 MESSAGE(STATUS "Firmware files: ${FIRMWARE_SOURCES}")
 
@@ -40,6 +42,7 @@ SET(VISUALIZER_SOURCES Main.cpp VirtualUI.cpp imgui_modules/imgui_impl_sdl.cpp i
 
 # Copy image folder to build folder
 file(COPY images DESTINATION ${CMAKE_BINARY_DIR})
+file(COPY shaders DESTINATION ${CMAKE_BINARY_DIR})
 
 ADD_EXECUTABLE(${PROJECT_NAME} ${FIRMWARE_SOURCES} ${IMGUI_SOURCES} ${GL3W_SOURCES} ${VISUALIZER_SOURCES}) # ${BOOTLOADER_SOURCES})
 TARGET_LINK_LIBRARIES(${PROJECT_NAME} ${SDL2_LIBRARIES} SDL2_image GL dl)
