@@ -4,7 +4,6 @@
 #include "IButton.h"
 #include "../Painter/Painter.h"
 #include "Icon.h"
-//#include "../../Media/Icons/home_icon.h"
 
 class ToggleButton : public IButton
 {
@@ -22,19 +21,9 @@ class ToggleButton : public IButton
     uint16_t _currentTextColor;
     uint16_t _currentBackgroundColor;
 
-<<<<<<< HEAD
     bool _checked;
     const char* _label;
     const Icon* _checkboxIcon;
-||||||| parent of 3c8cf9d... new approach for T1202
-    bool _toggle;
-    const char* _label1;
-    const char* _label2;
-=======
-    bool _checked;
-    const char* _label;
-    Icon* _checkboxIcon;
->>>>>>> 3c8cf9d... new approach for T1202
 
   public:
     explicit ToggleButton(const char* label, uint16_t x = 0, uint16_t y = 0, uint16_t width = 0, uint16_t height = 0) :
@@ -46,14 +35,8 @@ class ToggleButton : public IButton
 
         _backgroundHighlightColor = (uint16_t)Color565::AXIOM_Blue;
         _textHighlightColor = (uint16_t)Color565::Black;
-<<<<<<< HEAD
 
         //_checkboxIcon = &h_icon;
-||||||| parent of 3c8cf9d... new approach for T1202
-=======
-
-        _checkboxIcon = (Icon*)&home;
->>>>>>> 3c8cf9d... new approach for T1202
     }
 
     void SetCornerRadius(uint8_t cornerRadius)
@@ -78,33 +61,9 @@ class ToggleButton : public IButton
         painter->DrawText(_x + _width / 2 - totaltextwidth / 2, _y + textPosY, _label, _currentTextColor,
                           TextAlign::TEXT_ALIGN_LEFT, 0);
 
-<<<<<<< HEAD
         painter->DrawIcon(_checkboxIcon,
                           _x + _width / 2 - totaltextwidth / 2 + painter->GetStringFramebufferWidth(_label) + gap,
                           _y + _height / 2 - _checkboxIcon->Height / 2, _currentTextColor);
-||||||| parent of 3c8cf9d... new approach for T1202
-            painter->DrawText(_x + _width / 2 - totaltextwidth / 2 + painter->GetStringFramebufferWidth(_label1) + gap,
-                              _y + textPosY, _label2, _textDisabledColor, TextAlign::TEXT_ALIGN_LEFT, 0);
-        } else
-        {
-            painter->DrawFillRoundRectangle(_x + _width / 2 - totaltextwidth / 2 +
-                                                painter->GetStringFramebufferWidth(_label1) + gap - rect_margin / 2,
-                                            _y + textPosY - painter->GetCurrentFontHeight() - rect_margin / 2 + 1,
-                                            painter->GetStringFramebufferWidth(_label1) + rect_margin,
-                                            painter->GetCurrentFontHeight() + rect_margin, 2, _TextColor);
-
-            painter->DrawText(_x + _width / 2 - totaltextwidth / 2, _y + textPosY, _label1, _textDisabledColor,
-                              TextAlign::TEXT_ALIGN_LEFT, 0);
-
-            painter->DrawText(_x + _width / 2 - totaltextwidth / 2 + painter->GetStringFramebufferWidth(_label1) + gap,
-                              _y + textPosY, _label2, (uint16_t)Color565::AXIOM_Orange, TextAlign::TEXT_ALIGN_LEFT, 0);
-        }
-=======
-        painter->DrawIcon(_checkboxIcon->Data,
-                          _x + _width / 2 - totaltextwidth / 2 + painter->GetStringFramebufferWidth(_label) + gap,
-                          _y + _height / 2 - _checkboxIcon->Height / 2, _checkboxIcon->Width, _checkboxIcon->Height,
-                          _currentTextColor);
->>>>>>> 3c8cf9d... new approach for T1202
     }
 
     void SetChecked(bool checked)

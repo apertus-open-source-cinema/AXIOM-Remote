@@ -217,7 +217,6 @@ class MenuItem : public IWidget
     {
         _x = x;
         _y = y;
-
         _width = width;
         _height = height;
     }*/
@@ -230,20 +229,10 @@ class MenuItem : public IWidget
     void Draw(IPainter* painter) override
     {
         // Draw background
-<<<<<<< HEAD
         if (_disabled && !(_highlighted))
         {
             painter->DrawStripedRectangle(_x, _y, _width, _height, 0xE71C, 0xD69A, 3, 7);
         } else if (_disabled && _highlighted)
-||||||| parent of 953c54b... T1200 fixed & minor centraldb pogress
-        if (_disabled)
-=======
-        if (_disabled && !(_highlighted))
-            {
-                painter->DrawStripedRectangle(_x, _y, _width, _height, 0xE71C, 0xD69A, 3, 7);
-            }
-        else if (_disabled && _highlighted)
->>>>>>> 953c54b... T1200 fixed & minor centraldb pogress
         {
             painter->DrawStripedRectangle(_x, _y, _width, _height, 0xE71C, 0xD69A, 3, 7);
             painter->DrawFillRectangle(_x, _y, 4, _height, _backgroundHighlightColor);
