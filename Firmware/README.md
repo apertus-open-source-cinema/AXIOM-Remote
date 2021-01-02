@@ -23,17 +23,21 @@ Good User Interface (UI) / User Experience (UX) principles:
 Following terms can help understand the GUI better:
 
 - **Screen**: It refers to the entire content of the LCD visible at one time. Currently, there are two types of screens:
-    - **Page**: A page refers to the display type where the 12 buttons around the TFT are utilized for navigation/operation. Each of the 6 page_items on screen is associated with one of the three buttons above or below the TFT. Pages could be seen like "desktops" on a PC with icons on them to click. (type: page_t)
-    - **Menu**: It refers to a screen with a header (showing breadcrumbs) and 7 menu_items displayed at the same time on the LCD (scrollbars are automatically shown if more than 7 menu items are present. A menu is typically navigated with the rotary/push knob.
+    - **Page**: A page refers to the display type where the 12 buttons around the TFT are utilized for navigation/operation. Each of the 6 page_items on screen is associated with one of the three buttons above or below the TFT. Pages could be seen like "desktops" on a PC with icons on them to click.
+      - **PageItem**: Each item on a page acts like a button and can execute an action or can lead to another page or menu when clicked
+
+    - **Menu**: It refers to a screen with a header (showing breadcrumbs) and 7   menu_items displayed at the same time on the LCD (scrollbars are automatically shown if more than 7 menu items are present. A menu is typically navigated with the rotary/push knob. 
     <img src="../Docs/Images/Structure/menu_illustration.png">
 
-- **PageItem**: Each item on a page acts like a button and can execute an action or can lead to another page or menu when clicked
+      - **MenuItem**: It refers to one option/line in the menu, can be hidden or disabled and can show readonly information, lead to another submenu or contain a boolean, numeric or dropdown list like selection. 
 
-- **MenuItem**: It refers to one option/line in the menu, can be hidden or disabled and can show readonly information, lead to another submenu or contain a boolean, numeric or dropdown list like selection.
+      - **PopUpParameterMenu**: This menu pops up when a menu item containing a dropdown list selection parameter is clicked. A black circle before an item shows the currently active option. A highlighted line shows the current selection/cursor. This menu only works for 7 or less choices and the options strings need to be relatively short to fit the screen area. *(type: PopUpParameterMenu)*
 
-- **ParameterMenu**: This menu pops up when a menu item containing a dropdown list selection parameter is clicked. A black circle before an item shows the currently active option. A highlighted line shows the current selection/cursor.
+        <img src="../Docs/Images/Structure/PopUpParameterMenu.png">
 
-  <img src="../Docs/Images/Structure/ParameterMenu.png">
+    - **ParameterListScreen**: Works like the PopUpParameterMenu but uses the entire screen to display choices. It also works with more than 7 choices. The currently highlighted choice is kept in the center and options scroll through underneath. A black circle before an item shows the currently active option. *(type: ParameterListScreen)*
+
+      <img src="../Docs/Images/Structure/ParameterListScreen.png">
 
 ## Usage instructions
 
