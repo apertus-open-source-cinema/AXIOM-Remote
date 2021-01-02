@@ -27,7 +27,8 @@ Following terms can help understand the GUI better:
       - **PageItem**: Each item on a page acts like a button and can execute an action or can lead to another page or menu when clicked
 
     - **Menu**: It refers to a screen with a header (showing breadcrumbs) and 7   menu_items displayed at the same time on the LCD (scrollbars are automatically shown if more than 7 menu items are present. A menu is typically navigated with the rotary/push knob. 
-    <img src="../Docs/Images/Structure/menu_illustration.png">
+
+      <img src="../Docs/Images/Structure/menu_illustration.png">
 
       - **MenuItem**: It refers to one option/line in the menu, can be hidden or disabled and can show readonly information, lead to another submenu or contain a boolean, numeric or dropdown list like selection. 
 
