@@ -30,7 +30,9 @@ Following terms can help understand the GUI better:
 
 - **MenuItem**: It refers to one option/line in the menu, can be hidden or disabled and can show readonly information, lead to another submenu or contain a boolean, numeric or dropdown list like selection.
 
-- **ParameterMenu**: This menu pops up when a menu item containing a numeric or dropdown list selection parameter is clicked.
+- **ParameterMenu**: This menu pops up when a menu item containing a dropdown list selection parameter is clicked. A black circle before an item shows the currently active option. A highlighted line shows the current selection/cursor.
+
+  <img src="../Docs/Images/Structure/ParameterMenu.png">
 
 ## Usage instructions
 
