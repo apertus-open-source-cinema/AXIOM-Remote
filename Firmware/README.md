@@ -24,7 +24,8 @@ Following terms can help understand the GUI better:
 
 - **Screen**: It refers to the entire content of the LCD visible at one time. Currently, there are two types of screens:
     - **Page**: A page refers to the display type where the 12 buttons around the TFT are utilized for navigation/operation. Each of the 6 page_items on screen is associated with one of the three buttons above or below the TFT. Pages could be seen like "desktops" on a PC with icons on them to click. (type: page_t)
-    - **Menu**: It refers to a screen with a header (showing breadcrumbs) and 6 menu_items displayed at the same time on the LCD (scrollbars are automatically shown if more than 6 menu items are present. A menu is typically navigated with the rotary/push knob.
+    - **Menu**: It refers to a screen with a header (showing breadcrumbs) and 7 menu_items displayed at the same time on the LCD (scrollbars are automatically shown if more than 7 menu items are present. A menu is typically navigated with the rotary/push knob.
+    <img src="../Docs/Images/Structure/menu_illustration.png">
 
 - **PageItem**: Each item on a page acts like a button and can execute an action or can lead to another page or menu when clicked
 
@@ -58,7 +59,7 @@ Following terms can help understand the GUI better:
 
 The drawing origin (X,Y = 0,0) is located in the top left corner. The LCD is used in landscape (widescreen) mode.
 
-Currently whole display is updated at once, but in the future we will involve so called _dirty rectangles_ to reduce time which is required to update the screen, to improve the performance and lower the power usage. For this purpose the method _DrawPixel()_ in _Painter_ could store the min and max coordinates of requested drawing operations and when screen update will be called, the data range could be selected based on this coordinates.
+Currently the whole display is updated at once with every frame redraw, but in the future we will involve so called _dirty rectangles_ to reduce time which is required to update the screen, to improve the performance and lower the power usage. For this purpose the method _DrawPixel()_ in _Painter_ could store the min and max coordinates of requested drawing operations and when screen update will be called, the data range could be selected based on this coordinates.
 
 ## Screens
 
@@ -68,7 +69,7 @@ TODO
 
 ### Buttons
 
-There are 12 buttons which are placed around the LCD, 3 on each side (see _Figure 1_), this is also why the ButtonBar has only 3 entries, like left, center and right.
+There are 12 options for "edge buttons" which are placed around the LCD edges, 3 on each side (see _Figure 1_), this is also why the ButtonBar has only 3 entries:left, center and right.
 
 > It can be confusing for left and right bars, but they can be described as _left_ is _top_ and _right_ is _bottom_. Another possibility to change the _ButtonPosition_ enum to _First_, _Second_ and _Third_
 
@@ -87,7 +88,7 @@ This would allow rendering the required bars automatically. If we have to deacti
 
 ## Communication Protocol
 
-A simple ASCII based line prototcol is currently envisioned (not implemented yet):
+To communicate between AXIOM Remote and AXIOM Camera a simple ASCII based line prototcol is currently envisioned (not implemented yet):
 
 Format:
 ```
