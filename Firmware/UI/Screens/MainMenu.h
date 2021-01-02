@@ -51,7 +51,7 @@ class MainMenu : public Menu
         AddMenuItem(&_menuItems[1]);
 
         _lcdBrightness = NumericMenuItem(_db, "LCD Brightness", 100, 0, 100, 5, "%");
-        //_lcdBrightness.SetHandler(&LCDBrightnessMenuItemHandler);
+        _lcdBrightness.SetHandler(&LCDBrightnessMenuItemHandler);
         AddMenuItem(&_lcdBrightness);
         _lcdBrightness.attachObserver(); // TODO: add which value to subscribe to as parameter
 

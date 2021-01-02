@@ -10,7 +10,8 @@ class IPainter;
 
 class NumericMenuItem : public MenuItem
 {
-    int16_t _previousvalue; // this item is the "old" selected choice but remains in effcet until the parameter
+    int16_t _previousvalue; // this item is the "old" selected choice but remains in effcet until the new choice 
+                            // has been made
     int16_t _value;
     int16_t _minRange;
     int16_t _maxRange;
