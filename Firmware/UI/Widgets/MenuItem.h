@@ -20,7 +20,8 @@ enum class MenuItemType
     MENU_ITEM_TYPE_DROPDOWN,
     MENU_ITEM_TYPE_LIST,
     MENU_ITEM_TYPE_CHECKBOX,
-    MENU_ITEM_TYPE_LINK
+    MENU_ITEM_TYPE_LINK,
+    MENU_ITEM_TYPE_NONE
 };
 
 class MenuItem : public IWidget
@@ -57,7 +58,7 @@ class MenuItem : public IWidget
   public:
     MenuItem(CentralDB* centralDB = nullptr, const char* label = "...", bool disabled = false,
              const char* value = nullptr, bool hidden = false, bool pressed = false, bool highlighted = false,
-             MenuItemType type = MenuItemType::MENU_ITEM_TYPE_NUMERIC) :
+             MenuItemType type = MenuItemType::MENU_ITEM_TYPE_NONE) :
         _disabled(disabled),
         _hidden(hidden), _pressed(pressed), _highlighted(highlighted), _label(label), _value(value), _type(type),
         _backgroundColor((uint16_t)Color565::White), _backgroundHighlightColor(RGB565(255, 128, 0)),

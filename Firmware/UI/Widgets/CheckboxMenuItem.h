@@ -41,12 +41,10 @@ class CheckBoxMenuItem : public MenuItem
 
         // Label
         painter->DrawText(_x + 5, _y + _verticalLabelOffset, _label, _currentTextColor, TextAlign::TEXT_ALIGN_LEFT, 0);
-
-        //Conditional statement for Checkbox Draw Fuction using ternary operator 
+         
+        // Value
         auto checkbox = (_checkboxValue) ? checkboxtrue_icon : checkboxfalse_icon;
         painter->DrawIcon(&checkbox, _x + 235 , _y + _verticalLabelOffset - 17, _currentTextColor);
-        
-
     }
 
     void ExecuteAction(IMenuSystem* menuSystem) override
