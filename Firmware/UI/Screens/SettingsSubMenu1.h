@@ -35,8 +35,6 @@ class SettingsSubMenu1 : public Menu
 
         // Added for testing
         _menuItemBack = ScreenLinkMenuItem(_db, "< Up", AvailableScreens::MainMenu, false);
-        /*_menuItemBack.SetMenuType(MenuItemType::MENU_ITEM_TYPE_SCREENLINK);
-        _menuItemBack.SetTargetScreen(AvailableScreens::MainMenu);*/
         AddMenuItem(&_menuItemBack);
 
         _menuItemOpt1 = MenuItem(_db, "Option 1");
