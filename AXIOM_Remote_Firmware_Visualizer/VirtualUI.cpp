@@ -17,18 +17,13 @@
 
 uint8_t value = 0;
 uint8_t lastValue = 0;
-uint8_t brightnessLevel = 0;
+uint8_t brightnessLevel = 16;
 
-VirtualUI::VirtualUI(SDL_Window* window, uint32_t displayTextureID) :
-    _window(window), _io(ImGui::GetIO()), _displayTextureID(reinterpret_cast<ImTextureID>(displayTextureID))
+VirtualUI::VirtualUI(SDL_Window* window, uint32_t displayTextureID, uint32_t backgroundTextureID) :
+    _window(window), _io(ImGui::GetIO()), _displayTextureID(reinterpret_cast<ImTextureID>(displayTextureID)),
+    _backgroundTextureID(reinterpret_cast<ImTextureID>(backgroundTextureID))
 {
-    SDL_Surface* surface = IMG_Load("images/knob_clean.png");
-    _knobTextureID = CreateGLTextureFromSurface(surface);
-    SDL_FreeSurface(surface);
-
-    surface = IMG_Load("images/camera_preview.png");
-    _cameraPreviewTextureID = CreateGLTextureFromSurface(surface);
-    SDL_FreeSurface(surface);
+    LoadTextures();
 
     CreateFBO();
 
@@ -52,6 +47,57 @@ VirtualUI::VirtualUI(SDL_Window* window, uint32_t displayTextureID) :
     glBufferData(GL_ARRAY_BUFFER, sizeof(vertexBufferData), vertexBufferData, GL_STATIC_DRAW);
 
     CompileShader();
+}
+
+void VirtualUI::LoadTextures()
+{
+    SDL_Surface* surface = IMG_Load("images/knob.png");
+    _knobTextureID = CreateGLTextureFromSurface(surface);
+    SDL_FreeSurface(surface);
+
+    SDL_Surface* buttonTexture = IMG_Load("images/button_normal.png");
+    _buttonTextureID = (ImTextureID)CreateGLTextureFromSurface(buttonTexture);
+    SDL_FreeSurface(buttonTexture);
+
+    buttonTexture = IMG_Load("images/button_pressed.png");
+    _buttonPressedTextureID = (ImTextureID)CreateGLTextureFromSurface(buttonTexture);
+    SDL_FreeSurface(buttonTexture);
+
+    buttonTexture = IMG_Load("images/button_round_normal.png");
+    _buttonRoundTextureID = (ImTextureID)CreateGLTextureFromSurface(buttonTexture);
+    SDL_FreeSurface(buttonTexture);
+
+    buttonTexture = IMG_Load("images/button_round_pressed.png");
+    _buttonRoundPressedTextureID = (ImTextureID)CreateGLTextureFromSurface(buttonTexture);
+    SDL_FreeSurface(buttonTexture);
+
+    buttonTexture = IMG_Load("images/photo_button_normal.png");
+    _buttonPhotoTextureID = (ImTextureID)CreateGLTextureFromSurface(buttonTexture);
+    SDL_FreeSurface(buttonTexture);
+
+    buttonTexture = IMG_Load("images/photo_button_pressed.png");
+    _buttonPhotoPressedTextureID = (ImTextureID)CreateGLTextureFromSurface(buttonTexture);
+    SDL_FreeSurface(buttonTexture);
+
+    buttonTexture = IMG_Load("images/record_button_normal.png");
+    _buttonRecordTextureID = (ImTextureID)CreateGLTextureFromSurface(buttonTexture);
+    SDL_FreeSurface(buttonTexture);
+
+    buttonTexture = IMG_Load("images/record_button_pressed.png");
+    _buttonRecordPressedTextureID = (ImTextureID)CreateGLTextureFromSurface(buttonTexture);
+    SDL_FreeSurface(buttonTexture);
+
+    buttonTexture = IMG_Load("images/LED_off.png");
+    _ledTextureID = (ImTextureID)CreateGLTextureFromSurface(buttonTexture);
+    SDL_FreeSurface(buttonTexture);
+
+    buttonTexture = IMG_Load("images/LED_glow.png");
+    _ledGlowTextureID = (ImTextureID)CreateGLTextureFromSurface(buttonTexture);
+    SDL_FreeSurface(buttonTexture);
+
+    surface = IMG_Load("images/camera_preview.png");
+    _cameraPreviewTextureID = CreateGLTextureFromSurface(surface);
+    SDL_FreeSurface(surface);
 }
 
 void VirtualUI::CreateFBO()
@@ -146,11 +192,11 @@ void VirtualUI::ShowShaderLog(uint32_t shaderID)
     }
 }
 
-bool RenderButton(std::string name, uint16_t x, uint16_t y, uint16_t width = 40, uint16_t height = 30)
+/*bool RenderButton(std::string name, uint16_t x, uint16_t y, uint16_t width = 40, uint16_t height = 30)
 {
     ImGui::SetCursorPos(ImVec2(x, y));
     return ImGui::Button(name.c_str(), ImVec2(width, height));
-}
+}*/
 
 // Grabbed from the ImGui examples
 void VirtualUI::ShowZoomTooltip()
@@ -160,8 +206,8 @@ void VirtualUI::ShowZoomTooltip()
     int16_t textureHeight = 240;
 
     ImGui::Image(_displayTextureID, ImVec2(textureWidth, textureHeight), ImVec2(0, 0), ImVec2(1, 1),
-    
-    ImVec4(1.0f, 1.0f, 1.0f, 1.0f), ImVec4(1.0f, 1.0f, 1.0f, 0.5f));
+                 ImVec4(1.0f, 1.0f, 1.0f, 1.0f), ImVec4(1.0f, 1.0f, 1.0f, 0.5f));
+
     if (ImGui::IsItemHovered())
     {
         ImGui::BeginTooltip();
@@ -200,7 +246,7 @@ void VirtualUI::RenderCameraPreviewToFBO()
     glUniform1i(_cameraPreviewTexture, 0);
 
     float brightness = 0.1f * brightnessLevel;
-    std::cout << "Brightness: " << brightness << std::endl;
+    // std::cout << "Brightness: " << brightness << std::endl;
     glUniform1f(_analogGainShader, brightness);
 
     // glBindTexture(GL_TEXTURE_2D, 1); // (GLuint)(intptr_t)cmd->TextureId - 1);
@@ -260,7 +306,7 @@ void VirtualUI::RenderVirtualCamera()
     ImGui::SetNextWindowSize(ImVec2(800, 480));
     // ImGui::SetNextWindowContentSize(ImVec2(800, 480));
 
-    ImGui::Begin("Image2", nullptr, ImGuiWindowFlags_NoDecoration);
+    ImGui::Begin("Image2", nullptr, ImGuiWindowFlags_NoDecoration | ImGuiWindowFlags_NoBackground);
     ImGui::PushStyleVar(ImGuiStyleVar_WindowRounding, 0.0f);
 
     ImGui::Image(reinterpret_cast<ImTextureID>(_fboTextureID), ImVec2(800, 480), ImVec2(0, 0), ImVec2(1, 1),
@@ -273,77 +319,15 @@ void VirtualUI::RenderVirtualCamera()
     ImGui::End();
 }
 
-void VirtualUI::RenderUI(Button& button, int8_t& knobValue, bool& debugOverlayEnabled)
+void VirtualUI::RenderKnob(int8_t& knobValue, Button& button)
 {
-    ImGui_ImplOpenGL3_NewFrame();
-    ImGui_ImplSDL2_NewFrame(_window);
-
-    ImGui::NewFrame();
-
-    ImGui::SetNextWindowPos(ImVec2(0, 0));
-    ImGui::SetNextWindowSize(ImVec2(800, 480));
-    ImGui::PushStyleColor(ImGuiCol_WindowBg, (ImU32)ImColor(96, 96, 96, 255));
-    ImGui::Begin("Image", nullptr, ImGuiWindowFlags_NoDecoration);
-
-    if (RenderButton("1", 434, 70))
-    {
-        button = Button::BUTTON_1_UP;
-    }
-    if (RenderButton("2", 540, 70))
-    {
-        button = Button::BUTTON_2_UP;
-    }
-    if (RenderButton("3", 650, 70))
-    {
-        button = Button::BUTTON_3_UP;
-    }
-
-    if (RenderButton("4", 435, 380))
-    {
-        button = Button::BUTTON_4_UP;
-    }
-    if (RenderButton("5", 540, 380))
-    {
-        button = Button::BUTTON_5_UP;
-    }
-    if (RenderButton("6", 650, 380))
-    {
-        button = Button::BUTTON_6_UP;
-    }
-
-    if (RenderButton("7", 340, 176))
-    {
-        button = Button::BUTTON_7_UP;
-    }
-    if (RenderButton("8", 340, 226))
-    {
-        button = Button::BUTTON_8_UP;
-    }
-    if (RenderButton("9", 340, 276))
-    {
-        button = Button::BUTTON_9_UP;
-    }
-
-    if (RenderButton("10", 740, 176))
-    {
-        button = Button::BUTTON_10_UP;
-    }
-    if (RenderButton("11", 740, 226))
-    {
-        button = Button::BUTTON_11_UP;
-    }
-    if (RenderButton("12", 740, 276))
-    {
-        button = Button::BUTTON_12_UP;
-    }
-
-    ImGui::SetCursorPos(ImVec2(60, 140));
+    ImGui::SetCursorPos(ImVec2(40, 140));
     bool knobPressed = false;
     if (ImGui::Knob("Test123", value, knobPressed, (ImTextureID)_knobTextureID))
     {
         knobValue = -(value - lastValue);
         brightnessLevel -= knobValue;
-        if(brightnessLevel < 0)
+        if (brightnessLevel < 0)
         {
             brightnessLevel = 0;
         }
@@ -354,13 +338,193 @@ void VirtualUI::RenderUI(Button& button, int8_t& knobValue, bool& debugOverlayEn
     {
         button = Button::E_1_UP;
     }
+}
 
-    ImGui::SetCursorPos(ImVec2(400, 120));
+void VirtualUI::RenderButtons(Button& button)
+{
+    uint16_t buttonPhotoWidth = 46;
+    uint16_t buttonPhotoHeight = 46;
+
+    uint16_t buttonRecordWidth = 68;
+    uint16_t buttonRecordHeight = 68;
+
+    uint16_t buttonWidth = 46;
+    uint16_t buttonHeight = 30;
+
+    uint16_t buttonRoundWidth = 30;
+    uint16_t buttonRoundHeight = 30;
+
+    // Special buttons (top-left)
+    ImGui::SetCursorPos(ImVec2(55, 22));
+    if (ImGui::CustomImageButton("SPECIAL_1", _buttonTextureID, _buttonPressedTextureID,
+                                 ImVec2(buttonWidth, buttonHeight)))
+    {
+    }
+
+    ImGui::SetCursorPos(ImVec2(148, 22));
+    if (ImGui::CustomImageButton("SPECIAL_2", _buttonTextureID, _buttonPressedTextureID,
+                                 ImVec2(buttonWidth, buttonHeight)))
+    {
+    }
+
+    // Button PHOTO
+    ImGui::SetCursorPos(ImVec2(236, 367));
+    if (ImGui::CustomImageButton("PHOTO", _buttonPhotoTextureID, _buttonPhotoPressedTextureID,
+                                 ImVec2(buttonPhotoWidth, buttonPhotoHeight)))
+    {
+    }
+
+    // Button RECORD
+    ImGui::SetCursorPos(ImVec2(225, 56));
+    if (ImGui::CustomImageButton("PHOTO", _buttonRecordTextureID, _buttonRecordPressedTextureID,
+                                 ImVec2(buttonRecordWidth, buttonRecordHeight)))
+    {
+    }
+
+    // Buttons 1-3
+    ImGui::SetCursorPos(ImVec2(372, 55));
+    if (ImGui::CustomImageButton("1", _buttonTextureID, _buttonPressedTextureID, ImVec2(buttonWidth, buttonHeight)))
+    {
+        button = Button::BUTTON_1_UP;
+    }
+
+    ImGui::SetCursorPos(ImVec2(475, 55));
+    if (ImGui::CustomImageButton("2", _buttonTextureID, _buttonPressedTextureID, ImVec2(buttonWidth, buttonHeight)))
+    {
+        button = Button::BUTTON_2_UP;
+    }
+
+    ImGui::SetCursorPos(ImVec2(578, 55));
+    if (ImGui::CustomImageButton("3", _buttonTextureID, _buttonPressedTextureID, ImVec2(buttonWidth, buttonHeight)))
+    {
+        button = Button::BUTTON_3_UP;
+    }
+
+    // Button 4-6
+    ImGui::SetCursorPos(ImVec2(372, 395));
+    if (ImGui::CustomImageButton("4", _buttonTextureID, _buttonPressedTextureID, ImVec2(buttonWidth, buttonHeight)))
+    {
+        button = Button::BUTTON_4_UP;
+    }
+
+    ImGui::SetCursorPos(ImVec2(475, 395));
+    if (ImGui::CustomImageButton("5", _buttonTextureID, _buttonPressedTextureID, ImVec2(buttonWidth, buttonHeight)))
+    {
+        button = Button::BUTTON_5_UP;
+    }
+
+    ImGui::SetCursorPos(ImVec2(578, 395));
+    if (ImGui::CustomImageButton("6", _buttonTextureID, _buttonPressedTextureID, ImVec2(buttonWidth, buttonHeight)))
+    {
+        button = Button::BUTTON_6_UP;
+    }
+
+    // Button 7-9
+    ImGui::SetCursorPos(ImVec2(249, 170));
+    if (ImGui::CustomImageButton("7", _buttonRoundTextureID, _buttonRoundPressedTextureID,
+                                 ImVec2(buttonRoundWidth, buttonRoundHeight)))
+    {
+        button = Button::BUTTON_7_UP;
+    }
+
+    ImGui::SetCursorPos(ImVec2(249, 225));
+    if (ImGui::CustomImageButton("8", _buttonRoundTextureID, _buttonRoundPressedTextureID,
+                                 ImVec2(buttonRoundWidth, buttonRoundHeight)))
+    {
+        button = Button::BUTTON_8_UP;
+    }
+
+    ImGui::SetCursorPos(ImVec2(249, 281));
+    if (ImGui::CustomImageButton("9", _buttonRoundTextureID, _buttonRoundPressedTextureID,
+                                 ImVec2(buttonRoundWidth, buttonRoundHeight)))
+    {
+        button = Button::BUTTON_9_UP;
+    }
+
+    // Button 10-12
+    ImGui::SetCursorPos(ImVec2(717, 170));
+    if (ImGui::CustomImageButton("10", _buttonRoundTextureID, _buttonRoundPressedTextureID,
+                                 ImVec2(buttonRoundWidth, buttonRoundHeight)))
+    {
+        button = Button::BUTTON_10_UP;
+    }
+
+    ImGui::SetCursorPos(ImVec2(717, 225));
+    if (ImGui::CustomImageButton("8", _buttonRoundTextureID, _buttonRoundPressedTextureID,
+                                 ImVec2(buttonRoundWidth, buttonRoundHeight)))
+    {
+        button = Button::BUTTON_11_UP;
+    }
+
+    ImGui::SetCursorPos(ImVec2(717, 281));
+    if (ImGui::CustomImageButton("9", _buttonRoundTextureID, _buttonRoundPressedTextureID,
+                                 ImVec2(buttonRoundWidth, buttonRoundHeight)))
+    {
+        button = Button::BUTTON_12_UP;
+    }
+}
+
+void EnableBlending(const ImDrawList* parent_list, const ImDrawCmd* cmd) { glBlendFunc(GL_ONE, GL_ONE); }
+
+void DisableBlending(const ImDrawList* parent_list, const ImDrawCmd* cmd)
+{
+    glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+}
+
+// Render RGB LEDs
+void VirtualUI::RenderLED(int8_t glowValue)
+{
+    // Render off state
+    ImGui::SetCursorPos(ImVec2(63, 70));
+    ImGui::Image(_ledTextureID, ImVec2(30, 29), ImVec2(0, 0), ImVec2(1, 1), ImColor(255, 255, 255, 255));
+
+    ImGui::SetCursorPos(ImVec2(63, 109));
+    ImGui::Image(_ledTextureID, ImVec2(30, 29), ImVec2(0, 0), ImVec2(1, 1), ImColor(255, 255, 255, 255));
+
+
+    // Render LED light
+    ImGui::GetWindowDrawList()->ImDrawList::AddCallback(EnableBlending, nullptr);
+
+    ImGui::SetCursorPos(ImVec2(58, 65));
+    ImGui::Image(_ledGlowTextureID, ImVec2(40, 40), ImVec2(0, 0), ImVec2(1, 1), ImColor(255, 32, 32, 255 - glowValue));
+
+    ImGui::SetCursorPos(ImVec2(58, 104));
+    ImGui::Image(_ledGlowTextureID, ImVec2(40, 40), ImVec2(0, 0), ImVec2(1, 1), ImColor(64, 64, 255, glowValue));
+
+    ImGui::GetWindowDrawList()->ImDrawList::AddCallback(DisableBlending, nullptr);
+}
+
+int glowValue = 0;
+
+void VirtualUI::RenderUI(Button& button, int8_t& knobValue, bool& debugOverlayEnabled)
+{
+    ImGui_ImplOpenGL3_NewFrame();
+    ImGui_ImplSDL2_NewFrame(_window);
+
+    ImGui::NewFrame();
+
+    ImGui::SetNextWindowPos(ImVec2(0, 0));
+    ImGui::SetNextWindowSize(ImVec2(800, 480));
+    ImGui::PushStyleColor(ImGuiCol_WindowBg, (ImU32)ImColor(0, 0, 0, 255));
+    ImGui::PushStyleVar(ImGuiStyleVar_WindowPadding, ImVec2(0, 0));
+    ImGui::Begin("Image", nullptr, ImGuiWindowFlags_NoDecoration | ImGuiWindowFlags_NoBackground);
+
+    ImGui::SetCursorPos(ImVec2(0, 0));
+    ImGui::Image(_backgroundTextureID, ImVec2(800, 480));
+
+    RenderKnob(knobValue, button);
+    RenderButtons(button);
+
+    glowValue += knobValue;
+    RenderLED(glowValue);
+
+    ImGui::SetCursorPos(ImVec2(337, 119));
     ShowZoomTooltip();
 
     ImGui::SetCursorPos(ImVec2(50, 400));
     ImGui::ToggleButton("debug_overlay_switch", "Debug overlay", &debugOverlayEnabled);
 
+    ImGui::PopStyleVar();
     ImGui::PopStyleColor();
 
     ImGui::End();

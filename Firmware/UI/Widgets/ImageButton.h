@@ -25,12 +25,11 @@ class ImageButton : public IButton
 
   public:
     explicit ImageButton(const Icon* icon, uint16_t x = 0, uint16_t y = 0, uint16_t width = 0, uint16_t height = 0) :
-        IButton(x, y, width, height), _image(icon), _cornerRadius(3), _highlighted(false)
+        IButton(x, y, width, height), _image(icon), _cornerRadius(3), _highlighted(false),
+        _imageColor((uint16_t)Color565::Black), _currentImageColor(_imageColor),
+        _backgroundHighlightColor((uint16_t)Color565::AXIOM_Blue), _currentBackgroundColor(RGB565(220, 220, 220)),
+        _backgroundColor(_currentBackgroundColor)
     {
-        _currentBackgroundColor = RGB565(220, 220, 220);
-        _backgroundColor = _currentBackgroundColor;
-
-        _backgroundHighlightColor = (uint16_t)Color565::AXIOM_Blue;
     }
 
     void SetCornerRadius(uint8_t cornerRadius)
