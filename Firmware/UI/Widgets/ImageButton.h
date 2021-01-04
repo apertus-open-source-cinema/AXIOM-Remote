@@ -30,6 +30,9 @@ class ImageButton : public IButton
         _currentBackgroundColor = RGB565(220, 220, 220);
         _backgroundColor = _currentBackgroundColor;
 
+        _imageColor = (uint16_t)Color565::Black;
+        _currentImageColor = _imageColor;
+
         _backgroundHighlightColor = (uint16_t)Color565::AXIOM_Blue;
     }
 
