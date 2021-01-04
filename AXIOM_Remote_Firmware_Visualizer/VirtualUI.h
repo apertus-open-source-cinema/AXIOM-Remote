@@ -17,6 +17,19 @@ class VirtualUI {
 
     uint32_t _knobTextureID;
     ImTextureID _displayTextureID;
+    ImTextureID _backgroundTextureID;
+    
+    ImTextureID _buttonTextureID;
+    ImTextureID _buttonPressedTextureID;
+    ImTextureID _buttonRoundTextureID;
+    ImTextureID _buttonRoundPressedTextureID;
+    ImTextureID _buttonPhotoTextureID;
+    ImTextureID _buttonPhotoPressedTextureID;
+    ImTextureID _buttonRecordTextureID;
+    ImTextureID _buttonRecordPressedTextureID;
+    ImTextureID _ledTextureID;
+    ImTextureID _ledGlowTextureID;
+
     uint32_t _cameraPreviewTextureID;
 
     uint32_t _programID;
@@ -36,13 +49,19 @@ class VirtualUI {
     void CompileShader();
     void ShowShaderLog(uint32_t shaderID);
 
+    void LoadTextures();
+
     void CreateFBO();
 
     void RenderCameraPreviewToFBO();
     void RenderVirtualCamera();
 
+    void RenderKnob(int8_t& knobValue, Button& button);
+    void RenderButtons(Button& button);
+    void RenderLED(int8_t glowValue);
+
   public:
-    VirtualUI(SDL_Window* window, uint32_t displayTextureID);
+    VirtualUI(SDL_Window* window, uint32_t displayTextureID, uint32_t backgroundTextureID);
 
     void RenderUI(Button& button, int8_t& knobValue, bool& debugOverlayEnabled);
 };

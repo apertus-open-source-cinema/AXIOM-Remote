@@ -23,6 +23,9 @@ to initialize it.
 * **make -j4**
 * **./AXIOM_Remote_Firmware_Visualizer**
 
+
+These steps above can be done in one go with the **build.sh** script
+
 ## Serial communication
 
 * Create virtual serial ports by executing:
