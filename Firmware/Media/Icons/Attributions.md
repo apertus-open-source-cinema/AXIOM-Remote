@@ -19,3 +19,9 @@ Made by [Freepik](https://www.flaticon.com/authors/freepik) from [Flaticon](http
 
 - **Up Arrow Icon:**
 Made by [Those Icons](https://www.flaticon.com/authors/those-icons) from [Flaticon](https://www.flaticon.com/)
+
+- **Check Box True Icon:**
+Made by [Freepick](https://www.flaticon.com/authors/freepik) from [Flaticon](https://www.flaticon.com/)
+
+- **Check Box False Icon:**
+Made by [Freepick](https://www.flaticon.com/authors/freepik) from [Flaticon](https://www.flaticon.com/)

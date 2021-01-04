@@ -33,7 +33,7 @@ for details see: LICENSE.txt
 
 ```/Docs/``` contains illustrations and drawings
 
-```/Firmware/``` contains the actual Firmware of the AXIOM Remote - this is the main folder of this repository.
+```/Firmware/``` contains the actual Firmware of the AXIOM Remote - this is the main folder of this repository. See the [README.md](/Firmware/README.md) inside the subfolder for more documentation about the GUI structure of the AXIOM Remote.
 
 ```/FirmwareTest/``` contains unit tests of the Firmware.
 
