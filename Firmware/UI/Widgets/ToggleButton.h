@@ -3,7 +3,9 @@
 
 #include "IButton.h"
 #include "../Painter/Painter.h"
-#include "Icon.h"
+#include "../../../Firmware/Media/Icons/checkboxfalse_icon.h"
+#include "../../../Firmware/Media/Icons/checkboxtrue_icon.h"
+
 
 class ToggleButton : public IButton
 {
@@ -32,11 +34,9 @@ class ToggleButton : public IButton
         _currentTextColor = _TextColor = (uint16_t)Color565::Black;
         _currentBackgroundColor = _BackgroundColor = RGB565(220, 220, 220);
         _textDisabledColor = RGB565(180, 180, 180);
-
+        _checked = true;
         _backgroundHighlightColor = (uint16_t)Color565::AXIOM_Blue;
         _textHighlightColor = (uint16_t)Color565::Black;
-
-        //_checkboxIcon = &checkbox_icon; // TODO: Add me!
     }
 
     void SetCornerRadius(uint8_t cornerRadius)
@@ -57,15 +57,12 @@ class ToggleButton : public IButton
         uint8_t textPosY = _height / 2 + painter->GetCurrentFontHeight() / 2;
         uint8_t gap = 8;
 
-        //uint8_t totaltextwidth = painter->GetStringFramebufferWidth(_label) + gap + _checkboxIcon->Width;
-        uint8_t totaltextwidth = painter->GetStringFramebufferWidth(_label) + gap + 10; //TODO: fixme
+        _checkboxIcon = (_checked) ? &checkboxtrue_icon : &checkboxfalse_icon;
+        uint8_t totaltextwidth = painter->GetStringFramebufferWidth(_label) + gap + _checkboxIcon->Width;
 
-        painter->DrawText(_x + _width / 2 - totaltextwidth / 2, _y + textPosY, _label, _currentTextColor,
-                          TextAlign::TEXT_ALIGN_LEFT, 0);
+        painter->DrawText(_x + _width / 2 - totaltextwidth / 2, _y + textPosY, _label, _currentTextColor,TextAlign::TEXT_ALIGN_LEFT, 0);
+        painter->DrawIcon(_checkboxIcon, _x + _width / 2 - totaltextwidth / 2 + painter->GetStringFramebufferWidth(_label) + gap , _y + _height / 2 - _checkboxIcon->Height / 2, _currentTextColor);                  
 
-        /*painter->DrawIcon(_checkboxIcon,
-                          _x + _width / 2 - totaltextwidth / 2 + painter->GetStringFramebufferWidth(_label) + gap,
-                          _y + _height / 2 - _checkboxIcon->Height / 2, _currentTextColor);*/
     }
 
     void SetChecked(bool checked)
