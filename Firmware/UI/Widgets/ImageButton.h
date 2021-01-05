@@ -10,13 +10,12 @@ class ImageButton : public IButton
 {
     const Icon* _image;
     const char* _label;
-    uint8_t _gap;
 
     uint8_t _cornerRadius;
     bool _highlighted;
 
     // Color Defintions
-    uint16_t _TextColor;
+    uint16_t _textColor;
     uint16_t _imageColor;
     uint16_t _backgroundColor;
 
@@ -28,10 +27,10 @@ class ImageButton : public IButton
     uint16_t _currentImageColor;
     uint16_t _currentBackgroundColor;
   
-    uint8_t totalWidth;
-    uint8_t textPosY;
-    uint8_t imagePosX;
-    uint8_t textPosX;
+    uint8_t _imagePositionX;
+    uint8_t _textPositionX;
+    uint8_t _textPositionY;
+    uint8_t _totalWidth;
 
   public:
     explicit ImageButton(const Icon* icon, uint16_t x = 0, uint16_t y = 0, uint16_t width = 0, uint16_t height = 0) :
@@ -40,10 +39,10 @@ class ImageButton : public IButton
         _backgroundHighlightColor((uint16_t)Color565::AXIOM_Blue), _currentBackgroundColor(RGB565(220, 220, 220)),
         _backgroundColor(_currentBackgroundColor)
     {
-        totalWidth = _image->Width + GetGap();
-        textPosY = _height / 2;
-        imagePosX = _width / 2 - totalWidth / 2;
-        textPosX = imagePosX + _image->Width + _gap;
+        _totalWidth = _image->Width;
+        _textPositionY = _height / 2;
+        _imagePositionX = _width / 2 - _totalWidth / 2;
+        _textPositionX = _imagePositionX + _image->Width;
     }
 
     void SetCornerRadius(uint8_t cornerRadius)
@@ -51,16 +50,6 @@ class ImageButton : public IButton
         _cornerRadius = cornerRadius;
     }
   
-    void SetGap(uint8_t gap)
-    {
-        _gap = gap;
-    }
-  
-    uint8_t GetGap()
-    {
-        return _gap;
-    }
-
     virtual void Draw(IPainter* painter) override
     {
         painter->DrawFillRoundRectangle(_x, _y, _width, _height, _cornerRadius, _currentBackgroundColor);
@@ -69,11 +58,11 @@ class ImageButton : public IButton
         {
             painter->SetFont(Font::FreeSans12pt7b);
             
-            totalWidth += painter->GetStringFramebufferWidth(_label);
-            textPosY += painter->GetCurrentFontHeight() / 2;
+            _totalWidth += painter->GetStringFramebufferWidth(_label);
+            _textPositionY += painter->GetCurrentFontHeight() / 2;
             
-            painter->DrawIcon(_image, _x + imagePosX, _y + _height / 2 - _image->Height / 2, _currentImageColor);
-            painter->DrawText(_x + textPosX, _y + textPosY, _label, _currentTextColor, TextAlign::TEXT_ALIGN_LEFT,
+            painter->DrawIcon(_image, _x + _imagePositionX, _y + _height / 2 - _image->Height / 2, _currentImageColor);
+            painter->DrawText(_x + _textPositionX, _y + _textPositionY, _label, _currentTextColor, TextAlign::TEXT_ALIGN_LEFT,
                               strlen(_label));
         }
       
@@ -95,7 +84,7 @@ class ImageButton : public IButton
   
     void SetTextColor(uint16_t color)
     {
-        _TextColor = color;
+        _textColor = color;
         SetHighlighted(_highlighted);
     }
 
@@ -128,7 +117,7 @@ class ImageButton : public IButton
         {
             _currentImageColor = _imageColor;
             _currentBackgroundColor = _backgroundColor;
-            _currentTextColor = _TextColor;
+            _currentTextColor = _textColor;
         }
     }
 };
