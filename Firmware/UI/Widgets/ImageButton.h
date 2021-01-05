@@ -27,6 +27,11 @@ class ImageButton : public IButton
     uint16_t _currentTextColor;
     uint16_t _currentImageColor;
     uint16_t _currentBackgroundColor;
+  
+    uint8_t totalWidth;
+    uint8_t textPosY;
+    uint8_t imagePosX;
+    uint8_t textPosX;
 
   public:
     explicit ImageButton(const Icon* icon, uint16_t x = 0, uint16_t y = 0, uint16_t width = 0, uint16_t height = 0) :
@@ -35,6 +40,10 @@ class ImageButton : public IButton
         _backgroundHighlightColor((uint16_t)Color565::AXIOM_Blue), _currentBackgroundColor(RGB565(220, 220, 220)),
         _backgroundColor(_currentBackgroundColor)
     {
+        totalWidth = _image->Width + GetGap();
+        textPosY = _height / 2;
+        imagePosX = _width / 2 - totalWidth / 2;
+        textPosX = imagePosX + _image->Width + _gap;
     }
 
     void SetCornerRadius(uint8_t cornerRadius)
@@ -60,10 +69,8 @@ class ImageButton : public IButton
         {
             painter->SetFont(Font::FreeSans12pt7b);
             
-            uint8_t totalWidth = _image->Width + GetGap() + painter->GetStringFramebufferWidth(_label);
-            uint8_t textPosY = _height / 2 + painter->GetCurrentFontHeight() / 2;
-            uint8_t imagePosX = _width / 2 - totalWidth / 2;
-            uint8_t textPosX = imagePosX + _image->Width + _gap;
+            totalWidth += painter->GetStringFramebufferWidth(_label);
+            textPosY += painter->GetCurrentFontHeight() / 2;
             
             painter->DrawIcon(_image, _x + imagePosX, _y + _height / 2 - _image->Height / 2, _currentImageColor);
             painter->DrawText(_x + textPosX, _y + textPosY, _label, _currentTextColor, TextAlign::TEXT_ALIGN_LEFT,
@@ -127,4 +134,3 @@ class ImageButton : public IButton
 };
 
 #endif // IMAGEBUTTON_H
-
