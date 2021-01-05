@@ -37,13 +37,13 @@ class ParameterMenuItem : public IWidget
     ParameterMenuItem(const char* label = "...", bool disabled = false, const char* value = nullptr,
                       bool hidden = false, bool pressed = false, bool highlighted = false) :
         _disabled(disabled),
-        _hidden(hidden), _pressed(pressed), _highlighted(highlighted), _label(label),
-        _value(value), _backgroundColor((uint16_t)Color565::White),
-        _backgroundHighlightColor(RGB565(255, 128, 0)), _backgroundPressedColor(RGB565(0, 128, 255)),
-        _backgroundDisabledColor(RGB565(180, 180, 180)), _textColor((uint16_t)Color565::Black),
-        _textHighlightColor((uint16_t)Color565::White), _textPressedColor((uint16_t)Color565::White),
-        _textDisabledColor(RGB565(180, 180, 180)), _currentBackgroundColor(_backgroundColor),
-        _currentTextColor(_textColor), _verticalLabelOffset(20), _previousChoice(false)
+        _hidden(hidden), _pressed(pressed), _highlighted(highlighted), _label(label), _value(value),
+        _backgroundColor((uint16_t)Color565::White), _backgroundHighlightColor(RGB565(255, 128, 0)),
+        _backgroundPressedColor(RGB565(0, 128, 255)), _backgroundDisabledColor(RGB565(180, 180, 180)),
+        _textColor((uint16_t)Color565::Black), _textHighlightColor((uint16_t)Color565::White),
+        _textPressedColor((uint16_t)Color565::White), _textDisabledColor(RGB565(180, 180, 180)),
+        _currentBackgroundColor(_backgroundColor), _currentTextColor(_textColor), _verticalLabelOffset(20),
+        _previousChoice(false)
     {
         _x = 0;
         _y = 0;
@@ -95,12 +95,15 @@ class ParameterMenuItem : public IWidget
         if (pressed)
         {
             _currentBackgroundColor = _backgroundPressedColor;
+            _currentTextColor = _textPressedColor;
         } else if (_highlighted)
         {
             _currentBackgroundColor = _backgroundHighlightColor;
+            _currentTextColor = _textHighlightColor;
         } else
         {
             _currentBackgroundColor = _backgroundColor;
+            _currentTextColor = _textColor;
         }
     }
 

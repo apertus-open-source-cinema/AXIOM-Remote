@@ -343,6 +343,7 @@ class Menu : public IMenu
             _menuItem[_menuSelectionIndex]->SetPressed(false);
             break;
         case Button::BUTTON_11_DOWN:
+            SelectionPressDown(menuSystem);
             _menuItem[_menuSelectionIndex]->SetPressed(true);
             break;
         case Button::E_1_UP:
@@ -350,6 +351,7 @@ class Menu : public IMenu
             SelectionPress(menuSystem);
             break;
         case Button::E_1_DOWN:
+            SelectionPressDown(menuSystem);
             _menuItem[_menuSelectionIndex]->SetPressed(true);
             break;
         default:
@@ -415,6 +417,17 @@ class Menu : public IMenu
         }
     }
 
+    void SelectionPressDown(IMenuSystem* menuSystem)
+    {
+        if (_menuItem[_menuSelectionIndex] == nullptr)
+        {
+            return;
+        } else if (_popUpParameterMenuActive >= 0)
+        {
+            _popUpParameterMenu.SetPressed(_popUpParameterMenu.GetHighlightIndex());
+        }
+    }
+
     void SelectionPress(IMenuSystem* menuSystem)
     {
         if (_menuItem[_menuSelectionIndex] == nullptr)
@@ -447,7 +460,7 @@ class Menu : public IMenu
             PopUpMenuItem* currentPopUpMenuItem = (PopUpMenuItem*)_menuItem[_menuSelectionIndex];
             currentPopUpMenuItem->UpdateChoice(_popUpParameterMenu.GetHighlightIndex());
 
-            _popUpParameterMenu.SetPressed(_popUpParameterMenu.GetHighlightIndex());
+            _popUpParameterMenu.SetPressed(-1);
         } else
         {
             _menuItem[_menuSelectionIndex]->SetPressed(false);

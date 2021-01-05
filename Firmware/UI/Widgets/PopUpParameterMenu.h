@@ -30,19 +30,14 @@ class PopUpParameterMenu : public IWidget
         ParameterMenuItem("..."), ParameterMenuItem("..."), ParameterMenuItem("...")};
 
   public:
-    PopUpParameterMenu(uint16_t x, uint16_t y) : IWidget(x, y, 0, 0), _backgroundColor(RGB565(97, 92, 91))
+    PopUpParameterMenu(uint16_t x, uint16_t y) :
+        IWidget(x, y, 0, 0), _backgroundColor(RGB565(97, 92, 91)), _borderwidth(2), _choiceCount(1),
+        _highlightIndex(-1), _pressedIndex(-1), _horizontalTextMargin(10), _previousChoiceIndex(0)
     {
-        _choiceCount = 1;
-        _borderwidth = 2;
         _height = _borderwidth * 2 + _choiceCount * 30;
-        _highlightIndex = -1;
-        _pressedIndex = -1;
         SetHighlighted(0);
-
-        _horizontalTextMargin = 10;
         init = false;
 
-        _previousChoiceIndex = 0;
         ClearPreviousChoice();
         _parameterMenuItem[_previousChoiceIndex].SetPreviousChoice(true);
     }
@@ -85,13 +80,12 @@ class PopUpParameterMenu : public IWidget
         if (pressedindex < _choiceCount)
         {
             _pressedIndex = pressedindex;
+            UnPressAllMenuItems();
             _parameterMenuItem[pressedindex].SetPressed(true);
 
             _previousChoiceIndex = pressedindex;
             ClearPreviousChoice();
             _parameterMenuItem[pressedindex].SetPreviousChoice(true);
-
-            UnPressAllMenuItems();
         }
     }
 
