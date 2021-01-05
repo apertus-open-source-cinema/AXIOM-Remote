@@ -6,15 +6,14 @@
 #include "../../../Firmware/Media/Icons/checkboxfalse_icon.h"
 #include "../../../Firmware/Media/Icons/checkboxtrue_icon.h"
 
-
 class ToggleButton : public IButton
 {
     uint8_t _cornerRadius;
     bool _highlighted;
 
     // Color Defintions
-    uint16_t _TextColor;
-    uint16_t _BackgroundColor;
+    uint16_t _textColor;
+    uint16_t _backgroundColor;
 
     uint16_t _textHighlightColor;
     uint16_t _textDisabledColor;
@@ -29,14 +28,12 @@ class ToggleButton : public IButton
 
   public:
     explicit ToggleButton(const char* label, uint16_t x = 0, uint16_t y = 0, uint16_t width = 0, uint16_t height = 0) :
-        IButton(x, y, width, height), _label(label), _cornerRadius(3), _highlighted(false), _checked(false)
+        IButton(x, y, width, height), _label(label), _cornerRadius(3), _highlighted(false), _checked(true),
+        _currentTextColor((uint16_t)Color565::Black), _textColor(_currentTextColor),
+        _currentBackgroundColor(RGB565(220, 220, 220)), _backgroundColor(_currentBackgroundColor),
+        _textDisabledColor(RGB565(180, 180, 180)), _backgroundHighlightColor((uint16_t)Color565::AXIOM_Blue),
+        _textHighlightColor((uint16_t)Color565::Black)
     {
-        _currentTextColor = _TextColor = (uint16_t)Color565::Black;
-        _currentBackgroundColor = _BackgroundColor = RGB565(220, 220, 220);
-        _textDisabledColor = RGB565(180, 180, 180);
-        _checked = true;
-        _backgroundHighlightColor = (uint16_t)Color565::AXIOM_Blue;
-        _textHighlightColor = (uint16_t)Color565::Black;
     }
 
     void SetCornerRadius(uint8_t cornerRadius)
@@ -55,14 +52,16 @@ class ToggleButton : public IButton
 
         painter->SetFont(Font::FreeSans12pt7b);
         uint8_t textPosY = _height / 2 + painter->GetCurrentFontHeight() / 2;
-        uint8_t gap = 8;
+        uint8_t gap = 8; // gap (in pixels) between checkbox icon and text
 
         _checkboxIcon = (_checked) ? &checkboxtrue_icon : &checkboxfalse_icon;
-        uint8_t totaltextwidth = painter->GetStringFramebufferWidth(_label) + gap + _checkboxIcon->Width;
+        uint8_t totalcontentwidth = _checkboxIcon->Width + gap + painter->GetStringFramebufferWidth(_label);
 
-        painter->DrawText(_x + _width / 2 - totaltextwidth / 2, _y + textPosY, _label, _currentTextColor,TextAlign::TEXT_ALIGN_LEFT, 0);
-        painter->DrawIcon(_checkboxIcon, _x + _width / 2 - totaltextwidth / 2 + painter->GetStringFramebufferWidth(_label) + gap , _y + _height / 2 - _checkboxIcon->Height / 2, _currentTextColor);                  
+        painter->DrawIcon(_checkboxIcon, _x + _width / 2 - totalcontentwidth / 2,
+                          _y + _height / 2 - _checkboxIcon->Height / 2, _currentTextColor);
 
+        painter->DrawText(_x + _width / 2 - totalcontentwidth / 2 + _checkboxIcon->Width + gap, _y + textPosY, _label,
+                          _currentTextColor, TextAlign::TEXT_ALIGN_LEFT, 0);
     }
 
     void SetChecked(bool checked)
@@ -71,7 +70,7 @@ class ToggleButton : public IButton
 
         if (_checked)
         {
-            _currentTextColor = _TextColor;
+            _currentTextColor = _textColor;
         } else
         {
             _currentTextColor = _textDisabledColor;
@@ -85,13 +84,13 @@ class ToggleButton : public IButton
 
     void SetBackgroundColor(uint16_t color)
     {
-        _BackgroundColor = color;
+        _backgroundColor = color;
         SetHighlighted(_highlighted);
     }
 
     void SetTextColor(uint16_t color)
     {
-        _TextColor = color;
+        _textColor = color;
         SetHighlighted(_highlighted);
     }
 
@@ -110,6 +109,7 @@ class ToggleButton : public IButton
     void SetHighlighted(bool highlighted)
     {
         _highlighted = highlighted;
+
         if (highlighted)
         {
             _currentTextColor = _textHighlightColor;
@@ -117,8 +117,8 @@ class ToggleButton : public IButton
 
         } else
         {
-            _currentTextColor = _TextColor;
-            _currentBackgroundColor = _BackgroundColor;
+            _currentTextColor = _textColor;
+            _currentBackgroundColor = _backgroundColor;
         }
     };
 };
