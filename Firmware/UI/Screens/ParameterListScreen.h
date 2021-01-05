@@ -31,8 +31,10 @@ class ParameterListScreen : public IScreen
 
   public:
     explicit ParameterListScreen(IUSBDevice* usbDevice) :
-        IScreen(usbDevice), _cancelButton("Cancel"), _setButton("Set"),
-        _header("Parameter Menu"), _previousOptionIndex(0), _highlightIndex(0)
+        IScreen(usbDevice), _cancelButton("Cancel"), _setButton("Set"), _header("Parameter Menu"),
+        _previousOptionIndex(0), _highlightIndex(0), _optionLineHeight(35), _backgroundColor((uint16_t)Color565::White),
+        _textColor((uint16_t)Color565::Black), _highlightColor((uint16_t)Color565::AXIOM_Orange),
+        _highlightTextColor((uint16_t)Color565::White)
     {
         //_cancelButton.SetHandler(&CancelButtonHandler);
         _bottomButtonBar.SetButton(ButtonPosition::Left, &_cancelButton);
@@ -41,13 +43,6 @@ class ParameterListScreen : public IScreen
         //_setButton.SetHandler(&SetButtonHandler);
         _setButton.SetBackgroundColor((uint16_t)Color565::AXIOM_Orange);
         _bottomButtonBar.SetButton(ButtonPosition::Right, &_setButton);
-
-        _backgroundColor = (uint16_t)Color565::White;
-        _textColor = (uint16_t)Color565::Black;
-        _highlightColor = (uint16_t)Color565::AXIOM_Orange;
-        _highlightTextColor = (uint16_t)Color565::White;
-
-        _optionLineHeight = 35;
     }
 
     void SetOptions(const char* optionlabels[], uint8_t optioncount)
