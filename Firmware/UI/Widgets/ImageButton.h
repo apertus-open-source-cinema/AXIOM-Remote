@@ -9,17 +9,22 @@
 class ImageButton : public IButton
 {
     const Icon* _image;
+    const char* _label;
+    uint8_t _gap;
 
     uint8_t _cornerRadius;
     bool _highlighted;
 
     // Color Defintions
+    uint16_t _TextColor;
     uint16_t _imageColor;
     uint16_t _backgroundColor;
 
+    uint16_t _textHighlightColor;  
     uint16_t _imageHighlightColor;
     uint16_t _backgroundHighlightColor;
 
+    uint16_t _currentTextColor;
     uint16_t _currentImageColor;
     uint16_t _currentBackgroundColor;
 
@@ -36,11 +41,39 @@ class ImageButton : public IButton
     {
         _cornerRadius = cornerRadius;
     }
+  
+    void SetGap(uint8_t gap)
+    {
+        _gap = gap;
+    }
+  
+    uint8_t GetGap()
+    {
+        return _gap;
+    }
 
     virtual void Draw(IPainter* painter) override
     {
-        painter->DrawFillRoundRectangle(_x - 2, _y + 20, 30, 30, _cornerRadius, _currentBackgroundColor);
-        painter->DrawIcon(_image, _x + 1, _y + 23, _currentImageColor);
+        painter->DrawFillRoundRectangle(_x, _y, _width, _height, _cornerRadius, _currentBackgroundColor);
+        
+        if(_width > _height)
+        {
+            painter->SetFont(Font::FreeSans12pt7b);
+            
+            uint8_t totalWidth = _image->Width + GetGap() + painter->GetStringFramebufferWidth(_label);
+            uint8_t textPosY = _height / 2 + painter->GetCurrentFontHeight() / 2;
+            uint8_t imagePosX = _width / 2 - totalWidth / 2;
+            uint8_t textPosX = imagePosX + _image->Width + _gap;
+            
+            painter->DrawIcon(_image, _x + imagePosX, _y + _height / 2 - _image->Height / 2, _currentImageColor);
+            painter->DrawText(_x + textPosX, _y + textPosY, _label, _currentTextColor, TextAlign::TEXT_ALIGN_LEFT,
+                              strlen(_label));
+        }
+      
+        else
+        {
+            painter->DrawIcon(_image, _x + _width / 2 - _image->Width / 2, _y + _height / 2 - _image->Height / 2, _currentImageColor);
+        }
     }
 
     void SetBackgroundColor(uint16_t color)
@@ -52,6 +85,12 @@ class ImageButton : public IButton
     {
         _imageColor = color;
     }
+  
+    void SetTextColor(uint16_t color)
+    {
+        _TextColor = color;
+        SetHighlighted(_highlighted);
+    }
 
     void SetHighlightBackgroundColor(uint16_t color)
     {
@@ -62,6 +101,12 @@ class ImageButton : public IButton
     {
         _imageHighlightColor = color;
     }
+  
+    void SetHighlightTextColor(uint16_t color)
+    {
+        _textHighlightColor = color;
+        SetHighlighted(_highlighted);
+    }
 
     void SetHighlighted(bool highlighted)
     {
@@ -70,11 +115,13 @@ class ImageButton : public IButton
         {
             _currentImageColor = _imageHighlightColor;
             _currentBackgroundColor = _backgroundHighlightColor;
+            _currentTextColor = _textHighlightColor;
 
         } else
         {
             _currentImageColor = _imageColor;
             _currentBackgroundColor = _backgroundColor;
+            _currentTextColor = _TextColor;
         }
     }
 };
