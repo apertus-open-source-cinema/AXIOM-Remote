@@ -109,6 +109,7 @@ void VirtualUI::CreateFBO()
     glBindFramebuffer(GL_FRAMEBUFFER, _cameraFBO);
 
     _fboTextureID = CreateGLTexture(800, 480);
+    _fboDisplayTextureID = CreateGLTexture(320, 240);
 
     // Set "renderedTexture" as our colour attachment #0
     glFramebufferTexture(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, _fboTextureID, 0);
@@ -201,6 +202,75 @@ void VirtualUI::ShowShaderLog(uint32_t shaderID)
     return ImGui::Button(name.c_str(), ImVec2(width, height));
 }*/
 
+void EnableShader(const ImDrawList* parent_list, const ImDrawCmd* cmd)
+{
+    //uint32_t programID = cmd->UserCallbackData;
+    glUseProgram(3);
+
+    float desaturation = 0.2;
+    //float desaturationFactor = glGetUniformLocation(3, "desaturationFactor");
+    glActiveTexture(GL_TEXTURE0);
+    glBindTexture(GL_TEXTURE_2D, 10);
+    glUniform1i(0, 0);
+    glUniform1f(1, 0.5);
+    //glUniform1f(2, 0.4);
+
+    //glUniform1f(desaturationFactor, desaturation);
+
+    //std::cout << "Shader Enabled";
+}
+
+void DisableShader(const ImDrawList* parent_list, const ImDrawCmd* cmd)
+{
+    glUseProgram(0);
+    //std::cout << "Shader Disabled";
+}
+
+void VirtualUI::RenderDisplayToFBO() const
+{
+    glBindFramebuffer(GL_FRAMEBUFFER, _cameraFBO);
+    glFramebufferTexture(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, _fboDisplayTextureID, 0);
+
+    glViewport(0, 0, 320, 240);
+
+    glUseProgram(_programID);
+
+    // Bind our texture in Texture Unit 0
+    glActiveTexture(GL_TEXTURE0);
+    glBindTexture(GL_TEXTURE_2D, (GLuint)(intptr_t)_displayTextureID);
+    // Set our "renderedTexture" sampler to use Texture Unit 0
+    glUniform1i(_cameraPreviewTexture, 0);
+
+    float brightness = 0.1f * brightnessLevel;
+    // std::cout << "Brightness: " << brightness << std::endl;
+    glUniform1f(_analogGainShader, brightness);
+    glUniform1f(2, 0);
+
+    // glBindTexture(GL_TEXTURE_2D, 1); // (GLuint)(intptr_t)cmd->TextureId - 1);
+
+    // glDrawElements(GL_TRIANGLES, (GLsizei)cmd->ElemCount, sizeof(ImDrawIdx) == 2 ? GL_UNSIGNED_SHORT :
+    // GL_UNSIGNED_INT,
+    //                (void*)cmd->IdxOffset);
+    // 1st attribute buffer : vertices
+    glEnableVertexAttribArray(0);
+    glBindBuffer(GL_ARRAY_BUFFER, _vertexbuffer);
+    glVertexAttribPointer(0,        // attribute 0. No particular reason for 0, but must match the layout in the shader.
+                          3,        // size
+                          GL_FLOAT, // type
+                          GL_FALSE, // normalized?
+                          0,        // stride
+                          nullptr   // array buffer offset
+    );
+
+    // Draw the triangle !
+    glDrawArrays(GL_TRIANGLES, 0, 6); // Starting from vertex 0; 3 vertices total -> 1 triangle
+    glDisableVertexAttribArray(0);
+
+    // Disable shader and FBO to revert to previous OpenGL state
+    glUseProgram(0);
+    glBindFramebuffer(GL_FRAMEBUFFER, 0);
+}
+
 // Grabbed from the ImGui examples
 void VirtualUI::ShowZoomTooltip()
 {
@@ -208,8 +278,12 @@ void VirtualUI::ShowZoomTooltip()
     int16_t textureWidth = 320;
     int16_t textureHeight = 240;
 
-    ImGui::Image(_displayTextureID, ImVec2(textureWidth, textureHeight), ImVec2(0, 0), ImVec2(1, 1),
+    //uint16_t data[2] = {123, 456};
+    //ImGui::GetWindowDrawList()->ImDrawList::AddCallback(EnableShader, data);
+    ImGui::Image(reinterpret_cast<ImTextureID>(_fboDisplayTextureID), ImVec2(textureWidth, textureHeight), ImVec2(0, 0), ImVec2(1, 1),
                  ImVec4(1.0f, 1.0f, 1.0f, 1.0f), ImVec4(1.0f, 1.0f, 1.0f, 0.5f));
+    
+    //ImGui::GetWindowDrawList()->ImDrawList::AddCallback(DisableShader, nullptr);
 
     if (ImGui::IsItemHovered())
     {
@@ -235,9 +309,11 @@ void VirtualUI::ShowZoomTooltip()
         ImGui::EndTooltip();
     }
 }
-void VirtualUI::RenderCameraPreviewToFBO()
+void VirtualUI::RenderCameraPreviewToFBO() const
 {
     glBindFramebuffer(GL_FRAMEBUFFER, _cameraFBO);
+    glFramebufferTexture(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, _fboTextureID, 0);
+
     glViewport(0, 0, 800, 480);
 
     glUseProgram(_programID);
@@ -251,6 +327,7 @@ void VirtualUI::RenderCameraPreviewToFBO()
     float brightness = 0.1f * brightnessLevel;
     // std::cout << "Brightness: " << brightness << std::endl;
     glUniform1f(_analogGainShader, brightness);
+    glUniform1f(2, 0);
 
     // glBindTexture(GL_TEXTURE_2D, 1); // (GLuint)(intptr_t)cmd->TextureId - 1);
 
@@ -265,8 +342,9 @@ void VirtualUI::RenderCameraPreviewToFBO()
                           GL_FLOAT, // type
                           GL_FALSE, // normalized?
                           0,        // stride
-                          (void*)0  // array buffer offset
+                          nullptr   // array buffer offset
     );
+
     // Draw the triangle !
     glDrawArrays(GL_TRIANGLES, 0, 6); // Starting from vertex 0; 3 vertices total -> 1 triangle
     glDisableVertexAttribArray(0);
@@ -330,11 +408,6 @@ void VirtualUI::RenderKnob(int8_t& knobValue, Button& button)
     {
         knobValue = -(value - lastValue);
         brightnessLevel -= knobValue;
-        if (brightnessLevel < 0)
-        {
-            brightnessLevel = 0;
-        }
-
         lastValue = value;
     }
     if (knobPressed)
@@ -453,14 +526,14 @@ void VirtualUI::RenderButtons(Button& button)
     }
 
     ImGui::SetCursorPos(ImVec2(717, 225));
-    if (ImGui::CustomImageButton("8", _buttonRoundTextureID, _buttonRoundPressedTextureID,
+    if (ImGui::CustomImageButton("11", _buttonRoundTextureID, _buttonRoundPressedTextureID,
                                  ImVec2(buttonRoundWidth, buttonRoundHeight)))
     {
         button = Button::BUTTON_11_UP;
     }
 
     ImGui::SetCursorPos(ImVec2(717, 281));
-    if (ImGui::CustomImageButton("9", _buttonRoundTextureID, _buttonRoundPressedTextureID,
+    if (ImGui::CustomImageButton("12", _buttonRoundTextureID, _buttonRoundPressedTextureID,
                                  ImVec2(buttonRoundWidth, buttonRoundHeight)))
     {
         button = Button::BUTTON_12_UP;
@@ -504,6 +577,8 @@ void VirtualUI::RenderUI(Button& button, int8_t& knobValue, bool& debugOverlayEn
     ImGui_ImplSDL2_NewFrame(_window);
 
     ImGui::NewFrame();
+
+    RenderDisplayToFBO();
 
     ImGui::SetNextWindowPos(ImVec2(0, 0));
     ImGui::SetNextWindowSize(ImVec2(800, 480));
