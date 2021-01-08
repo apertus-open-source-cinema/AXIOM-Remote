@@ -59,7 +59,7 @@ class MainMenu : public Menu
         AddMenuItem(&_subMenu1LinkMenuItem);
 
         _funactivitiesItem = ParameterListMenuItem(_db, "Fun Activity");
-        const char* funactivitychoices[10];
+        const char* funactivitychoices[5];
         funactivitychoices[0] = "Refill Sandbags";
         funactivitychoices[1] = "Repolish Lenses";
         funactivitychoices[2] = "Demagnetize Tapes";

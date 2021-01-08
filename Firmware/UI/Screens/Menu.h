@@ -58,6 +58,7 @@ class Menu : public IMenu
 
     NumericValueScreen _numericValueScreen;
     int8_t _numericValueMenuActive;
+    bool _selectionButtonBeingPressed;
 
     CentralDB* _db;
 
@@ -69,7 +70,8 @@ class Menu : public IMenu
     // TODO: Add assignment of menu system to IMenu
     explicit Menu(IUSBDevice* cdcDevice, CentralDB* centraldb) :
         IMenu(cdcDevice), _menuItemsCount(0), _menuSelectionIndex(0), _maxVisibleItems(7), _popUpParameterMenu(10, 10),
-        _parameterListScreen(cdcDevice), _numericValueScreen(cdcDevice), _db(centraldb)
+        _parameterListScreen(cdcDevice), _numericValueScreen(cdcDevice), _db(centraldb),
+        _selectionButtonBeingPressed(false)
     {
         // UNUSED(cdcDevice);
         //_usbDevice = cdcDevice;
@@ -297,26 +299,38 @@ class Menu : public IMenu
         {
             if (knob > 0)
             {
-                SelectionUp(menuSystem);
+                SelectionIncrease(menuSystem);
             } else
             {
-                SelectionDown(menuSystem);
+                SelectionDecrease(menuSystem);
             }
         }
 
         switch (button)
         {
         case Button::BUTTON_10_UP:
-            SelectionUp(menuSystem);
+            SelectionIncrease(menuSystem);
+            break;
+        case Button::BUTTON_4_DOWN:
+            if (_parameterListMenuActive >= 0)
+            {
+                _parameterListScreen.SetCancelButtonPressed(true);
+            }
+            if (_numericValueMenuActive >= 0)
+            {
+                _numericValueScreen.SetCancelButtonPressed(true);
+            }
             break;
         case Button::BUTTON_4_UP:
             if (_parameterListMenuActive >= 0)
             {
                 _parameterListMenuActive = -1;
+                _parameterListScreen.SetCancelButtonPressed(false);
             }
             if (_numericValueMenuActive >= 0)
             {
                 _numericValueMenuActive = -1;
+                _numericValueScreen.SetCancelButtonPressed(false);
             }
             break;
         case Button::BUTTON_5_UP:
@@ -325,18 +339,31 @@ class Menu : public IMenu
                 _numericValueScreen.ToggleLiveSet();
             }
             break;
+        case Button::BUTTON_6_DOWN:
+            if (_parameterListMenuActive >= 0)
+            {
+                SelectionPressDown(menuSystem);
+                _parameterListScreen.SetSetButtonPressed(true);
+            }
+            if (_numericValueMenuActive >= 0)
+            {
+                _numericValueScreen.SetSetButtonPressed(true);
+            }
+            break;
         case Button::BUTTON_6_UP:
             if (_parameterListMenuActive >= 0)
             {
                 SelectionPress(menuSystem);
+                _parameterListScreen.SetSetButtonPressed(false);
             }
             if (_numericValueMenuActive >= 0)
             {
                 SelectionPress(menuSystem);
+                _numericValueScreen.SetSetButtonPressed(false);
             }
             break;
         case Button::BUTTON_12_UP:
-            SelectionDown(menuSystem);
+            SelectionDecrease(menuSystem);
             break;
         case Button::BUTTON_11_UP:
             SelectionPress(menuSystem);
@@ -363,7 +390,7 @@ class Menu : public IMenu
         UNUSED(menuSystem);
     }
 
-    void SelectionUp(IMenuSystem* menuSystem)
+    void SelectionIncrease(IMenuSystem* menuSystem)
     {
         if (_menuItem[_menuSelectionIndex] == nullptr)
         {
@@ -376,9 +403,19 @@ class Menu : public IMenu
         } else if (_parameterListMenuActive >= 0)
         {
             _parameterListScreen.SetHighlighted(_parameterListScreen.GetHighlightIndex() - 1);
+
+            if (_selectionButtonBeingPressed)
+            {
+                _parameterListScreen.SetPressed(_parameterListScreen.GetHighlightIndex());
+            }
         } else if (_popUpParameterMenuActive >= 0)
         {
             _popUpParameterMenu.SetHighlighted(_popUpParameterMenu.GetHighlightIndex() + 1);
+
+            if (_selectionButtonBeingPressed)
+            {
+                _popUpParameterMenu.SetPressed(_popUpParameterMenu.GetHighlightIndex());
+            }
         } else
         {
             // Remove highlighting from last selected item as new button event occured
@@ -390,7 +427,7 @@ class Menu : public IMenu
         }
     }
 
-    void SelectionDown(IMenuSystem* menuSystem)
+    void SelectionDecrease(IMenuSystem* menuSystem)
     {
         if (_menuItem[_menuSelectionIndex] == nullptr)
         {
@@ -403,9 +440,19 @@ class Menu : public IMenu
         } else if (_parameterListMenuActive >= 0)
         {
             _parameterListScreen.SetHighlighted(_parameterListScreen.GetHighlightIndex() + 1);
+
+            if (_selectionButtonBeingPressed)
+            {
+                _parameterListScreen.SetPressed(_parameterListScreen.GetHighlightIndex());
+            }
         } else if (_popUpParameterMenuActive >= 0)
         {
             _popUpParameterMenu.SetHighlighted(_popUpParameterMenu.GetHighlightIndex() - 1);
+
+            if (_selectionButtonBeingPressed)
+            {
+                _popUpParameterMenu.SetPressed(_popUpParameterMenu.GetHighlightIndex());
+            }
         } else
         {
             // Remove highlighting from last selected item as new button event occured
@@ -419,17 +466,23 @@ class Menu : public IMenu
 
     void SelectionPressDown(IMenuSystem* menuSystem)
     {
+        _selectionButtonBeingPressed = true;
+
         if (_menuItem[_menuSelectionIndex] == nullptr)
         {
             return;
         } else if (_popUpParameterMenuActive >= 0)
         {
             _popUpParameterMenu.SetPressed(_popUpParameterMenu.GetHighlightIndex());
+        } else if (_parameterListMenuActive >= 0)
+        {
+            _parameterListScreen.SetPressed(_parameterListScreen.GetHighlightIndex());
         }
     }
 
     void SelectionPress(IMenuSystem* menuSystem)
     {
+        _selectionButtonBeingPressed = false;
         if (_menuItem[_menuSelectionIndex] == nullptr)
         {
             return;
@@ -451,6 +504,7 @@ class Menu : public IMenu
                 (ParameterListMenuItem*)_menuItem[_menuSelectionIndex];
             currentParameterListMenuItem->UpdateChoice(_parameterListScreen.GetHighlightIndex());
             _parameterListScreen.UpdateChoice(_parameterListScreen.GetHighlightIndex());
+            _parameterListScreen.UnpressAll();
 
             //_parameterListScreen.SetPressed(_popUpParameterMenu.GetHighlightIndex());
         } else if (_popUpParameterMenuActive >= 0)

@@ -17,10 +17,15 @@ class ParameterListScreen : public IScreen
     char const* _header;
     PushButton _cancelButton;
     PushButton _setButton;
+
+    // Colors
     uint16_t _backgroundColor;
     uint16_t _textColor;
     uint16_t _highlightColor;
     uint16_t _highlightTextColor;
+    uint16_t _backgroundPressedColor;
+    uint16_t _textPressedColor;
+
     int8_t _highlightIndex;       // which item in parameter men is currently highlighted
     int8_t _pressedIndex;         // which item in parameter men is currently pressed
     uint8_t _previousOptionIndex; // this item is the "old" selected choice but remains in effcet until the parameter
@@ -34,7 +39,8 @@ class ParameterListScreen : public IScreen
         IScreen(usbDevice), _cancelButton("Cancel"), _setButton("Set"), _header("Parameter Menu"),
         _previousOptionIndex(0), _highlightIndex(0), _optionLineHeight(35), _backgroundColor((uint16_t)Color565::White),
         _textColor((uint16_t)Color565::Black), _highlightColor((uint16_t)Color565::AXIOM_Orange),
-        _highlightTextColor((uint16_t)Color565::White)
+        _highlightTextColor((uint16_t)Color565::White), _backgroundPressedColor(RGB565(0, 128, 255)),
+        _textPressedColor((uint16_t)Color565::White), _pressedIndex(-1)
     {
         //_cancelButton.SetHandler(&CancelButtonHandler);
         _bottomButtonBar.SetButton(ButtonPosition::Left, &_cancelButton);
@@ -55,6 +61,16 @@ class ParameterListScreen : public IScreen
         }
     }
 
+    void SetSetButtonPressed(bool pressed)
+    {
+        _setButton.SetHighlighted(pressed);
+    }
+
+    void SetCancelButtonPressed(bool pressed)
+    {
+        _cancelButton.SetHighlighted(pressed);
+    }
+
     void SetHighlighted(uint8_t highlightindex)
     {
         if (highlightindex < _optionCount)
@@ -62,6 +78,20 @@ class ParameterListScreen : public IScreen
             _highlightIndex = highlightindex;
         }
     }
+
+    void SetPressed(uint8_t pressedindex)
+    {
+        if (pressedindex < _optionCount)
+        {
+            _pressedIndex = pressedindex;
+        }
+    }
+
+    void UnpressAll()
+    {
+        _pressedIndex = -1;
+    }
+
     void UpdateChoice(uint8_t choiceindex)
     {
         if (choiceindex < _optionCount)
@@ -96,7 +126,13 @@ class ParameterListScreen : public IScreen
         uint8_t fontcenter = _optionLineHeight / 2 + painter->GetCurrentFontHeight() / 2;
         for (int8_t i = 0; i < _optionCount; i++)
         {
-            if (_highlightIndex == i)
+            if (_pressedIndex == i)
+            {
+                painter->DrawFillRectangle(20, heightcenter, GlobalSettings::LCDWidth - 40, _optionLineHeight,
+                                           _backgroundPressedColor);
+                painter->DrawText(30, heightcenter + fontcenter, _optionLabels[i], _textPressedColor,
+                                  TextAlign::TEXT_ALIGN_LEFT, GlobalSettings::LCDWidth);
+            } else if (_highlightIndex == i)
             {
                 painter->DrawFillRectangle(20, heightcenter, GlobalSettings::LCDWidth - 40, _optionLineHeight,
                                            _highlightColor);

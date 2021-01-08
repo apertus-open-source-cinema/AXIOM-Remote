@@ -28,7 +28,6 @@ class ParameterListMenuItem : public MenuItem
         for (int8_t i = 0; i < options; i++)
         {
             _optionLabels[i] = optionlabels[i];
-            //_parameterMenuItem[i].SetHorizontalTextMargin(_horizontalTextMargin);
         }
     }
 
@@ -41,8 +40,8 @@ class ParameterListMenuItem : public MenuItem
     {
         if (choiceindex < _optionCount)
         {
-            _value = _optionLabels[choiceindex];
             _choiceIndex = choiceindex;
+            _value = _optionLabels[choiceindex];
         }
     }
 

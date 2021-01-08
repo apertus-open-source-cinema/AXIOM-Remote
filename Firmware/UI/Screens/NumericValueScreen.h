@@ -32,11 +32,10 @@ class NumericValueScreen : public IScreen
     uint16_t _stepSize;
     char const* _suffix;
 
-
   public:
     explicit NumericValueScreen(IUSBDevice* usbDevice) :
-        IScreen(usbDevice), _cancelButton("Cancel"), _setButton("Set"), _liveButton("Live"),
-        _header("Parameter Menu"), _value(0), _stepSize(1), _suffix("")
+        IScreen(usbDevice), _cancelButton("Cancel"), _setButton("Set"), _liveButton("Live"), _header("Parameter Menu"),
+        _value(0), _stepSize(1), _suffix("")
     {
         //_cancelButton.SetHandler(&CancelButtonHandler);
         _bottomButtonBar.SetButton(ButtonPosition::Left, &_cancelButton);
@@ -116,6 +115,16 @@ class NumericValueScreen : public IScreen
     void ToggleLiveSet()
     {
         _liveButton.SetChecked(!_liveButton.GetChecked());
+    }
+
+    void SetSetButtonPressed(bool pressed)
+    {
+        _setButton.SetHighlighted(pressed);
+    }
+
+    void SetCancelButtonPressed(bool pressed)
+    {
+        _cancelButton.SetHighlighted(pressed);
     }
 
     void Draw(IPainter* painter) override
