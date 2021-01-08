@@ -8,12 +8,12 @@ class CentralDB;
 
 class CentralDBObserver
 {
-    const Attribute::ID _observedAttributeId;
+    const Attribute::Id _observedAttributeId;
     void (*_callback)(const CentralDB&);
 
   public:
-    explicit CentralDBObserver(const Attribute::ID attribureId, void (*callback)(const CentralDB&));
-    Attribute::ID ObservedAttribute() const;
+    explicit CentralDBObserver(const Attribute::Id attribureId, void (*callback)(const CentralDB&));
+    Attribute::Id ObservedAttribute() const;
     void Update(const CentralDB& db) const;
 };
 
