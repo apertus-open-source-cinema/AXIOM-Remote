@@ -69,23 +69,6 @@ void Initialization(SDL_Window** window)
     }
 }
 
-void RenderDisplay(uint16_t* sourceFramebuffer, uint8_t* targetFramebuffer, int width, int height)
-{
-    unsigned int j = 0;
-    for (int yIndex = 0; yIndex < height; yIndex++)
-    {
-        for (int xIndex = 0; xIndex < width; xIndex++)
-        {
-            uint16_t val = sourceFramebuffer[yIndex * width + xIndex];
-
-            targetFramebuffer[j] = (val >> 11) << 3;
-            targetFramebuffer[j + 1] = ((val >> 5) & 0x3F) << 2;
-            targetFramebuffer[j + 2] = (val & 0x1F) << 3;
-            j += 3;
-        }
-    }
-}
-
 void SetupGL(SDL_Window* window, SDL_GLContext& glContext)
 {
     gl3wInit();
@@ -158,8 +141,7 @@ int main(int argc, char* argv[])
 
     ProcessCommandLine(argc, argv);
 
-    uint8_t* framebuffer = new uint8_t[FRAMEBUFFER_WIDTH * FRAMEBUFFER_HEIGHT * 3];
-    uint16_t* frameBuffer = new uint16_t[FRAMEBUFFER_WIDTH * FRAMEBUFFER_HEIGHT];
+    auto frameBuffer = new uint16_t[FRAMEBUFFER_WIDTH * FRAMEBUFFER_HEIGHT];
 
     SDL_Window* window;
     SDL_GLContext glContext;
@@ -168,13 +150,7 @@ int main(int argc, char* argv[])
     SetupGL(window, glContext);
     SetupImGui(window, glContext);
 
-    // LoadShader();
-
     uint32_t displayTextureID = CreateGLTexture(FRAMEBUFFER_WIDTH, FRAMEBUFFER_HEIGHT, nullptr, GL_RGB, GL_NEAREST);
-
-    SDL_Surface* backgroundTexture = IMG_Load("images/enclosure.png");
-    uint32_t backgroundTextureID = CreateGLTextureFromSurface(backgroundTexture);
-    SDL_FreeSurface(backgroundTexture);
 
     SDL_Rect texture_rect;
     texture_rect.x = 400;                    // the x coordinate
@@ -200,7 +176,7 @@ int main(int argc, char* argv[])
     int8_t knobValue = 0;
     bool debugOverlayEnabled = false;
 
-    std::shared_ptr<VirtualUI> virtualUI = std::make_shared<VirtualUI>(window, displayTextureID, backgroundTextureID);
+    std::shared_ptr<VirtualUI> virtualUI = std::make_shared<VirtualUI>(window, displayTextureID);
 
     bool appIsRunning = true;
     const int frames = 60;
@@ -223,11 +199,10 @@ int main(int argc, char* argv[])
 #endif
 
         menuSystem.Draw(&painter);
-        RenderDisplay(frameBuffer, framebuffer, FRAMEBUFFER_WIDTH, FRAMEBUFFER_HEIGHT);
 
         glBindTexture(GL_TEXTURE_2D, displayTextureID);
-        glTexSubImage2D(GL_TEXTURE_2D, 0, 0, 0, FRAMEBUFFER_WIDTH, FRAMEBUFFER_HEIGHT, GL_RGB, GL_UNSIGNED_BYTE,
-                        framebuffer);
+        glTexSubImage2D(GL_TEXTURE_2D, 0, 0, 0, FRAMEBUFFER_WIDTH, FRAMEBUFFER_HEIGHT, GL_RGB, GL_UNSIGNED_SHORT_5_6_5,
+                        frameBuffer);
         glBindTexture(GL_TEXTURE_2D, 0);
 
         button = Button::BUTTON_NONE;

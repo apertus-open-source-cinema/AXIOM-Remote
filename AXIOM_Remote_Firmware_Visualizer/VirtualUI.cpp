@@ -19,9 +19,8 @@ uint8_t value = 0;
 uint8_t lastValue = 0;
 uint8_t brightnessLevel = 16;
 
-VirtualUI::VirtualUI(SDL_Window* window, uint32_t displayTextureID, uint32_t backgroundTextureID) :
-    _window(window), _io(ImGui::GetIO()), _displayTextureID(reinterpret_cast<ImTextureID>(displayTextureID)),
-    _backgroundTextureID(reinterpret_cast<ImTextureID>(backgroundTextureID))
+VirtualUI::VirtualUI(SDL_Window* window, uint32_t displayTextureID) :
+    _window(window), _io(ImGui::GetIO()), _displayTextureID(reinterpret_cast<ImTextureID>(displayTextureID))
 {
     LoadTextures();
 
@@ -51,8 +50,12 @@ VirtualUI::VirtualUI(SDL_Window* window, uint32_t displayTextureID, uint32_t bac
 
 void VirtualUI::LoadTextures()
 {
+    SDL_Surface* backgroundTexture = IMG_Load("images/enclosure.png");
+    _backgroundTextureID = reinterpret_cast<ImTextureID>(CreateGLTextureFromSurface(backgroundTexture));
+    SDL_FreeSurface(backgroundTexture);
+
     SDL_Surface* surface = IMG_Load("images/knob.png");
-    _knobTextureID = CreateGLTextureFromSurface(surface);
+    _knobTextureID = reinterpret_cast<ImTextureID>(CreateGLTextureFromSurface(surface));
     SDL_FreeSurface(surface);
 
     SDL_Surface* buttonTexture = IMG_Load("images/button_normal.png");
@@ -480,7 +483,6 @@ void VirtualUI::RenderLED(int8_t glowValue)
 
     ImGui::SetCursorPos(ImVec2(63, 109));
     ImGui::Image(_ledTextureID, ImVec2(30, 29), ImVec2(0, 0), ImVec2(1, 1), ImColor(255, 255, 255, 255));
-
 
     // Render LED light
     ImGui::GetWindowDrawList()->ImDrawList::AddCallback(EnableBlending, nullptr);
