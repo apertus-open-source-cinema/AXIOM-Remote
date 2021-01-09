@@ -15,10 +15,10 @@ class VirtualUI {
     SDL_Window* _window;
     const ImGuiIO& _io;
 
-    uint32_t _knobTextureID;
+    ImTextureID _knobTextureID;
     ImTextureID _displayTextureID;
     ImTextureID _backgroundTextureID;
-    
+
     ImTextureID _buttonTextureID;
     ImTextureID _buttonPressedTextureID;
     ImTextureID _buttonRoundTextureID;
@@ -61,7 +61,7 @@ class VirtualUI {
     void RenderLED(int8_t glowValue);
 
   public:
-    VirtualUI(SDL_Window* window, uint32_t displayTextureID, uint32_t backgroundTextureID);
+    VirtualUI(SDL_Window* window, uint32_t displayTextureID);
 
     void RenderUI(Button& button, int8_t& knobValue, bool& debugOverlayEnabled);
 };
