@@ -141,7 +141,7 @@ int main(int argc, char* argv[])
 
     ProcessCommandLine(argc, argv);
 
-    uint16_t* frameBuffer = new uint16_t[FRAMEBUFFER_WIDTH * FRAMEBUFFER_HEIGHT];
+    auto frameBuffer = new uint16_t[FRAMEBUFFER_WIDTH * FRAMEBUFFER_HEIGHT];
 
     SDL_Window* window;
     SDL_GLContext glContext;
@@ -150,10 +150,7 @@ int main(int argc, char* argv[])
     SetupGL(window, glContext);
     SetupImGui(window, glContext);
 
-    // LoadShader();
-
-    uint32_t displayTextureID =
-        CreateGLTexture(FRAMEBUFFER_WIDTH, FRAMEBUFFER_HEIGHT, nullptr, GL_RGB, GL_NEAREST);
+    uint32_t displayTextureID = CreateGLTexture(FRAMEBUFFER_WIDTH, FRAMEBUFFER_HEIGHT, nullptr, GL_RGB, GL_NEAREST);
 
     SDL_Surface* backgroundTexture = IMG_Load("images/enclosure.png");
     uint32_t backgroundTextureID = CreateGLTextureFromSurface(backgroundTexture);
