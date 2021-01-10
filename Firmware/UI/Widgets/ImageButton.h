@@ -46,7 +46,7 @@ class ImageButton : public IButton
         IButton(x, y, width, height), _image(icon), _cornerRadius(3), _highlighted(false),
         _imageColor((uint16_t)Color565::Black), _currentImageColor(_imageColor),
         _backgroundHighlightColor((uint16_t)Color565::AXIOM_Blue), _currentBackgroundColor(RGB565(220, 220, 220)),
-        _backgroundColor(_currentBackgroundColor), _buttonStyle(ButtonStyle::Icon)
+        _backgroundColor(RGB565(220, 220, 220)), _buttonStyle(ButtonStyle::Icon)
     {
         _totalWidth = _image->Width;
         _textPositionY = _height / 2;
