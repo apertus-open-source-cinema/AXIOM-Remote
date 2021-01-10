@@ -12,6 +12,8 @@
 #include "../Screens/ParameterListScreen.h"
 #include "../Screens/NumericValueScreen.h"
 #include "../Widgets/PopUpMenuItem.h"
+#include "../Widgets/NumericMenuItem.h"
+#include "../Widgets/ParameterListMenuItem.h"
 
 #include "../ButtonDefinitions.h"
 

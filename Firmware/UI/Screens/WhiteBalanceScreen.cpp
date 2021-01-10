@@ -22,14 +22,14 @@ WhiteBalanceScreen::WhiteBalanceScreen(IUSBDevice* usbDevice) :
     _setButton.SetBackgroundColor((uint16_t)Color565::AXIOM_Orange);
     _bottomButtonBar.SetButton(ButtonPosition::Right, &_setButton);
 
-    _leftButtonBar.SetButton(ButtonPosition::Left, &_homeButton);
+    //_leftButtonBar.SetButton(ButtonPosition::Left, &_homeButton); //already done in IScreen
 }
 
 void WhiteBalanceScreen::Draw(IPainter* painter)
 {
     Drawheader(painter);
 
-    painter->DrawFillRectangle(20, 50, 70, 30, (uint16_t)Color565::Yellow);
+    // painter->DrawFillRectangle(20, 50, 70, 30, (uint16_t)Color565::Yellow);
 
     DrawBottomButtonBar(painter);
 
@@ -52,16 +52,16 @@ void WhiteBalanceScreen::Drawheader(IPainter* painter)
 // TODO: Evaluate if menu system should be sent as another argument
 void WhiteBalanceScreen::CancelButtonHandler(void* sender)
 {
-    //WhiteBalanceScreen* screen = static_cast<WhiteBalanceScreen*>(sender);
-    //IMenuSystem* menuSystem = screen->
-    //menuSystem->SetCurrentScreen(AvailableScreens::MainPage);
+    // WhiteBalanceScreen* screen = static_cast<WhiteBalanceScreen*>(sender);
+    // IMenuSystem* menuSystem = screen->
+    // menuSystem->SetCurrentScreen(AvailableScreens::MainPage);
 }
 
 void WhiteBalanceScreen::SetButtonHandler(void* sender)
 {
-    //WhiteBalanceScreen* screen = static_cast<WhiteBalanceScreen*>(sender);
-    //IMenuSystem* menuSystem = screen->GetMenuSystem();
-    //menuSystem->SetCurrentScreen(AvailableScreens::SettingsMenu);
+    // WhiteBalanceScreen* screen = static_cast<WhiteBalanceScreen*>(sender);
+    // IMenuSystem* menuSystem = screen->GetMenuSystem();
+    // menuSystem->SetCurrentScreen(AvailableScreens::SettingsMenu);
 }
 
 void WhiteBalanceScreen::AddPresetButtonHandler(void* sender)
@@ -91,6 +91,13 @@ void WhiteBalanceScreen::Update(Button button, int8_t knob, IMenuSystem* menuSys
         break;
     case Button::BUTTON_6_UP:
         _setButton.SetHighlighted(false);
+        menuSystem->SetCurrentScreen(AvailableScreens::MainPage);
+        break;
+    case Button::BUTTON_7_DOWN:
+        _homeButton.SetHighlighted(true);
+        break;
+    case Button::BUTTON_7_UP:
+        _homeButton.SetHighlighted(false);
         menuSystem->SetCurrentScreen(AvailableScreens::MainPage);
         break;
     default:
