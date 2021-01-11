@@ -14,12 +14,12 @@ class Attribute
         FRAME_RATE = 0,
         WHITE_BALANCE,
         APERTURE,
+        REMOTE_LCD_BRIGHTNESS,
         TEST_STRING,
         TEST_BOOLEAN,
         TEST_INT32,
         /* TODO: adjust accordingly, i.e. add more attributes */
-        NUM_ATTRIBUTES, // DO NOT USE: referenced only to count the total number of attributes
-        REMOTE_LCD_BRIGHTNESS
+        NUM_ATTRIBUTES // DO NOT USE: referenced only to count the total number of attributes
     };
 
     enum class Type
