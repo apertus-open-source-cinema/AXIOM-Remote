@@ -494,7 +494,7 @@ class Menu : public IMenu
         {
             _numericValueMenuActive = -1;
 
-            NumericMenuItem* currentNumericMenuItem = (NumericMenuItem*)_menuItem[_menuSelectionIndex];
+            auto currentNumericMenuItem = (NumericMenuItem*)_menuItem[_menuSelectionIndex];
             currentNumericMenuItem->SetValue(_numericValueScreen.GetValue());
             // currentNumericMenuItem->Activate(&currentNumericMenuItem, &_db);
             currentNumericMenuItem->Activate(&currentNumericMenuItem);
@@ -502,8 +502,7 @@ class Menu : public IMenu
         {
             _parameterListMenuActive = -1;
 
-            ParameterListMenuItem* currentParameterListMenuItem =
-                (ParameterListMenuItem*)_menuItem[_menuSelectionIndex];
+            auto currentParameterListMenuItem = (ParameterListMenuItem*)_menuItem[_menuSelectionIndex];
             currentParameterListMenuItem->UpdateChoice(_parameterListScreen.GetHighlightIndex());
             _parameterListScreen.UpdateChoice(_parameterListScreen.GetHighlightIndex());
             _parameterListScreen.UnpressAll();
@@ -513,7 +512,7 @@ class Menu : public IMenu
         {
             _popUpParameterMenuActive = -1;
 
-            PopUpMenuItem* currentPopUpMenuItem = (PopUpMenuItem*)_menuItem[_menuSelectionIndex];
+            auto currentPopUpMenuItem = reinterpret_cast<PopUpMenuItem*>(_menuItem[_menuSelectionIndex]);
             currentPopUpMenuItem->UpdateChoice(_popUpParameterMenu.GetHighlightIndex());
 
             _popUpParameterMenu.SetPressed(-1);
@@ -523,7 +522,7 @@ class Menu : public IMenu
 
             if (_menuItem[_menuSelectionIndex]->GetMenuType() == MenuItemType::MENU_ITEM_TYPE_NUMERIC)
             {
-                NumericMenuItem* currentNumericMenuItem = (NumericMenuItem*)_menuItem[_menuSelectionIndex];
+                auto currentNumericMenuItem = (NumericMenuItem*)_menuItem[_menuSelectionIndex];
                 _numericValueScreen.SetRange(currentNumericMenuItem->GetMinRange(),
                                              currentNumericMenuItem->GetMaxRange());
                 _numericValueScreen.SetValue(currentNumericMenuItem->GetValue());
@@ -534,8 +533,7 @@ class Menu : public IMenu
                 _numericValueMenuActive = _menuSelectionIndex;
             } else if (_menuItem[_menuSelectionIndex]->GetMenuType() == MenuItemType::MENU_ITEM_TYPE_LIST)
             {
-                ParameterListMenuItem* currentParameterListMenuItem =
-                    (ParameterListMenuItem*)_menuItem[_menuSelectionIndex];
+                auto currentParameterListMenuItem = (ParameterListMenuItem*)_menuItem[_menuSelectionIndex];
                 const char* options[currentParameterListMenuItem->GetOptionCount()];
 
                 for (uint8_t i = 0; i < currentParameterListMenuItem->GetOptionCount(); i++)
@@ -547,7 +545,7 @@ class Menu : public IMenu
                 _parameterListMenuActive = _menuSelectionIndex;
             } else if (_menuItem[_menuSelectionIndex]->GetMenuType() == MenuItemType::MENU_ITEM_TYPE_DROPDOWN)
             {
-                PopUpMenuItem* currentPopUpMenuItem = (PopUpMenuItem*)_menuItem[_menuSelectionIndex];
+                auto currentPopUpMenuItem = reinterpret_cast<PopUpMenuItem*>(_menuItem[_menuSelectionIndex]);
                 const char* choices[7];
                 for (uint8_t i = 0; i < currentPopUpMenuItem->GetChoiceCount(); i++)
                 {

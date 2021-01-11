@@ -130,7 +130,7 @@ class NumericValueScreen : public IScreen
     void Draw(IPainter* painter) override
     {
         painter->Fill(_backgroundColor);
-        Drawheader(painter);
+        DrawHeader(painter);
 
         // draw value
         painter->SetFont(Font::FreeSans24pt7b);
@@ -173,7 +173,7 @@ class NumericValueScreen : public IScreen
     static void CancelButtonHandler(void* sender);
     static void SetButtonHandler(void* sender);
 
-    void Drawheader(IPainter* painter)
+    void DrawHeader(IPainter* painter)
     {
         // header background
         painter->DrawFillRectangle(0, 0, GlobalSettings::LCDWidth, 30, (uint16_t)Color565::Black);

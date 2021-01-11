@@ -36,7 +36,7 @@ class VirtualUI {
 
     void ShowZoomTooltip();
 
-    uint32_t _vertexbuffer;
+    uint32_t _vertexBuffer;
     uint32_t _cameraFBO;
     uint32_t _fboTextureID;
     uint32_t _fboDisplayTextureID;
@@ -66,7 +66,9 @@ class VirtualUI {
     VirtualUI(SDL_Window* window, uint32_t displayTextureID);
 
     void RenderUI(Button& button, int8_t& knobValue, bool& debugOverlayEnabled);
+
     void RenderDisplayToFBO() const;
+    void SetupVBO();
 };
 
 #endif // VIRTUALUI_H
