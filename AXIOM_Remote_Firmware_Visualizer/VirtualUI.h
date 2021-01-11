@@ -1,13 +1,16 @@
 #ifndef VIRTUALUI_H
 #define VIRTUALUI_H
 
-#include <stdint.h>
+#include <cstdint>
+#include <memory>
 #include <string>
 
 #include "imgui.h"
 
 #include "imgui_modules/imgui_impl_opengl3.h"
 #include "imgui_modules/imgui_impl_sdl.h"
+
+#include <CentralDBObserver.h>
 
 enum class Button;
 
@@ -45,6 +48,9 @@ class VirtualUI {
 
     float _analogGainShader;
     float _contrastFactor;
+  
+    CentralDB* _db;
+    std::shared_ptr<CentralDBObserver> lcdObserver;
 
     // Shader helper
     uint32_t LoadShader(std::string shaderFilePath, uint32_t shaderID);
@@ -63,7 +69,7 @@ class VirtualUI {
     void RenderLED(int8_t glowValue);
 
   public:
-    VirtualUI(SDL_Window* window, uint32_t displayTextureID);
+    VirtualUI(SDL_Window* window, uint32_t displayTextureID, CentralDB* db);
 
     void RenderUI(Button& button, int8_t& knobValue, bool& debugOverlayEnabled);
 

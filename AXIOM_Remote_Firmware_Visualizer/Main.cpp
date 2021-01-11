@@ -176,7 +176,7 @@ int main(int argc, char* argv[])
     int8_t knobValue = 0;
     bool debugOverlayEnabled = false;
 
-    std::shared_ptr<VirtualUI> virtualUI = std::make_shared<VirtualUI>(window, displayTextureID);
+    std::shared_ptr<VirtualUI> virtualUI = std::make_shared<VirtualUI>(window, displayTextureID, &centralDB);
 
     bool appIsRunning = true;
     const int frames = 60;

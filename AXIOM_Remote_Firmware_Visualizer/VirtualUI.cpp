@@ -18,9 +18,10 @@
 uint8_t value = 0;
 uint8_t lastValue = 0;
 uint8_t brightnessLevel = 16;
+uint8_t lcdBrightness = 100;
 
-VirtualUI::VirtualUI(SDL_Window* window, uint32_t displayTextureID) :
-    _window(window), _io(ImGui::GetIO()), _displayTextureID(reinterpret_cast<ImTextureID>(displayTextureID))
+VirtualUI::VirtualUI(SDL_Window* window, uint32_t displayTextureID, CentralDB* db) :
+    _window(window), _io(ImGui::GetIO()), _displayTextureID(reinterpret_cast<ImTextureID>(displayTextureID)), _db(db)
 {
     LoadTextures();
 
@@ -49,6 +50,14 @@ void VirtualUI::SetupVBO()
     glBindBuffer(GL_ARRAY_BUFFER, _vertexBuffer);
     // Give our vertices to OpenGL.
     glBufferData(GL_ARRAY_BUFFER, sizeof(vertexBufferData), vertexBufferData, GL_STATIC_DRAW);
+    
+    CompileShader();
+    
+    lcdObserver = std::make_shared<CentralDBObserver>(Attribute::Id::REMOTE_LCD_BRIGHTNESS, [](const CentralDB& db) {
+        lcdBrightness = db.GetUint32(Attribute::Id::REMOTE_LCD_BRIGHTNESS);
+        std::cout << "LCD brightness" << std::endl;
+    });
+    _db->Attach(lcdObserver.get());
 }
 
 void VirtualUI::LoadTextures()
@@ -200,12 +209,6 @@ void VirtualUI::ShowShaderLog(uint32_t shaderID)
     }
 }
 
-/*bool RenderButton(std::string name, uint16_t x, uint16_t y, uint16_t width = 40, uint16_t height = 30)
-{
-    ImGui::SetCursorPos(ImVec2(x, y));
-    return ImGui::Button(name.c_str(), ImVec2(width, height));
-}*/
-
 void VirtualUI::RenderDisplayToFBO() const
 {
     glBindFramebuffer(GL_FRAMEBUFFER, _cameraFBO);
@@ -221,13 +224,13 @@ void VirtualUI::RenderDisplayToFBO() const
     // Set our "renderedTexture" sampler to use Texture Unit 0
     glUniform1i(_cameraPreviewTexture, 0);
 
-    float brightness = 0.1f * brightnessLevel;
+    float brightness = 1.0f / 100.0f * lcdBrightness;
     glUniform1f(_analogGainShader, brightness);
     glUniform1f(_contrastFactor, 0.7);
 
     // 1st attribute buffer : vertices
     glEnableVertexAttribArray(0);
-    glBindBuffer(GL_ARRAY_BUFFER, _vertexbuffer);
+    glBindBuffer(GL_ARRAY_BUFFER, _vertexBuffer);
     glVertexAttribPointer(0,        // attribute 0. No particular reason for 0, but must match the layout in the shader.
                           3,        // size
                           GL_FLOAT, // type
@@ -252,12 +255,12 @@ void VirtualUI::ShowZoomTooltip()
     int16_t textureWidth = 320;
     int16_t textureHeight = 240;
 
-    //uint16_t data[2] = {123, 456};
-    //ImGui::GetWindowDrawList()->ImDrawList::AddCallback(EnableShader, data);
-    ImGui::Image(reinterpret_cast<ImTextureID>(_fboDisplayTextureID), ImVec2(textureWidth, textureHeight), ImVec2(0, 0), ImVec2(1, 1),
-                 ImVec4(1.0f, 1.0f, 1.0f, 1.0f), ImVec4(1.0f, 1.0f, 1.0f, 0.5f));
+    // uint16_t data[2] = {123, 456};
+    // ImGui::GetWindowDrawList()->ImDrawList::AddCallback(EnableShader, data);
+    ImGui::Image(reinterpret_cast<ImTextureID>(_fboDisplayTextureID), ImVec2(textureWidth, textureHeight), ImVec2(0, 0),
+                 ImVec2(1, 1), ImVec4(1.0f, 1.0f, 1.0f, 1.0f), ImVec4(1.0f, 1.0f, 1.0f, 0.5f));
     
-    //ImGui::GetWindowDrawList()->ImDrawList::AddCallback(DisableShader, nullptr);
+    // ImGui::GetWindowDrawList()->ImDrawList::AddCallback(DisableShader, nullptr);
 
     if (ImGui::IsItemHovered())
     {
@@ -278,8 +281,8 @@ void VirtualUI::ShowZoomTooltip()
         ImGui::Text("Max: (%.2f, %.2f)", region_x + region_sz, region_y + region_sz);
         ImVec2 uv0 = ImVec2((region_x) / textureWidth, (region_y) / textureHeight);
         ImVec2 uv1 = ImVec2((region_x + region_sz) / textureWidth, (region_y + region_sz) / textureHeight);
-        ImGui::Image(_displayTextureID, ImVec2(region_sz * zoom, region_sz * zoom), uv0, uv1,
-                     ImVec4(1.0f, 1.0f, 1.0f, 1.0f), ImVec4(1.0f, 1.0f, 1.0f, 0.5f));
+        ImGui::Image(reinterpret_cast<ImTextureID>(_fboDisplayTextureID), ImVec2(region_sz * zoom, region_sz * zoom),
+                     uv0, uv1, ImVec4(1.0f, 1.0f, 1.0f, 1.0f), ImVec4(1.0f, 1.0f, 1.0f, 0.5f));
         ImGui::EndTooltip();
     }
 }
@@ -359,7 +362,6 @@ void VirtualUI::RenderVirtualCamera()
     ImGui::GetStyle().WindowPadding = ImVec2(0, 0);
     ImGui::SetNextWindowPos(ImVec2(0, 480));
     ImGui::SetNextWindowSize(ImVec2(800, 480));
-    // ImGui::SetNextWindowContentSize(ImVec2(800, 480));
 
     ImGui::Begin("Image2", nullptr, ImGuiWindowFlags_NoDecoration | ImGuiWindowFlags_NoBackground);
     ImGui::PushStyleVar(ImGuiStyleVar_WindowRounding, 0.0f);

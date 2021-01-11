@@ -12,7 +12,8 @@ CentralDB::CentralDB() :
                                                  {Attribute::Id::WHITE_BALANCE, Attribute::Type::UINT32},
                                                  {Attribute::Id::TEST_STRING, Attribute::Type::STRING},
                                                  {Attribute::Id::TEST_BOOLEAN, Attribute::Type::BOOLEAN},
-                                                 {Attribute::Id::TEST_INT32, Attribute::Type::INT32}}
+                                                 {Attribute::Id::TEST_INT32, Attribute::Type::INT32},
+                                                 {Attribute::Id::REMOTE_LCD_BRIGHTNESS, Attribute::Type::UINT32}}
     // TODO: add any missing attributes
 {
 }
