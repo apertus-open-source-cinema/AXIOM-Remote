@@ -28,6 +28,14 @@ VirtualUI::VirtualUI(SDL_Window* window, uint32_t displayTextureID, CentralDB* d
     CreateFBO();
     SetupVBO();
     CompileShader();
+
+    CompileShader();
+
+    lcdObserver = std::make_shared<CentralDBObserver>(Attribute::Id::REMOTE_LCD_BRIGHTNESS, [](const CentralDB& db) {
+      lcdBrightness = db.GetUint32(Attribute::Id::REMOTE_LCD_BRIGHTNESS);
+      std::cout << "LCD brightness" << std::endl;
+    });
+    _db->Attach(lcdObserver.get());
 }
 
 void VirtualUI::SetupVBO()
@@ -50,14 +58,6 @@ void VirtualUI::SetupVBO()
     glBindBuffer(GL_ARRAY_BUFFER, _vertexBuffer);
     // Give our vertices to OpenGL.
     glBufferData(GL_ARRAY_BUFFER, sizeof(vertexBufferData), vertexBufferData, GL_STATIC_DRAW);
-    
-    CompileShader();
-    
-    lcdObserver = std::make_shared<CentralDBObserver>(Attribute::Id::REMOTE_LCD_BRIGHTNESS, [](const CentralDB& db) {
-        lcdBrightness = db.GetUint32(Attribute::Id::REMOTE_LCD_BRIGHTNESS);
-        std::cout << "LCD brightness" << std::endl;
-    });
-    _db->Attach(lcdObserver.get());
 }
 
 void VirtualUI::LoadTextures()
@@ -174,6 +174,7 @@ void VirtualUI::CompileShader()
 
     _cameraPreviewTexture = glGetUniformLocation(_programID, "cameraPreviewTexture");
     _analogGainShader = glGetUniformLocation(_programID, "analogGain");
+    _brightnessFactor = glGetUniformLocation(_programID, "brightnessFactor");
     _contrastFactor = glGetUniformLocation(_programID, "contrastFactor");
 }
 
@@ -225,8 +226,9 @@ void VirtualUI::RenderDisplayToFBO() const
     glUniform1i(_cameraPreviewTexture, 0);
 
     float brightness = 1.0f / 100.0f * lcdBrightness;
-    glUniform1f(_analogGainShader, brightness);
-    glUniform1f(_contrastFactor, 0.7);
+    glUniform1f(_analogGainShader, 1.0f);
+    glUniform1f(_contrastFactor, 0.7f);
+    glUniform1f(_brightnessFactor, brightness);
 
     // 1st attribute buffer : vertices
     glEnableVertexAttribArray(0);
@@ -258,7 +260,7 @@ void VirtualUI::ShowZoomTooltip()
     // uint16_t data[2] = {123, 456};
     // ImGui::GetWindowDrawList()->ImDrawList::AddCallback(EnableShader, data);
     ImGui::Image(reinterpret_cast<ImTextureID>(_fboDisplayTextureID), ImVec2(textureWidth, textureHeight), ImVec2(0, 0),
-                 ImVec2(1, 1), ImVec4(1.0f, 1.0f, 1.0f, 1.0f), ImVec4(1.0f, 1.0f, 1.0f, 0.5f));
+                 ImVec2(1, 1), ImVec4(1.0f, 1.0f, 1.0f, 1.0f));
     
     // ImGui::GetWindowDrawList()->ImDrawList::AddCallback(DisableShader, nullptr);
 
@@ -282,7 +284,7 @@ void VirtualUI::ShowZoomTooltip()
         ImVec2 uv0 = ImVec2((region_x) / textureWidth, (region_y) / textureHeight);
         ImVec2 uv1 = ImVec2((region_x + region_sz) / textureWidth, (region_y + region_sz) / textureHeight);
         ImGui::Image(reinterpret_cast<ImTextureID>(_fboDisplayTextureID), ImVec2(region_sz * zoom, region_sz * zoom),
-                     uv0, uv1, ImVec4(1.0f, 1.0f, 1.0f, 1.0f), ImVec4(1.0f, 1.0f, 1.0f, 0.5f));
+                     uv0, uv1, ImVec4(1.0f, 1.0f, 1.0f, 1.0f));
         ImGui::EndTooltip();
     }
 }
@@ -367,7 +369,7 @@ void VirtualUI::RenderVirtualCamera()
     ImGui::PushStyleVar(ImGuiStyleVar_WindowRounding, 0.0f);
 
     ImGui::Image(reinterpret_cast<ImTextureID>(_fboTextureID), ImVec2(800, 480), ImVec2(0, 0), ImVec2(1, 1),
-                 ImVec4(1.0f, 1.0f, 1.0f, 1.0f), ImVec4(1.0f, 1.0f, 1.0f, 0.5f));
+                 ImVec4(1.0f, 1.0f, 1.0f, 1.0f));
 
     ImGui::SetCursorPos(ImVec2(650, 30));
     RenderOverlay();

@@ -53,7 +53,7 @@ class MenuItem : public IWidget
 
     uint8_t _verticalLabelOffset;
 
-    void (*_handlerPtr)(void*);
+    void (*_handlerPtr)(void*, CentralDB*);
 
   public:
     MenuItem(CentralDB* centralDB = nullptr, const char* label = "...", bool disabled = false,
@@ -91,14 +91,14 @@ class MenuItem : public IWidget
         }
     }
 
-    virtual void SetHandler(void (*handler)(void*))
+    virtual void SetHandler(void (*handler)(void*, CentralDB*))
     {
         _handlerPtr = handler;
     }
 
     void Activate(void* sender)
     {
-        _handlerPtr(sender);
+        _handlerPtr(sender, _db);
     }
     void attachObserver()
     {

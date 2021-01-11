@@ -47,6 +47,7 @@ class VirtualUI {
     uint32_t _cameraPreviewTexture;
 
     float _analogGainShader;
+    float _brightnessFactor;
     float _contrastFactor;
   
     CentralDB* _db;

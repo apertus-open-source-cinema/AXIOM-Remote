@@ -108,9 +108,10 @@ class MainMenu : public Menu
         */
     }
 
-    static void LCDBrightnessMenuItemHandler(void* sender)
+    static void LCDBrightnessMenuItemHandler(void* sender, CentralDB* db)
     {
         NumericMenuItem* menuitem = static_cast<NumericMenuItem*>(sender);
+        db->SetUint32(Attribute::Id::REMOTE_LCD_BRIGHTNESS, menuitem->GetValue());
         // display->SetBacklight((uint8_t)menuitem->GetValue());
     }
 };
