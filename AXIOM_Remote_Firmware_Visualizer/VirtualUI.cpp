@@ -19,6 +19,7 @@ uint8_t value = 0;
 uint8_t lastValue = 0;
 uint8_t brightnessLevel = 16;
 uint8_t lcdBrightness = 100;
+bool toggleContrast = false;
 
 VirtualUI::VirtualUI(SDL_Window* window, uint32_t displayTextureID, CentralDB* db) :
     _window(window), _io(ImGui::GetIO()), _displayTextureID(reinterpret_cast<ImTextureID>(displayTextureID)), _db(db)
@@ -208,6 +209,17 @@ void VirtualUI::ShowShaderLog(uint32_t shaderID)
         glGetShaderInfoLog(shaderID, infoLogLength, nullptr, shaderErrorMessage.data());
         std::cout << std::string(begin(shaderErrorMessage), end(shaderErrorMessage)) << std::endl;
     }
+}
+
+void VirtualUI::ToggleLCDContrast(bool& toggleContrastEnabled)
+{
+    if(toggleContrastEnabled)
+    {
+        _contrastFactor = 1.0f;
+        return;
+    }
+    
+    _contrastFactor = 0.7f;
 }
 
 void VirtualUI::RenderDisplayToFBO() const
@@ -576,8 +588,12 @@ void VirtualUI::RenderUI(Button& button, int8_t& knobValue, bool& debugOverlayEn
     ImGui::SetCursorPos(ImVec2(337, 119));
     ShowZoomTooltip();
 
-    ImGui::SetCursorPos(ImVec2(50, 400));
+    ImGui::SetCursorPos(ImVec2(50, 390));
     ImGui::ToggleButton("debug_overlay_switch", "Debug overlay", &debugOverlayEnabled);
+    
+    ToggleLCDContrast(toggleContrast);
+    ImGui::SetCursorPos(ImVec2(50, 430));
+    ImGui::ToggleButton("toggle_contrast_switch", "Toggle Contrast", &toggleContrast);
 
     ImGui::PopStyleVar();
     ImGui::PopStyleColor();
