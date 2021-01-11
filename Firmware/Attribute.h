@@ -18,7 +18,8 @@ class Attribute
         TEST_BOOLEAN,
         TEST_INT32,
         /* TODO: adjust accordingly, i.e. add more attributes */
-        NUM_ATTRIBUTES // DO NOT USE: referenced only to count the total number of attributes
+        NUM_ATTRIBUTES, // DO NOT USE: referenced only to count the total number of attributes
+        REMOTE_LCD_BRIGHTNESS
     };
 
     enum class Type

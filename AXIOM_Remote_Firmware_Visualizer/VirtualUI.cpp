@@ -18,9 +18,10 @@
 uint8_t value = 0;
 uint8_t lastValue = 0;
 uint8_t brightnessLevel = 16;
+uint8_t lcdBrightness = 100;
 
-VirtualUI::VirtualUI(SDL_Window* window, uint32_t displayTextureID) :
-    _window(window), _io(ImGui::GetIO()), _displayTextureID(reinterpret_cast<ImTextureID>(displayTextureID))
+VirtualUI::VirtualUI(SDL_Window* window, uint32_t displayTextureID, CentralDB* db) :
+    _window(window), _io(ImGui::GetIO()), _displayTextureID(reinterpret_cast<ImTextureID>(displayTextureID)), _db(db)
 {
     LoadTextures();
 
@@ -49,6 +50,14 @@ void VirtualUI::SetupVBO()
     glBindBuffer(GL_ARRAY_BUFFER, _vertexBuffer);
     // Give our vertices to OpenGL.
     glBufferData(GL_ARRAY_BUFFER, sizeof(vertexBufferData), vertexBufferData, GL_STATIC_DRAW);
+    
+    CompileShader();
+    
+    lcdObserver = std::make_shared<CentralDBObserver>(Attribute::Id::REMOTE_LCD_BRIGHTNESS, [](const CentralDB& db) {
+        lcdBrightness = db.GetUint32(Attribute::Id::REMOTE_LCD_BRIGHTNESS);
+        std::cout << "LCD brightness" << std::endl;
+    });
+    _db->Attach(lcdObserver.get());
 }
 
 void VirtualUI::LoadTextures()
@@ -112,6 +121,7 @@ void VirtualUI::CreateFBO()
     glBindFramebuffer(GL_FRAMEBUFFER, _cameraFBO);
 
     _fboTextureID = CreateGLTexture(800, 480);
+    _fboDisplayTextureID = CreateGLTexture(320, 240);
 
     // Set "renderedTexture" as our colour attachment #0
     glFramebufferTexture(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, _fboTextureID, 0);
@@ -164,6 +174,7 @@ void VirtualUI::CompileShader()
 
     _cameraPreviewTexture = glGetUniformLocation(_programID, "cameraPreviewTexture");
     _analogGainShader = glGetUniformLocation(_programID, "analogGain");
+    _contrastFactor = glGetUniformLocation(_programID, "contrastFactor");
 }
 
 uint32_t VirtualUI::LoadShader(std::string shaderFilePath, uint32_t shaderID)
@@ -198,11 +209,44 @@ void VirtualUI::ShowShaderLog(uint32_t shaderID)
     }
 }
 
-/*bool RenderButton(std::string name, uint16_t x, uint16_t y, uint16_t width = 40, uint16_t height = 30)
+void VirtualUI::RenderDisplayToFBO() const
 {
-    ImGui::SetCursorPos(ImVec2(x, y));
-    return ImGui::Button(name.c_str(), ImVec2(width, height));
-}*/
+    glBindFramebuffer(GL_FRAMEBUFFER, _cameraFBO);
+    glFramebufferTexture(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, _fboDisplayTextureID, 0);
+
+    glViewport(0, 0, 320, 240);
+
+    glUseProgram(_programID);
+
+    // Bind our texture in Texture Unit 0
+    glActiveTexture(GL_TEXTURE0);
+    glBindTexture(GL_TEXTURE_2D, (GLuint)(intptr_t)_displayTextureID);
+    // Set our "renderedTexture" sampler to use Texture Unit 0
+    glUniform1i(_cameraPreviewTexture, 0);
+
+    float brightness = 1.0f / 100.0f * lcdBrightness;
+    glUniform1f(_analogGainShader, brightness);
+    glUniform1f(_contrastFactor, 0.7);
+
+    // 1st attribute buffer : vertices
+    glEnableVertexAttribArray(0);
+    glBindBuffer(GL_ARRAY_BUFFER, _vertexBuffer);
+    glVertexAttribPointer(0,        // attribute 0. No particular reason for 0, but must match the layout in the shader.
+                          3,        // size
+                          GL_FLOAT, // type
+                          GL_FALSE, // normalized?
+                          0,        // stride
+                          nullptr   // array buffer offset
+    );
+
+    // Draw the triangle !
+    glDrawArrays(GL_TRIANGLES, 0, 6); // Starting from vertex 0; 3 vertices total -> 1 triangle
+    glDisableVertexAttribArray(0);
+
+    // Disable shader and FBO to revert to previous OpenGL state
+    glUseProgram(0);
+    glBindFramebuffer(GL_FRAMEBUFFER, 0);
+}
 
 // Grabbed from the ImGui examples
 void VirtualUI::ShowZoomTooltip()
@@ -211,8 +255,12 @@ void VirtualUI::ShowZoomTooltip()
     int16_t textureWidth = 320;
     int16_t textureHeight = 240;
 
-    ImGui::Image(_displayTextureID, ImVec2(textureWidth, textureHeight), ImVec2(0, 0), ImVec2(1, 1),
-                 ImVec4(1.0f, 1.0f, 1.0f, 1.0f), ImVec4(1.0f, 1.0f, 1.0f, 0.5f));
+    // uint16_t data[2] = {123, 456};
+    // ImGui::GetWindowDrawList()->ImDrawList::AddCallback(EnableShader, data);
+    ImGui::Image(reinterpret_cast<ImTextureID>(_fboDisplayTextureID), ImVec2(textureWidth, textureHeight), ImVec2(0, 0),
+                 ImVec2(1, 1), ImVec4(1.0f, 1.0f, 1.0f, 1.0f), ImVec4(1.0f, 1.0f, 1.0f, 0.5f));
+    
+    // ImGui::GetWindowDrawList()->ImDrawList::AddCallback(DisableShader, nullptr);
 
     if (ImGui::IsItemHovered())
     {
@@ -233,14 +281,16 @@ void VirtualUI::ShowZoomTooltip()
         ImGui::Text("Max: (%.2f, %.2f)", region_x + region_sz, region_y + region_sz);
         ImVec2 uv0 = ImVec2((region_x) / textureWidth, (region_y) / textureHeight);
         ImVec2 uv1 = ImVec2((region_x + region_sz) / textureWidth, (region_y + region_sz) / textureHeight);
-        ImGui::Image(_displayTextureID, ImVec2(region_sz * zoom, region_sz * zoom), uv0, uv1,
-                     ImVec4(1.0f, 1.0f, 1.0f, 1.0f), ImVec4(1.0f, 1.0f, 1.0f, 0.5f));
+        ImGui::Image(reinterpret_cast<ImTextureID>(_fboDisplayTextureID), ImVec2(region_sz * zoom, region_sz * zoom),
+                     uv0, uv1, ImVec4(1.0f, 1.0f, 1.0f, 1.0f), ImVec4(1.0f, 1.0f, 1.0f, 0.5f));
         ImGui::EndTooltip();
     }
 }
-void VirtualUI::RenderCameraPreviewToFBO()
+void VirtualUI::RenderCameraPreviewToFBO() const
 {
     glBindFramebuffer(GL_FRAMEBUFFER, _cameraFBO);
+    glFramebufferTexture(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, _fboTextureID, 0);
+
     glViewport(0, 0, 800, 480);
 
     glUseProgram(_programID);
@@ -254,6 +304,7 @@ void VirtualUI::RenderCameraPreviewToFBO()
     float brightness = 0.1f * brightnessLevel;
     // std::cout << "Brightness: " << brightness << std::endl;
     glUniform1f(_analogGainShader, brightness);
+    
 
     // glBindTexture(GL_TEXTURE_2D, 1); // (GLuint)(intptr_t)cmd->TextureId - 1);
 
@@ -268,8 +319,9 @@ void VirtualUI::RenderCameraPreviewToFBO()
                           GL_FLOAT, // type
                           GL_FALSE, // normalized?
                           0,        // stride
-                          (void*)0  // array buffer offset
+                          nullptr   // array buffer offset
     );
+
     // Draw the triangle !
     glDrawArrays(GL_TRIANGLES, 0, 6); // Starting from vertex 0; 3 vertices total -> 1 triangle
     glDisableVertexAttribArray(0);
@@ -310,7 +362,6 @@ void VirtualUI::RenderVirtualCamera()
     ImGui::GetStyle().WindowPadding = ImVec2(0, 0);
     ImGui::SetNextWindowPos(ImVec2(0, 480));
     ImGui::SetNextWindowSize(ImVec2(800, 480));
-    // ImGui::SetNextWindowContentSize(ImVec2(800, 480));
 
     ImGui::Begin("Image2", nullptr, ImGuiWindowFlags_NoDecoration | ImGuiWindowFlags_NoBackground);
     ImGui::PushStyleVar(ImGuiStyleVar_WindowRounding, 0.0f);
@@ -333,11 +384,6 @@ void VirtualUI::RenderKnob(int8_t& knobValue, Button& button)
     {
         knobValue = -(value - lastValue);
         brightnessLevel -= knobValue;
-        if (brightnessLevel < 0)
-        {
-            brightnessLevel = 0;
-        }
-
         lastValue = value;
     }
     if (knobPressed)
@@ -456,14 +502,14 @@ void VirtualUI::RenderButtons(Button& button)
     }
 
     ImGui::SetCursorPos(ImVec2(717, 225));
-    if (ImGui::CustomImageButton("8", _buttonRoundTextureID, _buttonRoundPressedTextureID,
+    if (ImGui::CustomImageButton("11", _buttonRoundTextureID, _buttonRoundPressedTextureID,
                                  ImVec2(buttonRoundWidth, buttonRoundHeight)))
     {
         button = Button::BUTTON_11_UP;
     }
 
     ImGui::SetCursorPos(ImVec2(717, 281));
-    if (ImGui::CustomImageButton("9", _buttonRoundTextureID, _buttonRoundPressedTextureID,
+    if (ImGui::CustomImageButton("12", _buttonRoundTextureID, _buttonRoundPressedTextureID,
                                  ImVec2(buttonRoundWidth, buttonRoundHeight)))
     {
         button = Button::BUTTON_12_UP;
@@ -507,6 +553,8 @@ void VirtualUI::RenderUI(Button& button, int8_t& knobValue, bool& debugOverlayEn
     ImGui_ImplSDL2_NewFrame(_window);
 
     ImGui::NewFrame();
+
+    RenderDisplayToFBO();
 
     ImGui::SetNextWindowPos(ImVec2(0, 0));
     ImGui::SetNextWindowSize(ImVec2(800, 480));

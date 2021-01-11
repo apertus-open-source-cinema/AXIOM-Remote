@@ -1,13 +1,16 @@
 #ifndef VIRTUALUI_H
 #define VIRTUALUI_H
 
-#include <stdint.h>
+#include <cstdint>
+#include <memory>
 #include <string>
 
 #include "imgui.h"
 
 #include "imgui_modules/imgui_impl_opengl3.h"
 #include "imgui_modules/imgui_impl_sdl.h"
+
+#include <CentralDBObserver.h>
 
 enum class Button;
 
@@ -39,10 +42,15 @@ class VirtualUI {
     uint32_t _vertexBuffer;
     uint32_t _cameraFBO;
     uint32_t _fboTextureID;
+    uint32_t _fboDisplayTextureID;
 
     uint32_t _cameraPreviewTexture;
 
     float _analogGainShader;
+    float _contrastFactor;
+  
+    CentralDB* _db;
+    std::shared_ptr<CentralDBObserver> lcdObserver;
 
     // Shader helper
     uint32_t LoadShader(std::string shaderFilePath, uint32_t shaderID);
@@ -53,7 +61,7 @@ class VirtualUI {
 
     void CreateFBO();
 
-    void RenderCameraPreviewToFBO();
+    void RenderCameraPreviewToFBO() const;
     void RenderVirtualCamera();
 
     void RenderKnob(int8_t& knobValue, Button& button);
@@ -61,9 +69,11 @@ class VirtualUI {
     void RenderLED(int8_t glowValue);
 
   public:
-    VirtualUI(SDL_Window* window, uint32_t displayTextureID);
+    VirtualUI(SDL_Window* window, uint32_t displayTextureID, CentralDB* db);
 
     void RenderUI(Button& button, int8_t& knobValue, bool& debugOverlayEnabled);
+
+    void RenderDisplayToFBO() const;
     void SetupVBO();
 };
 
