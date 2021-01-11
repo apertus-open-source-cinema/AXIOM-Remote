@@ -299,8 +299,6 @@ void VirtualUI::RenderCameraPreviewToFBO() const
     // std::cout << "Brightness: " << brightness << std::endl;
     glUniform1f(_analogGainShader, brightness);
     
-    float contrast = 0.7;
-    
 
     // glBindTexture(GL_TEXTURE_2D, 1); // (GLuint)(intptr_t)cmd->TextureId - 1);
 
