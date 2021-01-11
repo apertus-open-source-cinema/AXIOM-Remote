@@ -25,7 +25,12 @@ VirtualUI::VirtualUI(SDL_Window* window, uint32_t displayTextureID) :
     LoadTextures();
 
     CreateFBO();
+    SetupVBO();
+    CompileShader();
+}
 
+void VirtualUI::SetupVBO()
+{
     uint32_t vertexArrayID;
     glGenVertexArrays(1, &vertexArrayID);
     glBindVertexArray(vertexArrayID);
@@ -39,13 +44,11 @@ VirtualUI::VirtualUI(SDL_Window* window, uint32_t displayTextureID) :
     };
 
     // Generate 1 buffer, put the resulting identifier in vertexbuffer
-    glGenBuffers(1, &_vertexbuffer);
+    glGenBuffers(1, &_vertexBuffer);
     // The following commands will talk about our 'vertexbuffer' buffer
-    glBindBuffer(GL_ARRAY_BUFFER, _vertexbuffer);
+    glBindBuffer(GL_ARRAY_BUFFER, _vertexBuffer);
     // Give our vertices to OpenGL.
     glBufferData(GL_ARRAY_BUFFER, sizeof(vertexBufferData), vertexBufferData, GL_STATIC_DRAW);
-
-    CompileShader();
 }
 
 void VirtualUI::LoadTextures()
@@ -59,43 +62,43 @@ void VirtualUI::LoadTextures()
     SDL_FreeSurface(surface);
 
     SDL_Surface* buttonTexture = IMG_Load("images/button_normal.png");
-    _buttonTextureID = (ImTextureID)CreateGLTextureFromSurface(buttonTexture);
+    _buttonTextureID = reinterpret_cast<ImTextureID>(CreateGLTextureFromSurface(buttonTexture));
     SDL_FreeSurface(buttonTexture);
 
     buttonTexture = IMG_Load("images/button_pressed.png");
-    _buttonPressedTextureID = (ImTextureID)CreateGLTextureFromSurface(buttonTexture);
+    _buttonPressedTextureID = reinterpret_cast<ImTextureID>(CreateGLTextureFromSurface(buttonTexture));
     SDL_FreeSurface(buttonTexture);
 
     buttonTexture = IMG_Load("images/button_round_normal.png");
-    _buttonRoundTextureID = (ImTextureID)CreateGLTextureFromSurface(buttonTexture);
+    _buttonRoundTextureID = reinterpret_cast<ImTextureID>(CreateGLTextureFromSurface(buttonTexture));
     SDL_FreeSurface(buttonTexture);
 
     buttonTexture = IMG_Load("images/button_round_pressed.png");
-    _buttonRoundPressedTextureID = (ImTextureID)CreateGLTextureFromSurface(buttonTexture);
+    _buttonRoundPressedTextureID = reinterpret_cast<ImTextureID>(CreateGLTextureFromSurface(buttonTexture));
     SDL_FreeSurface(buttonTexture);
 
     buttonTexture = IMG_Load("images/photo_button_normal.png");
-    _buttonPhotoTextureID = (ImTextureID)CreateGLTextureFromSurface(buttonTexture);
+    _buttonPhotoTextureID = reinterpret_cast<ImTextureID>(CreateGLTextureFromSurface(buttonTexture));
     SDL_FreeSurface(buttonTexture);
 
     buttonTexture = IMG_Load("images/photo_button_pressed.png");
-    _buttonPhotoPressedTextureID = (ImTextureID)CreateGLTextureFromSurface(buttonTexture);
+    _buttonPhotoPressedTextureID = reinterpret_cast<ImTextureID>(CreateGLTextureFromSurface(buttonTexture));
     SDL_FreeSurface(buttonTexture);
 
     buttonTexture = IMG_Load("images/record_button_normal.png");
-    _buttonRecordTextureID = (ImTextureID)CreateGLTextureFromSurface(buttonTexture);
+    _buttonRecordTextureID = reinterpret_cast<ImTextureID>(CreateGLTextureFromSurface(buttonTexture));
     SDL_FreeSurface(buttonTexture);
 
     buttonTexture = IMG_Load("images/record_button_pressed.png");
-    _buttonRecordPressedTextureID = (ImTextureID)CreateGLTextureFromSurface(buttonTexture);
+    _buttonRecordPressedTextureID = reinterpret_cast<ImTextureID>(CreateGLTextureFromSurface(buttonTexture));
     SDL_FreeSurface(buttonTexture);
 
     buttonTexture = IMG_Load("images/LED_off.png");
-    _ledTextureID = (ImTextureID)CreateGLTextureFromSurface(buttonTexture);
+    _ledTextureID = reinterpret_cast<ImTextureID>(CreateGLTextureFromSurface(buttonTexture));
     SDL_FreeSurface(buttonTexture);
 
     buttonTexture = IMG_Load("images/LED_glow.png");
-    _ledGlowTextureID = (ImTextureID)CreateGLTextureFromSurface(buttonTexture);
+    _ledGlowTextureID = reinterpret_cast<ImTextureID>(CreateGLTextureFromSurface(buttonTexture));
     SDL_FreeSurface(buttonTexture);
 
     surface = IMG_Load("images/camera_preview.png");
@@ -259,7 +262,7 @@ void VirtualUI::RenderCameraPreviewToFBO()
     //                (void*)cmd->IdxOffset);
     // 1st attribute buffer : vertices
     glEnableVertexAttribArray(0);
-    glBindBuffer(GL_ARRAY_BUFFER, _vertexbuffer);
+    glBindBuffer(GL_ARRAY_BUFFER, _vertexBuffer);
     glVertexAttribPointer(0,        // attribute 0. No particular reason for 0, but must match the layout in the shader.
                           3,        // size
                           GL_FLOAT, // type
@@ -326,7 +329,7 @@ void VirtualUI::RenderKnob(int8_t& knobValue, Button& button)
 {
     ImGui::SetCursorPos(ImVec2(40, 140));
     bool knobPressed = false;
-    if (ImGui::Knob("Test123", value, knobPressed, (ImTextureID)_knobTextureID))
+    if (ImGui::Knob("Test123", value, knobPressed, _knobTextureID))
     {
         knobValue = -(value - lastValue);
         brightnessLevel -= knobValue;
