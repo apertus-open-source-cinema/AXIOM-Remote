@@ -121,7 +121,7 @@ void VirtualUI::CreateFBO()
     glBindFramebuffer(GL_FRAMEBUFFER, _cameraFBO);
 
     _fboTextureID = CreateGLTexture(800, 480);
-    _fboDisplayTextureID = CreateGLTexture(320, 240);
+    _fboDisplayTextureID = CreateGLTexture(320, 240, nullptr, GL_RGB, GL_NEAREST);
 
     // Set "renderedTexture" as our colour attachment #0
     glFramebufferTexture(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, _fboTextureID, 0);
