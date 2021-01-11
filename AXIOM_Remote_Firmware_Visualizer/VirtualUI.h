@@ -44,6 +44,7 @@ class VirtualUI {
     uint32_t _cameraPreviewTexture;
 
     float _analogGainShader;
+    float _contrastFactor;
 
     // Shader helper
     uint32_t LoadShader(std::string shaderFilePath, uint32_t shaderID);

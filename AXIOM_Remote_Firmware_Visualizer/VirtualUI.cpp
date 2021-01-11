@@ -162,6 +162,7 @@ void VirtualUI::CompileShader()
 
     _cameraPreviewTexture = glGetUniformLocation(_programID, "cameraPreviewTexture");
     _analogGainShader = glGetUniformLocation(_programID, "analogGain");
+    _contrastFactor = glGetUniformLocation(_programID, "contrastFactor");
 }
 
 uint32_t VirtualUI::LoadShader(std::string shaderFilePath, uint32_t shaderID)
@@ -219,7 +220,7 @@ void VirtualUI::RenderDisplayToFBO() const
 
     float brightness = 0.1f * brightnessLevel;
     glUniform1f(_analogGainShader, brightness);
-    glUniform1f(2, 0.8);
+    glUniform1f(_contrastFactor, 0.7);
 
     // 1st attribute buffer : vertices
     glEnableVertexAttribArray(0);
@@ -297,7 +298,9 @@ void VirtualUI::RenderCameraPreviewToFBO() const
     float brightness = 0.1f * brightnessLevel;
     // std::cout << "Brightness: " << brightness << std::endl;
     glUniform1f(_analogGainShader, brightness);
-    glUniform1f(2, 0);
+    
+    float contrast = 0.7;
+    
 
     // glBindTexture(GL_TEXTURE_2D, 1); // (GLuint)(intptr_t)cmd->TextureId - 1);
 
