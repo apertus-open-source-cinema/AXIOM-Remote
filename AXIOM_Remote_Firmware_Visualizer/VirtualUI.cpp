@@ -202,30 +202,6 @@ void VirtualUI::ShowShaderLog(uint32_t shaderID)
     return ImGui::Button(name.c_str(), ImVec2(width, height));
 }*/
 
-void EnableShader(const ImDrawList* parent_list, const ImDrawCmd* cmd)
-{
-    //uint32_t programID = cmd->UserCallbackData;
-    glUseProgram(3);
-
-    float desaturation = 0.2;
-    //float desaturationFactor = glGetUniformLocation(3, "desaturationFactor");
-    glActiveTexture(GL_TEXTURE0);
-    glBindTexture(GL_TEXTURE_2D, 10);
-    glUniform1i(0, 0);
-    glUniform1f(1, 0.5);
-    //glUniform1f(2, 0.4);
-
-    //glUniform1f(desaturationFactor, desaturation);
-
-    //std::cout << "Shader Enabled";
-}
-
-void DisableShader(const ImDrawList* parent_list, const ImDrawCmd* cmd)
-{
-    glUseProgram(0);
-    //std::cout << "Shader Disabled";
-}
-
 void VirtualUI::RenderDisplayToFBO() const
 {
     glBindFramebuffer(GL_FRAMEBUFFER, _cameraFBO);
@@ -242,15 +218,9 @@ void VirtualUI::RenderDisplayToFBO() const
     glUniform1i(_cameraPreviewTexture, 0);
 
     float brightness = 0.1f * brightnessLevel;
-    // std::cout << "Brightness: " << brightness << std::endl;
     glUniform1f(_analogGainShader, brightness);
-    glUniform1f(2, 0);
+    glUniform1f(2, 0.8);
 
-    // glBindTexture(GL_TEXTURE_2D, 1); // (GLuint)(intptr_t)cmd->TextureId - 1);
-
-    // glDrawElements(GL_TRIANGLES, (GLsizei)cmd->ElemCount, sizeof(ImDrawIdx) == 2 ? GL_UNSIGNED_SHORT :
-    // GL_UNSIGNED_INT,
-    //                (void*)cmd->IdxOffset);
     // 1st attribute buffer : vertices
     glEnableVertexAttribArray(0);
     glBindBuffer(GL_ARRAY_BUFFER, _vertexbuffer);
