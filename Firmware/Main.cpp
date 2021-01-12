@@ -537,14 +537,14 @@ int main()
     USBCDCDevice cdcDevice;
 
     CentralDB centralDB;
-    CentralDBObserver lcdObserver(Attribute::Id::REMOTE_LCD_BRIGHTNESS, [](const CentralDB& db) {
-        uint32_t backlightPercentage = db.GetUint32(Attribute::Id::REMOTE_LCD_BRIGHTNESS);
+    CentralDBObserver lcdObserver(Attribute::ID::REMOTE_LCD_BRIGHTNESS, [](const CentralDB& db) {
+        uint32_t backlightPercentage = db.GetUint32(Attribute::ID::REMOTE_LCD_BRIGHTNESS);
         display.SetBacklight(backlightPercentage);
     });
     centralDB.Attach(&lcdObserver);
 
     // Set to 50% brightness as default for now
-    centralDB.SetUint32(Attribute::Id::REMOTE_LCD_BRIGHTNESS, 50);
+    centralDB.SetUint32(Attribute::ID::REMOTE_LCD_BRIGHTNESS, 50);
 
     Setup(display, cdcDevice);
 
