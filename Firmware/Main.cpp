@@ -22,6 +22,11 @@
 
 #include <Helpers.h>
 
+// Defined in procdefs.ld
+volatile extern uint16_t framebuffer[ILI9341_TFTWIDTH * ILI9341_TFTHEIGHT];
+
+ILI9341Display display(framebuffer);
+
 #define LCD_BLT_O LATDbits.LATD10
 
 void ConfigGPIO()
@@ -529,20 +534,19 @@ void init_uart2()
 
 int main()
 {
-    // Defined in procdefs.ld
-    volatile extern uint16_t framebuffer[ILI9341_TFTWIDTH * ILI9341_TFTHEIGHT];
-
-    ILI9341Display display(framebuffer);
     USBCDCDevice cdcDevice;
 
     CentralDB centralDB;
-    /*  TestObs test(&centralDB);
-      centralDB.SetLCDBrightness(5);
-      uint8_t test1 = test.getvalue();*/
+    CentralDBObserver lcdObserver(Attribute::Id::REMOTE_LCD_BRIGHTNESS, [](const CentralDB& db) {
+        uint32_t backlightPercentage = db.GetUint32(Attribute::Id::REMOTE_LCD_BRIGHTNESS);
+        display.SetBacklight(backlightPercentage);
+    });
+    centralDB.Attach(&lcdObserver);
+
+    // Set to 50% brightness as default for now
+    centralDB.SetUint32(Attribute::Id::REMOTE_LCD_BRIGHTNESS, 50);
 
     Setup(display, cdcDevice);
-
-    display.SetBacklight(GlobalSettings::brightnessPercentage);
 
     MenuSystem menuSystem(&cdcDevice, &centralDB);
 
