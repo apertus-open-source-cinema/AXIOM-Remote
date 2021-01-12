@@ -1,11 +1,13 @@
 #include "CentralDBObserver.h"
 
-CentralDBObserver::CentralDBObserver(const Attribute::Id attributeId, void (*callback)(const CentralDB&)) :
-    _observedAttributeId{attributeId}, _callback{callback}
+#include <utility>
+
+CentralDBObserver::CentralDBObserver(const Attribute::ID attribureID, std::function<void(const CentralDB&)> callback) :
+    _observedAttributeId{attribureID}, _callback{std::move(callback)}
 {
 }
 
-Attribute::Id CentralDBObserver::ObservedAttribute() const
+Attribute::ID CentralDBObserver::ObservedAttribute() const
 {
     return _observedAttributeId;
 }

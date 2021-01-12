@@ -34,12 +34,14 @@ class MainMenu : public Menu
     NumericMenuItem _funCount;
     NumericMenuItem _lcdBrightness;
 
+    CentralDBObserver _lcdBrightnessObserver;
+
     // just for testing for now
     MenuItem _menuItems[10];
 
   public:
     // TODO: Add assignment of menu system to IMenu
-    explicit MainMenu(IUSBDevice* cdcDevice, CentralDB* centraldb) : Menu(cdcDevice, centraldb)
+    explicit MainMenu(IUSBDevice* cdcDevice, CentralDB* centralDB) : Menu(cdcDevice, centralDB)
     {
         // Added for testing - demo menu items
 
@@ -50,8 +52,13 @@ class MainMenu : public Menu
         _menuItems[1].SetDisabled(true);
         AddMenuItem(&_menuItems[1]);
 
-        _lcdBrightness = NumericMenuItem(_db, "LCD Brightness", 100, 0, 100, 5, "%");
+        _lcdBrightness = NumericMenuItem(_db, "LCD Brightness", 100, 1, 100, 5, "%");
         _lcdBrightness.SetHandler(&LCDBrightnessMenuItemHandler);
+        _lcdBrightnessObserver = CentralDBObserver(Attribute::ID::REMOTE_LCD_BRIGHTNESS, [this](const CentralDB& db) {
+            _lcdBrightness.SetValue(db.GetUint32(Attribute::ID::REMOTE_LCD_BRIGHTNESS));
+        });
+        centralDB->Attach(&_lcdBrightnessObserver);
+
         AddMenuItem(&_lcdBrightness);
         _lcdBrightness.attachObserver(); // TODO: add which value to subscribe to as parameter
 
@@ -111,7 +118,7 @@ class MainMenu : public Menu
     static void LCDBrightnessMenuItemHandler(void* sender, CentralDB* db)
     {
         NumericMenuItem* menuitem = static_cast<NumericMenuItem*>(sender);
-        db->SetUint32(Attribute::Id::REMOTE_LCD_BRIGHTNESS, menuitem->GetValue());
+        db->SetUint32(Attribute::ID::REMOTE_LCD_BRIGHTNESS, menuitem->GetValue());
         // display->SetBacklight((uint8_t)menuitem->GetValue());
     }
 };

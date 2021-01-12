@@ -1,6 +1,8 @@
 #ifndef CENTRALDBOBSERVER_H
 #define CENTRALDBOBSERVER_H
 
+#include <functional>
+
 #include "Attribute.h"
 #include "CentralDB.h"
 
@@ -8,12 +10,15 @@ class CentralDB;
 
 class CentralDBObserver
 {
-    const Attribute::Id _observedAttributeId;
-    void (*_callback)(const CentralDB&);
+    Attribute::ID _observedAttributeId;
+    std::function<void(const CentralDB&)> _callback;
 
   public:
-    explicit CentralDBObserver(const Attribute::Id attribureId, void (*callback)(const CentralDB&));
-    Attribute::Id ObservedAttribute() const;
+    CentralDBObserver()
+    {
+    }
+    CentralDBObserver(const Attribute::ID attribureID, std::function<void(const CentralDB&)> func);
+    Attribute::ID ObservedAttribute() const;
     void Update(const CentralDB& db) const;
 };
 

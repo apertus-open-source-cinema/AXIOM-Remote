@@ -9,7 +9,7 @@ class Attribute
     friend class CentralDB;
 
   public:
-    enum class Id : std::uint8_t
+    enum class ID : std::uint8_t
     {
         FRAME_RATE = 0,
         WHITE_BALANCE,
@@ -41,7 +41,7 @@ class Attribute
     static const float DEFAULT_VALUE_FLOAT;
     static const char DEFAULT_VALUE_STRING[STRING_VALUE_SIZE];
 
-    const Id _id;
+    const ID _id;
     const Type _type;
 
     union {
@@ -53,12 +53,12 @@ class Attribute
     } _value;
 
   public:
-    Attribute(const Id& id, const Type& type) noexcept : _id(id), _type(type)
+    Attribute(const ID& id, const Type& type) noexcept : _id(id), _type(type)
     {
         memset(_value.str_val, 0, STRING_VALUE_SIZE);
     }
 
-    Id GetId() const noexcept
+    ID GetId() const noexcept
     {
         return _id;
     }

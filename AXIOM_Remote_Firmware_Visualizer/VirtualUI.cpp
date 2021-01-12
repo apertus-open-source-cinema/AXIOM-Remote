@@ -33,8 +33,8 @@ VirtualUI::VirtualUI(SDL_Window* window, uint32_t displayTextureID, CentralDB* d
 
     CompileShader();
 
-    lcdObserver = std::make_shared<CentralDBObserver>(Attribute::Id::REMOTE_LCD_BRIGHTNESS, [](const CentralDB& db) {
-        lcdBrightness = db.GetUint32(Attribute::Id::REMOTE_LCD_BRIGHTNESS);
+    lcdObserver = std::make_shared<CentralDBObserver>(Attribute::ID::REMOTE_LCD_BRIGHTNESS, [](const CentralDB& db) {
+        lcdBrightness = db.GetUint32(Attribute::ID::REMOTE_LCD_BRIGHTNESS);
         std::cout << "LCD brightness" << std::endl;
     });
     _db->Attach(lcdObserver.get());
