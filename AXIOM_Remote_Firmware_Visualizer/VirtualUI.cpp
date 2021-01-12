@@ -19,6 +19,7 @@ uint8_t value = 0;
 uint8_t lastValue = 0;
 uint8_t brightnessLevel = 16;
 uint8_t lcdBrightness = 100;
+float lcdContrast = 1.0;
 bool toggleContrast = false;
 
 VirtualUI::VirtualUI(SDL_Window* window, uint32_t displayTextureID, CentralDB* db) :
@@ -33,8 +34,8 @@ VirtualUI::VirtualUI(SDL_Window* window, uint32_t displayTextureID, CentralDB* d
     CompileShader();
 
     lcdObserver = std::make_shared<CentralDBObserver>(Attribute::Id::REMOTE_LCD_BRIGHTNESS, [](const CentralDB& db) {
-      lcdBrightness = db.GetUint32(Attribute::Id::REMOTE_LCD_BRIGHTNESS);
-      std::cout << "LCD brightness" << std::endl;
+        lcdBrightness = db.GetUint32(Attribute::Id::REMOTE_LCD_BRIGHTNESS);
+        std::cout << "LCD brightness" << std::endl;
     });
     _db->Attach(lcdObserver.get());
 }
@@ -211,15 +212,9 @@ void VirtualUI::ShowShaderLog(uint32_t shaderID)
     }
 }
 
-void VirtualUI::ToggleLCDContrast(bool& toggleContrastEnabled)
+void VirtualUI::ToggleLCDContrast(const bool toggleContrastEnabled) const
 {
-    if(toggleContrastEnabled)
-    {
-        _contrastFactor = 1.0f;
-        return;
-    }
-    
-    _contrastFactor = 0.7f;
+    lcdContrast = toggleContrastEnabled ? 0.7f : 1.0f;
 }
 
 void VirtualUI::RenderDisplayToFBO() const
@@ -238,8 +233,7 @@ void VirtualUI::RenderDisplayToFBO() const
     glUniform1i(_cameraPreviewTexture, 0);
 
     float brightness = 1.0f / 100.0f * lcdBrightness;
-    glUniform1f(_analogGainShader, 1.0f);
-    glUniform1f(_contrastFactor, 0.7f);
+    glUniform1f(_contrastFactor, lcdContrast);
     glUniform1f(_brightnessFactor, brightness);
 
     // 1st attribute buffer : vertices
@@ -273,7 +267,7 @@ void VirtualUI::ShowZoomTooltip()
     // ImGui::GetWindowDrawList()->ImDrawList::AddCallback(EnableShader, data);
     ImGui::Image(reinterpret_cast<ImTextureID>(_fboDisplayTextureID), ImVec2(textureWidth, textureHeight), ImVec2(0, 0),
                  ImVec2(1, 1), ImVec4(1.0f, 1.0f, 1.0f, 1.0f));
-    
+
     // ImGui::GetWindowDrawList()->ImDrawList::AddCallback(DisableShader, nullptr);
 
     if (ImGui::IsItemHovered())
@@ -316,9 +310,8 @@ void VirtualUI::RenderCameraPreviewToFBO() const
     glUniform1i(_cameraPreviewTexture, 0);
 
     float brightness = 0.1f * brightnessLevel;
-    // std::cout << "Brightness: " << brightness << std::endl;
-    glUniform1f(_analogGainShader, brightness);
-    
+    glUniform1f(_brightnessFactor, brightness);
+    glUniform1f(_contrastFactor, 1.0f);
 
     // glBindTexture(GL_TEXTURE_2D, 1); // (GLuint)(intptr_t)cmd->TextureId - 1);
 
@@ -590,10 +583,10 @@ void VirtualUI::RenderUI(Button& button, int8_t& knobValue, bool& debugOverlayEn
 
     ImGui::SetCursorPos(ImVec2(50, 390));
     ImGui::ToggleButton("debug_overlay_switch", "Debug overlay", &debugOverlayEnabled);
-    
+
     ToggleLCDContrast(toggleContrast);
     ImGui::SetCursorPos(ImVec2(50, 430));
-    ImGui::ToggleButton("toggle_contrast_switch", "Toggle Contrast", &toggleContrast);
+    ImGui::ToggleButton("toggle_contrast_switch", "Simulate LCD", &toggleContrast);
 
     ImGui::PopStyleVar();
     ImGui::PopStyleColor();
