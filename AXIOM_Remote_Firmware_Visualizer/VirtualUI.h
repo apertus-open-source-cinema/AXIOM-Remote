@@ -75,6 +75,7 @@ class VirtualUI {
     void RenderUI(Button& button, int8_t& knobValue, bool& debugOverlayEnabled);
 
     void RenderDisplayToFBO() const;
+    void ToggleLCDContrast(bool toggleContrastEnabled) const;
     void SetupVBO();
 };
 
