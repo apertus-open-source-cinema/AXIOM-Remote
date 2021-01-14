@@ -16,17 +16,17 @@ class CentralDB
     struct ObserverAttributePair
     {
         CentralDBObserver* observer;
-        Attribute::ID attributeId;
+        Attribute::ID attributeID;
     };
 
     CentralDBObserver* _observers[MAX_NUM_OBSERVERS];
     uint8_t _observerCount;
     Attribute _attributes[(size_t)Attribute::ID::NUM_ATTRIBUTES];
 
-    Attribute* GetAttribute(const Attribute::ID& attributeId);
-    const Attribute* GetAttribute(const Attribute::ID& attributeId) const;
-    const void* GetValue(const Attribute::ID& attributeId, const Attribute::Type& type) const;
-    void SetValue(const Attribute::ID& attributeId, const Attribute::Type& type, const void* value);
+    Attribute* GetAttribute(const Attribute::ID& attributeID);
+    const Attribute* GetAttribute(const Attribute::ID& attributeID) const;
+    const void* GetValue(const Attribute::ID& attributeID, const Attribute::Type& type) const;
+    void SetValue(const Attribute::ID& attributeID, const Attribute::Type& type, const void* value);
 
   public:
     CentralDB();
@@ -35,20 +35,20 @@ class CentralDB
 
     // Attribute value getters. Getting the value for a type inapplicable for the attribute returns the default value
     // for that type
-    bool GetBoolean(const Attribute::ID& attributeId) const;
-    int32_t GetInt32(const Attribute::ID& attributeId) const;
-    uint32_t GetUint32(const Attribute::ID& attributeId) const;
-    float GetFloat(const Attribute::ID& attributeId) const;
-    const char* GetString(const Attribute::ID& attributeId) const;
+    bool GetBoolean(const Attribute::ID& attributeID) const;
+    int32_t GetInt32(const Attribute::ID& attributeID) const;
+    uint32_t GetUint32(const Attribute::ID& attributeID) const;
+    float GetFloat(const Attribute::ID& attributeID) const;
+    const char* GetString(const Attribute::ID& attributeID) const;
 
     // Attribute value setters. Setting the value for a type inapplicable for the attribute has no effect
-    void SetBoolean(const Attribute::ID& attributeId, const bool value);
-    void SetInt32(const Attribute::ID& attributeId, const int32_t value);
-    void SetUint32(const Attribute::ID& attributeId, const uint32_t value);
-    void SetFloat(const Attribute::ID& attributeId, const float value);
-    void SetString(const Attribute::ID& attributeId, const char* value);
+    void SetBoolean(const Attribute::ID& attributeID, const bool value);
+    void SetInt32(const Attribute::ID& attributeID, const int32_t value);
+    void SetUint32(const Attribute::ID& attributeID, const uint32_t value);
+    void SetFloat(const Attribute::ID& attributeID, const float value);
+    void SetString(const Attribute::ID& attributeID, const char* value);
 
-    void Notify(const Attribute::ID& attributeId) const;
+    void Notify(const Attribute::ID& attributeID) const;
 };
 
 #endif /* CENTRALDB_H */
