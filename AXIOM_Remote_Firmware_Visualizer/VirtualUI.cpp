@@ -13,6 +13,8 @@
 
 #include "UI/ButtonDefinitions.h"
 
+#include "CentralDB.h"
+
 #include "HelpersGL.h"
 
 uint8_t value = 0;

@@ -178,7 +178,7 @@ int main(int argc, char* argv[])
 
     std::shared_ptr<VirtualUI> virtualUI = std::make_shared<VirtualUI>(window, displayTextureID, &centralDB);
 
-    centralDB.SetUint32(Attribute::ID::REMOTE_LCD_BRIGHTNESS, 50);
+    centralDB.SetUint32(Attribute::ID::REMOTE_LCD_BRIGHTNESS, 75);
 
     bool appIsRunning = true;
     const int frames = 60;
