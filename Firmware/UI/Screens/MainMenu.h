@@ -34,7 +34,7 @@ class MainMenu : public Menu
     NumericMenuItem _funCount;
     NumericMenuItem _lcdBrightness;
 
-    CentralDBObserver _lcdBrightnessObserver;
+    //CentralDBObserver _lcdBrightnessObserver;
 
     // just for testing for now
     MenuItem _menuItems[10];
@@ -52,15 +52,15 @@ class MainMenu : public Menu
         _menuItems[1].SetDisabled(true);
         AddMenuItem(&_menuItems[1]);
 
-        _lcdBrightness = NumericMenuItem(_db, "LCD Brightness", 100, 1, 100, 5, "%");
+        _lcdBrightness = NumericMenuItem(_db, "LCD Brightness", 100, 5, 100, 5, "%");
         _lcdBrightness.SetHandler(&LCDBrightnessMenuItemHandler);
-        _lcdBrightnessObserver = CentralDBObserver(Attribute::ID::REMOTE_LCD_BRIGHTNESS, [this](const CentralDB& db) {
+        /*_lcdBrightnessObserver = CentralDBObserver(Attribute::ID::REMOTE_LCD_BRIGHTNESS, [this](const CentralDB& db) {
             _lcdBrightness.SetValue(db.GetUint32(Attribute::ID::REMOTE_LCD_BRIGHTNESS));
         });
-        centralDB->Attach(&_lcdBrightnessObserver);
+        centralDB->Attach(&_lcdBrightnessObserver);*/
 
         AddMenuItem(&_lcdBrightness);
-        _lcdBrightness.attachObserver(); // TODO: add which value to subscribe to as parameter
+        //_lcdBrightness.attachObserver(); // TODO: add which value to subscribe to as parameter
 
         _subMenu1LinkMenuItem = ScreenLinkMenuItem(_db, "Submenu 1", AvailableScreens::SettingsSubMenu1);
         AddMenuItem(&_subMenu1LinkMenuItem);
