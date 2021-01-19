@@ -30,14 +30,8 @@ These steps above can be done in one go with the **build.sh** script
 
 * Create virtual serial ports by executing:
 
-  ```_socat -d -d pty,raw,echo=0 pty,raw,echo=0_```
+  ```socat pty,raw,echo=0,link=/tmp/axiom_remote_port pty,raw,echo=0,link=/tmp/axiom_host_port```
 
-  Example output:
-    ```
-    2020/05/05 23:23:47 socat[34198] N PTY is /dev/pts/4
-    2020/05/05 23:23:47 socat[34198] N PTY is /dev/pts/5
-    2020/05/05 23:23:47 socat[34198] N starting data transfer loop with FDs [5,5] and [7,7]
-    ```
 * Start visualiser with command line argument ```-p```, use first port from previous step:
 
     ```./AXIOM_Remote_Firmware_Visualiser -p /dev/pts/4```
