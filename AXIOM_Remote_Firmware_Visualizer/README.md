@@ -34,4 +34,4 @@ These steps above can be done in one go with the **build.sh** script
 
 * Start visualiser with command line argument ```-p```, use first port from previous step:
 
-    ```./AXIOM_Remote_Firmware_Visualiser -p /dev/pts/4```
+  ```./AXIOM_Remote_Firmware_Visualiser -p /tmp/axiom_remote_port```
