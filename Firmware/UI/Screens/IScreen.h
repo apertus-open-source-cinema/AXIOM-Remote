@@ -25,6 +25,8 @@ class IScreen
     ButtonBar _leftButtonBar;
 
     ImageButton _homeButton;
+    ImageButton _backButton;
+    //ImageButton _infoButton;
 
     virtual void DrawCaption();
 
@@ -32,8 +34,8 @@ class IScreen
     virtual void DrawBottomButtonBar(IPainter* painter);
     virtual void DrawLeftButtonBar(IPainter* painter);
 
-    virtual void SetBottomButton(ButtonPosition position, IButton* button);
-    virtual void SetLeftButton(ButtonPosition position, IButton* button);
+    virtual void SetBottomButton(ButtonPosition position, IButton* button); // TODO: Rename function name, confusing
+    virtual void SetLeftButton(ButtonPosition position, IButton* button); // TODO: Rename function name, confusing
 
   public:
     IScreen(IUSBDevice* usbDevice = nullptr);

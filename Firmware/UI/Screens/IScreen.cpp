@@ -3,12 +3,15 @@
 #include "../Color565.h"
 
 #include "../../Media/Icons/home_icon.h"
+#include "../../Media/Icons/back_icon.h"
 
 IScreen::IScreen(IUSBDevice* usbDevice) :
-    _usbDevice(usbDevice), _bottomButtonBar(ButtonBar(0, 210, 320, 30)), _leftButtonBar(0, 31, 34, 180),
-    _homeButton(&home_icon)
+    _usbDevice(usbDevice), _bottomButtonBar(ButtonBar(0, 210, 320, 30)), _leftButtonBar(0, 31, 30, 179),
+    _homeButton(&home_icon), _backButton(&back_icon) //, _infoButton(&home_icon)
 {
     _leftButtonBar.SetButton(ButtonPosition::Left, &_homeButton);
+    _leftButtonBar.SetButton(ButtonPosition::Center, &_backButton);
+    //_leftButtonBar.SetButton(ButtonPosition::Right, &_infoButton);
 }
 
 IScreen::~IScreen()
