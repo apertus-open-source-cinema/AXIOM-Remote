@@ -1,3 +1,6 @@
+#include <xc.h>
+#include <sys/attribs.h>
+
 // Configuration
 #include "../Bootloader/Configuration/PIC32.h"
 
@@ -30,13 +33,15 @@ ILI9341Display display(framebuffer);
 
 void ConfigGPIO()
 {
-    // Enable pull-up resistor for E9 to prevent UANT RX interferences
+    // Enable pull-up resistor for E9 to prevent UART RX interferences
     CNPUEbits.CNPUE9 = 1;
 }
 
 void InitPBUS(void)
 {
     UnlockPIC32();
+
+    // UART clock
     PB2DIVbits.PBDIV = 0b000001; // divide by 2
     PB2DIVbits.ON = 1;
 
@@ -121,7 +126,7 @@ static uint8_t data[16];
 static uint8_t data_status[16];
 uint16_t knob_position[2] = {0, 0};
 
-char debugText[32];
+unsigned char debugText[128];
 bool DEBUG = true;
 
 int8_t PollKMW(USBCDCDevice* cdcDevice)
@@ -493,6 +498,56 @@ static inline void irq_enable()
     asm volatile("ei");
 }
 
+static inline void uart2_ch(char ch)
+{
+    while (U2STAbits.UTXBF)
+        ;
+    U2TXREG = ch;
+}
+
+static inline void uart2_hex(uint8_t hex)
+{
+    hex &= 0xF;
+    if (hex > 9)
+        uart2_ch(hex + 'A' - 10);
+    else
+        uart2_ch(hex + '0');
+}
+
+static inline void uart2_byte(uint8_t val)
+{
+    uart2_hex(val >> 4);
+    uart2_hex(val);
+}
+
+static inline void uart2_word(uint16_t val)
+{
+    uart2_byte(val >> 8);
+    uart2_byte(val);
+}
+
+static inline void uart2_long(uint32_t val)
+{
+    uart2_word(val >> 16);
+    uart2_word(val);
+}
+
+static inline void uart2_str0(const char* str)
+{
+    while (*str)
+        uart2_ch(*str++);
+}
+
+void debug_uart(char* str)
+{
+    while (*str)
+    {
+        uart2_ch(*str++);
+    }
+    uart2_str0("\n");
+    uart2_str0("\r");
+}
+
 void init_uart2()
 {
     irq_disable();
@@ -518,10 +573,11 @@ void init_uart2()
     IFS4bits.U2TXIF = 0;         //! Clear Tx flag
     IFS4bits.U2RXIF = 0;         //! Clear Rx flag
 
-    U2BRG = 24; // 1MBaud @ 50MHz
+    // U2BRG = 24; // 1MBaud @ 50MHz
+    U2BRG = 51; // 115200Baud @ 192MHz
     U2STA = 0;
 
-    U2MODEbits.BRGH = 1;
+    U2MODEbits.BRGH = 0;
     U2MODEbits.PDSEL = 0b00;
     U2MODEbits.STSEL = 0;
     U2MODEbits.UEN = 0b00;
@@ -531,8 +587,85 @@ void init_uart2()
     irq_enable();
 }
 
+extern "C" void __ISR(_UART2_RX_VECTOR, IPL6SRS) myisr1_6SRS(void)
+{
+    while (U2STAbits.URXDA)
+    { // process buffer
+        char ch = U2RXREG;
+
+        uart2_ch(ch); // echo back
+    }
+
+    IFS4CLR = _IFS4_U2RXIF_MASK; // clear UART2 Rx IRQ
+}
+
+/*void __attribute__((vector(_UART2_RX_VECTOR), interrupt(IPL6SRS))) uart2_isr(void)
+{
+    while (U2STAbits.URXDA) {	// process buffer
+        char ch = U2RXREG;
+
+        uart2_ch(ch);	// echo back
+    }
+
+    IFS4CLR = _IFS4_U2RXIF_MASK;	// clear UART2 Rx IRQ
+}*/
+
+extern "C" void __attribute__((nomips16)) _bootstrap_exception_handler(void)
+{
+    uart2_str0("Bootstrap exception!\n\r");
+
+    /* Mask off ExcCode field from the Cause Register */
+    /* Disable interrupts */
+    /* Examine EPC and ExcCode */
+    /* Provide a useful indication of the Exception as well as a recovery mechanism */
+}
+
+extern "C" void __attribute__((nomips16)) _general_exception_handler(void)
+{
+    uart2_str0("General exception!\n\r");
+}
+
+extern "C" void __attribute__((nomips16)) _cache_err_exception_handler(void)
+{
+    uart2_str0("Cache exception!\n\r");
+}
+
+extern "C" void __attribute__((nomips16)) _simple_tlb_refill_exception_handler(void)
+{
+    uart2_str0("TLB exception!\n\r");
+}
+
+/*extern "C" void __attribute__((nomips16)) _on_reset(void)
+{
+    uart2_str0("Reset happened!\n\r");
+    sprintf((char*)debugText, "RCON: %X\n\r", RCON);
+    uart2_str0((const char*)debugText);
+
+    RCON = 0;
+}*/
+
+uint16_t logIndex = 0;
+
+void log(const char* message)
+{
+    uart2_str0((const char*)message);
+    logIndex++;
+}
+
 int main()
 {
+    init_uart2();
+    log("\n\r\n\r\n\r--- Firmware ---\n\r");
+
+    sprintf((char*)debugText, "RCON: %X\n\r", RCON);
+    log((const char*)debugText);
+
+    sprintf((char*)debugText, "PWRCON: %X\n\r", PWRCON);
+    log((const char*)debugText);
+
+    sprintf((char*)debugText, "RNMICON: %X\n\r", RNMICON);
+    log((const char*)debugText);
+
     USBCDCDevice cdcDevice;
 
     Setup(display, cdcDevice);
@@ -577,8 +710,6 @@ int main()
     //     DelayMs(2000);
     //     LCD_BLT_O = !LCD_BLT_O;
     // }
-
-    init_uart2();
 
     uint16_t counter = 0;
     while (1)
