@@ -332,6 +332,23 @@ void Painter::DrawIcon(const Icon* image, uint16_t x, uint16_t y, uint16_t color
     }
 }
 
+void Painter::Draw2BitIcon(const Icon* image, uint16_t x, uint16_t y)
+{
+    // Note: Since icon is 2bit, Icon->Data should contain (Width * Height / 4) bytes
+    uint16_t colors[4] = {static_cast<uint16_t>(Color565::Black), static_cast<uint16_t>(Color565::DarkGrey),
+                          static_cast<uint16_t>(Color565::LightGrey), 0};
+
+    for (uint16_t yIndex = 0; yIndex < image->Height; yIndex++)
+    {
+        uint16_t yPos = y + yIndex;
+        for (uint16_t xIndex = 0; xIndex < image->Width; xIndex += 4)
+        {
+            uint8_t current_byte = image->Data[yIndex * image->Width / 4 + xIndex / 4];
+            Process2BitByte(current_byte, x, xIndex, yPos, colors);
+        }
+    }
+}
+
 /*****************************************/
 
 // uint8_t count = 0;
@@ -623,4 +640,18 @@ uint16_t Painter::ProcessByte(uint8_t data, uint16_t x, uint16_t xIndex, uint16_
     }
 
     return xIndex;
+}
+
+void Painter::Process2BitByte(uint8_t data, uint16_t x, uint16_t xIndex, uint16_t yPos, uint16_t* colors)
+{
+    for (int i = 0; i < 8; i += 2)
+    {
+        const uint8_t mask = 0b11;
+        uint8_t color = (data >> i) & mask;
+        if (color != 0b11)
+        {
+            DrawPixel(x + xIndex, yPos, colors[color]);
+        }
+        xIndex++;
+    }
 }

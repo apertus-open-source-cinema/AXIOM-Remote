@@ -62,6 +62,7 @@ void MainPage::Draw(IPainter* painter)
 {
     painter->DrawIcon(&ApertusTextLogo, 58, 89, RGB565(194, 191, 188));
     painter->DrawIcon(&ApertusRingLogo, 58 + ApertusTextLogo.Width, 89, RGB565(244, 114, 72));
+    painter->Draw2BitIcon(&home_icon2bit, 10, 124);
 
     for (uint8_t index = 0; index < 6; index++)
     {

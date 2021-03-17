@@ -8,6 +8,7 @@
 
 #include "../../Media/Icons/ApertusTextLogo.h"
 #include "../../Media/Icons/ApertusRingLogo.h"
+#include "../../Media/Icons/home_icon2bit.h"
 
 #include "../ButtonDefinitions.h"
 
