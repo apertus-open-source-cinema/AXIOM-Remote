@@ -1,7 +1,9 @@
 #ifndef TEST_2_BIT_LINE_H
 #define TEST_2_BIT_LINE_H
 
-const Icon STATIC_SECTION test_2_bit_line = {
+#include <stdint.h>
+
+const Icon STATIC_SECTION Test2BitLine = {
     8, 8,
     (const uint8_t[]){0xff, 0x82, 0xff, 0xe1, 0xff, 0x82, 0xff, 0xe1, 0xff, 0x82, 0xff, 0xe1, 0xff, 0x82, 0xff, 0xe1}};
 

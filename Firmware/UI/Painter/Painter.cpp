@@ -342,8 +342,8 @@ void Painter::Draw2BitIcon(const Icon* image, uint16_t x, uint16_t y, const std:
         uint16_t yPos = y + yIndex;
         for (uint16_t xIndex = 0; xIndex < image->Width; xIndex += 4)
         {
-            uint8_t current_byte = image->Data[yIndex * image->Width / 4 + xIndex / 4];
-            Process2BitByte(current_byte, x, xIndex, yPos, palette, transparency);
+            uint8_t currentByte = image->Data[yIndex * image->Width / 4 + xIndex / 4];
+            Process2BitByte(currentByte, x, xIndex, yPos, palette, transparency);
         }
     }
 }
