@@ -8,6 +8,9 @@
 #include "Images/LogoIcon.h"
 #include "Images/LogoIconOutput.h"
 
+#include "Images/test_2_bit_line.h"
+#include "Images/test_2_bit_line_output.h"
+
 // Setup frame buffer and reset all values to 0
 uint16_t* SetupFramebuffer(uint16_t width, uint16_t height)
 {
@@ -210,5 +213,51 @@ TEST_CASE("DrawIcon test")
     }
 
     REQUIRE(index == 60);
+    REQUIRE(check == true);
+}
+
+TEST_CASE("Draw2BitIcon() test, without transparency")
+{
+    uint16_t constexpr width = 8;
+    uint16_t constexpr height = 8;
+    uint16_t* framebuffer = SetupFramebuffer(width, height);
+    PainterMod painter(framebuffer, width, height);
+    painter.Draw2BitIcon(&test_2_bit_line, 0, 0, palette, false);
+    bool check = true;
+    for (uint16_t yIndex = 0; yIndex < test_2_bit_line.Height; yIndex++)
+    {
+        for (uint16_t xIndex = 0; xIndex < test_2_bit_line.Width; xIndex++)
+        {
+            int index = yIndex * width + xIndex;
+            if (framebuffer[index] != test_2bit_output_no_trans[index])
+            {
+                check = false;
+                break;
+            }
+        }
+    }
+    REQUIRE(check == true);
+}
+
+TEST_CASE("Draw2BitIcon() test, with transparency")
+{
+    uint16_t constexpr width = 8;
+    uint16_t constexpr height = 8;
+    uint16_t* framebuffer = SetupFramebuffer(width, height);
+    PainterMod painter(framebuffer, width, height);
+    painter.Draw2BitIcon(&test_2_bit_line, 0, 0, palette, true);
+    bool check = true;
+    for (uint16_t yIndex = 0; yIndex < test_2_bit_line.Height; yIndex++)
+    {
+        for (uint16_t xIndex = 0; xIndex < test_2_bit_line.Width; xIndex++)
+        {
+            int index = yIndex * width + xIndex;
+            if (framebuffer[index] != test_2bit_output_with_trans[index])
+            {
+                check = false;
+                break;
+            }
+        }
+    }
     REQUIRE(check == true);
 }
