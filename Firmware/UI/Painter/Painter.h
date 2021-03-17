@@ -61,9 +61,10 @@ class Painter : public IPainter
     void DrawPixel(uint16_t x, uint16_t y, uint16_t color) override;
     virtual void DrawIcon(const Icon* image, uint16_t x, uint16_t y, uint16_t color) override;
     uint16_t ProcessByte(uint8_t data, uint16_t x, uint16_t xIndex, uint16_t yPos, uint16_t height, uint16_t color);
-    void Draw2BitIcon(const Icon* image, uint16_t x, uint16_t y, const std::array<uint16_t, 4>& palette) override;
+    void Draw2BitIcon(const Icon* image, uint16_t x, uint16_t y, const std::array<uint16_t, 4>& palette,
+                      bool transparency) override;
     void Process2BitByte(uint8_t data, uint16_t x, uint16_t xIndex, uint16_t yPos,
-                         const std::array<uint16_t, 4>& palette);
+                         const std::array<uint16_t, 4>& palette, bool transparency);
     void Fill(uint16_t fillColor) override;
     void Dim() override;
 
