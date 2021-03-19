@@ -62,14 +62,9 @@ void MainPage::Draw(IPainter* painter)
 {
     painter->DrawIcon(&ApertusTextLogo, 58, 89, RGB565(194, 191, 188));
     painter->DrawIcon(&ApertusRingLogo, 58 + ApertusTextLogo.Width, 89, RGB565(244, 114, 72));
-    std::array<uint16_t, 4> grayScalePalette{static_cast<uint16_t>(Color565::Black),
-                                             static_cast<uint16_t>(Color565::DarkGrey),
-                                             static_cast<uint16_t>(Color565::LightGrey), 0};
-    std::array<uint16_t, 4> cyanPalette{static_cast<uint16_t>(Color565::Navy),
-                                        static_cast<uint16_t>(Color565::DarkCyan),
-                                        static_cast<uint16_t>(Color565::Cyan), static_cast<uint16_t>(Color565::White)};
-    painter->Draw2BitIcon(&HomeIcon2Bit, 10, 124, grayScalePalette, true);
-    painter->Draw2BitIcon(&Test2Bit, 50, 124, cyanPalette, false);
+    painter->Draw2BitIcon(&HomeIcon2Bit, 10, 124, static_cast<uint16_t>(Color565::Orange),
+                          static_cast<uint16_t>(Color565::Black), false);
+    painter->Draw2BitIcon(&HomeIcon2Bit, 50, 124, static_cast<uint16_t>(Color565::Cyan), 0, true);
 
     for (uint8_t index = 0; index < 6; index++)
     {

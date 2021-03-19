@@ -14,6 +14,9 @@
 
 #include "../Widgets/Icon.h"
 
+uint16_t GetColor(uint16_t foregroundColor, uint16_t backgroundColor, uint8_t color_bits);
+uint16_t LerpColor(uint16_t a, uint16_t b, float t);
+
 class Painter : public IPainter
 {
     GFXfont _fontList[4];
@@ -61,10 +64,9 @@ class Painter : public IPainter
     void DrawPixel(uint16_t x, uint16_t y, uint16_t color) override;
     virtual void DrawIcon(const Icon* image, uint16_t x, uint16_t y, uint16_t color) override;
     uint16_t ProcessByte(uint8_t data, uint16_t x, uint16_t xIndex, uint16_t yPos, uint16_t height, uint16_t color);
-    void Draw2BitIcon(const Icon* image, uint16_t x, uint16_t y, const std::array<uint16_t, 4>& palette,
+    void Draw2BitIcon(const Icon* image, uint16_t x, uint16_t y, uint16_t foregroundColor, uint16_t backgroundColor,
                       bool transparency) override;
-    void Process2BitByte(uint8_t data, uint16_t x, uint16_t xIndex, uint16_t yPos,
-                         const std::array<uint16_t, 4>& palette, bool transparency);
+    uint16_t GetPixel(uint16_t x, uint16_t y);
     void Fill(uint16_t fillColor) override;
     void Dim() override;
 

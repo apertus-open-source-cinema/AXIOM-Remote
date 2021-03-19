@@ -331,24 +331,34 @@ void Painter::DrawIcon(const Icon* image, uint16_t x, uint16_t y, uint16_t color
         _debugPainter->DrawIcon(this, image, x, y, color);
     }
 }
+/*****************************************/
 
-void Painter::Draw2BitIcon(const Icon* image, uint16_t x, uint16_t y, const std::array<uint16_t, 4>& palette,
-                           bool transparency)
+void Painter::Draw2BitIcon(const Icon* image, uint16_t x, uint16_t y, uint16_t foregroundColor,
+                           uint16_t backgroundColor, bool transparency)
 {
-    // Note: Since icon is 2bit, Icon->Data should contain (Width * Height / 4) bytes
+    // Note: Since icon is 2bit, Icon->Data should contain (Width * Height / 4) bytes.
 
     for (uint16_t yIndex = 0; yIndex < image->Height; yIndex++)
     {
-        uint16_t yPos = y + yIndex;
-        for (uint16_t xIndex = 0; xIndex < image->Width; xIndex += 4)
+        const uint16_t yPos = y + yIndex;
+        for (uint16_t xIndex = 0; xIndex < image->Width; xIndex++)
         {
-            uint8_t currentByte = image->Data[yIndex * image->Width / 4 + xIndex / 4];
-            Process2BitByte(currentByte, x, xIndex, yPos, palette, transparency);
+            const uint8_t currentByte = image->Data[(yIndex * image->Width + xIndex) >> 2];
+            const uint8_t currentBitNumber = 2 * (xIndex & 0x3); // Where in the byte the current bits are stored.
+            const uint8_t colorBits = (currentByte >> currentBitNumber) & 0x3;
+            // The representation of the current pixel in the Icon array.
+
+            // // Don't draw anything if it's already the correct color.
+            if (!(transparency && colorBits == 0))
+            {
+                const uint16_t bgColorToUse = transparency ? GetPixel(x + xIndex, yPos) : backgroundColor;
+                const uint16_t currentColor = GetColor(foregroundColor, bgColorToUse, colorBits);
+
+                DrawPixel(x + xIndex, yPos, currentColor);
+            }
         }
     }
 }
-
-/*****************************************/
 
 // uint8_t count = 0;
 
@@ -641,17 +651,37 @@ uint16_t Painter::ProcessByte(uint8_t data, uint16_t x, uint16_t xIndex, uint16_
     return xIndex;
 }
 
-void Painter::Process2BitByte(uint8_t data, uint16_t x, uint16_t xIndex, uint16_t yPos,
-                              const std::array<uint16_t, 4>& palette, bool transparency)
+uint16_t Painter::GetPixel(uint16_t x, uint16_t y)
 {
-    for (int i = 0; i < 8; i += 2)
+    // TODO: add index checks?
+    return _framebuffer[y * _framebufferWidth + x];
+}
+
+uint16_t GetColor(uint16_t foregroundColor, uint16_t backgroundColor, uint8_t color_bits)
+{
+    // TODO: add support for custom Lerp-points for 0x2 and 0x1
+    switch (color_bits)
     {
-        const uint8_t mask = 0b11;
-        uint8_t color = (data >> i) & mask;
-        if (!transparency || color != 0b11)
-        {
-            DrawPixel(x + xIndex, yPos, palette[color]);
-        }
-        xIndex++;
+    case 0x3:
+        return foregroundColor;
+    case 0x2:
+        return LerpColor(backgroundColor, foregroundColor, 0.7);
+    case 0x1:
+        return LerpColor(backgroundColor, foregroundColor, 0.3);
+    case 0x0:
+        return backgroundColor;
+    default:
+        return backgroundColor;
     }
+}
+
+uint16_t LerpColor(uint16_t a, uint16_t b, float t)
+{
+    const uint8_t a_r = (a >> 8) & 0xF8;
+    const uint8_t a_g = (a >> 3) & 0xFC;
+    const uint8_t a_b = (a << 3) & 0xF8;
+    const uint8_t b_r = (b >> 8) & 0xF8;
+    const uint8_t b_g = (b >> 3) & 0xFC;
+    const uint8_t b_b = (b << 3) & 0xF8;
+    return RGB565(Lerp(a_r, b_r, t), Lerp(a_g, b_g, t), Lerp(a_b, b_b, t));
 }

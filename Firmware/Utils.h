@@ -25,6 +25,11 @@ static inline int8_t LimitRange(int8_t in, int8_t min, int8_t max)
     return in;
 }
 
+static inline uint8_t Lerp(uint8_t a, uint8_t b, float t)
+{
+    return a + (b - a) * t;
+}
+
 namespace utils
 {
 inline void CopyString(char* destination, const char* source, const size_t max_size)

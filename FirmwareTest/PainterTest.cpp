@@ -222,7 +222,7 @@ TEST_CASE("Draw2BitIcon() test, without transparency")
     uint16_t constexpr height = 8;
     uint16_t* framebuffer = SetupFramebuffer(width, height);
     PainterMod painter(framebuffer, width, height);
-    painter.Draw2BitIcon(&Test2BitLine, 0, 0, palette, false);
+    painter.Draw2BitIcon(&Test2BitLine, 0, 0, Test2BitFGColor, Test2BitBGColor, false);
     bool check = true;
     int count = 0;
     for (uint16_t yIndex = 0; yIndex < Test2BitLine.Height; yIndex++)
@@ -231,7 +231,8 @@ TEST_CASE("Draw2BitIcon() test, without transparency")
         {
             int index = yIndex * width + xIndex;
             count++;
-            if (framebuffer[index] != Test2BitOutputNoTrans[index])
+            uint8_t originalPixelVal = Test2BitFramebufferRepr[index];
+            if (framebuffer[index] != noTransmapping.at(originalPixelVal))
             {
                 check = false;
                 break;
@@ -248,7 +249,8 @@ TEST_CASE("Draw2BitIcon() test, with transparency")
     uint16_t constexpr height = 8;
     uint16_t* framebuffer = SetupFramebuffer(width, height);
     PainterMod painter(framebuffer, width, height);
-    painter.Draw2BitIcon(&Test2BitLine, 0, 0, palette, true);
+    // BG Color shouldn't matter for transparency
+    painter.Draw2BitIcon(&Test2BitLine, 0, 0, Test2BitFGColor, 0xFFFF, true);
     bool check = true;
     int count = 0;
     for (uint16_t yIndex = 0; yIndex < Test2BitLine.Height; yIndex++)
@@ -257,7 +259,8 @@ TEST_CASE("Draw2BitIcon() test, with transparency")
         {
             int index = yIndex * width + xIndex;
             count++;
-            if (framebuffer[index] != Test2BitOutputWithTrans[index])
+            uint8_t originalPixelVal = Test2BitFramebufferRepr[index];
+            if (framebuffer[index] != withTransMapping.at(originalPixelVal))
             {
                 check = false;
                 break;
