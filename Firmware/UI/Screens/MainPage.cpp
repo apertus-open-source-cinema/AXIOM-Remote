@@ -76,6 +76,7 @@ void MainPage::Draw(IPainter* painter)
 
         widget->Draw(painter);
     }
+    painter->Draw2BitIcon(&HelpIcon2Bit, 110, 170, static_cast<uint16_t>(Color565::Cyan), 0, true);
 }
 
 void MainPage::Update(Button button, int8_t knob, IMenuSystem* menuSystem)

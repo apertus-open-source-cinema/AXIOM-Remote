@@ -11,6 +11,7 @@
 #include "../../Media/Icons/ApertusTextLogo.h"
 #include "../../Media/Icons/ApertusRingLogo.h"
 #include "../../Media/Icons/HomeIcon2Bit.h"
+#include "../../Media/Icons/HelpIcon2Bit.h"
 
 #include "../ButtonDefinitions.h"
 
