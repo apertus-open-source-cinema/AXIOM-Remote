@@ -665,9 +665,9 @@ uint16_t GetColor(uint16_t foregroundColor, uint16_t backgroundColor, uint8_t co
     case 0x3:
         return foregroundColor;
     case 0x2:
-        return LerpColor(backgroundColor, foregroundColor, 0.7);
+        return AlphaBlend(foregroundColor, backgroundColor, 178);
     case 0x1:
-        return LerpColor(backgroundColor, foregroundColor, 0.3);
+        return AlphaBlend(foregroundColor, backgroundColor, 76);
     case 0x0:
         return backgroundColor;
     default:
@@ -684,4 +684,29 @@ uint16_t LerpColor(uint16_t a, uint16_t b, float t)
     const uint8_t b_g = (b >> 3) & 0xFC;
     const uint8_t b_b = (b << 3) & 0xF8;
     return RGB565(Lerp(a_r, b_r, t), Lerp(a_g, b_g, t), Lerp(a_b, b_b, t));
+}
+
+uint16_t AlphaBlend(uint16_t fg, uint16_t bg, uint8_t alpha)
+{
+    // https://stackoverflow.com/a/19068028
+    constexpr uint16_t maskRB = 63519;
+    constexpr uint16_t maskG = 2016;
+    constexpr uint32_t maskMulRB = 4065216; // 0b1111100000011111000000
+    constexpr uint32_t maskMulG = 129024;   // 0b0000011111100000000000
+    constexpr uint16_t maxAlpha = 64;       // 6bits+1 with rounding
+
+    // alpha for foreground multiplication
+    // convert from 8bit to (6bit+1) with rounding
+    // will be in [0..64] inclusive
+
+    alpha = (alpha + 2) >> 2;
+    // "beta" for background multiplication; (6bit+1);
+    // will be in [0..64] inclusive
+    const uint8_t beta = maxAlpha - alpha;
+    // so (0..64)*alpha + (0..64)*beta always in 0..64
+    const uint32_t rb =
+        (alpha * static_cast<uint32_t>((fg & maskRB)) + beta * static_cast<uint32_t>(bg & maskRB)) & maskMulRB;
+    const uint32_t g = (alpha * (fg & maskG) + beta * (bg & maskG)) & maskMulG;
+
+    return (rb | g) >> 6;
 }
