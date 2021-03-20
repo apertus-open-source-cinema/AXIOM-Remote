@@ -556,7 +556,8 @@ void VirtualUI::RenderLED(int8_t glowValue)
 
 int glowValue = 0;
 
-void VirtualUI::RenderUI(Button& button, int8_t& knobValue, bool& debugOverlayEnabled)
+void VirtualUI::RenderUI(Button& button, int8_t& knobValue, bool& debugOverlayEnabled,
+                         std::function<void()> screenshotHandler)
 {
     ImGui_ImplOpenGL3_NewFrame();
     ImGui_ImplSDL2_NewFrame(_window);
@@ -583,12 +584,18 @@ void VirtualUI::RenderUI(Button& button, int8_t& knobValue, bool& debugOverlayEn
     ImGui::SetCursorPos(ImVec2(337, 119));
     ShowZoomTooltip();
 
-    ImGui::SetCursorPos(ImVec2(50, 390));
+    ImGui::SetCursorPos(ImVec2(50, 375));
     ImGui::ToggleButton("debug_overlay_switch", "Debug overlay", &debugOverlayEnabled);
 
     ToggleLCDContrast(toggleContrast);
-    ImGui::SetCursorPos(ImVec2(50, 430));
+    ImGui::SetCursorPos(ImVec2(50, 410));
     ImGui::ToggleButton("toggle_contrast_switch", "Simulate LCD", &toggleContrast);
+
+    ImGui::SetCursorPos(ImVec2(50, 445));
+    if (ImGui::Button("Take Screenshot"))
+    {
+        screenshotHandler();
+    }
 
     ImGui::PopStyleVar();
     ImGui::PopStyleColor();

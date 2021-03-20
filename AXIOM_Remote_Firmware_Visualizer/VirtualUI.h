@@ -2,6 +2,7 @@
 #define VIRTUALUI_H
 
 #include <cstdint>
+#include <functional>
 #include <memory>
 #include <string>
 
@@ -49,7 +50,7 @@ class VirtualUI {
     float _analogGainShader;
     float _brightnessFactor;
     float _contrastFactor;
-  
+
     CentralDB* _db;
     std::shared_ptr<CentralDBObserver> lcdObserver;
 
@@ -73,6 +74,8 @@ class VirtualUI {
     VirtualUI(SDL_Window* window, uint32_t displayTextureID, CentralDB* db);
 
     void RenderUI(Button& button, int8_t& knobValue, bool& debugOverlayEnabled);
+    void RenderUI(Button& button, int8_t& knobValue, bool& debugOverlayEnabled,
+                  std::function<void()> screenshotHandler);
 
     void RenderDisplayToFBO() const;
     void ToggleLCDContrast(bool toggleContrastEnabled) const;

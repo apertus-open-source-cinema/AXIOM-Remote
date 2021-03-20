@@ -1,4 +1,7 @@
 #include <algorithm>
+#include <chrono>
+#include <ctime>
+#include <functional>
 #include <iostream>
 #include <stdint.h>
 #include <stdlib.h>
@@ -135,6 +138,20 @@ void ProcessCommandLine(int argc, char* argv[])
     }
 }
 
+void ScreenshotHandler(uint16_t* frameBuffer, int width, int height)
+{
+    SDL_Surface* surf = SDL_CreateRGBSurfaceFrom(frameBuffer, width, height, 8 * 2, width * 2, 0, 0, 0, 0);
+    const auto now = std::chrono::system_clock::now();
+    const auto inTimeT = std::chrono::system_clock::to_time_t(now);
+    const auto nowTime = std::localtime(&inTimeT);
+    std::string filePath = "../screenshots/";
+    constexpr auto dateBufferSize = 50;
+    char buffer[dateBufferSize];
+    std::strftime(buffer, sizeof buffer, "%F_%T.bmp", nowTime);
+    filePath.append(buffer);
+    SDL_SaveBMP(surf, filePath.c_str());
+}
+
 int main(int argc, char* argv[])
 {
     std::cout << "AXIOM Remote Visualizer" << std::endl;
@@ -176,6 +193,8 @@ int main(int argc, char* argv[])
     int8_t knobValue = 0;
     bool debugOverlayEnabled = false;
 
+    auto partialScreenshotHandler = std::bind(ScreenshotHandler, frameBuffer, FRAMEBUFFER_WIDTH, FRAMEBUFFER_HEIGHT);
+
     std::shared_ptr<VirtualUI> virtualUI = std::make_shared<VirtualUI>(window, displayTextureID, &centralDB);
 
     centralDB.SetUint32(Attribute::ID::REMOTE_LCD_BRIGHTNESS, 75);
@@ -208,7 +227,7 @@ int main(int argc, char* argv[])
         glBindTexture(GL_TEXTURE_2D, 0);
 
         button = Button::BUTTON_NONE;
-        virtualUI->RenderUI(button, knobValue, debugOverlayEnabled);
+        virtualUI->RenderUI(button, knobValue, debugOverlayEnabled, partialScreenshotHandler);
 
         menuSystem.Update(button, knobValue);
         ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());
