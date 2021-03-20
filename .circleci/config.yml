@@ -12,8 +12,8 @@ jobs:
       - run:
           name: Build
           command: |
-            export MP_CC="/opt/microchip/xc32/v2.30/bin/xc32-gcc" 
-            export MP_CC_DIR="/opt/microchip/xc32/v2.30/bin/"
+            export MP_CC="/opt/microchip/xc32/v2.50/bin/xc32-gcc" 
+            export MP_CC_DIR="/opt/microchip/xc32/v2.50/bin/"
             mkdir /tmp/artifacts
             cd Firmware
             make -j8

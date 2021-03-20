@@ -1,5 +1,5 @@
 # Change to the path of XC32 installation, default is /opt/microchip/xc32/<version>/
-XC32_PATH=/opt/microchip/xc32/v2.40
+XC32_PATH=/opt/microchip/xc32/v2.50
 CC=${XC32_PATH}/bin/xc32-g++
 LD=${XC32_PATH}/bin/xc32-ld
 
