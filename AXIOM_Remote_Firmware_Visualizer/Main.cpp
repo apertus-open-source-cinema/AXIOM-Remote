@@ -147,9 +147,9 @@ void ScreenshotHandler(uint16_t* frameBuffer, int width, int height)
     std::string filePath = "../screenshots/";
     constexpr auto dateBufferSize = 50;
     char buffer[dateBufferSize];
-    std::strftime(buffer, sizeof buffer, "%F_%T.bmp", localTime);
+    std::strftime(buffer, sizeof buffer, "%F_%T.png", localTime);
     filePath.append(buffer);
-    SDL_SaveBMP(surf, filePath.c_str());
+    IMG_SavePNG(surf, filePath.c_str());
 }
 
 int main(int argc, char* argv[])
