@@ -143,11 +143,11 @@ void ScreenshotHandler(uint16_t* frameBuffer, int width, int height)
     SDL_Surface* surf = SDL_CreateRGBSurfaceFrom(frameBuffer, width, height, 8 * 2, width * 2, 0, 0, 0, 0);
     const auto now = std::chrono::system_clock::now();
     const auto inTimeT = std::chrono::system_clock::to_time_t(now);
-    const auto nowTime = std::localtime(&inTimeT);
+    const auto localTime = std::localtime(&inTimeT);
     std::string filePath = "../screenshots/";
     constexpr auto dateBufferSize = 50;
     char buffer[dateBufferSize];
-    std::strftime(buffer, sizeof buffer, "%F_%T.bmp", nowTime);
+    std::strftime(buffer, sizeof buffer, "%F_%T.bmp", localTime);
     filePath.append(buffer);
     SDL_SaveBMP(surf, filePath.c_str());
 }
@@ -195,7 +195,8 @@ int main(int argc, char* argv[])
 
     auto partialScreenshotHandler = std::bind(ScreenshotHandler, frameBuffer, FRAMEBUFFER_WIDTH, FRAMEBUFFER_HEIGHT);
 
-    std::shared_ptr<VirtualUI> virtualUI = std::make_shared<VirtualUI>(window, displayTextureID, &centralDB);
+    std::shared_ptr<VirtualUI> virtualUI =
+        std::make_shared<VirtualUI>(window, displayTextureID, &centralDB, partialScreenshotHandler);
 
     centralDB.SetUint32(Attribute::ID::REMOTE_LCD_BRIGHTNESS, 75);
 
@@ -227,7 +228,7 @@ int main(int argc, char* argv[])
         glBindTexture(GL_TEXTURE_2D, 0);
 
         button = Button::BUTTON_NONE;
-        virtualUI->RenderUI(button, knobValue, debugOverlayEnabled, partialScreenshotHandler);
+        virtualUI->RenderUI(button, knobValue, debugOverlayEnabled);
 
         menuSystem.Update(button, knobValue);
         ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());

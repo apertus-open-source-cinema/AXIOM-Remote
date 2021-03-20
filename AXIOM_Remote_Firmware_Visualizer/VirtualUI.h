@@ -39,6 +39,7 @@ class VirtualUI {
     uint32_t _programID;
 
     void ShowZoomTooltip();
+    std::function<void()> _ScreenshotHandler;
 
     uint32_t _vertexBuffer;
     uint32_t _cameraFBO;
@@ -71,11 +72,11 @@ class VirtualUI {
     void RenderLED(int8_t glowValue);
 
   public:
-    VirtualUI(SDL_Window* window, uint32_t displayTextureID, CentralDB* db);
+    VirtualUI(
+        SDL_Window* window, uint32_t displayTextureID, CentralDB* db,
+        std::function<void()> ScreenshotHandler = []() {});
 
     void RenderUI(Button& button, int8_t& knobValue, bool& debugOverlayEnabled);
-    void RenderUI(Button& button, int8_t& knobValue, bool& debugOverlayEnabled,
-                  std::function<void()> screenshotHandler);
 
     void RenderDisplayToFBO() const;
     void ToggleLCDContrast(bool toggleContrastEnabled) const;

@@ -24,8 +24,11 @@ uint8_t lcdBrightness = 100;
 float lcdContrast = 1.0;
 bool toggleContrast = false;
 
-VirtualUI::VirtualUI(SDL_Window* window, uint32_t displayTextureID, CentralDB* db) :
-    _window(window), _io(ImGui::GetIO()), _displayTextureID(reinterpret_cast<ImTextureID>(displayTextureID)), _db(db)
+VirtualUI::VirtualUI(SDL_Window* window, uint32_t displayTextureID, CentralDB* db,
+                     std::function<void()> ScreenshotHandler) :
+    _window(window),
+    _io(ImGui::GetIO()), _displayTextureID(reinterpret_cast<ImTextureID>(displayTextureID)), _db(db),
+    _ScreenshotHandler(ScreenshotHandler)
 {
     LoadTextures();
 
@@ -556,8 +559,7 @@ void VirtualUI::RenderLED(int8_t glowValue)
 
 int glowValue = 0;
 
-void VirtualUI::RenderUI(Button& button, int8_t& knobValue, bool& debugOverlayEnabled,
-                         std::function<void()> screenshotHandler)
+void VirtualUI::RenderUI(Button& button, int8_t& knobValue, bool& debugOverlayEnabled)
 {
     ImGui_ImplOpenGL3_NewFrame();
     ImGui_ImplSDL2_NewFrame(_window);
@@ -594,7 +596,7 @@ void VirtualUI::RenderUI(Button& button, int8_t& knobValue, bool& debugOverlayEn
     ImGui::SetCursorPos(ImVec2(50, 445));
     if (ImGui::Button("Take Screenshot"))
     {
-        screenshotHandler();
+        _ScreenshotHandler();
     }
 
     ImGui::PopStyleVar();
