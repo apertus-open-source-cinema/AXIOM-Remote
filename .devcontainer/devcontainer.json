@@ -1,0 +1,16 @@
+// For format details, see https://aka.ms/devcontainer.json. For config options, see the README at:
+// https://github.com/microsoft/vscode-dev-containers/tree/v0.163.0/containers/cpp
+{
+	"name": "PIC32MZ development environment (Alpine)",
+	"image": "xc32_ubuntu",
+	"mounts": ["source=/dev,target=/dev,type=bind"],
+	"runArgs": ["--device-cgroup-rule=a 189:* rwm"],
+	"settings": { 
+		"terminal.integrated.shell.linux": "/bin/bash"
+	},
+	// Add the IDs of extensions you want installed when the container is created.
+	"extensions": [
+		"ms-vscode.cpptools",
+		"ms-vscode.cmake-tools"
+	]
+}

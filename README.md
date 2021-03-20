@@ -91,6 +91,18 @@ This means its important to open the root folder of this repo in VS code.
 
 We recommend installing the VsCode Action Buttons extension: <https://marketplace.visualstudio.com/items?itemName=seunlanlege.action-buttons> and configurations (.vscode/settings.json) to add buttons to compile and flash the AXIOM Remote.
 
+
+### Developing inside Docker container
+
+To avoid the need to install all the required and helpful tools, you can also use a Docker container we provide for development. Follow the steps to set it up in VSCode:
+
+- Open the repository folder in VSCode
+- Install **Remote - Containers** extension
+- Click on the green button in the lower-left corner and select **Reopen in container**
+- Use the terminal in VSCode for builds, like you've did on your machine before
+  - **minicom** and **pic32prog** are already included, if required
+
+
 ## Coding Guidelines ##
 
 Please refer to the [CodingGuidelines.md](CodingGuidelines.md)
