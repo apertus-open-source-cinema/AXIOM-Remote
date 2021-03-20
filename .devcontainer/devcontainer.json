@@ -2,7 +2,7 @@
 // https://github.com/microsoft/vscode-dev-containers/tree/v0.163.0/containers/cpp
 {
 	"name": "PIC32MZ development environment (Alpine)",
-	"image": "xc32_ubuntu",
+	"image": "bandit1983/xc32_ubuntu",
 	"mounts": ["source=/dev,target=/dev,type=bind"],
 	"runArgs": ["--device-cgroup-rule=a 189:* rwm"],
 	"settings": { 
