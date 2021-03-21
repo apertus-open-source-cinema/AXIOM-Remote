@@ -25,10 +25,10 @@ float lcdContrast = 1.0;
 bool toggleContrast = false;
 
 VirtualUI::VirtualUI(SDL_Window* window, uint32_t displayTextureID, CentralDB* db,
-                     std::function<void()> ScreenshotHandler) :
+                     std::function<void()> screenshotHandler) :
     _window(window),
     _io(ImGui::GetIO()), _displayTextureID(reinterpret_cast<ImTextureID>(displayTextureID)), _db(db),
-    _ScreenshotHandler(ScreenshotHandler)
+    _screenshotHandler(screenshotHandler)
 {
     LoadTextures();
 
@@ -594,9 +594,9 @@ void VirtualUI::RenderUI(Button& button, int8_t& knobValue, bool& debugOverlayEn
     ImGui::ToggleButton("toggle_contrast_switch", "Simulate LCD", &toggleContrast);
 
     ImGui::SetCursorPos(ImVec2(50, 445));
-    if (ImGui::Button("Take Screenshot"))
+    if (ImGui::Button("Take Screenshot") && _screenshotHandler)
     {
-        _ScreenshotHandler();
+        _screenshotHandler();
     }
 
     ImGui::PopStyleVar();
