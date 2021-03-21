@@ -98,7 +98,11 @@ To avoid the need to install all the required and helpful tools, you can also us
 
 - Open the repository folder in VSCode
 - Install **Remote - Containers** extension
-- Click on the green button in the lower-left corner and select **Reopen in container**
+- Click on the green button in the lower-left corner and select **Remote-Containers: Reopen in Container**
+
+Remote container button | Remote container dialog
+:-------------------------:|:-------------------------:
+![](Docs/Remote_container_button.png) | ![](Docs/Remote_container_reopen.png)
 - Use the terminal in VSCode for builds, like you've did on your machine before
   - **minicom** and **pic32prog** are already included, if required
 
