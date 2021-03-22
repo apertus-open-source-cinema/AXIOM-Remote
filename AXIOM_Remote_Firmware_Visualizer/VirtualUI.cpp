@@ -24,8 +24,11 @@ uint8_t lcdBrightness = 100;
 float lcdContrast = 1.0;
 bool toggleContrast = false;
 
-VirtualUI::VirtualUI(SDL_Window* window, uint32_t displayTextureID, CentralDB* db) :
-    _window(window), _io(ImGui::GetIO()), _displayTextureID(reinterpret_cast<ImTextureID>(displayTextureID)), _db(db)
+VirtualUI::VirtualUI(SDL_Window* window, uint32_t displayTextureID, CentralDB* db,
+                     std::function<void()> screenshotHandler) :
+    _window(window),
+    _io(ImGui::GetIO()), _displayTextureID(reinterpret_cast<ImTextureID>(displayTextureID)), _db(db),
+    _screenshotHandler(screenshotHandler)
 {
     LoadTextures();
 
@@ -583,12 +586,18 @@ void VirtualUI::RenderUI(Button& button, int8_t& knobValue, bool& debugOverlayEn
     ImGui::SetCursorPos(ImVec2(337, 119));
     ShowZoomTooltip();
 
-    ImGui::SetCursorPos(ImVec2(50, 390));
+    ImGui::SetCursorPos(ImVec2(50, 375));
     ImGui::ToggleButton("debug_overlay_switch", "Debug overlay", &debugOverlayEnabled);
 
     ToggleLCDContrast(toggleContrast);
-    ImGui::SetCursorPos(ImVec2(50, 430));
+    ImGui::SetCursorPos(ImVec2(50, 410));
     ImGui::ToggleButton("toggle_contrast_switch", "Simulate LCD", &toggleContrast);
+
+    ImGui::SetCursorPos(ImVec2(50, 445));
+    if (ImGui::Button("Take Screenshot") && _screenshotHandler)
+    {
+        _screenshotHandler();
+    }
 
     ImGui::PopStyleVar();
     ImGui::PopStyleColor();
