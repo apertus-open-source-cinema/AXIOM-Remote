@@ -96,7 +96,7 @@ class PopUpParameterMenu : public IWidget
 
         for (uint8_t itemIndex = 0; itemIndex < _choiceCount; itemIndex++)
         {
-            uint8_t textWidth = painter->GetStringFramebufferWidth(_parameterMenuItem[itemIndex].GetLabel());
+            uint8_t textWidth = utils::GetTextWidth(_parameterMenuItem[itemIndex].GetLabel(),Font::FreeSans12pt7b);
             if (textWidth > maxchoicewidth)
             {
                 maxchoicewidth = textWidth;

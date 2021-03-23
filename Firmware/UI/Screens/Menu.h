@@ -153,7 +153,7 @@ class Menu : public IMenu
             _numericValueScreen.Draw(painter);
         } else
         {
-            painter->SetFont(Font::FreeSans9pt7b);
+            utils::SetFont(Font::FreeSans9pt7b);
             DrawHeader(painter);
 
             // draw menu items
@@ -190,7 +190,7 @@ class Menu : public IMenu
         painter->DrawFillRectangle(0, 0, GlobalSettings::LCDWidth, 28, _menuItemColor);
 
         // draw header bread crumbs
-        painter->SetFont(Font::FreeSans9pt7b);
+        utils::SetFont(Font::FreeSans9pt7b);
         painter->DrawText(5, 20, _menuBreadcrumbs, _menuTextColor, TextAlign::TEXT_ALIGN_LEFT, 0);
 
         // two header separation lines

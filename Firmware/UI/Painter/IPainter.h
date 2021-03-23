@@ -47,12 +47,9 @@ class IPainter
     virtual void Dim() = 0;
 
     // Text Related
-    virtual void SetFont(Font font) = 0;
     virtual void DrawCharacter(unsigned char c, int16_t x, int16_t y, uint16_t color) = 0;
     virtual void DrawText(uint16_t x, uint16_t y, const char* text, uint16_t color, TextAlign align,
                           uint16_t textblockwidth) = 0;
-    virtual uint16_t GetStringFramebufferWidth(const char* str) = 0;
-    virtual uint8_t GetCurrentFontHeight() = 0;
 };
 
 #endif /* PAINTER_H */

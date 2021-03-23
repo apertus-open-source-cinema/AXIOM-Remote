@@ -47,8 +47,8 @@ class PushButton : public IButton
     {
         painter->DrawFillRoundRectangle(_x, _y, _width, _height, _cornerRadius, _currentBackgroundColor);
 
-        painter->SetFont(Font::FreeSans12pt7b);
-        uint8_t textPosY = _height / 2 + painter->GetCurrentFontHeight() / 2;
+        utils::SetFont(Font::FreeSans12pt7b);
+        uint8_t textPosY = _height / 2 + utils::currentFontHeight / 2;
         painter->DrawText(_x + _width / 2, _y + textPosY, _label, _currentTextColor, TextAlign::TEXT_ALIGN_CENTER,
                           strlen(_label));
     }

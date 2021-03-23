@@ -50,12 +50,12 @@ class ToggleButton : public IButton
     {
         painter->DrawFillRoundRectangle(_x, _y, _width, _height, _cornerRadius, _currentBackgroundColor);
 
-        painter->SetFont(Font::FreeSans12pt7b);
-        uint8_t textPosY = _height / 2 + painter->GetCurrentFontHeight() / 2;
+        utils::SetFont(Font::FreeSans12pt7b);
+        uint8_t textPosY = _height / 2 + utils::currentFontHeight / 2;
         uint8_t gap = 8; // gap (in pixels) between checkbox icon and text
 
         _checkboxIcon = (_checked) ? &checkboxtrue_icon : &checkboxfalse_icon;
-        uint8_t totalcontentwidth = _checkboxIcon->Width + gap + painter->GetStringFramebufferWidth(_label);
+        uint8_t totalcontentwidth = _checkboxIcon->Width + gap + utils::GetTextWidth(_label);
 
         painter->DrawIcon(_checkboxIcon, _x + _width / 2 - totalcontentwidth / 2,
                           _y + _height / 2 - _checkboxIcon->Height / 2, _currentTextColor);

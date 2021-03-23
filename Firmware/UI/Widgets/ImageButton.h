@@ -91,12 +91,12 @@ class ImageButton : public IButton
 
         if (_buttonStyle == ButtonStyle::IconAndText)
         {
-            painter->SetFont(Font::FreeSans12pt7b);
+            utils::SetFont(Font::FreeSans12pt7b);
 
             _totalWidth +=
-                painter->GetStringFramebufferWidth(_label); // TODO: This should not be recalculated with every redraw
+                utils::GetTextWidth(_label); // TODO: This should not be recalculated with every redraw
             _textPositionY +=
-                painter->GetCurrentFontHeight() / 2; // TODO: This should not be recalculated with every redraw
+                utils::currentFontHeight / 2; // TODO: This should not be recalculated with every redraw
 
             painter->DrawIcon(_image, _x + _imagePositionX, _y + _height / 2 - _image->Height / 2, _currentImageColor);
             painter->DrawText(_x + _textPositionX, _y + _textPositionY, _label, _currentTextColor,

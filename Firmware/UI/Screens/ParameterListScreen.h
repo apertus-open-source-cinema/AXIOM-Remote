@@ -121,9 +121,9 @@ class ParameterListScreen : public IScreen
         Drawheader(painter);
 
         // draw options
-        painter->SetFont(Font::FreeSans12pt7b);
+        utils::SetFont(Font::FreeSans12pt7b);
         uint8_t heightcenter = GlobalSettings::LCDHeight / 2 - _optionLineHeight / 2;
-        uint8_t fontcenter = _optionLineHeight / 2 + painter->GetCurrentFontHeight() / 2;
+        uint8_t fontcenter = _optionLineHeight / 2 + utils::currentFontHeight / 2;
         for (int8_t i = 0; i < _optionCount; i++)
         {
             if (_pressedIndex == i)
@@ -172,7 +172,7 @@ class ParameterListScreen : public IScreen
         painter->DrawFillRectangle(0, 0, GlobalSettings::LCDWidth, 30, (uint16_t)Color565::Black);
 
         //  header title
-        painter->SetFont(Font::FreeSans12pt7b);
+        utils::SetFont(Font::FreeSans12pt7b);
         painter->DrawText(0, 22, _header, (uint16_t)Color565::White, TextAlign::TEXT_ALIGN_CENTER,
                           GlobalSettings::LCDWidth);
 
