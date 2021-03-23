@@ -82,15 +82,15 @@ class Menu : public IMenu
         _menuBreadcrumbs = "Menu";
 
         // Color defintions
-        _menuBackgroundColor = RGB565(180, 180, 180);
+        _menuBackgroundColor = utils::RGB565(180, 180, 180);
         _menuItemColor = (uint16_t)Color565::White;
-        _menuSelectedItemColor = RGB565(255, 128, 0);
-        _menuDimmedItemColor = RGB565(247, 251, 247);
-        _menuSelectedTextColor = RGB565(255, 255, 255);
-        _menuHightlightedItemColor = RGB565(0, 128, 255);
+        _menuSelectedItemColor = utils::RGB565(255, 128, 0);
+        _menuDimmedItemColor = utils::RGB565(247, 251, 247);
+        _menuSelectedTextColor = utils::RGB565(255, 255, 255);
+        _menuHightlightedItemColor = utils::RGB565(0, 128, 255);
         _menuTextColor = (uint16_t)Color565::Black;
-        _menuDisabledTextColor = RGB565(40, 40, 40);
-        _menuDisabledItemColor = RGB565(180, 180, 180);
+        _menuDisabledTextColor = utils::RGB565(40, 40, 40);
+        _menuDisabledItemColor = utils::RGB565(180, 180, 180);
 
         // init menu selection indexes
         _parameterMenuActive = 0;
@@ -218,7 +218,7 @@ class Menu : public IMenu
         }
 
         // only up to 7 menu items fit on screen at once
-        uint8_t displayItemsCount = LimitRange(_menuItemsCount, 0, 7);
+        uint8_t displayItemsCount = utils::LimitRange(_menuItemsCount, 0, 7);
 
         for (uint8_t itemIndex = 0; itemIndex < displayItemsCount; itemIndex++)
         {
@@ -424,7 +424,7 @@ class Menu : public IMenu
             _menuItem[_menuSelectionIndex]->SetHighlighted(false);
 
             _menuSelectionIndex--;
-            _menuSelectionIndex = LimitRange(_menuSelectionIndex, 0, _menuItemsCount - 1);
+            _menuSelectionIndex = utils::LimitRange(_menuSelectionIndex, 0, _menuItemsCount - 1);
             _menuItem[_menuSelectionIndex]->SetHighlighted(true);
         }
     }
@@ -461,7 +461,7 @@ class Menu : public IMenu
             _menuItem[_menuSelectionIndex]->SetHighlighted(false);
 
             _menuSelectionIndex++;
-            _menuSelectionIndex = LimitRange(_menuSelectionIndex, 0, _menuItemsCount - 1);
+            _menuSelectionIndex = utils::LimitRange(_menuSelectionIndex, 0, _menuItemsCount - 1);
             _menuItem[_menuSelectionIndex]->SetHighlighted(true);
         }
     }
