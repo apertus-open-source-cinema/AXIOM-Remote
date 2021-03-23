@@ -30,8 +30,8 @@ class ToggleButton : public IButton
     explicit ToggleButton(const char* label, uint16_t x = 0, uint16_t y = 0, uint16_t width = 0, uint16_t height = 0) :
         IButton(x, y, width, height), _label(label), _cornerRadius(3), _highlighted(false), _checked(true),
         _currentTextColor((uint16_t)Color565::Black), _textColor(_currentTextColor),
-        _currentBackgroundColor(RGB565(220, 220, 220)), _backgroundColor(_currentBackgroundColor),
-        _textDisabledColor(RGB565(180, 180, 180)), _backgroundHighlightColor((uint16_t)Color565::AXIOM_Blue),
+        _currentBackgroundColor(utils::RGB565(220, 220, 220)), _backgroundColor(_currentBackgroundColor),
+        _textDisabledColor(utils::RGB565(180, 180, 180)), _backgroundHighlightColor((uint16_t)Color565::AXIOM_Blue),
         _textHighlightColor((uint16_t)Color565::Black)
     {
     }

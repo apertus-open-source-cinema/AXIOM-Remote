@@ -7,12 +7,15 @@
 
 #define UNUSED(x) (void)(x)
 
-static inline uint16_t RGB565(uint8_t red, uint8_t green, uint8_t blue)
+namespace utils
+{
+
+inline uint16_t RGB565(uint8_t red, uint8_t green, uint8_t blue)
 {
     return ((red & 0xF8) << 8) | ((green & 0xFC) << 3) | ((blue & 0xF8) >> 3);
 }
 
-static inline int8_t LimitRange(int8_t in, int8_t min, int8_t max)
+inline int8_t LimitRange(int8_t in, int8_t min, int8_t max)
 {
     if (in >= max)
     {
@@ -25,8 +28,6 @@ static inline int8_t LimitRange(int8_t in, int8_t min, int8_t max)
     return in;
 }
 
-namespace utils
-{
 inline void CopyString(char* destination, const char* source, const size_t max_size)
 {
     memset(destination, 0, max_size);

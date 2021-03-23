@@ -25,7 +25,7 @@ class ButtonBar : public IWidget
 
   public:
     ButtonBar(uint16_t x, uint16_t y, uint16_t width, uint16_t height) :
-        IWidget(x, y, width, height), _backgroundColor(RGB565(97, 92, 91)), _marginTop(1), _buttonMargin(4)
+        IWidget(x, y, width, height), _backgroundColor(utils::RGB565(97, 92, 91)), _marginTop(1), _buttonMargin(4)
     {
     }
 

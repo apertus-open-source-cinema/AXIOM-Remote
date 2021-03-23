@@ -60,8 +60,8 @@ void MainPage::DigitalGainButtonHandler(void* sender)
 
 void MainPage::Draw(IPainter* painter)
 {
-    painter->DrawIcon(&ApertusTextLogo, 58, 89, RGB565(194, 191, 188));
-    painter->DrawIcon(&ApertusRingLogo, 58 + ApertusTextLogo.Width, 89, RGB565(244, 114, 72));
+    painter->DrawIcon(&ApertusTextLogo, 58, 89, utils::RGB565(194, 191, 188));
+    painter->DrawIcon(&ApertusRingLogo, 58 + ApertusTextLogo.Width, 89, utils::RGB565(244, 114, 72));
 
     for (uint8_t index = 0; index < 6; index++)
     {

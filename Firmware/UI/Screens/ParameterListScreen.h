@@ -39,7 +39,7 @@ class ParameterListScreen : public IScreen
         IScreen(usbDevice), _cancelButton("Cancel"), _setButton("Set"), _header("Parameter Menu"),
         _previousOptionIndex(0), _highlightIndex(0), _optionLineHeight(35), _backgroundColor((uint16_t)Color565::White),
         _textColor((uint16_t)Color565::Black), _highlightColor((uint16_t)Color565::AXIOM_Orange),
-        _highlightTextColor((uint16_t)Color565::White), _backgroundPressedColor(RGB565(0, 128, 255)),
+        _highlightTextColor((uint16_t)Color565::White), _backgroundPressedColor(utils::RGB565(0, 128, 255)),
         _textPressedColor((uint16_t)Color565::White), _pressedIndex(-1)
     {
         //_cancelButton.SetHandler(&CancelButtonHandler);

@@ -27,7 +27,7 @@ class PushButton : public IButton
         IButton(x, y, width, height), _label(label), _cornerRadius(3), _highlighted(false)
     {
         _currentTextColor = _TextColor = (uint16_t)Color565::Black;
-        _currentBackgroundColor = _BackgroundColor = RGB565(220, 220, 220);
+        _currentBackgroundColor = _BackgroundColor = utils::RGB565(220, 220, 220);
 
         _backgroundHighlightColor = (uint16_t)Color565::AXIOM_Blue;
         _textHighlightColor = (uint16_t)Color565::Black;
