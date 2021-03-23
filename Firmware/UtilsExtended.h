@@ -78,6 +78,5 @@ inline uint8_t GetTextWidth(const char * text, Font font = curFont)
     }
     return width;
 }
-
 }
 

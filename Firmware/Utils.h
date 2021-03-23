@@ -27,7 +27,6 @@ static inline int8_t LimitRange(int8_t in, int8_t min, int8_t max)
 
 namespace utils
 {
-
 inline void CopyString(char* destination, const char* source, const size_t max_size)
 {
     memset(destination, 0, max_size);
@@ -38,7 +37,6 @@ inline void CopyString(char* destination, const char* source, const size_t max_s
     }
     strncpy(destination, source, len);
 }
-
 } // namespace utils
 
 #endif // UTILS_H
