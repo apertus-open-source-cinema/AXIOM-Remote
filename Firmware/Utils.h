@@ -7,8 +7,6 @@
 
 #define UNUSED(x) (void)(x)
 
-
-
 namespace utils
 {
 
