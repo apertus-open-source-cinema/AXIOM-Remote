@@ -19,7 +19,8 @@ WhiteBalanceScreen::WhiteBalanceScreen(IUSBDevice* usbDevice) :
 
     // This is the primary button in this menu
     _setButton.SetHandler(&SetButtonHandler);
-    _setButton.SetBackgroundColor((uint16_t)Color565::AXIOM_Orange);
+    _setButton.SetColor(ButtonState::Default, PushButton::Colors::Background,
+                        static_cast<uint16_t>(Color565::AXIOM_Orange));
     _bottomButtonBar.SetButton(ButtonPosition::Right, &_setButton);
 
     //_leftButtonBar.SetButton(ButtonPosition::Left, &_homeButton); //already done in IScreen
@@ -74,30 +75,30 @@ void WhiteBalanceScreen::Update(Button button, int8_t knob, IMenuSystem* menuSys
     switch (button)
     {
     case Button::BUTTON_4_DOWN:
-        _cancelButton.SetHighlighted(true);
+        _cancelButton.SetState(ButtonState::Highlighted);
         break;
     case Button::BUTTON_4_UP:
-        _cancelButton.SetHighlighted(false);
+        _cancelButton.SetState(ButtonState::Default);
         menuSystem->SetCurrentScreen(AvailableScreens::MainPage);
         break;
     case Button::BUTTON_5_DOWN:
-        _addPresetButton.SetHighlighted(true);
+        _addPresetButton.SetState(ButtonState::Highlighted);
         break;
     case Button::BUTTON_5_UP:
-        _addPresetButton.SetHighlighted(false);
+        _addPresetButton.SetState(ButtonState::Default);
         break;
     case Button::BUTTON_6_DOWN:
-        _setButton.SetHighlighted(true);
+        _setButton.SetState(ButtonState::Highlighted);
         break;
     case Button::BUTTON_6_UP:
-        _setButton.SetHighlighted(false);
+        _setButton.SetState(ButtonState::Default);
         menuSystem->SetCurrentScreen(AvailableScreens::MainPage);
         break;
     case Button::BUTTON_7_DOWN:
-        _homeButton.SetHighlighted(true);
+        _homeButton.SetState(ButtonState::Highlighted);
         break;
     case Button::BUTTON_7_UP:
-        _homeButton.SetHighlighted(false);
+        _homeButton.SetState(ButtonState::Default);
         menuSystem->SetCurrentScreen(AvailableScreens::MainPage);
         break;
     default:

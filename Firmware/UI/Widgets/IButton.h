@@ -29,6 +29,7 @@ class IButton : public IWidget
     ButtonState _currentState;
 
   public:
+    // TODO: add startState to constructor?
     IButton(uint16_t x = 0, uint16_t y = 0, uint16_t width = 0, uint16_t height = 0) :
         IWidget(x, y, width, height), _handlerPtr(nullptr), _currentState(ButtonState::Default)
     {

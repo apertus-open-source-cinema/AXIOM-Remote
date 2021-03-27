@@ -47,7 +47,8 @@ class ParameterListScreen : public IScreen
 
         // This is the primary button in this menu
         //_setButton.SetHandler(&SetButtonHandler);
-        _setButton.SetBackgroundColor((uint16_t)Color565::AXIOM_Orange);
+        _setButton.SetColor(ButtonState::Default, PushButton::Colors::Background,
+                            static_cast<uint16_t>(Color565::AXIOM_Orange));
         _bottomButtonBar.SetButton(ButtonPosition::Right, &_setButton);
     }
 
@@ -63,12 +64,12 @@ class ParameterListScreen : public IScreen
 
     void SetSetButtonPressed(bool pressed)
     {
-        _setButton.SetHighlighted(pressed);
+        _setButton.SetState(pressed ? ButtonState::Highlighted : ButtonState::Default);
     }
 
     void SetCancelButtonPressed(bool pressed)
     {
-        _cancelButton.SetHighlighted(pressed);
+        _cancelButton.SetState(pressed ? ButtonState::Highlighted : ButtonState::Default);
     }
 
     void SetHighlighted(uint8_t highlightindex)
