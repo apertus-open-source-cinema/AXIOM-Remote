@@ -4,17 +4,18 @@
 #include <cstring>
 
 #include "IButton.h"
+#include "ButtonState.h"
 #include "../Painter/Painter.h"
 
 class PushButton : public IButton
 {
     const char* _label;
     uint8_t _cornerRadius;
-    bool _highlighted;
+    ButtonState _state;
 
     // Color Defintions
-    uint16_t _TextColor;
-    uint16_t _BackgroundColor;
+    uint16_t _textColor;
+    uint16_t _backgroundColor;
 
     uint16_t _textHighlightColor;
     uint16_t _backgroundHighlightColor;
@@ -22,12 +23,26 @@ class PushButton : public IButton
     uint16_t _currentTextColor;
     uint16_t _currentBackgroundColor;
 
+    void UpdateCurrentColors()
+    {
+        if (_state == ButtonState::Highlighted)
+        {
+            _currentBackgroundColor = _backgroundHighlightColor;
+            _currentTextColor = _textHighlightColor;
+
+        } else
+        {
+            _currentBackgroundColor = _backgroundColor;
+            _currentTextColor = _textColor;
+        }
+    }
+
   public:
     explicit PushButton(const char* label, uint16_t x = 0, uint16_t y = 0, uint16_t width = 0, uint16_t height = 0) :
-        IButton(x, y, width, height), _label(label), _cornerRadius(3), _highlighted(false)
+        IButton(x, y, width, height), _label(label), _cornerRadius(3), _state(ButtonState::Default)
     {
-        _currentTextColor = _TextColor = (uint16_t)Color565::Black;
-        _currentBackgroundColor = _BackgroundColor = utils::RGB565(220, 220, 220);
+        _currentTextColor = _textColor = (uint16_t)Color565::Black;
+        _currentBackgroundColor = _backgroundColor = utils::RGB565(220, 220, 220);
 
         _backgroundHighlightColor = (uint16_t)Color565::AXIOM_Blue;
         _textHighlightColor = (uint16_t)Color565::Black;
@@ -55,41 +70,32 @@ class PushButton : public IButton
 
     void SetBackgroundColor(uint16_t color)
     {
-        _BackgroundColor = color;
-        SetHighlighted(_highlighted);
+        _backgroundColor = color;
+        UpdateCurrentColors();
     }
 
     void SetTextColor(uint16_t color)
     {
-        _TextColor = color;
-        SetHighlighted(_highlighted);
+        _textColor = color;
+        UpdateCurrentColors();
     }
 
     void SetHighlightBackgroundColor(uint16_t color)
     {
         _backgroundHighlightColor = color;
-        SetHighlighted(_highlighted);
+        UpdateCurrentColors();
     }
 
     void SetHighlightTextColor(uint16_t color)
     {
         _textHighlightColor = color;
-        SetHighlighted(_highlighted);
+        UpdateCurrentColors();
     }
 
     void SetHighlighted(bool highlighted)
     {
-        _highlighted = highlighted;
-        if (highlighted)
-        {
-            _currentTextColor = _textHighlightColor;
-            _currentBackgroundColor = _backgroundHighlightColor;
-
-        } else
-        {
-            _currentTextColor = _TextColor;
-            _currentBackgroundColor = _BackgroundColor;
-        }
+        _state = highlighted ? ButtonState::Highlighted : ButtonState::Default;
+        UpdateCurrentColors();
     }
 };
 

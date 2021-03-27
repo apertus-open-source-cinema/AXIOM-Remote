@@ -3,6 +3,7 @@
 #define MAINPAGEBUTTON_H
 
 #include "IButton.h"
+#include "ButtonState.h"
 #include "../Painter/Painter.h"
 
 #include "../Color565.h"
@@ -27,12 +28,13 @@ class MainPageButton : public IButton
     char* _value;
 
     bool _invertOrder;
-    bool _highlighted;
 
     Font _labelFont;
     Font _valueFont;
 
     ButtonType _type;
+
+    ButtonState _currentState;
 
     // Color Defintions
     uint16_t labelTextColor;
@@ -60,7 +62,8 @@ class MainPageButton : public IButton
                    ButtonType type = ButtonType::VALUE_AND_LABEL) :
         _x(x),
         _y(y), _width(width), _labelHeight(20), _valueHeight(40), _label((char*)label), _value((char*)"..."),
-        _invertOrder(invertOrder), _labelFont(Font::FreeSans9pt7b), _valueFont(Font::FreeSans12pt7b), _type(type)
+        _invertOrder(invertOrder), _labelFont(Font::FreeSans9pt7b), _valueFont(Font::FreeSans12pt7b), _type(type),
+        _currentState(ButtonState::Default)
     {
         currentLabelTextColor = labelTextColor = (uint16_t)Color565::White;
         currentLabelBackgroundColor = labelBackgroundColor = (uint16_t)Color565::Black;
@@ -69,8 +72,6 @@ class MainPageButton : public IButton
 
         backgroundHighlightColor = (uint16_t)Color565::AXIOM_Orange;
         textHighlightColor = (uint16_t)Color565::Black;
-
-        _highlighted = false;
     }
 
     void Draw(IPainter* painter) override
@@ -169,7 +170,7 @@ class MainPageButton : public IButton
 
     void SetHighlighted(bool highlighted)
     {
-        _highlighted = highlighted;
+        _currentState = highlighted ? ButtonState::Highlighted : ButtonState::Default;
         if (highlighted)
         {
             currentLabelTextColor = textHighlightColor;

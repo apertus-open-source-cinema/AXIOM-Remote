@@ -2,6 +2,7 @@
 #define IMAGEBUTTON_H
 
 #include "IButton.h"
+#include "ButtonState.h"
 #include "../Painter/Painter.h"
 
 #include "Icon.h"
@@ -18,7 +19,7 @@ class ImageButton : public IButton
     const char* _label;
 
     uint8_t _cornerRadius;
-    bool _highlighted;
+    ButtonState _state;
 
     // Color Defintions
     uint16_t _textColor;
@@ -41,9 +42,25 @@ class ImageButton : public IButton
 
     ButtonStyle _buttonStyle;
 
+    void UpdateCurrentColors()
+    {
+        if (_state == ButtonState::Highlighted)
+        {
+            _currentImageColor = _imageHighlightColor;
+            _currentBackgroundColor = _backgroundHighlightColor;
+            _currentTextColor = _textHighlightColor;
+
+        } else
+        {
+            _currentImageColor = _imageColor;
+            _currentBackgroundColor = _backgroundColor;
+            _currentTextColor = _textColor;
+        }
+    }
+
   public:
     explicit ImageButton(const Icon* icon, uint16_t x = 0, uint16_t y = 0, uint16_t width = 0, uint16_t height = 0) :
-        IButton(x, y, width, height), _image(icon), _cornerRadius(3), _highlighted(false),
+        IButton(x, y, width, height), _image(icon), _cornerRadius(3), _state(ButtonState::Default),
         _imageColor((uint16_t)Color565::Black), _currentImageColor(_imageColor),
         _backgroundHighlightColor((uint16_t)Color565::AXIOM_Blue),
         _currentBackgroundColor(utils::RGB565(220, 220, 220)), _backgroundColor(utils::RGB565(220, 220, 220)),
@@ -112,54 +129,43 @@ class ImageButton : public IButton
     void SetBackgroundColor(uint16_t color)
     {
         _backgroundColor = color;
-        SetHighlighted(_highlighted);
+        UpdateCurrentColors();
     }
 
     void SetImageColor(uint16_t color)
     {
         _imageColor = color;
-        SetHighlighted(_highlighted);
+        UpdateCurrentColors();
     }
 
     void SetTextColor(uint16_t color)
     {
         _textColor = color;
-        SetHighlighted(_highlighted);
+        UpdateCurrentColors();
     }
 
     void SetHighlightBackgroundColor(uint16_t color)
     {
         _backgroundHighlightColor = color;
-        SetHighlighted(_highlighted);
+        UpdateCurrentColors();
     }
 
     void SetHighlightImageColor(uint16_t color)
     {
         _imageHighlightColor = color;
-        SetHighlighted(_highlighted);
+        UpdateCurrentColors();
     }
 
     void SetHighlightTextColor(uint16_t color)
     {
         _textHighlightColor = color;
-        SetHighlighted(_highlighted);
+        UpdateCurrentColors();
     }
 
     void SetHighlighted(bool highlighted)
     {
-        _highlighted = highlighted;
-        if (highlighted)
-        {
-            _currentImageColor = _imageHighlightColor;
-            _currentBackgroundColor = _backgroundHighlightColor;
-            _currentTextColor = _textHighlightColor;
-
-        } else
-        {
-            _currentImageColor = _imageColor;
-            _currentBackgroundColor = _backgroundColor;
-            _currentTextColor = _textColor;
-        }
+        _state = highlighted ? ButtonState::Highlighted : ButtonState::Default;
+        UpdateCurrentColors();
     }
 };
 
