@@ -3,7 +3,6 @@
 #define MAINPAGEBUTTON_H
 
 #include "IButton.h"
-#include "ButtonState.h"
 #include "../Painter/Painter.h"
 
 #include "../Color565.h"
@@ -34,21 +33,27 @@ class MainPageButton : public IButton
 
     ButtonType _type;
 
-    ButtonState _currentState;
-
     // Color Defintions
-    uint16_t labelTextColor;
-    uint16_t labelBackgroundColor;
-    uint16_t valueTextColor;
-    uint16_t valueBackgroundColor;
 
-    uint16_t textHighlightColor;
-    uint16_t backgroundHighlightColor;
+    enum Colors : uint8_t
+    {
+        LabelText = 0,
+        LabelBackground = 1,
+        ValueText = 2,
+        ValueBackground = 2,
+    };
+    // uint16_t labelTextColor;
+    // uint16_t labelBackgroundColor;
+    // uint16_t valueTextColor;
+    // uint16_t valueBackgroundColor;
 
-    uint16_t currentLabelTextColor;
-    uint16_t currentLabelBackgroundColor;
-    uint16_t currentValueTextColor;
-    uint16_t currentValueBackgroundColor;
+    // uint16_t textHighlightColor;
+    // uint16_t backgroundHighlightColor;
+
+    // uint16_t currentLabelTextColor;
+    // uint16_t currentLabelBackgroundColor;
+    // uint16_t currentValueTextColor;
+    // uint16_t currentValueBackgroundColor;
 
     // bool _hideValue;
 
@@ -62,16 +67,15 @@ class MainPageButton : public IButton
                    ButtonType type = ButtonType::VALUE_AND_LABEL) :
         _x(x),
         _y(y), _width(width), _labelHeight(20), _valueHeight(40), _label((char*)label), _value((char*)"..."),
-        _invertOrder(invertOrder), _labelFont(Font::FreeSans9pt7b), _valueFont(Font::FreeSans12pt7b), _type(type),
-        _currentState(ButtonState::Default)
+        _invertOrder(invertOrder), _labelFont(Font::FreeSans9pt7b), _valueFont(Font::FreeSans12pt7b), _type(type)
     {
-        currentLabelTextColor = labelTextColor = (uint16_t)Color565::White;
-        currentLabelBackgroundColor = labelBackgroundColor = (uint16_t)Color565::Black;
-        currentValueTextColor = valueTextColor = (uint16_t)Color565::Black;
-        currentValueBackgroundColor = valueBackgroundColor = (uint16_t)Color565::White;
+        SetColor(ButtonState::Default, Colors::LabelText, static_cast<uint16_t>(Color565::White));
+        SetColor(ButtonState::Default, Colors::LabelBackground, static_cast<uint16_t>(Color565::Black));
+        SetColor(ButtonState::Default, Colors::ValueText, static_cast<uint16_t>(Color565::Black));
+        SetColor(ButtonState::Default, Colors::ValueBackground, static_cast<uint16_t>(Color565::White));
 
-        backgroundHighlightColor = (uint16_t)Color565::AXIOM_Orange;
-        textHighlightColor = (uint16_t)Color565::Black;
+        SetColor(ButtonState::Highlighted, Colors::ValueBackground, static_cast<uint16_t>(Color565::AXIOM_Orange));
+        SetColor(ButtonState::Highlighted, Colors::ValueText, static_cast<uint16_t>(Color565::Black));
     }
 
     void Draw(IPainter* painter) override
@@ -103,24 +107,28 @@ class MainPageButton : public IButton
 
     void DrawButton(IPainter* painter)
     {
-        painter->DrawFillRoundRectangle(_x, _y, _width, _labelHeight, 3, currentLabelBackgroundColor);
+        // const uint16_t current[] = GetCurrentColor();
+        painter->DrawFillRoundRectangle(_x, _y, _width, _labelHeight, 3, GetCurrentColor(Colors::LabelBackground));
         painter->SetFont(_labelFont);
-        painter->DrawText(_x, _y + 24, _label, currentLabelTextColor, TextAlign::TEXT_ALIGN_CENTER, _width);
+        painter->DrawText(_x, _y + 24, _label, GetCurrentColor(Colors::LabelText), TextAlign::TEXT_ALIGN_CENTER,
+                          _width);
     }
 
     void DrawLabelBox(IPainter* painter, int8_t verticaloffset, int8_t verticaltextoffset)
     {
-        painter->DrawFillRoundRectangle(_x, _y + verticaloffset, _width, _labelHeight, 3, currentLabelBackgroundColor);
+        painter->DrawFillRoundRectangle(_x, _y + verticaloffset, _width, _labelHeight, 3,
+                                        GetCurrentColor(Colors::LabelBackground));
         painter->SetFont(_labelFont);
-        painter->DrawText(_x, _y + verticaloffset + verticaltextoffset, _label, currentLabelTextColor,
+        painter->DrawText(_x, _y + verticaloffset + verticaltextoffset, _label, GetCurrentColor(Colors::LabelText),
                           TextAlign::TEXT_ALIGN_CENTER, _width);
     }
 
     void DrawValueBox(IPainter* painter, int8_t verticaloffset, int8_t verticaltextoffset)
     {
-        painter->DrawFillRoundRectangle(_x, _y + verticaloffset, _width, _valueHeight, 3, currentValueBackgroundColor);
+        painter->DrawFillRoundRectangle(_x, _y + verticaloffset, _width, _valueHeight, 3,
+                                        GetCurrentColor(Colors::ValueBackground));
         painter->SetFont(_valueFont);
-        painter->DrawText(_x, _y + verticaloffset + verticaltextoffset, _value, currentValueTextColor,
+        painter->DrawText(_x, _y + verticaloffset + verticaltextoffset, _value, GetCurrentColor(Colors::ValueText),
                           TextAlign::TEXT_ALIGN_CENTER, _width);
     }
 
@@ -167,24 +175,6 @@ class MainPageButton : public IButton
     {
         _labelHeight = height;
     }
-
-    void SetHighlighted(bool highlighted)
-    {
-        _currentState = highlighted ? ButtonState::Highlighted : ButtonState::Default;
-        if (highlighted)
-        {
-            currentLabelTextColor = textHighlightColor;
-            currentLabelBackgroundColor = backgroundHighlightColor;
-            currentValueTextColor = valueBackgroundColor;
-            currentValueBackgroundColor = valueTextColor;
-        } else
-        {
-            currentLabelTextColor = labelTextColor;
-            currentLabelBackgroundColor = labelBackgroundColor;
-            currentValueTextColor = valueTextColor;
-            currentValueBackgroundColor = valueBackgroundColor;
-        }
-    };
 };
 
 #endif /* MAINPAGEBUTTON_H */

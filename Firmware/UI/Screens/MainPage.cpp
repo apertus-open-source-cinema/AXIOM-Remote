@@ -81,45 +81,45 @@ void MainPage::Update(Button button, int8_t knob, IMenuSystem* menuSystem)
     {
     case Button::BUTTON_1_UP:
         _fpsButton.SetValue((char*)"1U");
-        _fpsButton.SetHighlighted(false);
+        _fpsButton.SetState(ButtonState::Default);
         break;
     case Button::BUTTON_1_DOWN:
         _fpsButton.SetValue((char*)"1D");
-        _fpsButton.SetHighlighted(true);
+        _fpsButton.SetState(ButtonState::Highlighted);
         break;
     case Button::BUTTON_2_UP:
         //_fpsButton.SetValue((char*)"2");
-        _analogGainButton.SetHighlighted(false);
+        _analogGainButton.SetState(ButtonState::Default);
         _analogGainButton.Activate(this);
         // _usbDevice->Send((uint8_t*)"Button 2\r\n", 10);
         break;
     case Button::BUTTON_2_DOWN:
-        _analogGainButton.SetHighlighted(true);
+        _analogGainButton.SetState(ButtonState::Highlighted);
         break;
     case Button::BUTTON_3_UP:
         //_fpsButton.SetValue((char*)"3");
-        _digitalGainButton.SetHighlighted(false);
+        _digitalGainButton.SetState(ButtonState::Default);
         _digitalGainButton.Activate(this);
         break;
     case Button::BUTTON_3_DOWN:
         _fpsButton.SetValue((char*)"3");
-        _digitalGainButton.SetHighlighted(true);
+        _digitalGainButton.SetState(ButtonState::Highlighted);
         break;
     case Button::BUTTON_4_UP:
         //_menuButton.Activate(this);
-        _menuButton.SetHighlighted(false);
+        _menuButton.SetState(ButtonState::Default);
         menuSystem->SetCurrentScreen(AvailableScreens::MainMenu);
         break;
     case Button::BUTTON_4_DOWN:
-        _menuButton.SetHighlighted(true);
+        _menuButton.SetState(ButtonState::Highlighted);
         break;
     case Button::BUTTON_6_UP:
         //_menuButton.Activate(this);
-        _whiteBalanceButton.SetHighlighted(false);
+        _whiteBalanceButton.SetState(ButtonState::Default);
         menuSystem->SetCurrentScreen(AvailableScreens::WhiteBalance);
         break;
     case Button::BUTTON_6_DOWN:
-        _whiteBalanceButton.SetHighlighted(true);
+        _whiteBalanceButton.SetState(ButtonState::Highlighted);
         break;
     default:
         break;
