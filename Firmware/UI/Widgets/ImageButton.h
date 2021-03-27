@@ -19,20 +19,8 @@ class ImageButton : public IButton
     const char* _label;
 
     uint8_t _cornerRadius;
-    ButtonState _state;
 
-    // Color Defintions
-    uint16_t _textColor;
-    uint16_t _imageColor;
-    uint16_t _backgroundColor;
-
-    uint16_t _textHighlightColor;
-    uint16_t _imageHighlightColor;
-    uint16_t _backgroundHighlightColor;
-
-    uint16_t _currentTextColor;
-    uint16_t _currentImageColor;
-    uint16_t _currentBackgroundColor;
+    // Color Definitions
 
     uint8_t _imagePositionX;
     uint8_t _textPositionX;
@@ -42,30 +30,20 @@ class ImageButton : public IButton
 
     ButtonStyle _buttonStyle;
 
-    void UpdateCurrentColors()
-    {
-        if (_state == ButtonState::Highlighted)
-        {
-            _currentImageColor = _imageHighlightColor;
-            _currentBackgroundColor = _backgroundHighlightColor;
-            _currentTextColor = _textHighlightColor;
-
-        } else
-        {
-            _currentImageColor = _imageColor;
-            _currentBackgroundColor = _backgroundColor;
-            _currentTextColor = _textColor;
-        }
-    }
-
   public:
-    explicit ImageButton(const Icon* icon, uint16_t x = 0, uint16_t y = 0, uint16_t width = 0, uint16_t height = 0) :
-        IButton(x, y, width, height), _image(icon), _cornerRadius(3), _state(ButtonState::Default),
-        _imageColor((uint16_t)Color565::Black), _currentImageColor(_imageColor),
-        _backgroundHighlightColor((uint16_t)Color565::AXIOM_Blue),
-        _currentBackgroundColor(utils::RGB565(220, 220, 220)), _backgroundColor(utils::RGB565(220, 220, 220)),
-        _buttonStyle(ButtonStyle::Icon)
+    enum Colors : uint8_t
     {
+        Text = 0,
+        Background = 1,
+        Image = 2,
+    };
+
+    explicit ImageButton(const Icon* icon, uint16_t x = 0, uint16_t y = 0, uint16_t width = 0, uint16_t height = 0) :
+        IButton(x, y, width, height), _image(icon), _cornerRadius(3), _buttonStyle(ButtonStyle::Icon)
+    {
+        SetColor(ButtonState::Default, Colors::Image, static_cast<uint16_t>(Color565::Black));
+        SetColor(ButtonState::Default, Colors::Background, utils::RGB565(220, 220, 220));
+        SetColor(ButtonState::Highlighted, Colors::Background, static_cast<uint16_t>(Color565::AXIOM_Blue));
         _totalWidth = _image->Width;
         _textPositionY = _height / 2;
         _imagePositionX = _width / 2 - _totalWidth / 2;
@@ -105,7 +83,7 @@ class ImageButton : public IButton
 
     virtual void Draw(IPainter* painter) override
     {
-        painter->DrawFillRoundRectangle(_x, _y, _width, _height, _cornerRadius, _currentBackgroundColor);
+        painter->DrawFillRoundRectangle(_x, _y, _width, _height, _cornerRadius, GetCurrentColor(Colors::Background));
 
         if (_buttonStyle == ButtonStyle::IconAndText)
         {
@@ -116,56 +94,15 @@ class ImageButton : public IButton
             _textPositionY +=
                 painter->GetCurrentFontHeight() / 2; // TODO: This should not be recalculated with every redraw
 
-            painter->DrawIcon(_image, _x + _imagePositionX, _y + _height / 2 - _image->Height / 2, _currentImageColor);
-            painter->DrawText(_x + _textPositionX, _y + _textPositionY, _label, _currentTextColor,
+            painter->DrawIcon(_image, _x + _imagePositionX, _y + _height / 2 - _image->Height / 2,
+                              GetCurrentColor(Colors::Image));
+            painter->DrawText(_x + _textPositionX, _y + _textPositionY, _label, GetCurrentColor(Colors::Text),
                               TextAlign::TEXT_ALIGN_LEFT, strlen(_label));
         } else if (_buttonStyle == ButtonStyle::Icon)
         {
             painter->DrawIcon(_image, _x + _width / 2 - _image->Width / 2, _y + _height / 2 - _image->Height / 2,
-                              _currentImageColor);
+                              GetCurrentColor(Colors::Image));
         }
-    }
-
-    void SetBackgroundColor(uint16_t color)
-    {
-        _backgroundColor = color;
-        UpdateCurrentColors();
-    }
-
-    void SetImageColor(uint16_t color)
-    {
-        _imageColor = color;
-        UpdateCurrentColors();
-    }
-
-    void SetTextColor(uint16_t color)
-    {
-        _textColor = color;
-        UpdateCurrentColors();
-    }
-
-    void SetHighlightBackgroundColor(uint16_t color)
-    {
-        _backgroundHighlightColor = color;
-        UpdateCurrentColors();
-    }
-
-    void SetHighlightImageColor(uint16_t color)
-    {
-        _imageHighlightColor = color;
-        UpdateCurrentColors();
-    }
-
-    void SetHighlightTextColor(uint16_t color)
-    {
-        _textHighlightColor = color;
-        UpdateCurrentColors();
-    }
-
-    void SetHighlighted(bool highlighted)
-    {
-        _state = highlighted ? ButtonState::Highlighted : ButtonState::Default;
-        UpdateCurrentColors();
     }
 };
 
