@@ -61,11 +61,6 @@ class IButton : public IWidget
         return _colors[static_cast<uint8_t>(_currentState)][index];
     }
 
-    // uint16_t[_colorsPerState] GetCurrentColors()
-    // {
-    //     return _colors[static_cast<uint8_t>(_currentState)];
-    // }
-
     void SetState(ButtonState state)
     {
         // TODO: checks to see if valid transition, transition function?
