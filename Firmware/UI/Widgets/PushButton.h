@@ -17,12 +17,6 @@ class PushButton : public IButton
     static constexpr uint8_t _colorsPerState = 2;
     uint16_t colors[_stateCount * _colorsPerState];
 
-  protected:
-    uint16_t* GetStatePtr() override
-    {
-        return colors;
-    }
-
   public:
     enum Colors : uint8_t
     {

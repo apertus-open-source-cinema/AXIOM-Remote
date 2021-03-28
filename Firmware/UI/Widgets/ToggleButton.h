@@ -26,12 +26,6 @@ class ToggleButton : public IButton
     const char* _label;
     const Icon* _checkboxIcon;
 
-  protected:
-    uint16_t* GetStatePtr() override
-    {
-        return nullptr;
-    }
-
   public:
     explicit ToggleButton(const char* label, uint16_t x = 0, uint16_t y = 0, uint16_t width = 0, uint16_t height = 0) :
         IButton(0, 0, nullptr, x, y, width, height), _label(label), _cornerRadius(3), _highlighted(false),

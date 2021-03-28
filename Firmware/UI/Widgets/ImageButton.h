@@ -33,12 +33,6 @@ class ImageButton : public IButton
 
     ButtonStyle _buttonStyle;
 
-  protected:
-    uint16_t* GetStatePtr() override
-    {
-        return colors;
-    }
-
   public:
     enum Colors : uint8_t
     {

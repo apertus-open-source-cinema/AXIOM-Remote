@@ -26,18 +26,15 @@ class IButton : public IWidget
     // to allow for correct sizes
 
     uint16_t* _colors;
-    const uint8_t _colorsPerState; // Should really be const.
-    const uint8_t _stateCount;     // See above.
+    const uint8_t _colorsPerState;
+    const uint8_t _stateCount;
+    ButtonState _currentState;
 
     // index: every derived class is supposed to define its own enum for colorMeanings
     uint8_t Index(ButtonState state, uint8_t index)
     {
         return static_cast<uint8_t>(state) * _colorsPerState + index;
     }
-
-  protected:
-    ButtonState _currentState;
-    virtual uint16_t* GetStatePtr() = 0;
 
   public:
     // TODO: add startState to constructor?
@@ -77,11 +74,6 @@ class IButton : public IWidget
     void SetState(ButtonState state)
     {
         _currentState = state;
-    }
-
-    ButtonState GetState()
-    {
-        return _currentState;
     }
 };
 

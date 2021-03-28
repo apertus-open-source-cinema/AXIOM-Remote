@@ -40,11 +40,6 @@ class MainPageButton : public IButton
     uint16_t colors[_stateCount * _colorsPerState];
 
     // bool _hideValue;
-  protected:
-    uint16_t* GetStatePtr() override
-    {
-        return colors;
-    }
 
   public:
     enum Colors : uint8_t
