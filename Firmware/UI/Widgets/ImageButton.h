@@ -2,7 +2,6 @@
 #define IMAGEBUTTON_H
 
 #include "IButton.h"
-#include "ButtonState.h"
 #include "../Painter/Painter.h"
 
 #include "Icon.h"

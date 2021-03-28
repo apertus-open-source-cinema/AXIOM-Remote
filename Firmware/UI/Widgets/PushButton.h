@@ -4,7 +4,6 @@
 #include <cstring>
 
 #include "IButton.h"
-#include "ButtonState.h"
 #include "../Painter/Painter.h"
 
 class PushButton : public IButton
