@@ -16,6 +16,7 @@ enum class ButtonState : uint8_t
     Highlighted = 1,
     Disabled = 2,
 };
+
 class IButton : public IWidget
 {
     // void* -> sender, e.g. MainPage
@@ -23,15 +24,22 @@ class IButton : public IWidget
 
     // Might want to move these three into implementers instead,
     // to allow for correct sizes
-    static constexpr uint8_t _colorsPerState = 4;
-    static constexpr uint8_t _stateCount = 3;
-    uint16_t _colors[_stateCount][_colorsPerState];
+
+    uint16_t* _colors;
+    uint8_t _colorsPerState; // Should really be const.
+    uint8_t _stateCount;     // See above.
+
+  protected:
     ButtonState _currentState;
+    virtual uint16_t* GetStatePtr() = 0;
 
   public:
     // TODO: add startState to constructor?
-    IButton(uint16_t x = 0, uint16_t y = 0, uint16_t width = 0, uint16_t height = 0) :
-        IWidget(x, y, width, height), _handlerPtr(nullptr), _currentState(ButtonState::Default)
+    IButton(uint8_t stateCount, uint8_t colorsPerState, uint16_t* colorPointer, uint16_t x = 0, uint16_t y = 0,
+            uint16_t width = 0, uint16_t height = 0) :
+        IWidget(x, y, width, height),
+        _handlerPtr(nullptr), _currentState(ButtonState::Default), _colors(colorPointer),
+        _colorsPerState(colorsPerState), _stateCount(colorsPerState)
     {
     }
 
@@ -45,26 +53,35 @@ class IButton : public IWidget
         _handlerPtr(sender);
     }
 
-    // index: every subclass is supposed to define own enum for colorMeanings
+    // index: every derived class is supposed to define its own enum for colorMeanings
+
+    uint8_t Index(ButtonState state, uint8_t index)
+    {
+        return static_cast<uint8_t>(state) * _colorsPerState + index;
+    }
     void SetColor(ButtonState state, uint8_t index, uint16_t color)
     {
-        _colors[static_cast<uint8_t>(state)][index] = color;
+        _colors[static_cast<uint8_t>(state) * _colorsPerState + index] = color;
     }
 
     uint16_t GetColor(ButtonState state, uint8_t index)
     {
-        return _colors[static_cast<uint8_t>(state)][index];
+        return GetStatePtr()[static_cast<uint8_t>(state) * _colorsPerState + index];
     }
 
     uint16_t GetCurrentColor(uint8_t index)
     {
-        return _colors[static_cast<uint8_t>(_currentState)][index];
+        return GetColor(_currentState, index);
     }
 
     void SetState(ButtonState state)
     {
-        // TODO: checks to see if valid transition, transition function?
         _currentState = state;
+    }
+
+    ButtonState GetState()
+    {
+        return _currentState;
     }
 };
 

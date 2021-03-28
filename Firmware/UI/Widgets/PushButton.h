@@ -13,6 +13,15 @@ class PushButton : public IButton
     uint8_t _cornerRadius;
 
     // Color Defintions
+    static constexpr uint8_t _stateCount = 3;
+    static constexpr uint8_t _colorsPerState = 2;
+    uint16_t colors[_stateCount * _colorsPerState];
+
+  protected:
+    uint16_t* GetStatePtr() override
+    {
+        return colors;
+    }
 
   public:
     enum Colors : uint8_t
@@ -22,7 +31,7 @@ class PushButton : public IButton
     };
 
     explicit PushButton(const char* label, uint16_t x = 0, uint16_t y = 0, uint16_t width = 0, uint16_t height = 0) :
-        IButton(x, y, width, height), _label(label), _cornerRadius(3)
+        IButton(_stateCount, _colorsPerState, colors, x, y, width, height), _label(label), _cornerRadius(3)
     {
         SetColor(ButtonState::Default, Colors::Text, (uint16_t)Color565::Black);
         SetColor(ButtonState::Default, Colors::Background, (uint16_t)utils::RGB565(220, 220, 220));

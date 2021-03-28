@@ -35,38 +35,35 @@ class MainPageButton : public IButton
 
     // Color Defintions
 
+    static constexpr uint8_t _stateCount = 3;
+    static constexpr uint8_t _colorsPerState = 4;
+    uint16_t colors[_stateCount * _colorsPerState];
+
+    // bool _hideValue;
+  protected:
+    uint16_t* GetStatePtr() override
+    {
+        return colors;
+    }
+
+  public:
     enum Colors : uint8_t
     {
         LabelText = 0,
         LabelBackground = 1,
         ValueText = 2,
-        ValueBackground = 2,
+        ValueBackground = 3,
     };
-    // uint16_t labelTextColor;
-    // uint16_t labelBackgroundColor;
-    // uint16_t valueTextColor;
-    // uint16_t valueBackgroundColor;
 
-    // uint16_t textHighlightColor;
-    // uint16_t backgroundHighlightColor;
-
-    // uint16_t currentLabelTextColor;
-    // uint16_t currentLabelBackgroundColor;
-    // uint16_t currentValueTextColor;
-    // uint16_t currentValueBackgroundColor;
-
-    // bool _hideValue;
-
-  public:
-    MainPageButton() : IButton()
+    MainPageButton() : IButton(_stateCount, _colorsPerState, colors)
     {
     }
 
     // TODO: Check if customizable height is required for this button, if yes, add it later
     MainPageButton(uint16_t x, uint16_t y, uint16_t width, const char* label = "...", bool invertOrder = false,
                    ButtonType type = ButtonType::VALUE_AND_LABEL) :
-        _x(x),
-        _y(y), _width(width), _labelHeight(20), _valueHeight(40), _label((char*)label), _value((char*)"..."),
+        IButton(_stateCount, _colorsPerState, colors),
+        _x(x), _y(y), _width(width), _labelHeight(20), _valueHeight(40), _label((char*)label), _value((char*)"..."),
         _invertOrder(invertOrder), _labelFont(Font::FreeSans9pt7b), _valueFont(Font::FreeSans12pt7b), _type(type)
     {
         SetColor(ButtonState::Default, Colors::LabelText, static_cast<uint16_t>(Color565::White));
@@ -107,11 +104,9 @@ class MainPageButton : public IButton
 
     void DrawButton(IPainter* painter)
     {
-        // const uint16_t current[] = GetCurrentColor();
-        painter->DrawFillRoundRectangle(_x, _y, _width, _labelHeight, 3, GetCurrentColor(Colors::LabelBackground));
+        painter->DrawFillRoundRectangle(_x, _y, _width, _labelHeight, 3, colors[Colors::LabelBackground]);
         painter->SetFont(_labelFont);
-        painter->DrawText(_x, _y + 24, _label, GetCurrentColor(Colors::LabelText), TextAlign::TEXT_ALIGN_CENTER,
-                          _width);
+        painter->DrawText(_x, _y + 24, _label, colors[Colors::LabelText], TextAlign::TEXT_ALIGN_CENTER, _width);
     }
 
     void DrawLabelBox(IPainter* painter, int8_t verticaloffset, int8_t verticaltextoffset)

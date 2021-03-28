@@ -21,6 +21,9 @@ class ImageButton : public IButton
     uint8_t _cornerRadius;
 
     // Color Definitions
+    static constexpr uint8_t _stateCount = 3;
+    static constexpr uint8_t _colorsPerState = 3;
+    uint16_t colors[_stateCount * _colorsPerState];
 
     uint8_t _imagePositionX;
     uint8_t _textPositionX;
@@ -29,6 +32,12 @@ class ImageButton : public IButton
     uint8_t _labelWidth;
 
     ButtonStyle _buttonStyle;
+
+  protected:
+    uint16_t* GetStatePtr() override
+    {
+        return colors;
+    }
 
   public:
     enum Colors : uint8_t
@@ -39,7 +48,8 @@ class ImageButton : public IButton
     };
 
     explicit ImageButton(const Icon* icon, uint16_t x = 0, uint16_t y = 0, uint16_t width = 0, uint16_t height = 0) :
-        IButton(x, y, width, height), _image(icon), _cornerRadius(3), _buttonStyle(ButtonStyle::Icon)
+        IButton(_stateCount, _colorsPerState, colors, x, y, width, height), _image(icon), _cornerRadius(3),
+        _buttonStyle(ButtonStyle::Icon)
     {
         SetColor(ButtonState::Default, Colors::Image, static_cast<uint16_t>(Color565::Black));
         SetColor(ButtonState::Default, Colors::Background, utils::RGB565(220, 220, 220));
