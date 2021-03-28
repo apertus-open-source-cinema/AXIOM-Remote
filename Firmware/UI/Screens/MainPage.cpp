@@ -4,7 +4,11 @@
 #include "../MenuSystem.h"
 
 // TODO: Add assignment of menu system to IMenu
-MainPage::MainPage(IUSBDevice* cdcDevice) : IMenu(cdcDevice), _backgroundColor(Color565::MenuBackground)
+MainPage::MainPage(IUSBDevice* cdcDevice) :
+    IMenu(cdcDevice), _backgroundColor(Color565::MenuBackground), _fpsButton(10, 0, 90, "FPS", false),
+    _analogGainButton(115, 0, 90, "A. Gain", false), _digitalGainButton(220, 0, 90, "D. Gain", false),
+    _menuButton(10, 210, 90, "MENU", true, ButtonType::BUTTON), _shutterButton(115, 179, 90, "Shutter", true),
+    _whiteBalanceButton(220, 179, 90, "WB", true)
 {
     SetupButtons();
 }
@@ -12,22 +16,15 @@ MainPage::MainPage(IUSBDevice* cdcDevice) : IMenu(cdcDevice), _backgroundColor(C
 void MainPage::SetupButtons()
 {
     // Top row
-    _fpsButton = MainPageButton(10, 0, 90, "FPS", false);
 
-    _analogGainButton = MainPageButton(115, 0, 90, "A. Gain", false);
     _analogGainButton.SetHandler(&AnalogGainButtonHandler);
 
-    _digitalGainButton = MainPageButton(220, 0, 90, "D. Gain", false),
     _digitalGainButton.SetHandler(&DigitalGainButtonHandler);
 
     // Bottom row
-    _menuButton = MainPageButton(10, 210, 90, "MENU", true, ButtonType::BUTTON);
     _menuButton.SetLabelHeight(30);
     _menuButton.SetLabelFont(Font::FreeSans12pt7b);
     _menuButton.SetHandler(&MenuButtonHandler);
-
-    _shutterButton = MainPageButton(115, 179, 90, "Shutter", true);
-    _whiteBalanceButton = MainPageButton(220, 179, 90, "WB", true);
 }
 
 Color565 MainPage::GetBackgroundColor()
