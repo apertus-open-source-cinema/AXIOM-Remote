@@ -26,8 +26,14 @@ class IButton : public IWidget
     // to allow for correct sizes
 
     uint16_t* _colors;
-    uint8_t _colorsPerState; // Should really be const.
-    uint8_t _stateCount;     // See above.
+    const uint8_t _colorsPerState; // Should really be const.
+    const uint8_t _stateCount;     // See above.
+
+    // index: every derived class is supposed to define its own enum for colorMeanings
+    uint8_t Index(ButtonState state, uint8_t index)
+    {
+        return static_cast<uint8_t>(state) * _colorsPerState + index;
+    }
 
   protected:
     ButtonState _currentState;
@@ -53,20 +59,14 @@ class IButton : public IWidget
         _handlerPtr(sender);
     }
 
-    // index: every derived class is supposed to define its own enum for colorMeanings
-
-    uint8_t Index(ButtonState state, uint8_t index)
-    {
-        return static_cast<uint8_t>(state) * _colorsPerState + index;
-    }
     void SetColor(ButtonState state, uint8_t index, uint16_t color)
     {
-        _colors[static_cast<uint8_t>(state) * _colorsPerState + index] = color;
+        _colors[Index(state, index)] = color;
     }
 
     uint16_t GetColor(ButtonState state, uint8_t index)
     {
-        return GetStatePtr()[static_cast<uint8_t>(state) * _colorsPerState + index];
+        return _colors[Index(state, index)];
     }
 
     uint16_t GetCurrentColor(uint8_t index)
