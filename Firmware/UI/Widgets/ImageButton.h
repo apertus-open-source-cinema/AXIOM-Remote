@@ -23,7 +23,7 @@ class ImageButton : public IButton
     // Color Definitions
     static constexpr uint8_t _stateCount = 3;
     static constexpr uint8_t _colorsPerState = 3;
-    uint16_t colors[_stateCount * _colorsPerState];
+    uint16_t _colors[_stateCount * _colorsPerState];
 
     uint8_t _imagePositionX;
     uint8_t _textPositionX;
@@ -42,7 +42,7 @@ class ImageButton : public IButton
     };
 
     explicit ImageButton(const Icon* icon, uint16_t x = 0, uint16_t y = 0, uint16_t width = 0, uint16_t height = 0) :
-        IButton(_stateCount, _colorsPerState, colors, x, y, width, height), _image(icon), _cornerRadius(3),
+        IButton(_stateCount, _colorsPerState, _colors, x, y, width, height), _image(icon), _cornerRadius(3),
         _buttonStyle(ButtonStyle::Icon)
     {
         SetColor(ButtonState::Default, Colors::Image, static_cast<uint16_t>(Color565::Black));

@@ -37,7 +37,7 @@ class MainPageButton : public IButton
 
     static constexpr uint8_t _stateCount = 3;
     static constexpr uint8_t _colorsPerState = 4;
-    uint16_t colors[_stateCount * _colorsPerState];
+    uint16_t _colors[_stateCount * _colorsPerState];
 
     // bool _hideValue;
 
@@ -50,14 +50,14 @@ class MainPageButton : public IButton
         ValueBackground = 3,
     };
 
-    MainPageButton() : IButton(_stateCount, _colorsPerState, colors)
+    MainPageButton() : IButton(_stateCount, _colorsPerState, _colors)
     {
     }
 
     // TODO: Check if customizable height is required for this button, if yes, add it later
     MainPageButton(uint16_t x, uint16_t y, uint16_t width, const char* label = "...", bool invertOrder = false,
                    ButtonType type = ButtonType::VALUE_AND_LABEL) :
-        IButton(_stateCount, _colorsPerState, colors),
+        IButton(_stateCount, _colorsPerState, _colors),
         _x(x), _y(y), _width(width), _labelHeight(20), _valueHeight(40), _label((char*)label), _value((char*)"..."),
         _invertOrder(invertOrder), _labelFont(Font::FreeSans9pt7b), _valueFont(Font::FreeSans12pt7b), _type(type)
     {
@@ -99,9 +99,10 @@ class MainPageButton : public IButton
 
     void DrawButton(IPainter* painter)
     {
-        painter->DrawFillRoundRectangle(_x, _y, _width, _labelHeight, 3, colors[Colors::LabelBackground]);
+        painter->DrawFillRoundRectangle(_x, _y, _width, _labelHeight, 3, GetCurrentColor(Colors::LabelBackground));
         painter->SetFont(_labelFont);
-        painter->DrawText(_x, _y + 24, _label, colors[Colors::LabelText], TextAlign::TEXT_ALIGN_CENTER, _width);
+        painter->DrawText(_x, _y + 24, _label, GetCurrentColor(Colors::LabelText), TextAlign::TEXT_ALIGN_CENTER,
+                          _width);
     }
 
     void DrawLabelBox(IPainter* painter, int8_t verticaloffset, int8_t verticaltextoffset)
