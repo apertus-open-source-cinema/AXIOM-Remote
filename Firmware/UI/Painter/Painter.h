@@ -68,6 +68,7 @@ class Painter : public IPainter
     virtual void DrawText(uint16_t x, uint16_t y, const char* text, uint16_t color, TextAlign align,
                           uint16_t textblockwidth) override;
     uint8_t GetCurrentFontHeight() override;
+    Font GetCurrentFont() override;
 };
 
 #endif /* PAINTER_H */

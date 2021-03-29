@@ -10,7 +10,7 @@
 
 enum class Font
 {
-    FreeSans9pt7b = 1,
+    FreeSans9pt7b = 0,
     FreeSans12pt7b,
     FreeSans18pt7b,
     FreeSans24pt7b
@@ -28,7 +28,7 @@ struct FontInfo{
     uint8_t fontHeight;
 };
 
-FontInfo fontList[4] = {
+inline FontInfo fontList[4] = {
     { FreeSans9pt7b, 13 },
     { FreeSans12pt7b, 17 },
     { FreeSans18pt7b, 25 },

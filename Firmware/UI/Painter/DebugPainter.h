@@ -37,8 +37,8 @@ class DebugPainter : public IDebugPainter
             return;
         }
 
-        uint16_t textWidth = utils::GetTextWidth(text);
-        uint16_t textHeight = utils::currentFontHeight;
+        uint16_t textWidth = utils::GetTextWidth(text, painter->GetCurrentFont());
+        uint16_t textHeight = painter->GetCurrentFontHeight();
 
         int16_t xOffset = 0;
 
