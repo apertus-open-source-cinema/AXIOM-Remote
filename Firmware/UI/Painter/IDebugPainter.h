@@ -3,8 +3,8 @@
 
 #include <stdint.h>
 
-#include "../../UtilsExtended.h"
-#include "../FontDefinitions.h"
+#include "../../Utils.h"
+
 
 class IPainter;
 
