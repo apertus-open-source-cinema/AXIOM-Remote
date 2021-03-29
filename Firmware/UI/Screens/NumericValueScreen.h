@@ -133,9 +133,9 @@ class NumericValueScreen : public IScreen
         DrawHeader(painter);
 
         // draw value
-        utils::SetFont(Font::FreeSans24pt7b);
+        painter->SetFont(Font::FreeSans24pt7b);
         uint8_t heightcenter = GlobalSettings::LCDHeight / 2;
-        uint8_t fontcenter = heightcenter + utils::currentFontHeight / 2;
+        uint8_t fontcenter = heightcenter + painter->GetCurrentFontHeight() / 2;
         char valuestring[8];
         sprintf(valuestring, "%d%s", _value, _suffix);
         painter->DrawText(0, fontcenter, valuestring, _textColor, TextAlign::TEXT_ALIGN_CENTER,
@@ -153,7 +153,7 @@ class NumericValueScreen : public IScreen
 
         // draw min Range
         char minvaluestring[8];
-        utils::SetFont(Font::FreeSans9pt7b);
+        painter->SetFont(Font::FreeSans9pt7b);
         sprintf(minvaluestring, "%d", _minRange);
         painter->DrawText(5, fontcenter, minvaluestring, _textColor, TextAlign::TEXT_ALIGN_LEFT, 0);
         painter->DrawLine(5, fontcenter, 5, fontcenter + 10, _textColor);
@@ -179,7 +179,7 @@ class NumericValueScreen : public IScreen
         painter->DrawFillRectangle(0, 0, GlobalSettings::LCDWidth, 30, (uint16_t)Color565::Black);
 
         //  header title
-        utils::SetFont(Font::FreeSans12pt7b);
+        painter->SetFont(Font::FreeSans12pt7b);
         painter->DrawText(0, 22, _header, (uint16_t)Color565::White, TextAlign::TEXT_ALIGN_CENTER,
                           GlobalSettings::LCDWidth);
 

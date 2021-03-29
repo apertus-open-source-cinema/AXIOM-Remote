@@ -1,50 +1,11 @@
 #include "Utils.h"
-#include "UI/GFXFont.h"
 #include "UI/FontDefinitions.h"
-
-#include "./Media/Fonts/FreeSans9pt7b.h"
-#include "./Media/Fonts/FreeSans12pt7b.h"
-#include "./Media/Fonts/FreeSans18pt7b.h"
-#include "./Media/Fonts/FreeSans24pt7b.h"
-
 
 namespace utils {
 
-inline GFXfont currentFont;
-inline uint8_t currentFontHeight;
-inline Font curFont;
-inline GFXfont fontList[4] = {
-    FreeSans9pt7b,
-    FreeSans12pt7b,
-    FreeSans18pt7b,
-    FreeSans24pt7b
-};
-
-inline void SetFont(Font font) {
-    curFont = font;
-    switch (font) {
-    case Font::FreeSans9pt7b:
-        currentFont = fontList[0];
-        currentFontHeight = 13;
-        break;
-    case Font::FreeSans12pt7b:
-        currentFont = fontList[1];
-        currentFontHeight = 17;
-        break;
-    case Font::FreeSans18pt7b:
-        currentFont = fontList[2];
-        currentFontHeight = 25;
-        break;
-    case Font::FreeSans24pt7b:
-        currentFont = fontList[3];
-        currentFontHeight = 33;
-        break;
-    }
-}
-
-inline uint8_t GetTextWidth(const char * text, Font font = curFont)
-{
-    SetFont(font);
+inline uint8_t GetTextWidth(const char * text, Font font)
+{   
+    GFXfont currentFont = fontList[(uint8_t)font].fontGFX;
     uint16_t width = 0;
     uint8_t gap;
     uint8_t xo1;

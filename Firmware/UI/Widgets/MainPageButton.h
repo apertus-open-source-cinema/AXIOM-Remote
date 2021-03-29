@@ -103,14 +103,14 @@ class MainPageButton : public IButton
     void DrawButton(IPainter* painter)
     {
         painter->DrawFillRoundRectangle(_x, _y, _width, _labelHeight, 3, currentLabelBackgroundColor);
-        utils::SetFont(_labelFont);
+        painter->SetFont(_labelFont);
         painter->DrawText(_x, _y + 24, _label, currentLabelTextColor, TextAlign::TEXT_ALIGN_CENTER, _width);
     }
 
     void DrawLabelBox(IPainter* painter, int8_t verticaloffset, int8_t verticaltextoffset)
     {
         painter->DrawFillRoundRectangle(_x, _y + verticaloffset, _width, _labelHeight, 3, currentLabelBackgroundColor);
-        utils::SetFont(_labelFont);
+        painter->SetFont(_labelFont);
         painter->DrawText(_x, _y + verticaloffset + verticaltextoffset, _label, currentLabelTextColor,
                           TextAlign::TEXT_ALIGN_CENTER, _width);
     }
@@ -118,7 +118,7 @@ class MainPageButton : public IButton
     void DrawValueBox(IPainter* painter, int8_t verticaloffset, int8_t verticaltextoffset)
     {
         painter->DrawFillRoundRectangle(_x, _y + verticaloffset, _width, _valueHeight, 3, currentValueBackgroundColor);
-        utils::SetFont(_valueFont);
+        painter->SetFont(_valueFont);
         painter->DrawText(_x, _y + verticaloffset + verticaltextoffset, _value, currentValueTextColor,
                           TextAlign::TEXT_ALIGN_CENTER, _width);
     }

@@ -18,7 +18,7 @@ Painter::Painter(volatile uint16_t* framebuffer, uint16_t framebufferWidth, uint
     _framebufferHeight(framebufferHeight), _cursorX(0), _cursorY(0), _debugPainter(nullptr)
 {
     // Default font
-    utils::SetFont(Font::FreeSans9pt7b);
+    SetFont(Font::FreeSans9pt7b);
 }
 
 void Painter::SetDebugOverlay(IDebugPainter* debugPainter)
@@ -26,6 +26,12 @@ void Painter::SetDebugOverlay(IDebugPainter* debugPainter)
     _debugPainter = debugPainter;
 }
 
+void Painter::SetFont(Font font)
+{
+    _currentFont = fontList[(uint8_t) font].fontGFX;
+    _currentFontHeight = fontList[(uint8_t) font].fontHeight;
+    _currentFontEnum = font;
+}
 
 void Painter::DrawLine(int16_t x0, int16_t y0, int16_t x1, int16_t y1, uint16_t color)
 {
@@ -310,8 +316,8 @@ void Painter::DrawIcon(const Icon* image, uint16_t x, uint16_t y, uint16_t color
 void Painter::DrawText(uint16_t x, uint16_t y, const char* text, uint16_t color, TextAlign align,
                        uint16_t textblockwidth)
 {
-    uint8_t first = utils::currentFont.first;
-    uint8_t last = utils::currentFont.last;
+    uint8_t first = _currentFont.first;
+    uint8_t last = _currentFont.last;
     uint8_t length = strlen(text);
     bool newline = false;
 
@@ -328,7 +334,7 @@ void Painter::DrawText(uint16_t x, uint16_t y, const char* text, uint16_t color,
 
     //}
 
-    uint16_t textPixelWidth = utils::GetTextWidth(text);
+    uint16_t textPixelWidth = utils::GetTextWidth(text, _currentFontEnum);
 
     // DrawFillRectangle(x, 0, textPixelWidth, 10, RGB565(255, 255, 0));
     // count++;
@@ -341,7 +347,7 @@ void Painter::DrawText(uint16_t x, uint16_t y, const char* text, uint16_t color,
 
         if (c == 32)
         { // space " " character
-            glyph = &utils::currentFont.glyph[32 - first];
+            glyph = &_currentFont.glyph[32 - first];
             _cursorX += glyph->xAdvance; //(uint8_t) pgm_read_byte(&glyph->xAdvance);
             newline = false;
 
@@ -376,7 +382,7 @@ void Painter::DrawText(uint16_t x, uint16_t y, const char* text, uint16_t color,
                 uint16_t next_wordframebuffer_width = 0;
                 for (j = 1; j <= next_space - 1; j++)
                 {
-                    glyph = &utils::currentFont.glyph[text[i + j] - first];
+                    glyph = &_currentFont.glyph[text[i + j] - first];
                     next_wordframebuffer_width += glyph->xAdvance;
                 }
 
@@ -404,16 +410,16 @@ void Painter::DrawText(uint16_t x, uint16_t y, const char* text, uint16_t color,
             if (c == 10)
         { // "\n" (LF) line feed - new line character
             _cursorX = x;
-            _cursorY += utils::currentFont.yAdvance;
+            _cursorY += _currentFont.yAdvance;
             newline = true;
         } else if (c == 13)
         { // "\r" (CR) carriage return character
             _cursorX = x;
-            _cursorY += utils::currentFont.yAdvance;
+            _cursorY += _currentFont.yAdvance;
             newline = true;
         } else if ((c >= first) && (c <= last))
         {
-            glyph = &utils::currentFont.glyph[c - first];
+            glyph = &_currentFont.glyph[c - first];
             uint8_t w = glyph->width, h = glyph->height;
             if ((w > 0) && (h > 0))
             { // Is there an associated bitmap?
@@ -468,9 +474,9 @@ void Painter::DrawText(uint16_t x, uint16_t y, const char* text, uint16_t color,
 
 void Painter::DrawCharacter(unsigned char character, int16_t x, int16_t y, uint16_t color)
 {
-    character -= utils::currentFont.first;
-    GFXglyph* glyph = &utils::currentFont.glyph[character];
-    uint8_t* bitmap = utils::currentFont.bitmap;
+    character -= _currentFont.first;
+    GFXglyph* glyph = &_currentFont.glyph[character];
+    uint8_t* bitmap = _currentFont.bitmap;
 
     uint16_t bo = glyph->bitmapOffset;
     uint8_t glyphWidth = glyph->width;
@@ -497,6 +503,11 @@ void Painter::DrawCharacter(unsigned char character, int16_t x, int16_t y, uint1
             bits <<= 1;
         }
     }
+}
+
+uint8_t Painter::GetCurrentFontHeight()
+{
+    return _currentFontHeight;
 }
 
 void Painter::DrawPixel(uint16_t x, uint16_t y, uint16_t color)

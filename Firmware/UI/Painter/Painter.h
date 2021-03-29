@@ -6,7 +6,6 @@
 #include "IPainter.h"
 #include "IDebugPainter.h"
 
-#include "../GFXFont.h"
 #include "../FontDefinitions.h"
 
 #include "../Color565.h"
@@ -14,7 +13,11 @@
 #include "../Widgets/Icon.h"
 
 class Painter : public IPainter
-{
+{   
+    GFXfont _currentFont;
+    uint8_t _currentFontHeight;
+    Font _currentFontEnum;
+
     uint16_t _cursorX;
     uint16_t _cursorY;
 
@@ -60,9 +63,11 @@ class Painter : public IPainter
     void Dim() override;
 
     // Text Related
+    void SetFont(Font font) override;
     void DrawCharacter(unsigned char c, int16_t x, int16_t y, uint16_t color) override;
     virtual void DrawText(uint16_t x, uint16_t y, const char* text, uint16_t color, TextAlign align,
                           uint16_t textblockwidth) override;
+    uint8_t GetCurrentFontHeight() override;
 };
 
 #endif /* PAINTER_H */

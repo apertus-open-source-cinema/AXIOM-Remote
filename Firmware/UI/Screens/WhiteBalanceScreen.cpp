@@ -42,7 +42,7 @@ void WhiteBalanceScreen::Drawheader(IPainter* painter)
     painter->DrawFillRectangle(0, 0, GlobalSettings::LCDWidth, 30, (uint16_t)Color565::Black);
 
     //  header title
-    utils::SetFont(Font::FreeSans12pt7b);
+    painter->SetFont(Font::FreeSans12pt7b);
     painter->DrawText(86, 22, "White Balance", (uint16_t)Color565::White, TextAlign::TEXT_ALIGN_LEFT, 0);
 
     // header separation lines
