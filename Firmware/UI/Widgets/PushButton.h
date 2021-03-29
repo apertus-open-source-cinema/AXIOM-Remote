@@ -12,7 +12,7 @@ class PushButton : public IButton
     uint8_t _cornerRadius;
     bool _highlighted;
 
-    // Color Definations
+    // Color Definitions
     uint16_t _TextColor;
     uint16_t _BackgroundColor;
 

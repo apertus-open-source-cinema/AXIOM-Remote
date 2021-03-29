@@ -5,7 +5,6 @@
 
 #include "../../Utils.h"
 
-
 class IPainter;
 
 class IDebugPainter
