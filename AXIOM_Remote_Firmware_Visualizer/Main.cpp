@@ -75,7 +75,7 @@ void Initialization(SDL_Window** window)
 
 void SetupGL(SDL_Window* window, SDL_GLContext& glContext)
 {
-    gl3wInit();
+    
 
     SDL_GL_SetAttribute(SDL_GL_CONTEXT_PROFILE_MASK, 0);
     SDL_GL_SetAttribute(SDL_GL_CONTEXT_MAJOR_VERSION, 3);
@@ -83,7 +83,10 @@ void SetupGL(SDL_Window* window, SDL_GLContext& glContext)
 
     glContext = SDL_GL_CreateContext(window);
     SDL_GL_MakeCurrent(window, glContext);
-
+    
+    gl3wInit();
+    GLenum error = glGetError();
+    std::cout<< error << "\n";
     // Set black background
     glClearColor(0, 0, 0, 1);
 
