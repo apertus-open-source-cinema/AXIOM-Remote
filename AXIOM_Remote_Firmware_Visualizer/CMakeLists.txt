@@ -9,12 +9,16 @@ set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wall -Wextra -pedantic")
 set(CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH} "${CMAKE_SOURCE_DIR}/cmake/")
 find_package(SDL2 REQUIRED)
 find_package(SDL2_image REQUIRED)
+
 # Fix for ArchLinux, see https://bbs.archlinux.org/viewtopic.php?id=235931
-# if("${SDL2_LIBRARIES}" STREQUAL "")
-#     SET(SDL2_LIBRARIES SDL2::SDL2)
-# ELSE()
-#     string(STRIP "${SDL2_LIBRARIES}" SDL2_LIBRARIES)
-# ENDIF()
+if(NOT WIN32)
+    if("${SDL2_LIBRARIES}" STREQUAL "")
+        SET(SDL2_LIBRARIES SDL2::SDL2)
+    ELSE()
+        string(STRIP "${SDL2_LIBRARIES}" SDL2_LIBRARIES)
+    ENDIF()
+endif()
+
 include_directories(${SDL2_INCLUDE_DIRS} ${SDL2_image_INCLUDE_DIRS})
 
 INCLUDE_DIRECTORIES("${CMAKE_SOURCE_DIR}/..")
