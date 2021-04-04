@@ -85,8 +85,6 @@ void SetupGL(SDL_Window* window, SDL_GLContext& glContext)
     SDL_GL_MakeCurrent(window, glContext);
     
     gl3wInit();
-    GLenum error = glGetError();
-    std::cout<< error << "\n";
     // Set black background
     glClearColor(0, 0, 0, 1);
 
