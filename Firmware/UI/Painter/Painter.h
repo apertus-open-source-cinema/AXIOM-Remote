@@ -15,7 +15,6 @@
 #include "../Widgets/Icon.h"
 
 uint16_t GetColor(uint16_t foregroundColor, uint16_t backgroundColor, uint8_t color_bits);
-uint16_t LerpColor(uint16_t a, uint16_t b, float t);
 uint16_t AlphaBlend(uint16_t fg, uint16_t bg, uint8_t alpha);
 
 class Painter : public IPainter

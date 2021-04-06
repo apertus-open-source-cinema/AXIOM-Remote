@@ -337,24 +337,24 @@ void Painter::Draw2BitIcon(const Icon* image, uint16_t x, uint16_t y, uint16_t f
                            uint16_t backgroundColor, bool transparency)
 {
     // Note: Since icon is 2bit, Icon->Data should contain (Width * Height / 4) bytes.
-
     for (uint16_t yIndex = 0; yIndex < image->Height; yIndex++)
     {
         const uint16_t yPos = y + yIndex;
         for (uint16_t xIndex = 0; xIndex < image->Width; xIndex++)
         {
+            const uint16_t xPos = x + xIndex;
             const uint8_t currentByte = image->Data[(yIndex * image->Width + xIndex) >> 2];
             const uint8_t currentBitNumber = 2 * (xIndex & 0x3); // Where in the byte the current bits are stored.
-            const uint8_t colorBits = (currentByte >> currentBitNumber) & 0x3;
             // The representation of the current pixel in the Icon array.
+            const uint8_t colorBits = (currentByte >> currentBitNumber) & 0x3;
 
             // // Don't draw anything if it's already the correct color.
             if (!(transparency && colorBits == 0))
             {
-                const uint16_t bgColorToUse = transparency ? GetPixel(x + xIndex, yPos) : backgroundColor;
-                const uint16_t currentColor = GetColor(foregroundColor, bgColorToUse, colorBits);
+                const uint16_t bgColorToUse = transparency ? GetPixel(xPos, yPos) : backgroundColor;
+                const uint16_t newColor = GetColor(foregroundColor, bgColorToUse, colorBits);
 
-                DrawPixel(x + xIndex, yPos, currentColor);
+                DrawPixel(xPos, yPos, newColor);
             }
         }
     }
@@ -668,45 +668,42 @@ uint16_t GetColor(uint16_t foregroundColor, uint16_t backgroundColor, uint8_t co
         return AlphaBlend(foregroundColor, backgroundColor, 178);
     case 0x1:
         return AlphaBlend(foregroundColor, backgroundColor, 76);
-    case 0x0:
-        return backgroundColor;
     default:
         return backgroundColor;
     }
 }
 
-uint16_t LerpColor(uint16_t a, uint16_t b, float t)
-{
-    const uint8_t a_r = (a >> 8) & 0xF8;
-    const uint8_t a_g = (a >> 3) & 0xFC;
-    const uint8_t a_b = (a << 3) & 0xF8;
-    const uint8_t b_r = (b >> 8) & 0xF8;
-    const uint8_t b_g = (b >> 3) & 0xFC;
-    const uint8_t b_b = (b << 3) & 0xF8;
-    return RGB565(Lerp(a_r, b_r, t), Lerp(a_g, b_g, t), Lerp(a_b, b_b, t));
-}
-
+/* fg: The foreground color
+ * bg: The background color
+ * alpha: how much of the foreground color that should be used: 0-255
+ * returns: a blended color between foreground and background
+ */
 uint16_t AlphaBlend(uint16_t fg, uint16_t bg, uint8_t alpha)
 {
-    // https://stackoverflow.com/a/19068028
-    constexpr uint16_t maskRB = 63519;
-    constexpr uint16_t maskG = 2016;
-    constexpr uint32_t maskMulRB = 4065216; // 0b1111100000011111000000
-    constexpr uint32_t maskMulG = 129024;   // 0b0000011111100000000000
-    constexpr uint16_t maxAlpha = 64;       // 6bits+1 with rounding
+    // Source: https://stackoverflow.com/a/19068028
+    constexpr uint16_t maskRB = 63519U;      // 0b1111100000011111, the red and blue bits
+    constexpr uint16_t maskG = 2016U;        // 0b0000011111100000, the green bits
+    constexpr uint32_t maskMulRB = 4065216U; // 0b1111100000011111000000, the red and blue bits after multiplication
+    constexpr uint32_t maskMulG = 129024U;   // 0b0000011111100000000000, the green bits after multiplication
+    constexpr uint16_t maxAlpha = 64U;       // 6bits+1 with rounding: [0, 64]
+    /* Explanation of "6 bits + 1":
+     * If alpha > 6 bits, the blue bits get shifted into the red part
+     * This is only fine if all of the red bits have been shifted further,
+     * ie. only when alpha = 0b1_000_000
+     * Hence 6 bits + 1.
+     */
 
-    // alpha for foreground multiplication
-    // convert from 8bit to (6bit+1) with rounding
-    // will be in [0..64] inclusive
-
-    alpha = (alpha + 2) >> 2;
-    // "beta" for background multiplication; (6bit+1);
-    // will be in [0..64] inclusive
+    alpha = (alpha + 2) >> 2; // convert from 8bit to (6bit+1) with rounding
     const uint8_t beta = maxAlpha - alpha;
-    // so (0..64)*alpha + (0..64)*beta always in 0..64
-    const uint32_t rb =
-        (alpha * static_cast<uint32_t>((fg & maskRB)) + beta * static_cast<uint32_t>(bg & maskRB)) & maskMulRB;
-    const uint32_t g = (alpha * (fg & maskG) + beta * (bg & maskG)) & maskMulG;
 
-    return (rb | g) >> 6;
+    // The trick here is to perform the computations on the red and blue channels
+    // together, since there is no risk of bit overlap.
+    const uint32_t foreRB = static_cast<uint32_t>(fg & maskRB);
+    const uint32_t backRB = static_cast<uint32_t>(bg & maskRB);
+    const uint32_t redBlue = (alpha * foreRB + beta * backRB) & maskMulRB;
+    const uint32_t foreG = fg & maskG;
+    const uint32_t backG = bg & maskG;
+    const uint32_t green = (alpha * foreG + beta * backG) & maskMulG;
+
+    return (redBlue | green) >> 6; // divide by maxAlpha
 }
