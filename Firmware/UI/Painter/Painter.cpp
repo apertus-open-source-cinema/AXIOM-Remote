@@ -358,6 +358,10 @@ void Painter::Draw2BitIcon(const Icon* image, uint16_t x, uint16_t y, uint16_t f
             }
         }
     }
+    if (_debugPainter != nullptr)
+    {
+        _debugPainter->DrawIcon(this, image, x, y, foregroundColor);
+    }
 }
 
 // uint8_t count = 0;
