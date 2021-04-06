@@ -13,8 +13,6 @@
 
 #include "../Widgets/Icon.h"
 
-uint16_t GetColor(uint16_t foregroundColor, uint16_t backgroundColor, uint8_t color_bits);
-
 class Painter : public IPainter
 {
     GFXfont _fontList[4];
@@ -64,6 +62,7 @@ class Painter : public IPainter
     uint16_t ProcessByte(uint8_t data, uint16_t x, uint16_t xIndex, uint16_t yPos, uint16_t height, uint16_t color);
     virtual void Draw2BitIcon(const Icon* image, uint16_t x, uint16_t y, uint16_t foregroundColor,
                               uint16_t backgroundColor, bool transparency) override;
+    uint16_t GetColor(uint16_t foregroundColor, uint16_t backgroundColor, uint8_t color_bits);
     uint16_t GetPixel(uint16_t x, uint16_t y);
     void Fill(uint16_t fillColor) override;
     void Dim() override;

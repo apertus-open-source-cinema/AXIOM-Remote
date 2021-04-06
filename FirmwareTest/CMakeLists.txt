@@ -14,7 +14,8 @@ FILE(GLOB FIRMWARE_SOURCES "${CMAKE_CURRENT_SOURCE_DIR}/../Firmware/UI/*.cpp"
                            "${CMAKE_CURRENT_SOURCE_DIR}/../Firmware/Attribute.cpp"
                            "${CMAKE_CURRENT_SOURCE_DIR}/../Firmware/CentralDB.cpp"
                            "${CMAKE_CURRENT_SOURCE_DIR}/../Firmware/CentralDBObserver.cpp"
-                           "${CMAKE_CURRENT_SOURCE_DIR}/../Firmware/GlobalSettings.cpp")
+                           "${CMAKE_CURRENT_SOURCE_DIR}/../Firmware/GlobalSettings.cpp"
+                           "${CMAKE_CURRENT_SOURCE_DIR}/../Firmware/Utils.cpp")
 
 SET(TEST_SOURCES Main.cpp PainterTest.cpp MenuSystemTest.cpp CentralDBObserverTest.cpp)
 

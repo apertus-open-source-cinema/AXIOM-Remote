@@ -661,7 +661,7 @@ uint16_t Painter::GetPixel(uint16_t x, uint16_t y)
     return _framebuffer[y * _framebufferWidth + x];
 }
 
-uint16_t GetColor(uint16_t foregroundColor, uint16_t backgroundColor, uint8_t color_bits)
+uint16_t Painter::GetColor(uint16_t foregroundColor, uint16_t backgroundColor, uint8_t color_bits)
 {
     // TODO: add support for custom Lerp-points for 0x2 and 0x1
     switch (color_bits)
