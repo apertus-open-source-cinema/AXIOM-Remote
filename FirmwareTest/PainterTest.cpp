@@ -291,3 +291,13 @@ TEST_CASE("Alpha blend test, use half of each")
     uint16_t constexpr bg = 0xFFFF;
     REQUIRE(AlphaBlend(fg, bg, 128) == (0xF | (0x1F << 5) | (0xF << 11)));
 }
+
+TEST_CASE("GetColor test")
+{
+    uint16_t constexpr fg = 0x0;
+    uint16_t constexpr bg = 0xFFFF;
+    REQUIRE(GetColor(fg, bg, 0b00) == bg);
+    REQUIRE(GetColor(fg, bg, 0b01) == AlphaBlend(fg, bg, lowLerpThres));
+    REQUIRE(GetColor(fg, bg, 0b10) == AlphaBlend(fg, bg, highLerpThres));
+    REQUIRE(GetColor(fg, bg, 0b11) == fg);
+}

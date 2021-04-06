@@ -10,18 +10,19 @@ constexpr uint16_t Test2BitBGColor = 0x22;
 constexpr uint16_t Test2BitFGColor = 0x111;
 constexpr uint16_t Test2BitTransparentColor = 0x0;
 
-constexpr float lowLerpThres = 0.3;
-constexpr float highLerpThres = 0.7;
+constexpr uint8_t lowLerpThres = 76U;
+constexpr uint8_t highLerpThres = 178U;
 
 const std::map<uint8_t, uint16_t> noTransmapping{{0x0, Test2BitBGColor},
-                                                 {0x1, AlphaBlend(Test2BitBGColor, Test2BitFGColor, 178)},
-                                                 {0x2, AlphaBlend(Test2BitBGColor, Test2BitFGColor, 76)},
+                                                 {0x1, AlphaBlend(Test2BitFGColor, Test2BitBGColor, lowLerpThres)},
+                                                 {0x2, AlphaBlend(Test2BitFGColor, Test2BitBGColor, highLerpThres)},
                                                  {0x3, Test2BitFGColor}};
 
-const std::map<uint8_t, uint16_t> withTransMapping{{0x0, Test2BitTransparentColor},
-                                                   {0x1, AlphaBlend(Test2BitTransparentColor, Test2BitFGColor, 178)},
-                                                   {0x2, AlphaBlend(Test2BitTransparentColor, Test2BitFGColor, 76)},
-                                                   {0x3, Test2BitFGColor}};
+const std::map<uint8_t, uint16_t> withTransMapping{
+    {0x0, Test2BitTransparentColor},
+    {0x1, AlphaBlend(Test2BitFGColor, Test2BitTransparentColor, lowLerpThres)},
+    {0x2, AlphaBlend(Test2BitFGColor, Test2BitTransparentColor, highLerpThres)},
+    {0x3, Test2BitFGColor}};
 
 // The Test2Icon, with each pixel stored as an element.
 // Makes it easier to check the results.
