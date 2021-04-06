@@ -2,7 +2,6 @@
 #define IPAINTER_H
 
 #include <stdint.h>
-#include <array>
 
 #include "../FontDefinitions.h"
 
