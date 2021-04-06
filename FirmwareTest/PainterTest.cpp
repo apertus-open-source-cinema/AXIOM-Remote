@@ -270,3 +270,24 @@ TEST_CASE("Draw2BitIcon() test, with transparency")
     REQUIRE(check == true);
     REQUIRE(count == height * width);
 }
+
+TEST_CASE("Alpha blend test, use only foreground")
+{
+    uint16_t constexpr fg = static_cast<uint16_t>(Color565::AXIOM_Blue);
+    uint16_t constexpr bg = static_cast<uint16_t>(Color565::Green);
+    REQUIRE(AlphaBlend(fg, bg, 255) == fg);
+}
+
+TEST_CASE("Alpha blend test, use only background")
+{
+    uint16_t constexpr fg = static_cast<uint16_t>(Color565::AXIOM_Blue);
+    uint16_t constexpr bg = static_cast<uint16_t>(Color565::Green);
+    REQUIRE(AlphaBlend(fg, bg, 0) == bg);
+}
+
+TEST_CASE("Alpha blend test, use half of each")
+{
+    uint16_t constexpr fg = 0x0;
+    uint16_t constexpr bg = 0xFFFF;
+    REQUIRE(AlphaBlend(fg, bg, 128) == (0xF | (0x1F << 5) | (0xF << 11)));
+}
