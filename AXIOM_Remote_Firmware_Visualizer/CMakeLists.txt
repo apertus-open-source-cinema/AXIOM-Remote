@@ -32,7 +32,8 @@ FILE(GLOB FIRMWARE_SOURCES "${CMAKE_CURRENT_SOURCE_DIR}/../Firmware/UI/*.cpp"
                            "${CMAKE_CURRENT_SOURCE_DIR}/../Firmware/Attribute.cpp"
                            "${CMAKE_CURRENT_SOURCE_DIR}/../Firmware/CentralDB.cpp"
                            "${CMAKE_CURRENT_SOURCE_DIR}/../Firmware/CentralDBObserver.cpp"
-                           "${CMAKE_CURRENT_SOURCE_DIR}/../Firmware/GlobalSettings.cpp")
+                           "${CMAKE_CURRENT_SOURCE_DIR}/../Firmware/GlobalSettings.cpp"
+                           "${CMAKE_CURRENT_SOURCE_DIR}/../Firmware/Utils.cpp")
 MESSAGE(STATUS "Firmware files: ${FIRMWARE_SOURCES}")
 
 #FILE(GLOB BOOTLOADER_SOURCES "${CMAKE_CURRENT_SOURCE_DIR}/../Bootloader/Periphery/USB/*.cpp")

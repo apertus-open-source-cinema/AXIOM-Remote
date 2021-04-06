@@ -27,6 +27,8 @@ static inline int8_t LimitRange(int8_t in, int8_t min, int8_t max)
 
 namespace utils
 {
+uint16_t AlphaBlend(uint16_t fg, uint16_t bg, uint8_t alpha);
+
 inline void CopyString(char* destination, const char* source, const size_t max_size)
 {
     memset(destination, 0, max_size);
