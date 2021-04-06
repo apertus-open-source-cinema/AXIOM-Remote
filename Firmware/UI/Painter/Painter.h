@@ -2,7 +2,6 @@
 #define PAINTER_H
 
 #include <stdint.h>
-#include <array>
 
 #include "IPainter.h"
 #include "IDebugPainter.h"

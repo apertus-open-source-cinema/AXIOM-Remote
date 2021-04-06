@@ -1,8 +1,6 @@
 #ifndef MAINPAGE_H
 #define MAINPAGE_H
 
-#include <array>
-
 #include "IMenu.h"
 #include "../Painter/Painter.h"
 
