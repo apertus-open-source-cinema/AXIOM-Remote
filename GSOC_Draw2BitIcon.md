@@ -20,11 +20,25 @@ with fixed values representing `0x1` and `0x2`, respectively.
 
 #### Helpers  
 
-* `AlphaBlend (Painter.cpp)`: Linear interpolation between two colors.
-* `Painter::GetPixel (Painter.cpp)`: Helper to get the
+* `Utils::AlphaBlend (Utils.cpp)`: Linear interpolation between two colors.
+* `Painter.GetPixel (Painter.cpp)`: Helper to get the
   current color at a point in the framebuffer. 
-  This currenly doesn't do any bounds checking.
-* `GetColor (Painter.cpp)`: Maps a 2Bit representation of a Pixel to a color.
+  This currently does not do any bounds checking.
+* `Painter.GetColor (Painter.cpp)`: Maps a 2Bit representation of a Pixel to a color.
+
+I put `AlphaBlend` in to `Utils`, because it's a very generic function,
+useful whenever colors are being handled.
+To be able to declare this function without `static inline`,
+I split the declaration and definition.  
+I modified the `CMakeLists.txt` files for the visualizer and the
+tests to account for this.
+
+`GetColor()` doesn't need to be in the Painter class, 
+as it's just a helper which doesn't require access to any `Painter` internals.  
+However, because all helper function seem to be placed inside the class,
+I did this with `GetColor()` too.  
+This will also make it easier to modify the values for the Alpha blending
+in the future.
 
 #### The function itself
 
