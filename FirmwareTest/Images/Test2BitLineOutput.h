@@ -2,7 +2,6 @@
 #define TEST_2_BIT_LINE_OUTPUT_H
 
 #include <stdint.h>
-#include <array>
 #include <map>
 #include "../../Firmware/Utils.h"
 
