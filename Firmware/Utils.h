@@ -39,11 +39,10 @@ inline void CopyString(char* destination, const char* source, const size_t max_s
     }
     strncpy(destination, source, len);
 }
-inline uint8_t GetTextWidth(const char * text, Font font)
+static inline uint8_t GetTextWidth(const char * text, Font font)
 {   
     GFXfont currentFont = fontList[(uint8_t)font].fontGFX;
     uint16_t width = 0;
-    uint8_t gap;
     uint8_t xo1;
     bool first_letter = true;
 
@@ -58,10 +57,8 @@ inline uint8_t GetTextWidth(const char * text, Font font)
         }
 
         GFXglyph *glyph = &currentFont.glyph[text[i] - first];
-        uint8_t gw = glyph -> width;
         uint8_t xa = glyph -> xAdvance;
         int8_t xo = glyph -> xOffset;
-        gap = xa - gw - xo;
         width += xa;
 
         if (first_letter) {

@@ -28,7 +28,7 @@ struct FontInfo{
     uint8_t fontHeight;
 };
 
-FontInfo fontList[4] = {
+static FontInfo fontList[4] = {
     { FreeSans9pt7b, 13 },
     { FreeSans12pt7b, 17 },
     { FreeSans18pt7b, 25 },
