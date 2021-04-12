@@ -30,9 +30,9 @@ to initialize it.
   <a href = "https://www.libsdl.org/release/SDL2-devel-2.0.14-mingw.tar.gz"> Download Link of SDL2 for Minimalist GNU for Windows  </a> <br>
   <a href = "https://www.libsdl.org/projects/SDL_image/release/SDL2_image-devel-2.0.5-mingw.tar.gz"> Download Link of SDL2_image for Minimalist GNU for Windows  </a> <br>
 * In the extracted folder of ***SDL2***, ***SDL2_image*** search for folder with your compiler name and copy all the content inside it (**include**,**bin** and **lib** folder)<br>
-  *For the above downloaded Minimalist GNU compiler,the folder named is ```x86_64-w64-mingw32```* <br>
+  ***For the above downloaded Minimalist GNU compiler,the folder named is*** ```x86_64-w64-mingw32```* <br>
 * Paste the copied content, into your installed compiler directories (both x86 and x64)<br>
-  *For the above downloaded Minimalist GNU compiler, compiler directories are as follows,* <br>
+  ***For the above downloaded Minimalist GNU compiler, compiler directories are as follows,*** <br>
   ```ProgramFiles\mingw-w64\x86_64-8.1.0-posix-seh-rt_v6-rev0\mingw64```<br>
   ```ProgramFiles\mingw-w64\x86_64-8.1.0-posix-seh-rt_v6-rev0\mingw64\x86_64-w64-mingw32```
 
