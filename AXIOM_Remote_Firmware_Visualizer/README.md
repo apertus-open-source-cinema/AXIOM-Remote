@@ -32,14 +32,8 @@ to initialize it.
   *For the above downloaded Minimalist GNU compiler,the folder named is ```x86_64-w64-mingw32```* <br>
 * Paste the copied content, into your installed compiler directories (both x86 and x64)<br>
   *For the above downloaded Minimalist GNU compiler, compiler directories are as follows,* <br>
-  ```mingw-w64\x86_64-8.1.0-posix-seh-rt_v6-rev0\mingw64```<br>
-  ```mingw-w64\x86_64-8.1.0-posix-seh-rt_v6-rev0\mingw64\x86_64-w64-mingw32```
-
-
-
-
-
-  
+  ```Program Files\mingw-w64\x86_64-8.1.0-posix-seh-rt_v6-rev0\mingw64```<br>
+  ```Program Files\mingw-w64\x86_64-8.1.0-posix-seh-rt_v6-rev0\mingw64\x86_64-w64-mingw32```
 
 ## Running the Visualizer
 
