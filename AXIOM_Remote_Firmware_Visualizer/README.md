@@ -22,17 +22,17 @@ to initialize it.
 ### For Windows Build
 
 * Install cmake on windows <br>
-  <a href = "https://cmake.org/download/"> Download Link of Cmake for windows</a><br>
+  <a href = "https://cmake.org/download/"> Download link of cmake for windows</a><br>
 * Install a C++ compiler. <br>
-  <a href = "https://nchc.dl.sourceforge.net/project/mingw-w64/Toolchains%20targetting%20Win32/Personal%20Builds/mingw-builds/installer/mingw-w64-install.exe"> Download Link For Minimalist GNU for Windows </a> <br>
+  <a href = "https://nchc.dl.sourceforge.net/project/mingw-w64/Toolchains%20targetting%20Win32/Personal%20Builds/mingw-builds/installer/mingw-w64-install.exe"> Download link For Minimalist GNU for Windows </a> <br>
   ***Note: while installing, select x86_x64 Architecture, not i686***
 * Download SDL2 and SDL2_image library for your compiler, and extract the **tar.gz** file.  <br>
-  <a href = "https://www.libsdl.org/release/SDL2-devel-2.0.14-mingw.tar.gz"> Download Link of SDL2 for Minimalist GNU for Windows  </a> <br>
+  <a href = "https://www.libsdl.org/release/SDL2-devel-2.0.14-mingw.tar.gz"> Download link of SDL2 for Minimalist GNU for Windows  </a> <br>
   <a href = "https://www.libsdl.org/projects/SDL_image/release/SDL2_image-devel-2.0.5-mingw.tar.gz"> Download Link of SDL2_image for Minimalist GNU for Windows  </a> <br>
 * In the extracted folder of ***SDL2***, ***SDL2_image*** search for folder with your compiler name and copy all the content inside it (**include**,**bin** and **lib** folder)<br>
-  ***For the above downloaded Minimalist GNU compiler,the folder named is*** ```x86_64-w64-mingw32``` <br>
+  ***For the above downloaded Minimalist GNU compiler,the folder name is*** ```x86_64-w64-mingw32``` <br>
 * Paste the copied content, into your installed compiler directories (both x86 and x64)<br>
-  ***For the above downloaded Minimalist GNU compiler, compiler directories are as follows,*** <br>
+  ***For the above downloaded Minimalist GNU, compiler directories are as follows,*** <br>
   ```ProgramFiles\mingw-w64\x86_64-8.1.0-posix-seh-rt_v6-rev0\mingw64```<br>
   ```ProgramFiles\mingw-w64\x86_64-8.1.0-posix-seh-rt_v6-rev0\mingw64\x86_64-w64-mingw32```
 
