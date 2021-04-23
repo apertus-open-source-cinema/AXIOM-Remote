@@ -20,8 +20,8 @@ const unsigned char dev_desc[] = {
     0x00,       // bDeviceSubClass: unused
     0x00,       // bDeviceProtocol: unused
     0x40,       // bMaxPacketSize0: 64
-    0x66, 0x66, // idVendor: 0x6666
-    0x34, 0x12, // idProduct: 0x1234
+    0x09, 0x12, // idVendor: 0x6666
+    0x7E, 0xE0, // idProduct: 0x1234
     0x00, 0x01, // bcdDevice: 01.00
     0x01,       // iManufacturer
     0x02,       // iProduct
