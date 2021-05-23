@@ -43,7 +43,7 @@ for details see: LICENSE.txt
 
 [https://www.microchip.com/mplab/compilers](https://www.microchip.com/mplab/compilers). We have tested the code on v2.4.
 
-To be able to build, the variable **XC32_PATH** in the Makefile of firmware and bootloader has to be adjusted to the actual install path of XC32.
+To be able to build, the variables **XC32_PATH** and **GCC_PATH** in the Makefile of firmware and bootloader has to be adjusted to the actual install path of XC32 and gcc compiler of XC32.
 
 ### Bootloader
 
