@@ -1,6 +1,9 @@
 // MCU header
 //#include <xc.h>
 
+#include <cstdio>
+#include <cstring>
+
 // Configuration
 #include "Configuration/PIC32.h"
 
