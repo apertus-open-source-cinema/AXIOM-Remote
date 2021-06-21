@@ -3,10 +3,12 @@
 #include "../MenuDefinitions.h"
 #include "../ButtonDefinitions.h"
 
-#include "../../../Bootloader/Periphery/USB/IUSBDevice.h"
+//#include "Periphery/USB/IUSBDevice.h"
 #include "../IMenuSystem.h"
 
 #include "../../GlobalSettings.h"
+
+class IUSBDevice;
 
 WhiteBalanceScreen::WhiteBalanceScreen(IUSBDevice* usbDevice) :
     IScreen(usbDevice), _cancelButton("Cancel"), _addPresetButton("Add"), _setButton("Set")

@@ -28,6 +28,7 @@ inline int8_t LimitRange(int8_t in, int8_t min, int8_t max)
     return in;
 }
 
+// TODO: Check against methods shown at https://randomascii.wordpress.com/2013/04/03/stop-using-strncpy-already/
 inline void CopyString(char* destination, const char* source, const size_t max_size)
 {
     memset(destination, 0, max_size);

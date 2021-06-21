@@ -33,13 +33,13 @@ void CentralDB::Attach(CentralDBObserver* const observer)
 
 Attribute* CentralDB::GetAttribute(const Attribute::ID& attributeId)
 {
-    return std::find_if(std::begin(_attributes), std::end(_attributes),
+    return std::find_if(_attributes, _attributes + (uint8_t)Attribute::ID::NUM_ATTRIBUTES,
                         [&attributeId](const Attribute& attribute) { return attribute.GetId() == attributeId; });
 }
 
 const Attribute* CentralDB::GetAttribute(const Attribute::ID& attributeId) const
 {
-    return std::find_if(std::begin(_attributes), std::end(_attributes),
+    return std::find_if(_attributes, _attributes + (uint8_t)Attribute::ID::NUM_ATTRIBUTES,
                         [&attributeId](const Attribute& attribute) { return attribute.GetId() == attributeId; });
 }
 

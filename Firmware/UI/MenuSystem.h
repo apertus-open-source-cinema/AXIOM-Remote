@@ -9,12 +9,11 @@
 #include "Screens/MainMenu.h"
 #include "Screens/SettingsSubMenu1.h"
 #include "Screens/WhiteBalanceScreen.h"
-#include "../../Bootloader/Periphery/ILI9341/ILI9341Device.h"
-//#include "../CentralDB.h"
 
 class Painter;
 class IScreen;
 class IUSBDevice;
+class ILI9341Device;
 
 class MenuSystem : public IMenuSystem
 {

@@ -18,9 +18,7 @@
 
 #include "../../GlobalSettings.h"
 
-#include "../../../Bootloader/Periphery/USB/IUSBDevice.h"
-
-//#include <Helpers.h>
+class IUSBDevice;
 
 class MainMenu : public Menu
 {
@@ -34,7 +32,7 @@ class MainMenu : public Menu
     NumericMenuItem _funCount;
     NumericMenuItem _lcdBrightness;
 
-    //CentralDBObserver _lcdBrightnessObserver;
+    // CentralDBObserver _lcdBrightnessObserver;
 
     // just for testing for now
     MenuItem _menuItems[10];

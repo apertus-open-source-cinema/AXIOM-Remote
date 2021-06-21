@@ -14,7 +14,7 @@
 
 #include "../../GlobalSettings.h"
 
-#include "../../../Bootloader/Periphery/USB/IUSBDevice.h"
+#include "Periphery/USB/IUSBDevice.h"
 
 //#include <Helpers.h>
 
