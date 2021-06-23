@@ -134,6 +134,38 @@ example:
 
 The remote should use a timeout of `1s` for long running requests.
 
+## Exception handling
+
+On general exception (handlers for others are not implemented yet) the information about address and cause will be transmitted over UART. All values are in *hex* format.
+
+Example: GE EA:9D005988 C:0000000D
+
+### Fields
+
+| Name | Description       |
+| ---- | ----------------- |
+| GE   | General exception |
+| EA   | Exception address |
+| C    | cause             |
+
+### Causes
+
+TODO: Check chapter 7.1 in the PIC32 datasheet (column EXCCODE) and add missing ones, if required (https://ww1.microchip.com/downloads/en/DeviceDoc/60001191G.pdf)
+
+| Code (hex) | Description                              |
+| ---------- | ---------------------------------------- |
+| 0          | Interrupt                                |
+| 4          | Address error exception (load or ifetch) |
+| 5          | Address error exception (store)          |
+| 6          | Bus error (ifetch)                       |
+| 7          | Bus error (load/store)                   |
+| 8          | Syscall                                  |
+| 9          | Breakpoint                               |
+| A          | Reserved instruction                     |
+| B          | Coprocessor unusable                     |
+| C          | Arithmetic overflow                      |
+| D          | Trap (possible divide by zero)           |
+
 ## Interfacing with the East/West PIC16
 
 Two additional smaller PIC16 are used for handling push button, rotary encoder and LED IO.
