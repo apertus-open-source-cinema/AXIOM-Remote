@@ -23,6 +23,9 @@ jobs:
             cd Bootloader
             make -j8
       - run:
+          name: Create artifact folder
+          command: mkdir /tmp/artifacts
+      - run:
           name: Copy firmware artifacts
           command: |
             cd Firmware/build
@@ -36,9 +39,6 @@ jobs:
             mv AXIOM_Remote_Bootloader.hex AXIOM_Remote_Bootloader_${CIRCLE_BUILD_NUM}.hex
             md5sum AXIOM_Remote_Bootloader_${CIRCLE_BUILD_NUM}.hex > AXIOM_Remote_Bootloader_${CIRCLE_BUILD_NUM}.hex.md5
             cp *.hex *.md5 /tmp/artifacts
-      - run:
-          name: Create artifact folder
-          command: mkdir /tmp/artifacts
       - store_artifacts:
           path: /tmp/artifacts
   test:
