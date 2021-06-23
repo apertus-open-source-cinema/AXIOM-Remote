@@ -11,7 +11,7 @@
 #include "imgui_modules/imgui_impl_opengl3.h"
 #include "imgui_modules/imgui_impl_sdl.h"
 
-#include <CentralDBObserver.h>
+#include <CentralDB/CentralDBObserver.h>
 
 enum class Button;
 
