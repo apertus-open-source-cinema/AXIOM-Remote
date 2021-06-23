@@ -138,7 +138,10 @@ The remote should use a timeout of `1s` for long running requests.
 
 On general exception (handlers for others are not implemented yet) the information about address and cause will be transmitted over UART. All values are in *hex* format.
 
-Example: GE EA:9D005988 C:0000000D
+Example: 
+```
+GE EA:9D005988 C:0D
+```
 
 ### Fields
 

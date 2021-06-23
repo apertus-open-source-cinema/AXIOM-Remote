@@ -74,7 +74,7 @@ extern "C" void __attribute__((nomips16)) _general_exception_handler(void)
     uart2_str0("GE EA:");
     uart2_long(address);
     uart2_str0(" C:");
-    uart2_long(cause);
+    uart2_byte(cause);
     uart2_str0("\r\n");
 
     while (1)
