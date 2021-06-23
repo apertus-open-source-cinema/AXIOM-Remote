@@ -98,7 +98,8 @@ MEMORY
   /*kseg0_data_mem       (w!x)  : ORIGIN = 0x80000000 + 150K + 32K, LENGTH = 0x80000 - 150K - 32K*/
 }
 
-SECTIONS {
+SECTIONS 
+{
   /* LCD */
   framebuffer = ORIGIN(framebuffer_mem);
 
