@@ -1,6 +1,6 @@
 #include "catch2/catch.hpp"
 #include <iostream>
-#include "../Firmware/CentralDB.h"
+#include "../Firmware/CentralDB/CentralDB.h"
 
 static int num_callback_invocations = 0;
 

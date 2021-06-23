@@ -8,12 +8,15 @@ set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wall -Wextra -pedantic --coverage -fpro
 
 SET(CMAKE_EXE_LINKER_FLAGS "-fprofile-arcs -ftest-coverage")
 
+INCLUDE_DIRECTORIES("../Bootloader")
+
 FILE(GLOB FIRMWARE_SOURCES "${CMAKE_CURRENT_SOURCE_DIR}/../Firmware/UI/*.cpp"
                            "${CMAKE_CURRENT_SOURCE_DIR}/../Firmware/UI/Painter/*.cpp"
                            "${CMAKE_CURRENT_SOURCE_DIR}/../Firmware/UI/Screens/*.cpp"
                            "${CMAKE_CURRENT_SOURCE_DIR}/../Firmware/Attribute.cpp"
-                           "${CMAKE_CURRENT_SOURCE_DIR}/../Firmware/CentralDB.cpp"
-                           "${CMAKE_CURRENT_SOURCE_DIR}/../Firmware/CentralDBObserver.cpp"
+                           "${CMAKE_CURRENT_SOURCE_DIR}/../Firmware/CentralDB/Attribute.cpp"
+                           "${CMAKE_CURRENT_SOURCE_DIR}/../Firmware/CentralDB/CentralDB.cpp"
+                           "${CMAKE_CURRENT_SOURCE_DIR}/../Firmware/CentralDB/CentralDBObserver.cpp"
                            "${CMAKE_CURRENT_SOURCE_DIR}/../Firmware/GlobalSettings.cpp")
 
 SET(TEST_SOURCES Main.cpp PainterTest.cpp MenuSystemTest.cpp CentralDBObserverTest.cpp)
