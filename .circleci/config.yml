@@ -36,7 +36,7 @@ jobs:
             mv AXIOM_Remote_Bootloader.hex AXIOM_Remote_Bootloader_${CIRCLE_BUILD_NUM}.hex
             md5sum AXIOM_Remote_Bootloader_${CIRCLE_BUILD_NUM}.hex > AXIOM_Remote_Bootloader_${CIRCLE_BUILD_NUM}.hex.md5
             cp *.hex *.md5 /tmp/artifacts
-      -run:
+      - run:
           name: Create artifact folder
           command: mkdir /tmp/artifacts
       - store_artifacts:
