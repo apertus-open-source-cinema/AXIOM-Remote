@@ -149,7 +149,7 @@ GE EA:9D005988 C:0D
 | ---- | ----------------- |
 | GE   | General exception |
 | EA   | Exception address |
-| C    | cause             |
+| C    | Cause             |
 
 ### Causes
 
