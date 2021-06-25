@@ -44,10 +44,9 @@ class ImageButton : public IButton
   public:
     explicit ImageButton(const Icon* icon, uint16_t x = 0, uint16_t y = 0, uint16_t width = 0, uint16_t height = 0) :
         IButton(x, y, width, height), _image(icon), _cornerRadius(3), _highlighted(false),
-        _imageColor((uint16_t)Color565::Black), _currentImageColor(_imageColor),
-        _backgroundHighlightColor((uint16_t)Color565::AXIOM_Blue),
-        _currentBackgroundColor(utils::RGB565(220, 220, 220)), _backgroundColor(utils::RGB565(220, 220, 220)),
-        _buttonStyle(ButtonStyle::Icon)
+        _imageColor((uint16_t)Color565::Black), _backgroundColor(utils::RGB565(220, 220, 220)),
+        _backgroundHighlightColor((uint16_t)Color565::AXIOM_Blue), _currentImageColor(_imageColor),
+        _currentBackgroundColor(utils::RGB565(220, 220, 220)), _buttonStyle(ButtonStyle::Icon)
     {
         _totalWidth = _image->Width;
         _textPositionY = _height / 2;

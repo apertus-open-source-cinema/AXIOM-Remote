@@ -28,7 +28,7 @@ class ParameterListScreen : public IScreen
 
     int8_t _highlightIndex;       // which item in parameter men is currently highlighted
     int8_t _pressedIndex;         // which item in parameter men is currently pressed
-    uint8_t _previousOptionIndex; // this item is the "old" selected choice but remains in effcet until the parameter
+    uint8_t _previousOptionIndex; // this item is the "old" selected choice but remains in effect until the parameter
                                   // menu select has been completed
     uint8_t _optionCount;         // number of parameter menu entries
     char const* _optionLabels[64];
@@ -36,11 +36,11 @@ class ParameterListScreen : public IScreen
 
   public:
     explicit ParameterListScreen(IUSBDevice* usbDevice) :
-        IScreen(usbDevice), _cancelButton("Cancel"), _setButton("Set"), _header("Parameter Menu"),
-        _previousOptionIndex(0), _highlightIndex(0), _optionLineHeight(35), _backgroundColor((uint16_t)Color565::White),
-        _textColor((uint16_t)Color565::Black), _highlightColor((uint16_t)Color565::AXIOM_Orange),
-        _highlightTextColor((uint16_t)Color565::White), _backgroundPressedColor(utils::RGB565(0, 128, 255)),
-        _textPressedColor((uint16_t)Color565::White), _pressedIndex(-1)
+        IScreen(usbDevice), _header("Parameter Menu"), _cancelButton("Cancel"), _setButton("Set"),
+        _backgroundColor((uint16_t)Color565::White), _textColor((uint16_t)Color565::Black),
+        _highlightColor((uint16_t)Color565::AXIOM_Orange), _highlightTextColor((uint16_t)Color565::White),
+        _backgroundPressedColor(utils::RGB565(0, 128, 255)), _textPressedColor((uint16_t)Color565::White),
+        _highlightIndex(0), _pressedIndex(-1), _previousOptionIndex(0), _optionLineHeight(35)
     {
         //_cancelButton.SetHandler(&CancelButtonHandler);
         _bottomButtonBar.SetButton(ButtonPosition::Left, &_cancelButton);

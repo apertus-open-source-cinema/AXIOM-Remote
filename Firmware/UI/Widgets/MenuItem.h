@@ -29,6 +29,7 @@ class MenuItem : public IWidget
 {
   protected:
     CentralDB* _db;
+
     bool _disabled;
     bool _hidden;
     bool _pressed;
@@ -60,14 +61,14 @@ class MenuItem : public IWidget
     MenuItem(CentralDB* centralDB = nullptr, const char* label = "...", bool disabled = false,
              const char* value = nullptr, bool hidden = false, bool pressed = false, bool highlighted = false,
              MenuItemType type = MenuItemType::MENU_ITEM_TYPE_NONE) :
-        _disabled(disabled),
-        _hidden(hidden), _pressed(pressed), _highlighted(highlighted), _label(label), _value(value), _type(type),
-        _backgroundColor((uint16_t)Color565::White), _backgroundHighlightColor(utils::RGB565(255, 128, 0)),
-        _backgroundPressedColor(utils::RGB565(0, 128, 255)), _backgroundDisabledColor(utils::RGB565(180, 180, 180)),
-        _textColor((uint16_t)Color565::Black), _textHighlightColor((uint16_t)Color565::White),
-        _textPressedColor((uint16_t)Color565::White), _textDisabledColor(utils::RGB565(180, 180, 180)),
-        _currentBackgroundColor(_backgroundColor), _currentTextColor(_textColor), _verticalLabelOffset(20),
-        _db(centralDB), _handlerPtr(nullptr)
+        _db(centralDB),
+        _disabled(disabled), _hidden(hidden), _pressed(pressed), _highlighted(highlighted), _label(label),
+        _value(value), _type(type), _backgroundColor((uint16_t)Color565::White),
+        _backgroundHighlightColor(utils::RGB565(255, 128, 0)), _backgroundPressedColor(utils::RGB565(0, 128, 255)),
+        _backgroundDisabledColor(utils::RGB565(180, 180, 180)), _textColor((uint16_t)Color565::Black),
+        _textHighlightColor((uint16_t)Color565::White), _textPressedColor((uint16_t)Color565::White),
+        _textDisabledColor(utils::RGB565(180, 180, 180)), _currentBackgroundColor(_backgroundColor),
+        _currentTextColor(_textColor), _verticalLabelOffset(20), _handlerPtr(nullptr)
     {
         _x = 0;
         _y = 0;

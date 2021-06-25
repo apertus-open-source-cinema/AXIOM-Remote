@@ -31,8 +31,8 @@ class PopUpParameterMenu : public IWidget
 
   public:
     PopUpParameterMenu(uint16_t x, uint16_t y) :
-        IWidget(x, y, 0, 0), _backgroundColor(utils::RGB565(97, 92, 91)), _borderwidth(2), _choiceCount(1),
-        _highlightIndex(-1), _pressedIndex(-1), _horizontalTextMargin(10), _previousChoiceIndex(0)
+        IWidget(x, y, 0, 0), _backgroundColor(utils::RGB565(97, 92, 91)), _highlightIndex(-1), _pressedIndex(-1),
+        _previousChoiceIndex(0), _choiceCount(1), _borderwidth(2), _horizontalTextMargin(10)
     {
         _height = _borderwidth * 2 + _choiceCount * 30;
         SetHighlighted(0);

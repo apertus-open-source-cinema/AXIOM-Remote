@@ -20,9 +20,9 @@
     }
 
 Painter::Painter(volatile uint16_t* framebuffer, uint16_t framebufferWidth, uint8_t framebufferHeight) :
-    _framebuffer(framebuffer), _framebufferWidth(framebufferWidth),
-    _framebufferHeight(framebufferHeight), _fontList{FreeSans9pt7b, FreeSans12pt7b, FreeSans18pt7b, FreeSans24pt7b},
-    _cursorX(0), _cursorY(0), _debugPainter(nullptr)
+    _fontList{FreeSans9pt7b, FreeSans12pt7b, FreeSans18pt7b, FreeSans24pt7b}, _currentFont(FreeSans9pt7b),
+    _currentFontHeight(13), _cursorX(0), _cursorY(0), _debugPainter(nullptr), _framebuffer(framebuffer),
+    _framebufferWidth(framebufferWidth), _framebufferHeight(framebufferHeight)
 {
     // Default font
     SetFont(Font::FreeSans9pt7b);
@@ -536,7 +536,6 @@ uint8_t Painter::GetCurrentFontHeight()
 uint16_t Painter::GetStringFramebufferWidth(const char* str)
 {
     uint16_t width = 0;
-    uint8_t gap;
     uint8_t xo1;
     bool first_letter = true;
 
@@ -554,10 +553,10 @@ uint16_t Painter::GetStringFramebufferWidth(const char* str)
         }
 
         GFXglyph* glyph = &_currentFont.glyph[str[i] - first];
-        uint8_t gw = glyph->width;
+        // uint8_t gw = glyph->width;
         uint8_t xa = glyph->xAdvance;
         int8_t xo = glyph->xOffset;
-        gap = xa - gw - xo;
+        // uint8_t gap = xa - gw - xo;
         width += xa;
         // std::cout << "Glyph width: " << str << (uint16_t)xa << std::endl;
 

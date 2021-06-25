@@ -10,19 +10,21 @@ class IPainter;
 
 class NumericMenuItem : public MenuItem
 {
-    int16_t _previousValue; // this item is the "old" selected choice but remains in effcet until the new choice 
-                            // has been made
     int16_t _value;
+    int16_t _previousValue; // this item is the "old" selected choice but remains in effcet until the new choice
+                            // has been made
+
     int16_t _minRange;
     int16_t _maxRange;
-    char const* _suffix;
     int16_t _stepSize;
+
+    char const* _suffix;
 
   public:
     NumericMenuItem(CentralDB* centralDB = nullptr, const char* label = "", int16_t value = 0, int16_t minRange = 0,
                     int16_t maxRange = 100, int16_t stepsize = 1, const char* suffix = "") :
         MenuItem(centralDB, label),
-        _minRange(minRange), _maxRange(maxRange), _value(value), _previousValue(0), _stepSize(stepsize), _suffix(suffix)
+        _value(value), _previousValue(0), _minRange(minRange), _maxRange(maxRange), _stepSize(stepsize), _suffix(suffix)
     {
         _type = MenuItemType::MENU_ITEM_TYPE_NUMERIC;
     }

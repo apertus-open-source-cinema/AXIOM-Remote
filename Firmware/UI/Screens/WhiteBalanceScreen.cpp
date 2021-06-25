@@ -11,7 +11,7 @@
 class IUSBDevice;
 
 WhiteBalanceScreen::WhiteBalanceScreen(IUSBDevice* usbDevice) :
-    IScreen(usbDevice), _cancelButton("Cancel"), _addPresetButton("Add"), _setButton("Set")
+    IScreen(usbDevice), _cancelButton("Cancel"), _setButton("Set"), _addPresetButton("Add")
 {
     _cancelButton.SetHandler(&CancelButtonHandler);
     _bottomButtonBar.SetButton(ButtonPosition::Left, &_cancelButton);
