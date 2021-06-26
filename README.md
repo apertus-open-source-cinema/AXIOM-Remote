@@ -41,7 +41,7 @@ for details see: LICENSE.txt
 
 ### Fetch the Microchip XC32/XC32++ compiler for your OS
 
-[https://www.microchip.com/mplab/compilers](https://www.microchip.com/mplab/compilers). We have tested the code on v2.4.
+[https://www.microchip.com/mplab/compilers](https://www.microchip.com/mplab/compilers). We have tested the code up to compiler version 3.0.
 
 To be able to build, the variable **XC32_PATH** in the Makefile of firmware and bootloader has to be adjusted to the actual install path of XC32.
 
