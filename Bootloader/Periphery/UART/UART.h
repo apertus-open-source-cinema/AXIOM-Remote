@@ -15,6 +15,8 @@ class UART
 
     void Initialize(uint32_t baudRate);
 
+    void SendLine(const char* message) const;
+
     void SendText(const char* message) const;
 
     void SendHex(uint8_t value) const;
@@ -22,8 +24,6 @@ class UART
     void SendByte(uint8_t value) const;
 
     void SetCallback(uartCallbackFunc callback);
-
-    void Process();
 
     bool IsDataAvailable();
 

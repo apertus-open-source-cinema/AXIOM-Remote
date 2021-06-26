@@ -1,5 +1,5 @@
 #ifndef HELPERS_H
-#define	HELPERS_H
+#define HELPERS_H
 
 #include "stdint.h"
 
@@ -12,10 +12,11 @@
 
 static inline void DelayMs(uint16_t time)
 {
-    while(time--) {
+    while (time--)
+    {
         unsigned i;
 
-        for(i = 0; i < DELAY_1MS; i++)
+        for (i = 0; i < DELAY_1MS; i++)
         {
             __asm("nop");
         }
@@ -24,10 +25,11 @@ static inline void DelayMs(uint16_t time)
 
 static inline void DelayUs(uint16_t time)
 {
-    while(time--) {
+    while (time--)
+    {
         unsigned i;
 
-        for(i = 0; i < DELAY_1US; i++)
+        for (i = 0; i < DELAY_1US; i++)
         {
             __asm("nop");
         }
@@ -45,15 +47,14 @@ static inline void EnableIRQ(void)
     __asm volatile("ei");
 }
 
-static inline
-void UnlockPIC32(void)
+static inline void UnlockPIC32(void)
 {
+    SYSKEY = 0x00000000;
     SYSKEY = 0xAA996655;
     SYSKEY = 0x556699AA;
 }
 
-static inline
-void LockPIC32(void)
+static inline void LockPIC32(void)
 {
     SYSKEY = 0x33333333;
 }
@@ -63,4 +64,4 @@ static inline uint16_t RGB565(uint8_t red, uint8_t green, uint8_t blue)
     return ((red & 0xF8) << 8) | ((green & 0xFC) << 3) | ((blue & 0xF8) >> 3);
 }
 
-#endif	/* HELPERS_H */
+#endif /* HELPERS_H */
