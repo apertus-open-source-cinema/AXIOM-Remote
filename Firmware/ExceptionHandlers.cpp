@@ -62,3 +62,19 @@ extern "C" void _general_exception_handler(void)
     {
     }
 }
+
+extern "C" void _simple_tlb_refill_exception_handler(void)
+{
+    address = _CP0_GET_EPC();
+    cause = (_CP0_GET_CAUSE() & 0x0000007C) >> 2;
+
+    uart2_str0("TLB EA:");
+    uart2_long(address);
+    uart2_str0(" C:");
+    uart2_byte(cause);
+    uart2_str0("\r\n");
+
+    while (1)
+    {
+    }
+}
