@@ -136,7 +136,7 @@ The remote should use a timeout of `1s` for long running requests.
 
 ## Exception handling
 
-On general exception (handlers for others are not implemented yet) the information about address and cause will be transmitted over UART. All values are in *hex* format.
+If the AXIOM Remote crashes on a general exception (handlers for other exceptions are not implemented yet) information about the cause and code address will be transmitted over UART.
 
 Example: 
 ```
@@ -150,6 +150,8 @@ GE EA:9D005988 C:0D
 | GE   | General exception |
 | EA   | Exception address |
 | C    | Cause             |
+
+Note that the fields values are displayed in hexadecimal.
 
 ### Causes
 
