@@ -10,8 +10,6 @@
 #include "../../CentralDB/CentralDB.h"
 #include "../../CentralDB/CentralDBObserver.h"
 
-#include "Periphery/ILI9341/ILI9341Device.h"
-
 class IPainter;
 
 enum class MenuItemType
@@ -60,161 +58,37 @@ class MenuItem : public IWidget
   public:
     MenuItem(CentralDB* centralDB = nullptr, const char* label = "...", bool disabled = false,
              const char* value = nullptr, bool hidden = false, bool pressed = false, bool highlighted = false,
-             MenuItemType type = MenuItemType::MENU_ITEM_TYPE_NONE) :
-        _db(centralDB),
-        _disabled(disabled), _hidden(hidden), _pressed(pressed), _highlighted(highlighted), _label(label),
-        _value(value), _type(type), _backgroundColor((uint16_t)Color565::White),
-        _backgroundHighlightColor(utils::RGB565(255, 128, 0)), _backgroundPressedColor(utils::RGB565(0, 128, 255)),
-        _backgroundDisabledColor(utils::RGB565(180, 180, 180)), _textColor((uint16_t)Color565::Black),
-        _textHighlightColor((uint16_t)Color565::White), _textPressedColor((uint16_t)Color565::White),
-        _textDisabledColor(utils::RGB565(180, 180, 180)), _currentBackgroundColor(_backgroundColor),
-        _currentTextColor(_textColor), _verticalLabelOffset(20), _handlerPtr(nullptr)
-    {
-        _x = 0;
-        _y = 0;
-        _width = 50;
-        _height = 20;
-    }
+             MenuItemType type = MenuItemType::MENU_ITEM_TYPE_NONE);
 
-    void SetDisabled(bool disabled)
-    {
-        _disabled = disabled;
+    void SetDisabled(bool disabled);
 
-        if (disabled)
-        {
-            _currentBackgroundColor = _backgroundDisabledColor;
-            _currentTextColor = _textDisabledColor;
-        } else
-        {
-            // TODO: add more case handling here (what if highlighted, pressed, etc.)
+    virtual void SetHandler(void (*handler)(void*, CentralDB*));
 
-            _currentBackgroundColor = _backgroundColor;
-            _currentTextColor = _textColor;
-        }
-    }
+    void Activate(void* sender);
 
-    virtual void SetHandler(void (*handler)(void*, CentralDB*))
-    {
-        _handlerPtr = handler;
-    }
+    void attachObserver();
 
-    void Activate(void* sender)
-    {
-        _handlerPtr(sender, _db);
-    }
-    void attachObserver()
-    {
-        /* if (_db != nullptr)
-         {
-             _db->attach(&_observer);
-         }*/
-    }
+    bool IsDisabled();
 
-    bool IsDisabled()
-    {
-        return _disabled;
-    }
+    void SetHidden(bool hide);
+    bool IsHidden();
 
-    void SetHidden(bool hide)
-    {
-        _hidden = hide;
-    }
+    void SetPressed(bool pressed);
+    bool IsPressed();
 
-    bool IsHidden()
-    {
-        return _hidden;
-    }
+    void SetHighlighted(bool highlighted);
 
-    void SetPressed(bool pressed)
-    {
-        if (_disabled)
-        {
-            return;
-        }
+    bool IsHighlighted();
 
-        _pressed = pressed;
+    void SetLabel(const char* value);
+    char const* GetLabel();
 
-        if (_type == MenuItemType::MENU_ITEM_TYPE_READONLY)
-        {
-            _currentBackgroundColor = _backgroundColor;
-        } else if (pressed)
-        {
-            _currentBackgroundColor = _backgroundPressedColor;
-        } else if (_highlighted)
-        {
-            _currentBackgroundColor = _backgroundHighlightColor;
-        } else
-        {
-            _currentBackgroundColor = _backgroundColor;
-        }
-    }
+    void SetValue(char const* value);
+    char const* GetValue();
 
-    bool IsPressed()
-    {
-        return _pressed;
-    }
+    void SetMenuType(MenuItemType type);
 
-    void SetHighlighted(bool highlighted)
-    {
-        _highlighted = highlighted;
-
-        if (_type == MenuItemType::MENU_ITEM_TYPE_READONLY)
-        {
-            _currentTextColor = _textDisabledColor;
-            _currentBackgroundColor = _backgroundColor;
-        } else if (highlighted)
-        {
-            _currentBackgroundColor = _backgroundHighlightColor;
-            _currentTextColor = _textHighlightColor;
-        } else if (_disabled)
-        {
-            _currentBackgroundColor = _backgroundDisabledColor;
-            _currentTextColor = _textDisabledColor;
-        } else
-        {
-            _currentBackgroundColor = _backgroundColor;
-            _currentTextColor = _textColor;
-        }
-    }
-
-    bool IsHighlighted()
-    {
-        return _highlighted;
-    }
-
-    void SetLabel(const char* value)
-    {
-        _label = value;
-    }
-
-    char const* GetLabel()
-    {
-        return _label;
-    }
-
-    void SetValue(char const* value)
-    {
-        _value = value;
-    }
-
-    char const* GetValue()
-    {
-        return _value;
-    }
-
-    void SetMenuType(MenuItemType type)
-    {
-        _type = type;
-        if (type == MenuItemType::MENU_ITEM_TYPE_READONLY)
-        {
-            _currentTextColor = _textDisabledColor;
-        }
-    }
-
-    MenuItemType GetMenuType()
-    {
-        return _type;
-    }
+    MenuItemType GetMenuType();
 
     /*void SetDimensions(uint16_t x, uint16_t y, uint16_t width, uint16_t height)
     {
@@ -225,51 +99,13 @@ class MenuItem : public IWidget
         _height = height;
     }*/
 
-    void SetY(uint16_t y)
-    {
-        _y = y;
-    }
+    void SetY(uint16_t y);
 
-    void Draw(IPainter* painter) override
-    {
-        // Draw background
-        if (_disabled && !(_highlighted))
-        {
-            painter->DrawStripedRectangle(_x, _y, _width, _height, 0xE71C, 0xD69A, 3, 7);
-        } else if (_disabled && _highlighted)
-        {
-            painter->DrawStripedRectangle(_x, _y, _width, _height, 0xE71C, 0xD69A, 3, 7);
-            painter->DrawFillRectangle(_x, _y, 4, _height, _backgroundHighlightColor);
-            painter->DrawFillRectangle(GlobalSettings::LCDWidth - 20, _y, 4, _height, _backgroundHighlightColor);
-        } else if (_type == MenuItemType::MENU_ITEM_TYPE_READONLY && _highlighted)
-        {
-            painter->DrawFillRectangle(_x, _y, _width, _height, _currentBackgroundColor);
-            painter->DrawFillRectangle(_x, _y, 4, _height, _backgroundHighlightColor);
-            painter->DrawFillRectangle(GlobalSettings::LCDWidth - 20, _y, 4, _height, _backgroundHighlightColor);
+    void Draw(IPainter* painter) override;
 
-        } else
-        {
-            painter->DrawFillRectangle(_x, _y, _width, _height, _currentBackgroundColor);
-        }
+    virtual void ExecuteAction(IMenuSystem* menuSystem);
 
-        // Label
-        painter->DrawText(_x + 5, _y + _verticalLabelOffset, _label, _currentTextColor, TextAlign::TEXT_ALIGN_LEFT, 0);
-
-        // value
-        if (_value != nullptr)
-        {
-            painter->DrawText(_x + 180, _y + _verticalLabelOffset, _value, _currentTextColor,
-                              TextAlign::TEXT_ALIGN_RIGHT, 80);
-        }
-    }
-
-    virtual void ExecuteAction(IMenuSystem* menuSystem)
-    {
-    }
-
-    void update()
-    {
-    }
+    void update();
 };
 
 #endif /* MENUITEM_H */

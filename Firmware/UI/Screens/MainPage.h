@@ -44,7 +44,7 @@ class MainPage : public IMenu
     static void DigitalGainButtonHandler(void* sender);
 
     void Draw(IPainter* painter) override;
-    void Update(Button button, int8_t knob, IMenuSystem* menuSystem) override;
+    void Update(ButtonID button, int8_t knob, IMenuSystem* menuSystem) override;
 };
 
 #endif /* MAINPAGE_H */

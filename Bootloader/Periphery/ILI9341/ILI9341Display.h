@@ -1,6 +1,5 @@
 /*
- * File:   LCD.h
- * Author: dev
+ * File:   ILI9341Display.h
  *
  * Created on 23 July 2019, 21:24
  */
@@ -11,9 +10,8 @@
 #include <stdint.h>
 
 #include "LCDDefinitions.h"
-//#include "ILCDDevice.h"
 
-class ILI9341Display // : public ILCDDevice
+class ILI9341Display
 {
     // Values are defined for landscape mode
     // const uint16_t _width;

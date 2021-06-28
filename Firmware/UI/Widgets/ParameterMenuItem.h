@@ -6,6 +6,7 @@
 #include "../Color565.h"
 
 class IPainter;
+class IMenuSystem;
 
 class ParameterMenuItem : public IWidget
 {
@@ -35,176 +36,42 @@ class ParameterMenuItem : public IWidget
 
   public:
     ParameterMenuItem(const char* label = "...", bool disabled = false, const char* value = nullptr,
-                      bool hidden = false, bool pressed = false, bool highlighted = false) :
-        _disabled(disabled),
-        _hidden(hidden), _pressed(pressed), _highlighted(highlighted), _previousChoice(false), _label(label),
-        _value(value), _backgroundColor((uint16_t)Color565::White),
-        _backgroundHighlightColor(utils::RGB565(255, 128, 0)), _backgroundPressedColor(utils::RGB565(0, 128, 255)),
-        _backgroundDisabledColor(utils::RGB565(180, 180, 180)), _textColor((uint16_t)Color565::Black),
-        _textHighlightColor((uint16_t)Color565::White), _textPressedColor((uint16_t)Color565::White),
-        _textDisabledColor(utils::RGB565(180, 180, 180)), _currentBackgroundColor(_backgroundColor),
-        _currentTextColor(_textColor), _verticalLabelOffset(20)
-    {
-        _x = 0;
-        _y = 0;
-        _width = 50;
-        _height = 20;
-    }
+                      bool hidden = false, bool pressed = false, bool highlighted = false);
 
-    void SetDisabled(bool disabled)
-    {
-        _disabled = disabled;
+    void SetDisabled(bool disabled);
 
-        if (disabled)
-        {
-            _currentBackgroundColor = _backgroundDisabledColor;
-            _currentTextColor = _textDisabledColor;
-        } else
-        {
-            // TODO: add more case handling here (what if highlighted, pressed, etc.)
+    bool IsDisabled();
 
-            _currentBackgroundColor = _backgroundColor;
-            _currentTextColor = _textColor;
-        }
-    }
+    void SetHidden(bool hide);
 
-    bool IsDisabled()
-    {
-        return _disabled;
-    }
+    bool IsHidden();
 
-    void SetHidden(bool hide)
-    {
-        _hidden = hide;
-    }
+    void SetPressed(bool pressed);
 
-    bool IsHidden()
-    {
-        return _hidden;
-    }
+    bool IsPressed();
 
-    void SetPressed(bool pressed)
-    {
-        if (_disabled)
-        {
-            return;
-        }
+    void SetHighlighted(bool highlighted);
 
-        _pressed = pressed;
+    bool IsHighlighted();
 
-        if (pressed)
-        {
-            _currentBackgroundColor = _backgroundPressedColor;
-            _currentTextColor = _textPressedColor;
-        } else if (_highlighted)
-        {
-            _currentBackgroundColor = _backgroundHighlightColor;
-            _currentTextColor = _textHighlightColor;
-        } else
-        {
-            _currentBackgroundColor = _backgroundColor;
-            _currentTextColor = _textColor;
-        }
-    }
+    void SetLabel(const char* value);
 
-    bool IsPressed()
-    {
-        return _pressed;
-    }
+    char const* GetLabel();
 
-    void SetHighlighted(bool highlighted)
-    {
-        _highlighted = highlighted;
+    void SetValue(char const* value);
 
-        if (highlighted)
-        {
-            _currentBackgroundColor = _backgroundHighlightColor;
-            _currentTextColor = _textHighlightColor;
-        } else if (_disabled)
-        {
-            _currentBackgroundColor = _backgroundDisabledColor;
-            _currentTextColor = _textDisabledColor;
-        } else
-        {
-            _currentBackgroundColor = _backgroundColor;
-            _currentTextColor = _textColor;
-        }
-    }
+    char const* GetValue();
 
-    bool IsHighlighted()
-    {
-        return _highlighted;
-    }
+    void SetPreviousChoice(bool previousChoice);
 
-    void SetLabel(const char* value)
-    {
-        _label = value;
-    }
+    void SetDimensions(uint16_t x, uint16_t y, uint16_t width, uint16_t height);
 
-    char const* GetLabel()
-    {
-        return _label;
-    }
+    void SetHorizontalTextMargin(uint8_t horizontalTextMargin);
+    void SetY(uint16_t y);
 
-    void SetValue(char const* value)
-    {
-        _value = value;
-    }
+    void Draw(IPainter* painter) override;
 
-    char const* GetValue()
-    {
-        return _value;
-    }
-
-    void SetPreviousChoice(bool previousChoice)
-    {
-        _previousChoice = previousChoice;
-    }
-
-    void SetDimensions(uint16_t x, uint16_t y, uint16_t width, uint16_t height)
-    {
-        _x = x;
-        _y = y;
-
-        _width = width;
-        _height = height;
-    }
-
-    void SetHorizontalTextMargin(uint8_t horizontalTextMargin)
-    {
-        _horizontalTextMargin = horizontalTextMargin;
-    }
-
-    void SetY(uint16_t y)
-    {
-        _y = y;
-    }
-
-    void Draw(IPainter* painter) override
-    {
-        // Draw background
-        if (_disabled)
-        {
-            painter->DrawStripedRectangle(_x, _y, _width, _height, 0x8A01, 0x5120, 5, 12);
-        } else
-        {
-            painter->DrawFillRectangle(_x, _y, _width, _height, _currentBackgroundColor);
-        }
-
-        // draw label
-        painter->DrawText(_x + _horizontalTextMargin, _y + _verticalLabelOffset, _label, _currentTextColor,
-                          TextAlign::TEXT_ALIGN_LEFT, 0);
-
-        // draw current (old) value indicator circle
-        if (_previousChoice)
-        {
-            painter->DrawFillCircle(_x + 4, _y + 15, 3, _currentTextColor);
-        }
-    }
-
-    void ExecuteAction(IMenuSystem* menuSystem)
-    {
-    }
+    void ExecuteAction(IMenuSystem* menuSystem);
 };
 
 #endif /* PARAMETERMENUITEM_H */

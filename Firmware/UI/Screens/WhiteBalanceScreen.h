@@ -7,6 +7,7 @@
 
 class IPainter;
 class IUSBDevice;
+enum class ButtonID;
 
 class WhiteBalanceScreen : public IScreen
 {
@@ -24,7 +25,7 @@ class WhiteBalanceScreen : public IScreen
     static void AddPresetButtonHandler(void* sender);
     void Drawheader(IPainter* painter);
 
-    void Update(Button button, int8_t knob, IMenuSystem* menuSystem) override;
+    void Update(ButtonID button, int8_t knob, IMenuSystem* menuSystem) override;
 };
 
 #endif // WHITEBALANCESCREEN_H

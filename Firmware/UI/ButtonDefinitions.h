@@ -2,7 +2,7 @@
 #define BUTTONDEFINITIONS_H
 
 // TODO: Find proper name as Button gives the impression of a base class, but is only containing definitions
-enum class Button
+enum class ButtonID
 {
     BUTTON_NONE,
 
@@ -50,7 +50,7 @@ enum class Button
     BUTTON_11_UP,
     BUTTON_12_UP,
 
-    // Rotary Knobs 
+    // Rotary Knobs
     E_1,
     E_2,
     E_1_DOWN,
@@ -59,4 +59,4 @@ enum class Button
     E_2_UP,
 };
 
-#endif //BUTTONDEFINITIONS_H
+#endif // BUTTONDEFINITIONS_H

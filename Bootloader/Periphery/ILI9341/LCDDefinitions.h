@@ -177,6 +177,7 @@ const uint16_t backlight_linear_percentage[101] = {
 #define ILI9341_RAMRD      0x2E      ///< Memory Read
 
 #define ILI9341_PTLAR      0x30      ///< Partial Area
+#define ILI9341_VSCRDEF    0x33      ///< Memory Access Control
 #define ILI9341_MADCTL     0x36      ///< Memory Access Control
 #define ILI9341_VSCRSADD   0x37      ///< Vertical Scrolling Start Address
 #define ILI9341_PIXFMT     0x3A      ///< COLMOD: Pixel Format Set

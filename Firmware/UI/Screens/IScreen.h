@@ -11,7 +11,7 @@ class IUSBDevice;
 class IPainter;
 class IMenuSystem;
 
-enum class Button;
+enum class ButtonID;
 enum class Color565;
 
 #define MAX_BUTTON_COUNT 3
@@ -42,7 +42,7 @@ class IScreen
     virtual Color565 GetBackgroundColor();
     virtual void Draw(IPainter* painter);
 
-    virtual void Update(Button button, int8_t knob, IMenuSystem* menuSystem);
+    virtual void Update(ButtonID button, int8_t knob, IMenuSystem* menuSystem);
 };
 
 #endif // ISCREEN_H

@@ -71,34 +71,34 @@ void WhiteBalanceScreen::AddPresetButtonHandler(void* sender)
 }
 
 // TODO: Check the handling of buttons and provide general example
-void WhiteBalanceScreen::Update(Button button, int8_t knob, IMenuSystem* menuSystem)
+void WhiteBalanceScreen::Update(ButtonID button, int8_t knob, IMenuSystem* menuSystem)
 {
     switch (button)
     {
-    case Button::BUTTON_4_DOWN:
+    case ButtonID::BUTTON_4_DOWN:
         _cancelButton.SetHighlighted(true);
         break;
-    case Button::BUTTON_4_UP:
+    case ButtonID::BUTTON_4_UP:
         _cancelButton.SetHighlighted(false);
         menuSystem->SetCurrentScreen(AvailableScreens::MainPage);
         break;
-    case Button::BUTTON_5_DOWN:
+    case ButtonID::BUTTON_5_DOWN:
         _addPresetButton.SetHighlighted(true);
         break;
-    case Button::BUTTON_5_UP:
+    case ButtonID::BUTTON_5_UP:
         _addPresetButton.SetHighlighted(false);
         break;
-    case Button::BUTTON_6_DOWN:
+    case ButtonID::BUTTON_6_DOWN:
         _setButton.SetHighlighted(true);
         break;
-    case Button::BUTTON_6_UP:
+    case ButtonID::BUTTON_6_UP:
         _setButton.SetHighlighted(false);
         menuSystem->SetCurrentScreen(AvailableScreens::MainPage);
         break;
-    case Button::BUTTON_7_DOWN:
+    case ButtonID::BUTTON_7_DOWN:
         _homeButton.SetHighlighted(true);
         break;
-    case Button::BUTTON_7_UP:
+    case ButtonID::BUTTON_7_UP:
         _homeButton.SetHighlighted(false);
         menuSystem->SetCurrentScreen(AvailableScreens::MainPage);
         break;

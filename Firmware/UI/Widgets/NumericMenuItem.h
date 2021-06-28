@@ -22,80 +22,25 @@ class NumericMenuItem : public MenuItem
 
   public:
     NumericMenuItem(CentralDB* centralDB = nullptr, const char* label = "", int16_t value = 0, int16_t minRange = 0,
-                    int16_t maxRange = 100, int16_t stepsize = 1, const char* suffix = "") :
-        MenuItem(centralDB, label),
-        _value(value), _previousValue(0), _minRange(minRange), _maxRange(maxRange), _stepSize(stepsize), _suffix(suffix)
-    {
-        _type = MenuItemType::MENU_ITEM_TYPE_NUMERIC;
-    }
+                    int16_t maxRange = 100, int16_t stepsize = 1, const char* suffix = "");
 
-    void SetValue(int16_t value)
-    {
-        if ((value >= _minRange) & (value <= _maxRange))
-        {
-            _value = value;
-            _previousValue = value;
-        }
-    }
+    void SetValue(int16_t value);
 
-    void SetSuffix(const char* value)
-    {
-        _suffix = value;
-    }
+    void SetSuffix(const char* value);
 
-    char const* GetSuffix()
-    {
-        return _suffix;
-    }
-    void SetStepSize(int16_t newstepsize)
-    {
-        _stepSize = newstepsize;
-    }
+    char const* GetSuffix();
 
-    int16_t GetStepSize()
-    {
-        return _stepSize;
-    }
+    void SetStepSize(int16_t newstepsize);
+    int16_t GetStepSize();
 
-    int16_t GetMaxRange()
-    {
-        return _maxRange;
-    }
+    int16_t GetMaxRange();
+    int16_t GetMinRange();
 
-    int16_t GetMinRange()
-    {
-        return _minRange;
-    }
+    int16_t GetValue();
 
-    int16_t GetValue()
-    {
-        return _value;
-    }
+    void Draw(IPainter* painter) override;
 
-    void Draw(IPainter* painter) override
-    {
-        // Draw background
-        if (_disabled)
-        {
-            painter->DrawStripedRectangle(_x, _y, _width, _height, 0xE71C, 0xD69A, 5, 12);
-        } else
-        {
-            painter->DrawFillRectangle(_x, _y, _width, _height, _currentBackgroundColor);
-        }
-
-        // Label
-        painter->DrawText(_x + 5, _y + _verticalLabelOffset, _label, _currentTextColor, TextAlign::TEXT_ALIGN_LEFT, 0);
-
-        // value
-        char valuetext[8];
-        sprintf(valuetext, "%d%s", _value, _suffix);
-        painter->DrawText(_x + 180, _y + _verticalLabelOffset, valuetext, _currentTextColor,
-                          TextAlign::TEXT_ALIGN_RIGHT, 80);
-    }
-
-    virtual void ExecuteAction(IMenuSystem* menuSystem) override
-    {
-    }
+    virtual void ExecuteAction(IMenuSystem* menuSystem) override;
 };
 
 #endif /* NUMERICMENUITEM_H */

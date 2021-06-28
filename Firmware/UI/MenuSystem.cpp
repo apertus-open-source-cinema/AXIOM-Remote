@@ -3,7 +3,6 @@
 #include "Painter/IPainter.h"
 #include "Screens/IScreen.h"
 
-
 MenuSystem::MenuSystem(IUSBDevice* usbDevice, CentralDB* centraldb) :
     _currentScreen(nullptr), _usbDevice(usbDevice), _mainPage(usbDevice), _MainMenu(usbDevice, centraldb),
     _settingsSubMenu1(usbDevice, centraldb), _whiteBalance(usbDevice)
@@ -47,7 +46,7 @@ void MenuSystem::Draw(IPainter* painter)
     _currentScreen->Draw(painter);
 }
 
-void MenuSystem::Update(Button button, int8_t knob)
+void MenuSystem::Update(ButtonID button, int8_t knob)
 {
     _currentScreen->Update(button, knob, this);
 }

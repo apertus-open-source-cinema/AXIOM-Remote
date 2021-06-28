@@ -26,8 +26,8 @@ void MainPage::SetupButtons()
     _menuButton.SetLabelFont(Font::FreeSans12pt7b);
     _menuButton.SetHandler(&MenuButtonHandler);
 
-    _shutterButton = MainPageButton(115, 179, 90, "Shutter", true);
-    _whiteBalanceButton = MainPageButton(220, 179, 90, "WB", true);
+    _shutterButton = MainPageButton(115, 180, 90, "Shutter", true);
+    _whiteBalanceButton = MainPageButton(220, 180, 90, "WB", true);
 }
 
 Color565 MainPage::GetBackgroundColor()
@@ -75,50 +75,50 @@ void MainPage::Draw(IPainter* painter)
     }
 }
 
-void MainPage::Update(Button button, int8_t knob, IMenuSystem* menuSystem)
+void MainPage::Update(ButtonID button, int8_t knob, IMenuSystem* menuSystem)
 {
     switch (button)
     {
-    case Button::BUTTON_1_UP:
+    case ButtonID::BUTTON_1_UP:
         _fpsButton.SetValue((char*)"1U");
         _fpsButton.SetHighlighted(false);
         break;
-    case Button::BUTTON_1_DOWN:
+    case ButtonID::BUTTON_1_DOWN:
         _fpsButton.SetValue((char*)"1D");
         _fpsButton.SetHighlighted(true);
         break;
-    case Button::BUTTON_2_UP:
+    case ButtonID::BUTTON_2_UP:
         //_fpsButton.SetValue((char*)"2");
         _analogGainButton.SetHighlighted(false);
         _analogGainButton.Activate(this);
         // _usbDevice->Send((uint8_t*)"Button 2\r\n", 10);
         break;
-    case Button::BUTTON_2_DOWN:
+    case ButtonID::BUTTON_2_DOWN:
         _analogGainButton.SetHighlighted(true);
         break;
-    case Button::BUTTON_3_UP:
+    case ButtonID::BUTTON_3_UP:
         //_fpsButton.SetValue((char*)"3");
         _digitalGainButton.SetHighlighted(false);
         _digitalGainButton.Activate(this);
         break;
-    case Button::BUTTON_3_DOWN:
+    case ButtonID::BUTTON_3_DOWN:
         _fpsButton.SetValue((char*)"3");
         _digitalGainButton.SetHighlighted(true);
         break;
-    case Button::BUTTON_4_UP:
+    case ButtonID::BUTTON_4_UP:
         //_menuButton.Activate(this);
         _menuButton.SetHighlighted(false);
         menuSystem->SetCurrentScreen(AvailableScreens::MainMenu);
         break;
-    case Button::BUTTON_4_DOWN:
+    case ButtonID::BUTTON_4_DOWN:
         _menuButton.SetHighlighted(true);
         break;
-    case Button::BUTTON_6_UP:
+    case ButtonID::BUTTON_6_UP:
         //_menuButton.Activate(this);
         _whiteBalanceButton.SetHighlighted(false);
         menuSystem->SetCurrentScreen(AvailableScreens::WhiteBalance);
         break;
-    case Button::BUTTON_6_DOWN:
+    case ButtonID::BUTTON_6_DOWN:
         _whiteBalanceButton.SetHighlighted(true);
         break;
     default:

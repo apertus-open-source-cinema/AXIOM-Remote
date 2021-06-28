@@ -25,7 +25,7 @@ void IScreen::Draw(IPainter* painter)
     UNUSED(painter);
 }
 
-void IScreen::Update(Button button, int8_t knob, IMenuSystem* menuSystem)
+void IScreen::Update(ButtonID button, int8_t knob, IMenuSystem* menuSystem)
 {
     UNUSED(button);
     UNUSED(knob);

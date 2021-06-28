@@ -388,7 +388,7 @@ void VirtualUI::RenderVirtualCamera()
     ImGui::End();
 }
 
-void VirtualUI::RenderKnob(int8_t& knobValue, Button& button)
+void VirtualUI::RenderKnob(int8_t& knobValue, ButtonID& button)
 {
     ImGui::SetCursorPos(ImVec2(40, 140));
     bool knobPressed = false;
@@ -400,11 +400,11 @@ void VirtualUI::RenderKnob(int8_t& knobValue, Button& button)
     }
     if (knobPressed)
     {
-        button = Button::E_1_UP;
+        button = ButtonID::E_1_UP;
     }
 }
 
-void VirtualUI::RenderButtons(Button& button)
+void VirtualUI::RenderButtons(ButtonID& button)
 {
     uint16_t buttonPhotoWidth = 46;
     uint16_t buttonPhotoHeight = 46;
@@ -449,38 +449,38 @@ void VirtualUI::RenderButtons(Button& button)
     ImGui::SetCursorPos(ImVec2(372, 55));
     if (ImGui::CustomImageButton("1", _buttonTextureID, _buttonPressedTextureID, ImVec2(buttonWidth, buttonHeight)))
     {
-        button = Button::BUTTON_1_UP;
+        button = ButtonID::BUTTON_1_UP;
     }
 
     ImGui::SetCursorPos(ImVec2(475, 55));
     if (ImGui::CustomImageButton("2", _buttonTextureID, _buttonPressedTextureID, ImVec2(buttonWidth, buttonHeight)))
     {
-        button = Button::BUTTON_2_UP;
+        button = ButtonID::BUTTON_2_UP;
     }
 
     ImGui::SetCursorPos(ImVec2(578, 55));
     if (ImGui::CustomImageButton("3", _buttonTextureID, _buttonPressedTextureID, ImVec2(buttonWidth, buttonHeight)))
     {
-        button = Button::BUTTON_3_UP;
+        button = ButtonID::BUTTON_3_UP;
     }
 
     // Button 4-6
     ImGui::SetCursorPos(ImVec2(372, 395));
     if (ImGui::CustomImageButton("4", _buttonTextureID, _buttonPressedTextureID, ImVec2(buttonWidth, buttonHeight)))
     {
-        button = Button::BUTTON_4_UP;
+        button = ButtonID::BUTTON_4_UP;
     }
 
     ImGui::SetCursorPos(ImVec2(475, 395));
     if (ImGui::CustomImageButton("5", _buttonTextureID, _buttonPressedTextureID, ImVec2(buttonWidth, buttonHeight)))
     {
-        button = Button::BUTTON_5_UP;
+        button = ButtonID::BUTTON_5_UP;
     }
 
     ImGui::SetCursorPos(ImVec2(578, 395));
     if (ImGui::CustomImageButton("6", _buttonTextureID, _buttonPressedTextureID, ImVec2(buttonWidth, buttonHeight)))
     {
-        button = Button::BUTTON_6_UP;
+        button = ButtonID::BUTTON_6_UP;
     }
 
     // Button 7-9
@@ -488,21 +488,21 @@ void VirtualUI::RenderButtons(Button& button)
     if (ImGui::CustomImageButton("7", _buttonRoundTextureID, _buttonRoundPressedTextureID,
                                  ImVec2(buttonRoundWidth, buttonRoundHeight)))
     {
-        button = Button::BUTTON_7_UP;
+        button = ButtonID::BUTTON_7_UP;
     }
 
     ImGui::SetCursorPos(ImVec2(249, 225));
     if (ImGui::CustomImageButton("8", _buttonRoundTextureID, _buttonRoundPressedTextureID,
                                  ImVec2(buttonRoundWidth, buttonRoundHeight)))
     {
-        button = Button::BUTTON_8_UP;
+        button = ButtonID::BUTTON_8_UP;
     }
 
     ImGui::SetCursorPos(ImVec2(249, 281));
     if (ImGui::CustomImageButton("9", _buttonRoundTextureID, _buttonRoundPressedTextureID,
                                  ImVec2(buttonRoundWidth, buttonRoundHeight)))
     {
-        button = Button::BUTTON_9_UP;
+        button = ButtonID::BUTTON_9_UP;
     }
 
     // Button 10-12
@@ -510,21 +510,21 @@ void VirtualUI::RenderButtons(Button& button)
     if (ImGui::CustomImageButton("10", _buttonRoundTextureID, _buttonRoundPressedTextureID,
                                  ImVec2(buttonRoundWidth, buttonRoundHeight)))
     {
-        button = Button::BUTTON_10_UP;
+        button = ButtonID::BUTTON_10_UP;
     }
 
     ImGui::SetCursorPos(ImVec2(717, 225));
     if (ImGui::CustomImageButton("11", _buttonRoundTextureID, _buttonRoundPressedTextureID,
                                  ImVec2(buttonRoundWidth, buttonRoundHeight)))
     {
-        button = Button::BUTTON_11_UP;
+        button = ButtonID::BUTTON_11_UP;
     }
 
     ImGui::SetCursorPos(ImVec2(717, 281));
     if (ImGui::CustomImageButton("12", _buttonRoundTextureID, _buttonRoundPressedTextureID,
                                  ImVec2(buttonRoundWidth, buttonRoundHeight)))
     {
-        button = Button::BUTTON_12_UP;
+        button = ButtonID::BUTTON_12_UP;
     }
 }
 
@@ -559,7 +559,7 @@ void VirtualUI::RenderLED(int8_t glowValue)
 
 int glowValue = 0;
 
-void VirtualUI::RenderUI(Button& button, int8_t& knobValue, bool& debugOverlayEnabled)
+void VirtualUI::RenderUI(ButtonID& button, int8_t& knobValue, bool& debugOverlayEnabled)
 {
     ImGui_ImplOpenGL3_NewFrame();
     ImGui_ImplSDL2_NewFrame(_window);

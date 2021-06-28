@@ -13,7 +13,7 @@
 
 #include <CentralDB/CentralDBObserver.h>
 
-enum class Button;
+enum class ButtonID;
 
 class VirtualUI {
     SDL_Window* _window;
@@ -67,8 +67,8 @@ class VirtualUI {
     void RenderCameraPreviewToFBO() const;
     void RenderVirtualCamera();
 
-    void RenderKnob(int8_t& knobValue, Button& button);
-    void RenderButtons(Button& button);
+    void RenderKnob(int8_t& knobValue, ButtonID& button);
+    void RenderButtons(ButtonID& button);
     void RenderLED(int8_t glowValue);
 
   public:
@@ -76,7 +76,7 @@ class VirtualUI {
         SDL_Window* window, uint32_t displayTextureID, CentralDB* db,
         std::function<void()> screenshotHandler = []() {});
 
-    void RenderUI(Button& button, int8_t& knobValue, bool& debugOverlayEnabled);
+    void RenderUI(ButtonID& button, int8_t& knobValue, bool& debugOverlayEnabled);
 
     void RenderDisplayToFBO() const;
     void ToggleLCDContrast(bool toggleContrastEnabled) const;
