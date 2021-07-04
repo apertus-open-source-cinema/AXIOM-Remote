@@ -59,13 +59,16 @@ void LogException(const char id[4])
     uint32_t v0 = *(pStack + STACK_OFFSET_V0);
     uint32_t v1 = *(pStack + STACK_OFFSET_V1);
 
+    address = _CP0_GET_EPC();
+    cause = (_CP0_GET_CAUSE() & 0x0000007C) >> 2;
+
     uart2_str0(id);
     uart2_str0(" EA:");
     uart2_long(address);
     uart2_str0(" C:");
     uart2_byte(cause);
     uart2_str0(" RA: ");
-    uart2_long(stackptr);
+    uart2_long(ra);
     uart2_str0(" V0: ");
     uart2_long(v0);
     uart2_str0(" V1: ");
@@ -75,9 +78,6 @@ void LogException(const char id[4])
 
 extern "C" void _general_exception_handler(void)
 {
-    address = _CP0_GET_EPC();
-    cause = (_CP0_GET_CAUSE() & 0x0000007C) >> 2;
-
     LogException((const char*)"GE");
 
     while (1)
@@ -87,9 +87,6 @@ extern "C" void _general_exception_handler(void)
 
 extern "C" void _simple_tlb_refill_exception_handler(void)
 {
-    address = _CP0_GET_EPC();
-    cause = (_CP0_GET_CAUSE() & 0x0000007C) >> 2;
-
     LogException((const char*)"TLB");
 
     while (1)
