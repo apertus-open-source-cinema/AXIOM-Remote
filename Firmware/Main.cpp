@@ -2,7 +2,7 @@
 #include "Configuration/PIC32.h"
 
 // Periphery
-#include "Periphery/ILI9341/ILI9341Device.h"
+#include "Periphery/ILI9341/ILI9341Display.h"
 #include "Periphery/USB/USBCDCDevice.h"
 #include "Periphery/I2C/I2C.h"
 #include "Periphery/UART/UART.h"
