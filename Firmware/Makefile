@@ -16,10 +16,8 @@ INC_DIR=-I${XC32_PATH}/pic32mx/include -I../Common -I../Bootloader
 SOURCE_FILES=$(wildcard *.cpp) $(wildcard **/*.cpp) $(wildcard UI/**/*.cpp) $(wildcard ../Bootloader/Periphery/**/*.cpp)
 OBJ_FILES=${SOURCE_FILES:%.cpp=${BUILD_DIR}/%.o}
 
-# Older version of XC32 uses gcc compiler version 4.8.3 and XC32 v3.00 uses gcc version 8.3.1.
-# If using older version of XC32 (v2.50 or older), uncomment line 21 and comment out line 22
-# OPTS=-c -G0 -mprocessor=${DEVICE} -mconfig-data-dir=${XC32_PATH}/pic32mx/lib/proc/${DEVICE} -iprefix ${XC32_PATH}/lib/gcc/pic32mx/4.8.3/ -Wall -MMD -MF ${BUILD_DIR}/.depend
-OPTS=-c -G0 -fstack-usage -Wstack-usage=96 -fdump-tree-optimized -fno-rtti -mprocessor=${DEVICE} -mconfig-data-dir=${XC32_PATH}/pic32mx/lib/proc/${DEVICE} -iprefix ${XC32_PATH}/lib/gcc/pic32mx/8.3.1/ -Wall -MMD -MF ${BUILD_DIR}/.depend
+# Compiler options for XC32 3.00
+OPTS=-c -O0 -fdiagnostics-color -fstack-usage -Wstack-usage=96 -fdump-tree-optimized -fno-rtti -mprocessor=${DEVICE} -mconfig-data-dir=${XC32_PATH}/pic32mx/lib/proc/${DEVICE} -iprefix ${XC32_PATH}/lib/gcc/pic32mx/8.3.1/ -Wall -MMD -MF ${BUILD_DIR}/.depend
 LD_OPTS=-mprocessor=${DEVICE} -Wl,--defsym=_min_heap_size=128,--trace,--script="${LINKER_SCRIPT}",--cref,-Map="${BUILD_DIR}/${NAME}.map",--report-mem,--warn-section-align,--memorysummary=${BUILD_DIR}/memoryfile.xml
 
 all: ${BUILD_DIR}/${NAME}.elf

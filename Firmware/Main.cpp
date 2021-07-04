@@ -171,7 +171,7 @@ int8_t PollKMW(USBCDCDevice* cdcDevice)
     return 0;
 }
 
-Button PollButtons(USBCDCDevice* cdcDevice)
+ButtonID PollButtons(USBCDCDevice* cdcDevice)
 {
     /*
      *  the first three registers (i2c3_getn(0x00, data, 3); data[0], data[1], data[2]) provide change information
@@ -197,14 +197,14 @@ Button PollButtons(USBCDCDevice* cdcDevice)
                 {
                     cdcDevice->Send((uint8_t*)"E_1_UP\r\n", 32);
                 }
-                return Button::E_1_UP;
+                return ButtonID::E_1_UP;
             } else
             {
                 if (DEBUG)
                 {
                     cdcDevice->Send((uint8_t*)"E_1_DOWN\r\n", 32);
                 }
-                return Button::E_1_DOWN;
+                return ButtonID::E_1_DOWN;
             }
         }
 
@@ -217,14 +217,14 @@ Button PollButtons(USBCDCDevice* cdcDevice)
                 {
                     cdcDevice->Send((uint8_t*)"E_2_UP\r\n", 32);
                 }
-                return Button::E_2_UP;
+                return ButtonID::E_2_UP;
             } else
             {
                 if (DEBUG)
                 {
                     cdcDevice->Send((uint8_t*)"E_2_DOWN\r\n", 32);
                 }
-                return Button::E_2_DOWN;
+                return ButtonID::E_2_DOWN;
             }
         }
     }
@@ -264,7 +264,7 @@ Button PollButtons(USBCDCDevice* cdcDevice)
                     cdcDevice->Send((uint8_t*)"BUTTON_1_UP\r\n", 32);
                 }
                 // Button released
-                return Button::BUTTON_1_UP;
+                return ButtonID::BUTTON_1_UP;
             } else
             {
                 if (DEBUG)
@@ -272,7 +272,7 @@ Button PollButtons(USBCDCDevice* cdcDevice)
                     cdcDevice->Send((uint8_t*)"BUTTON_1_DOWN\r\n", 32);
                 }
                 // Button pressed down
-                return Button::BUTTON_1_DOWN;
+                return ButtonID::BUTTON_1_DOWN;
             }
         }
 
@@ -284,14 +284,14 @@ Button PollButtons(USBCDCDevice* cdcDevice)
                 {
                     cdcDevice->Send((uint8_t*)"BUTTON_2_UP\r\n", 32);
                 }
-                return Button::BUTTON_2_UP;
+                return ButtonID::BUTTON_2_UP;
             } else
             {
                 if (DEBUG)
                 {
                     cdcDevice->Send((uint8_t*)"BUTTON_2_DOWN\r\n", 32);
                 }
-                return Button::BUTTON_2_DOWN;
+                return ButtonID::BUTTON_2_DOWN;
             }
         }
 
@@ -303,14 +303,14 @@ Button PollButtons(USBCDCDevice* cdcDevice)
                 {
                     cdcDevice->Send((uint8_t*)"BUTTON_3_UP\r\n", 32);
                 }
-                return Button::BUTTON_3_UP;
+                return ButtonID::BUTTON_3_UP;
             } else
             {
                 if (DEBUG)
                 {
                     cdcDevice->Send((uint8_t*)"BUTTON_3_DOWN\r\n", 32);
                 }
-                return Button::BUTTON_3_DOWN;
+                return ButtonID::BUTTON_3_DOWN;
             }
         }
 
@@ -322,14 +322,14 @@ Button PollButtons(USBCDCDevice* cdcDevice)
                 {
                     cdcDevice->Send((uint8_t*)"BUTTON_4_UP\r\n", 32);
                 }
-                return Button::BUTTON_4_UP;
+                return ButtonID::BUTTON_4_UP;
             } else
             {
                 if (DEBUG)
                 {
                     cdcDevice->Send((uint8_t*)"BUTTON_4_DOWN\r\n", 32);
                 }
-                return Button::BUTTON_4_DOWN;
+                return ButtonID::BUTTON_4_DOWN;
             }
         }
 
@@ -341,14 +341,14 @@ Button PollButtons(USBCDCDevice* cdcDevice)
                 {
                     cdcDevice->Send((uint8_t*)"BUTTON_5_UP\r\n", 32);
                 }
-                return Button::BUTTON_5_UP;
+                return ButtonID::BUTTON_5_UP;
             } else
             {
                 if (DEBUG)
                 {
                     cdcDevice->Send((uint8_t*)"BUTTON_5_DOWN\r\n", 32);
                 }
-                return Button::BUTTON_5_DOWN;
+                return ButtonID::BUTTON_5_DOWN;
             }
         }
 
@@ -360,14 +360,14 @@ Button PollButtons(USBCDCDevice* cdcDevice)
                 {
                     cdcDevice->Send((uint8_t*)"BUTTON_6_UP\r\n", 32);
                 }
-                return Button::BUTTON_6_UP;
+                return ButtonID::BUTTON_6_UP;
             } else
             {
                 if (DEBUG)
                 {
                     cdcDevice->Send((uint8_t*)"BUTTON_6_DOWN\r\n", 32);
                 }
-                return Button::BUTTON_6_DOWN;
+                return ButtonID::BUTTON_6_DOWN;
             }
         }
         if (data[2] & 0x10)
@@ -378,14 +378,14 @@ Button PollButtons(USBCDCDevice* cdcDevice)
                 {
                     cdcDevice->Send((uint8_t*)"BUTTON_7_UP\r\n", 32);
                 }
-                return Button::BUTTON_7_UP;
+                return ButtonID::BUTTON_7_UP;
             } else
             {
                 if (DEBUG)
                 {
                     cdcDevice->Send((uint8_t*)"BUTTON_7_DOWN\r\n", 32);
                 }
-                return Button::BUTTON_7_DOWN;
+                return ButtonID::BUTTON_7_DOWN;
             }
         }
         if (data[2] & 0x08)
@@ -396,14 +396,14 @@ Button PollButtons(USBCDCDevice* cdcDevice)
                 {
                     cdcDevice->Send((uint8_t*)"BUTTON_8_UP\r\n", 32);
                 }
-                return Button::BUTTON_8_UP;
+                return ButtonID::BUTTON_8_UP;
             } else
             {
                 if (DEBUG)
                 {
                     cdcDevice->Send((uint8_t*)"BUTTON_8_DOWN\r\n", 32);
                 }
-                return Button::BUTTON_8_DOWN;
+                return ButtonID::BUTTON_8_DOWN;
             }
         }
         if (data[2] & 0x04)
@@ -414,14 +414,14 @@ Button PollButtons(USBCDCDevice* cdcDevice)
                 {
                     cdcDevice->Send((uint8_t*)"BUTTON_9_UP\r\n", 32);
                 }
-                return Button::BUTTON_9_UP;
+                return ButtonID::BUTTON_9_UP;
             } else
             {
                 if (DEBUG)
                 {
                     cdcDevice->Send((uint8_t*)"BUTTON_9_DOWN\r\n", 32);
                 }
-                return Button::BUTTON_9_DOWN;
+                return ButtonID::BUTTON_9_DOWN;
             }
         }
         if (data[1] & 0x04)
@@ -432,14 +432,14 @@ Button PollButtons(USBCDCDevice* cdcDevice)
                 {
                     cdcDevice->Send((uint8_t*)"BUTTON_10_UP\r\n", 32);
                 }
-                return Button::BUTTON_10_UP;
+                return ButtonID::BUTTON_10_UP;
             } else
             {
                 if (DEBUG)
                 {
                     cdcDevice->Send((uint8_t*)"BUTTON_10_DOWN\r\n", 32);
                 }
-                return Button::BUTTON_10_DOWN;
+                return ButtonID::BUTTON_10_DOWN;
             }
         }
         if (data[1] & 0x02)
@@ -450,14 +450,14 @@ Button PollButtons(USBCDCDevice* cdcDevice)
                 {
                     cdcDevice->Send((uint8_t*)"BUTTON_11_UP\r\n", 32);
                 }
-                return Button::BUTTON_11_UP;
+                return ButtonID::BUTTON_11_UP;
             } else
             {
                 if (DEBUG)
                 {
                     cdcDevice->Send((uint8_t*)"BUTTON_11_DOWN\r\n", 32);
                 }
-                return Button::BUTTON_11_DOWN;
+                return ButtonID::BUTTON_11_DOWN;
             }
         }
         if (data[1] & 0x01)
@@ -468,19 +468,19 @@ Button PollButtons(USBCDCDevice* cdcDevice)
                 {
                     cdcDevice->Send((uint8_t*)"BUTTON_12_UP\r\n", 32);
                 }
-                return Button::BUTTON_12_UP;
+                return ButtonID::BUTTON_12_UP;
             } else
             {
                 if (DEBUG)
                 {
                     cdcDevice->Send((uint8_t*)"BUTTON_12_DOWN\r\n", 32);
                 }
-                return Button::BUTTON_12_DOWN;
+                return ButtonID::BUTTON_12_DOWN;
             }
         }
     }
 
-    return Button::BUTTON_NONE;
+    return ButtonID::BUTTON_NONE;
 }
 
 static inline void irq_disable()
