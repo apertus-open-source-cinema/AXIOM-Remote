@@ -67,16 +67,16 @@ void LogException(const char id[4])
     uart2_long(address);
     uart2_str0(" C:");
     uart2_byte(cause);
-    uart2_str0(" RA: ");
+    uart2_str0(" RA:");
     uart2_long(ra);
-    uart2_str0(" V0: ");
+    uart2_str0(" V0:");
     uart2_long(v0);
-    uart2_str0(" V1: ");
+    uart2_str0(" V1:");
     uart2_long(v1);
     uart2_str0("\r\n");
 }
 
-extern "C" void _general_exception_handler(void)
+extern "C" void __attribute__((nomips16)) _general_exception_handler(void)
 {
     LogException((const char*)"GE");
 
@@ -85,7 +85,7 @@ extern "C" void _general_exception_handler(void)
     }
 }
 
-extern "C" void _simple_tlb_refill_exception_handler(void)
+extern "C" void __attribute__((nomips16)) _simple_tlb_refill_exception_handler(void)
 {
     LogException((const char*)"TLB");
 

@@ -1,6 +1,6 @@
 # AXIOM Remote Firmware
 
-This software runs bare metal on the PIC32MZ. 
+This software runs bare metal on the PIC32MZ.
 
 Further documentation/hardware schematics please see:
 <https://wiki.apertus.org/index.php/AXIOM_Remote>
@@ -9,10 +9,10 @@ Further documentation/hardware schematics please see:
 
 Good User Interface (UI) / User Experience (UX) principles:
 
-* any button/knob/dial (anything the user can interact with) should clearly show what will happen when it is pressed/turned/operated before doing so. Button labels should use actions like “Set” or “Start” instead of “OK” or “Yes”, etc. If turning the knob has an effect it should be clearly shown what will happen with icons/graphics/etc. No button should be called “User 1” or “A”, “B”, etc.
-* The different screens should have a clear hierarchy or layout structure (like a big map) so the user always knows “where am I currently”. This shall be achieved with breadcrumbs, scrollbars, navigation bars, clear headers, shifting animations when switching screens, etc.
-* Creating operating experience by using clear patterns for button placements. Eg. The CANCEL button is always at the bottom left, the primary action button always at the bottom right. The HOME and BACK buttons are always in the same place in the left sidebar. This makes learning the UI easy and fast, avoids confusion and creates trust.
-* Big camera manufacturer Sony is known for their "infamous" UI designs choices with their cameras. A main problem they have is that setting some options have wide reaching implications that are not made obvious in the UI. For example some codecs require more processing power than others resulting in higher battery drain so Sony dims the LCD brightness to reduce battery drain and processor overheating with that particular codec. The user is not supplied with any such information so starts to wonder why the LCD is suddenly darker after choosing another codec. -> Any implication an action has should always be communicated in the UI before executing such action - if there is no space/way to do it in the menu/page directly this can be done for example in a “confirm action screen” that pops up when the user chooses to execute a change. Also options that are disabled because of another setting should never just disappear, rather they should be read-only and show an explanation why this option is disabled, example: “100 fps - disabled because of codec choice ABC..”.
+- any button/knob/dial (anything the user can interact with) should clearly show what will happen when it is pressed/turned/operated before doing so. Button labels should use actions like “Set” or “Start” instead of “OK” or “Yes”, etc. If turning the knob has an effect it should be clearly shown what will happen with icons/graphics/etc. No button should be called “User 1” or “A”, “B”, etc.
+- The different screens should have a clear hierarchy or layout structure (like a big map) so the user always knows “where am I currently”. This shall be achieved with breadcrumbs, scrollbars, navigation bars, clear headers, shifting animations when switching screens, etc.
+- Creating operating experience by using clear patterns for button placements. Eg. The CANCEL button is always at the bottom left, the primary action button always at the bottom right. The HOME and BACK buttons are always in the same place in the left sidebar. This makes learning the UI easy and fast, avoids confusion and creates trust.
+- Big camera manufacturer Sony is known for their "infamous" UI designs choices with their cameras. A main problem they have is that setting some options have wide reaching implications that are not made obvious in the UI. For example some codecs require more processing power than others resulting in higher battery drain so Sony dims the LCD brightness to reduce battery drain and processor overheating with that particular codec. The user is not supplied with any such information so starts to wonder why the LCD is suddenly darker after choosing another codec. -> Any implication an action has should always be communicated in the UI before executing such action - if there is no space/way to do it in the menu/page directly this can be done for example in a “confirm action screen” that pops up when the user chooses to execute a change. Also options that are disabled because of another setting should never just disappear, rather they should be read-only and show an explanation why this option is disabled, example: “100 fps - disabled because of codec choice ABC..”.
 
 ## Terms used in GUI
 
@@ -24,29 +24,27 @@ Following terms can help understand the GUI better:
 
 **Screen**: refers to the entire content of the LCD visible at one time. Currently, there are two types of screens: Pages and Menus
 
-
 **Page**: A page refers to the display type where the 12 buttons around the TFT are utilized for navigation/operation. Each of the 6 PageItem on screen is associated with one of the three buttons above or below the TFT. Pages could be seen like "desktops" on a PC with icons on them to click.
 
 **PageItem**: Each item on a page acts like a button and can execute an action or can lead to another page or menu when clicked
 
- **Menu**: It refers to a screen with a header (showing breadcrumbs) and 7 menu_items displayed at the same time on the LCD (scrollbars are automatically shown if more than 7 menu items are present. A menu is typically navigated with the rotary/push knob. 
+**Menu**: It refers to a screen with a header (showing breadcrumbs) and 7 menu_items displayed at the same time on the LCD (scrollbars are automatically shown if more than 7 menu items are present. A menu is typically navigated with the rotary/push knob.
 
 <img src="../Docs/Images/Structure/menu_illustration.png">
 
-**MenuItem**: It refers to one option/line in the menu, can be hidden or disabled and can show readonly information, lead to another submenu or contain a boolean, numeric or dropdown list like selection. 
+**MenuItem**: It refers to one option/line in the menu, can be hidden or disabled and can show readonly information, lead to another submenu or contain a boolean, numeric or dropdown list like selection.
 
-**PopUpParameterMenu**: This menu pops up when a menu item containing a dropdown list selection parameter is clicked. A black circle before an item shows the currently active option. A highlighted line shows the current selection/cursor. This menu only works for 7 or less choices and the options strings need to be relatively short to fit the screen area. *(class: PopUpParameterMenu)*
+**PopUpParameterMenu**: This menu pops up when a menu item containing a dropdown list selection parameter is clicked. A black circle before an item shows the currently active option. A highlighted line shows the current selection/cursor. This menu only works for 7 or less choices and the options strings need to be relatively short to fit the screen area. _(class: PopUpParameterMenu)_
 
 <img src="../Docs/Images/Structure/PopUpParameterMenu.png">
 
-**ParameterListScreen**: Works like the PopUpParameterMenu but uses the entire screen to display choices. It also works with more than 7 choices. The currently highlighted choice is kept in the center and options scroll through underneath. A black circle before an item shows the currently active option. *(class: ParameterListScreen)*
+**ParameterListScreen**: Works like the PopUpParameterMenu but uses the entire screen to display choices. It also works with more than 7 choices. The currently highlighted choice is kept in the center and options scroll through underneath. A black circle before an item shows the currently active option. _(class: ParameterListScreen)_
 
 <img src="../Docs/Images/Structure/ParameterListScreen.png">
 
 **NumericValueScreen**: To set a parameter to a numeric value (Integer) there is a special screen that shows the range of avaiable values (minimum on the left, maximum on the right). A stepsize can be defined to set how much the value should increase/decrease with one step of the jog wheel. A header shows what parameter is currently being altered. No float values can be set.
 
 <img src="../Docs/Images/Structure/NumericValueScreen.png">
-
 
 ## Usage instructions
 
@@ -55,18 +53,19 @@ Following terms can help understand the GUI better:
 
 ## Important classes
 
-* Interfaces start with capital i, e.g. _IButton_ or _IScreen_
-  * They should be used in most cases when passing data to classes, methods etc.
+- Interfaces start with capital i, e.g. _IButton_ or _IScreen_
+  - They should be used in most cases when passing data to classes, methods etc.
 
 | Interface | Description           | Usage examples               |
 | --------- | --------------------- | ---------------------------- |
 | IButton   | Interface for buttons | PushButton, ImageButton      |
 | IScreen   | Interface for screens | MainPage, WhiteBalanceScreen |
 
-* General functionality should be placed in the base class, like title drawing or button bar handling
-  * we do not have a strict division for now, which is normally done in OOP, so it's fine to extend the interface class, like IScreeen, with caption and button bar rendering and handling
+- General functionality should be placed in the base class, like title drawing or button bar handling
 
-  * If different behavior is required, then it can easily be overridden in C++, see **virtual** and **override** keywords. One of the advantages is reduced probability of errors, because the code is only placed in one class.
+  - we do not have a strict division for now, which is normally done in OOP, so it's fine to extend the interface class, like IScreeen, with caption and button bar rendering and handling
+
+  - If different behavior is required, then it can easily be overridden in C++, see **virtual** and **override** keywords. One of the advantages is reduced probability of errors, because the code is only placed in one class.
 
 ## LCD
 
@@ -104,6 +103,7 @@ This would allow rendering the required bars automatically. If we have to deacti
 To communicate between AXIOM Remote and AXIOM Camera a simple ASCII based line prototcol is currently envisioned (not implemented yet):
 
 Format:
+
 ```
 Xyyyy(<RS>FIELD)*<EOT>zz<NUL>
 ```
@@ -125,6 +125,7 @@ After the id a variable number of fields can follow. Each field is prefixed by R
 For replies the id matches the id of the (get or set) request. The replies are allowed to occur out of order.
 
 example:
+
 ```
 [remote to beta] G0000<RS>analog_gain<EOT>35<NUL>
 [remote to beta] G0001<RS>analog_gain<EOT>d0<NUL>
@@ -138,18 +139,21 @@ The remote should use a timeout of `1s` for long running requests.
 
 If the AXIOM Remote crashes on a general exception (handlers for other exceptions are not implemented yet) information about the cause and code address will be transmitted over UART.
 
-Example: 
+Example:
+
 ```
-GE EA:9D005988 C:0D
+GE EA:9D011514 C:0D RA:9D011458 V0:80028160 V1:9D01E400
 ```
 
 ### Fields
 
-| Name | Description       |
-| ---- | ----------------- |
-| GE   | General exception |
-| EA   | Exception address |
-| C    | Cause             |
+| Name    | Description                         |
+| ------- | ----------------------------------- |
+| GE      | General exception                   |
+| EA      | Exception address                   |
+| C       | Cause                               |
+| RA      | Return address of last function     |
+| V0 / V1 | Additional attributes, usage varies |
 
 Note that the fields values are displayed in hexadecimal.
 
