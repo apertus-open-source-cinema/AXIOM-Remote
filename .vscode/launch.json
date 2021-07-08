@@ -23,6 +23,30 @@
                 }
             ],
             "preLaunchTask": "Build visualiser"
+        },
+        {
+            "name": "Debug PIC32 firmware",
+            "type": "cppdbg",
+            "request": "launch",
+            "stopAtEntry": true,
+            "cwd": "${workspaceRoot}/Firmware/",
+            "program": "${workspaceRoot}/Firmware/build/AXIOM_Remote_Firmware.elf",
+            "MIMode": "gdb",
+            "miDebuggerPath": "/usr/bin/gdb-multiarch",
+            "externalConsole": false,
+            "setupCommands": [
+                {
+                    "description": "Enable pretty-printing for gdb",
+                    "text": "-enable-pretty-printing",
+                    "ignoreFailures": true,
+                },
+                {
+                    "text": "tar ext :2000",
+                },
+                {
+                    "text": "monitor reset init",
+                }
+            ],
         }
     ]
 }
