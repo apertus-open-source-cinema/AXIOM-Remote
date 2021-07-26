@@ -377,8 +377,6 @@ void ILI9341Display::Initialize()
 //    SendCommandPMP(ILI9341_RAMWR); // write to RAM
 //}
 
-
-
 void ILI9341Display::SetArea(uint16_t x, uint16_t y, uint16_t width, uint16_t height)
 {
     areaX = x;
@@ -411,9 +409,6 @@ void ILI9341Display::DisplayFramebuffer()
         for (uint16_t x = areaX; x < areaX + areaWidth + 1; ++x)
         {
             WritePMP(_framebuffer[x + y * 320]);
-            SendCommandPMP(ILI9341_VSCRSADD);
-            WritePMP(0);
-            WritePMP(20);
         }
     }
 

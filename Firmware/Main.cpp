@@ -540,6 +540,7 @@ int main()
 
     UART uart;
     uart.Initialize(921600);
+    uart.SendText("--- AXIOM Remote firmware ---\r\n");
 
     // CAUTION: Exception trigger (division-by-zero)
     // int i = 0;
