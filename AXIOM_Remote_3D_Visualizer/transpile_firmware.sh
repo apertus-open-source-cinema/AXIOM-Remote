@@ -18,7 +18,9 @@ SOURCES="FirmwareBinder/FirmwareBinder.cpp \
          ../Firmware/UI/Widgets/NumericMenuItem.cpp  \
          ../Firmware/CentralDB/Attribute.cpp \
          ../Firmware/CentralDB/CentralDB.cpp \
-         ../Firmware/CentralDB/CentralDBObserver.cpp"
+         ../Firmware/CentralDB/CentralDBObserver.cpp \
+         ../Firmware/GlobalSettings.cpp"
+
          
 emsdk-run emcc -O2 -Wcast-align -Wover-aligned -fsanitize=undefined -s WARN_UNALIGNED=1 -s INITIAL_MEMORY=268435456 --bind -fexceptions -s ENVIRONMENT=web -s WASM=1 -s ASSERTIONS=1 -std=c++11 -s MODULARIZE=1 -s EXPORT_NAME="axiomRemoteFirmware" $SOURCES -o src/js/FW/axiom_remote_firmware.js
 #-fsanitize=address 

@@ -19,9 +19,11 @@ jobs:
           npm run build
       - persist_to_workspace:
           root: AXIOM_Remote_3D_Visualizer
-          paths: dist
+          paths: ["dist"]
 
   deploy-html:
+    docker:
+      - image: cimg/node:16.0.0
     steps:
       - attach_workspace:
           at: ./
