@@ -109,13 +109,15 @@ workflows:
               ignore:
                 - gh-pages
       - build-3d:
+          requires:
+            - build
           filters:
             branches:
               ignore:
                 - gh-pages
       - deploy-html:
           requires:
-            - build
+            - build-3d
           filters:
             branches:
               ignore:
