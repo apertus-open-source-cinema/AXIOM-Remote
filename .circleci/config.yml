@@ -9,7 +9,7 @@ jobs:
       - image: bandit1983/xc32_ubuntu:latest
     environment:
       MP_CC: /opt/microchip/xc32/v3.00/bin/xc32-gcc
-      MP_CC_DIR: /opt/microchip/xc32/v3.00/bin/      
+      MP_CC_DIR: /opt/microchip/xc32/v3.00/bin/
     steps:
       - checkout
       - run:
@@ -97,12 +97,12 @@ workflows:
   version: 2
   build_and_test:
     jobs:
-      - build
+      - build:
           filters:
             branches:
               ignore:
                 - gh-pages
-      - test
+      - test:
           filters:
             branches:
               ignore:
