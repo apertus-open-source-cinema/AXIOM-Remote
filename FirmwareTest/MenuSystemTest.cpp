@@ -4,15 +4,15 @@
 
 #include "PainterMod.h"
 
-class DummyUSBDevice : public IUSBDevice
-{
-};
+// class DummyUSBDevice : public IUSBDevice
+// {
+// };
 
 TEST_CASE("SetCurrentScreen test")
 {
-    DummyUSBDevice dummyUSBDevice;
+    // DummyUSBDevice dummyUSBDevice;
     CentralDB centralDB;
-    MenuSystem menuSystem(&dummyUSBDevice, &centralDB);
+    MenuSystem menuSystem(nullptr, &centralDB);
     menuSystem.SetCurrentScreen(AvailableScreens::MainMenu);
 
     REQUIRE(menuSystem.GetCurrentScreen() == AvailableScreens::MainMenu);
@@ -20,9 +20,9 @@ TEST_CASE("SetCurrentScreen test")
 
 TEST_CASE("Draw test")
 {
-    DummyUSBDevice dummyUSBDevice;
+    // DummyUSBDevice dummyUSBDevice;
     CentralDB centralDB;
-    MenuSystem menuSystem(&dummyUSBDevice, &centralDB);
+    MenuSystem menuSystem(nullptr, &centralDB);
 
     uint16_t* framebuffer = new uint16_t[FRAMEBUFFER_WIDTH * FRAMEBUFFER_HEIGHT];
     PainterMod painter(framebuffer, FRAMEBUFFER_WIDTH, FRAMEBUFFER_HEIGHT);
