@@ -25,6 +25,7 @@ jobs:
     docker:
       - image: cimg/node:16.0.0
     steps:
+      - checkout
       - attach_workspace:
           at: ./
       - gh-pages/deploy:
