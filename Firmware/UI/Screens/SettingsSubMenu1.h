@@ -14,9 +14,9 @@
 
 #include "../../GlobalSettings.h"
 
-#include "Periphery/USB/IUSBDevice.h"
-
 //#include <Helpers.h>
+
+class IUSBDevice;
 
 class SettingsSubMenu1 : public Menu
 {
@@ -27,25 +27,7 @@ class SettingsSubMenu1 : public Menu
 
   public:
     // TODO: Add assignment of menu system to IMenu
-    explicit SettingsSubMenu1(IUSBDevice* cdcDevice, CentralDB* centraldb) : Menu(cdcDevice, centraldb)
-    {
-
-        _label = "Menu";
-        _menuBreadcrumbs = "Menu > SubMenu 1";
-
-        // Added for testing
-        _menuItemBack = ScreenLinkMenuItem(_db, "< Up", AvailableScreens::MainMenu, false);
-        AddMenuItem(&_menuItemBack);
-
-        _menuItemOpt1 = MenuItem(_db, "Option 1");
-        AddMenuItem(&_menuItemOpt1);
-
-        _menuItemOpt2 = MenuItem(_db, "Option 2");
-        AddMenuItem(&_menuItemOpt2);
-
-        _menuItemOpt3 = MenuItem(_db, "Option 3");
-        AddMenuItem(&_menuItemOpt3);
-    }
+    explicit SettingsSubMenu1(IUSBDevice* cdcDevice, CentralDB* centraldb);
 };
 
 #endif // SETTINGSSUBMENU1_H

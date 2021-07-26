@@ -1,0 +1,32 @@
+{
+  "name": "axiom_remote_3d_visualizer",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "transpile_firmware": "./transpile_firmware.sh",
+    "dev": "webpack serve --hot --inline --open",
+    "build": "webpack build"
+  },
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "animejs": "^3.2.1",
+    "postprocessing": "^6.22.2",
+    "pubsub-js": "^1.9.3",
+    "three": "^0.130.1"
+  },
+  "browser": {
+    "fs": false,
+    "path": false,
+    "os": false
+  },
+  "devDependencies": {
+    "copy-webpack-plugin": "^9.0.1",
+    "emscripten-sdk": "Sxxov/emscripten-sdk-npm",
+    "webpack": "^5.46.0",
+    "webpack-cli": "^4.7.2",
+    "webpack-dev-server": "^3.11.2"
+  }
+}

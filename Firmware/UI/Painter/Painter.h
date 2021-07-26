@@ -15,8 +15,8 @@
 
 class Painter : public IPainter
 {
-    GFXfont _fontList[4];
-    GFXfont _currentFont;
+    const GFXfont* _fontList[4];
+    GFXfont* _currentFont;
     uint8_t _currentFontHeight;
 
     uint16_t _cursorX;
@@ -33,7 +33,7 @@ class Painter : public IPainter
     Painter(volatile uint16_t* framebuffer, uint16_t framebufferWidth, uint8_t framebufferHeight);
 
     // Debugging
-    void SetDebugOverlay(IDebugPainter* debugPainter);
+    void SetDebugOverlay(IDebugPainter* debugPainter) override;
 
     // Primitives
     void DrawLine(int16_t x0, int16_t y0, int16_t x1, int16_t y1, uint16_t color) override;

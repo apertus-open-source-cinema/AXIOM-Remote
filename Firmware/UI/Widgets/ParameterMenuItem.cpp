@@ -110,17 +110,17 @@ void ParameterMenuItem::SetLabel(const char* value)
     _label = value;
 }
 
-char const* ParameterMenuItem::GetLabel()
+const char* ParameterMenuItem::GetLabel()
 {
     return _label;
 }
 
-void ParameterMenuItem::SetValue(char const* value)
+void ParameterMenuItem::SetValue(const char* value)
 {
     _value = value;
 }
 
-char const* ParameterMenuItem::GetValue()
+const char* ParameterMenuItem::GetValue()
 {
     return _value;
 }

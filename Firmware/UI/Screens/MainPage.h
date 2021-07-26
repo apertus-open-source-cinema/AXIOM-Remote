@@ -32,9 +32,6 @@ class MainPage : public IMenu
 
     void SetupButtons();
 
-  public:
-    explicit MainPage(IUSBDevice* cdcDevice);
-
   protected:
     virtual Color565 GetBackgroundColor() override;
     virtual void SetBackgroundColor(Color565 color);
@@ -45,6 +42,9 @@ class MainPage : public IMenu
 
     void Draw(IPainter* painter) override;
     void Update(ButtonID button, int8_t knob, IMenuSystem* menuSystem) override;
+
+  public:
+    explicit MainPage(IUSBDevice* cdcDevice);
 };
 
 #endif /* MAINPAGE_H */

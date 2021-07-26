@@ -30,8 +30,8 @@ class Menu : public IMenu
     MenuItem* _menuItem[64] = {nullptr};
 
   protected:
-    char const* _label;
-    char const* _menuBreadcrumbs;
+    const char* _label;
+    const char* _menuBreadcrumbs;
 
     uint8_t _menuItemsCount;
     uint8_t _menuSelectionIndex;

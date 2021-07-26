@@ -13,7 +13,7 @@ class ParameterListMenuItem : public MenuItem
     uint8_t _previousOptionIndex; // this item is the "old" selected choice but remains in effcet until the parameter
                                   // menu select has been completed
     uint8_t _optionCount;         // number of parameter menu entries
-    char const* _optionLabels[64];
+    const char* _optionLabels[64];
     uint8_t _choiceIndex;
 
   public:
@@ -31,7 +31,7 @@ class ParameterListMenuItem : public MenuItem
         }
     }
 
-    char const* GetOption(uint8_t index)
+    const char* GetOption(uint8_t index)
     {
         return _optionLabels[index];
     }

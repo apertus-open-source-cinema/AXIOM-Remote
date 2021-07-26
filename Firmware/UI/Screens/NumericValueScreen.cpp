@@ -51,7 +51,7 @@ void NumericValueScreen::SetHeader(const char* value)
     _header = value;
 }
 
-char const* NumericValueScreen::GetHeader()
+const char* NumericValueScreen::GetHeader()
 {
     return _header;
 }
@@ -104,7 +104,7 @@ void NumericValueScreen::Draw(IPainter* painter)
     uint8_t heightcenter = GlobalSettings::LCDHeight / 2;
     uint8_t fontcenter = heightcenter + painter->GetCurrentFontHeight() / 2;
     char valuestring[8];
-    sprintf(valuestring, "%d%s", _value, _suffix);
+    // sprintf(valuestring, "%d%s", _value, _suffix);
     painter->DrawText(0, fontcenter, valuestring, _textColor, TextAlign::TEXT_ALIGN_CENTER, GlobalSettings::LCDWidth);
 
     // center line
@@ -120,13 +120,13 @@ void NumericValueScreen::Draw(IPainter* painter)
     // draw min Range
     char minvaluestring[8];
     painter->SetFont(Font::FreeSans9pt7b);
-    sprintf(minvaluestring, "%d", _minRange);
+    // sprintf(minvaluestring, "%d", _minRange);
     painter->DrawText(5, fontcenter, minvaluestring, _textColor, TextAlign::TEXT_ALIGN_LEFT, 0);
     painter->DrawLine(5, fontcenter, 5, fontcenter + 10, _textColor);
 
     // draw max Range
     char maxvaluestring[8];
-    sprintf(maxvaluestring, "%d", _maxRange);
+    // sprintf(maxvaluestring, "%d", _maxRange);
 
     painter->DrawText(GlobalSettings::LCDWidth - 50, fontcenter, maxvaluestring, _textColor,
                       TextAlign::TEXT_ALIGN_RIGHT, 45);

@@ -32,8 +32,8 @@ class MenuItem : public IWidget
     bool _hidden;
     bool _pressed;
     bool _highlighted;
-    char const* _label;
-    char const* _value;
+    const char* _label;
+    const char* _value;
     MenuItemType _type;
 
     uint16_t _backgroundColor;
@@ -60,52 +60,36 @@ class MenuItem : public IWidget
              const char* value = nullptr, bool hidden = false, bool pressed = false, bool highlighted = false,
              MenuItemType type = MenuItemType::MENU_ITEM_TYPE_NONE);
 
-    void SetDisabled(bool disabled);
-
     virtual void SetHandler(void (*handler)(void*, CentralDB*));
 
     void Activate(void* sender);
 
-    void attachObserver();
-
-    bool IsDisabled();
+    void SetDisabled(bool disabled);
+    bool IsDisabled() const;
 
     void SetHidden(bool hide);
-    bool IsHidden();
+    bool IsHidden() const;
 
     void SetPressed(bool pressed);
-    bool IsPressed();
+    bool IsPressed() const;
 
     void SetHighlighted(bool highlighted);
-
-    bool IsHighlighted();
+    bool IsHighlighted() const;
 
     void SetLabel(const char* value);
-    char const* GetLabel();
+    const char* GetLabel() const;
 
-    void SetValue(char const* value);
-    char const* GetValue();
+    void SetValue(const char* value);
+    const char* GetValue() const;
 
     void SetMenuType(MenuItemType type);
-
-    MenuItemType GetMenuType();
-
-    /*void SetDimensions(uint16_t x, uint16_t y, uint16_t width, uint16_t height)
-    {
-        _x = x;
-        _y = y;
-
-        _width = width;
-        _height = height;
-    }*/
+    MenuItemType GetMenuType() const;
 
     void SetY(uint16_t y);
 
     void Draw(IPainter* painter) override;
 
     virtual void ExecuteAction(IMenuSystem* menuSystem);
-
-    void update();
 };
 
 #endif /* MENUITEM_H */

@@ -42,124 +42,33 @@ class ImageButton : public IButton
     ButtonStyle _buttonStyle;
 
   public:
-    explicit ImageButton(const Icon* icon, uint16_t x = 0, uint16_t y = 0, uint16_t width = 0, uint16_t height = 0) :
-        IButton(x, y, width, height), _image(icon), _cornerRadius(3), _highlighted(false),
-        _imageColor((uint16_t)Color565::Black), _backgroundColor(utils::RGB565(220, 220, 220)),
-        _backgroundHighlightColor((uint16_t)Color565::AXIOM_Blue), _currentImageColor(_imageColor),
-        _currentBackgroundColor(utils::RGB565(220, 220, 220)), _buttonStyle(ButtonStyle::Icon)
-    {
-        _totalWidth = _image->Width;
-        _textPositionY = _height / 2;
-        _imagePositionX = _width / 2 - _totalWidth / 2;
-        _textPositionX = _imagePositionX + _image->Width;
-    }
+    explicit ImageButton(const Icon* icon, uint16_t x = 0, uint16_t y = 0, uint16_t width = 0, uint16_t height = 0);
 
-    void SetCornerRadius(uint8_t cornerRadius)
-    {
-        _cornerRadius = cornerRadius;
-    }
+    void SetCornerRadius(uint8_t cornerRadius);
 
-    void SetButtonStyle(ButtonStyle buttonstyle)
-    {
-        _buttonStyle = buttonstyle;
-        /*if (buttonstyle == ButtonStyle::IconAndText)
-        {
-        }*/
-    }
+    void SetButtonStyle(ButtonStyle buttonstyle);
 
-    ButtonStyle GetButtonStyle()
-    {
-        return _buttonStyle;
-    }
+    ButtonStyle GetButtonStyle() const;
 
-    void SetLabel(const char* value)
-    {
-        _label = value;
+    void SetLabel(const char* value);
 
-        // painter->SetFont(Font::FreeSans12pt7b);
-        //_labelWidth = painter->GetStringFramebufferWidth(_label);
-    }
+    const char* GetLabel() const;
 
-    char const* GetLabel()
-    {
-        return _label;
-    }
+    virtual void Draw(IPainter* painter) override;
 
-    virtual void Draw(IPainter* painter) override
-    {
-        painter->DrawFillRoundRectangle(_x, _y, _width, _height, _cornerRadius, _currentBackgroundColor);
+    void SetBackgroundColor(uint16_t color);
 
-        if (_buttonStyle == ButtonStyle::IconAndText)
-        {
-            painter->SetFont(Font::FreeSans12pt7b);
+    void SetImageColor(uint16_t color);
 
-            _totalWidth +=
-                painter->GetStringFramebufferWidth(_label); // TODO: This should not be recalculated with every redraw
-            _textPositionY +=
-                painter->GetCurrentFontHeight() / 2; // TODO: This should not be recalculated with every redraw
+    void SetTextColor(uint16_t color);
 
-            painter->DrawIcon(_image, _x + _imagePositionX, _y + _height / 2 - _image->Height / 2, _currentImageColor);
-            painter->DrawText(_x + _textPositionX, _y + _textPositionY, _label, _currentTextColor,
-                              TextAlign::TEXT_ALIGN_LEFT, strlen(_label));
-        } else if (_buttonStyle == ButtonStyle::Icon)
-        {
-            painter->DrawIcon(_image, _x + _width / 2 - _image->Width / 2, _y + _height / 2 - _image->Height / 2,
-                              _currentImageColor);
-        }
-    }
+    void SetHighlightBackgroundColor(uint16_t color);
 
-    void SetBackgroundColor(uint16_t color)
-    {
-        _backgroundColor = color;
-        SetHighlighted(_highlighted);
-    }
+    void SetHighlightImageColor(uint16_t color);
 
-    void SetImageColor(uint16_t color)
-    {
-        _imageColor = color;
-        SetHighlighted(_highlighted);
-    }
+    void SetHighlightTextColor(uint16_t color);
 
-    void SetTextColor(uint16_t color)
-    {
-        _textColor = color;
-        SetHighlighted(_highlighted);
-    }
-
-    void SetHighlightBackgroundColor(uint16_t color)
-    {
-        _backgroundHighlightColor = color;
-        SetHighlighted(_highlighted);
-    }
-
-    void SetHighlightImageColor(uint16_t color)
-    {
-        _imageHighlightColor = color;
-        SetHighlighted(_highlighted);
-    }
-
-    void SetHighlightTextColor(uint16_t color)
-    {
-        _textHighlightColor = color;
-        SetHighlighted(_highlighted);
-    }
-
-    void SetHighlighted(bool highlighted)
-    {
-        _highlighted = highlighted;
-        if (highlighted)
-        {
-            _currentImageColor = _imageHighlightColor;
-            _currentBackgroundColor = _backgroundHighlightColor;
-            _currentTextColor = _textHighlightColor;
-
-        } else
-        {
-            _currentImageColor = _imageColor;
-            _currentBackgroundColor = _backgroundColor;
-            _currentTextColor = _textColor;
-        }
-    }
+    void SetHighlighted(bool highlighted);
 };
 
 #endif // IMAGEBUTTON_H

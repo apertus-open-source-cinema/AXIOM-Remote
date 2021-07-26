@@ -59,4 +59,10 @@ enum class ButtonID
     E_2_UP,
 };
 
+enum class ButtonState
+{
+    Pressed,
+    Released
+};
+
 #endif // BUTTONDEFINITIONS_H

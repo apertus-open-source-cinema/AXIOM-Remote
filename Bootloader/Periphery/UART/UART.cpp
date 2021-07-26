@@ -22,12 +22,6 @@ void UART::Initialize(uint32_t baudRate)
 {
     U2MODEbits.ON = 0;
 
-    ANSELEbits.ANSE8 = 0; // digital
-    ANSELEbits.ANSE9 = 0; // digital
-
-    TRISEbits.TRISE8 = 0; // U2TX out
-    TRISEbits.TRISE9 = 1; // U2RX in
-
     CFGCONbits.IOLOCK = 0;
     RPE8Rbits.RPE8R = 0b0010; // U2TX
     U2RXRbits.U2RXR = 0b1101; // RPE9
@@ -42,20 +36,25 @@ void UART::Initialize(uint32_t baudRate)
     IFS4bits.U2TXIF = 0;         //! Clear Tx flag
     IFS4bits.U2RXIF = 0;         //! Clear Rx flag
 
-    U2TXREG = 0;
+    //    U2TXREG = 0;
     // IEC4bits.U2TXIE = 1; //! Enable Tx flag
     // IPC36bits.U2TXIP = 1;
     IEC4bits.U2RXIE = 1; //! Enable Rx flag
     IPC36bits.U2RXIP = 1;
 
-    uint32_t peripheralBusClock = (CPU_FREQ / 2);
-    U2BRG = peripheralBusClock / (4 * baudRate) - 1;
+    U2BRG = PBCLK_FREQ / (4 * baudRate) - 1;
     U2STA = 0;
 
     U2MODEbits.BRGH = 1;
     U2MODEbits.PDSEL = 0b00;
     U2MODEbits.STSEL = 0;
     U2MODEbits.UEN = 0b00;
+
+    ANSELEbits.ANSE8 = 0; // digital
+    ANSELEbits.ANSE9 = 0; // digital
+
+    TRISEbits.TRISE8 = 0; // U2TX out
+    TRISEbits.TRISE9 = 1; // U2RX in
 
     U2MODEbits.ON = 1;
 
@@ -74,7 +73,9 @@ inline void SendChar(const unsigned char ch)
 void UART::SendText(const char* message) const
 {
     while (*message)
+    {
         SendChar(*message++);
+    }
 }
 
 void UART::SendLine(const char* message) const
@@ -94,13 +95,13 @@ void UART::SendHex(uint8_t value) const
         SendChar(value + '0');
 }
 
-void UART::SendByte(uint8_t value) const
+void UART::SendByte(const uint8_t value) const
 {
     SendHex(value >> 4);
     SendHex(value);
 }
 
-void StoreInFIFO(char ch)
+inline void StoreInFIFO(const char ch)
 {
     stringBuffer[bufferIndex] = ch;
     bufferIndex++;
@@ -108,10 +109,9 @@ void StoreInFIFO(char ch)
 
 extern "C" void __ISR(_UART2_RX_VECTOR, IPL6SRS) UART2_ISR(void)
 {
-    char ch;
     while (U2STAbits.URXDA)
     {
-        ch = U2RXREG;
+        char ch = U2RXREG;
 
         StoreInFIFO(ch);
 

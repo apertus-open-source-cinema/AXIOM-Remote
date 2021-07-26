@@ -44,15 +44,7 @@ void MenuItem::Activate(void* sender)
     _handlerPtr(sender, _db);
 }
 
-void MenuItem::attachObserver()
-{
-    /* if (_db != nullptr)
-     {
-         _db->attach(&_observer);
-     }*/
-}
-
-bool MenuItem::IsDisabled()
+bool MenuItem::IsDisabled() const
 {
     return _disabled;
 }
@@ -62,7 +54,7 @@ void MenuItem::SetHidden(bool hide)
     _hidden = hide;
 }
 
-bool MenuItem::IsHidden()
+bool MenuItem::IsHidden() const
 {
     return _hidden;
 }
@@ -91,7 +83,7 @@ void MenuItem::SetPressed(bool pressed)
     }
 }
 
-bool MenuItem::IsPressed()
+bool MenuItem::IsPressed() const
 {
     return _pressed;
 }
@@ -119,7 +111,7 @@ void MenuItem::SetHighlighted(bool highlighted)
     }
 }
 
-bool MenuItem::IsHighlighted()
+bool MenuItem::IsHighlighted() const
 {
     return _highlighted;
 }
@@ -129,17 +121,17 @@ void MenuItem::SetLabel(const char* value)
     _label = value;
 }
 
-char const* MenuItem::GetLabel()
+const char* MenuItem::GetLabel() const
 {
     return _label;
 }
 
-void MenuItem::SetValue(char const* value)
+void MenuItem::SetValue(const char* value)
 {
     _value = value;
 }
 
-char const* MenuItem::GetValue()
+const char* MenuItem::GetValue() const
 {
     return _value;
 }
@@ -153,19 +145,10 @@ void MenuItem::SetMenuType(MenuItemType type)
     }
 }
 
-MenuItemType MenuItem::GetMenuType()
+MenuItemType MenuItem::GetMenuType() const
 {
     return _type;
 }
-
-/*void SetDimensions(uint16_t x, uint16_t y, uint16_t width, uint16_t height)
-{
-    _x = x;
-    _y = y;
-
-    _width = width;
-    _height = height;
-}*/
 
 void MenuItem::SetY(uint16_t y)
 {
@@ -206,9 +189,5 @@ void MenuItem::Draw(IPainter* painter)
 }
 
 void MenuItem::ExecuteAction(IMenuSystem* menuSystem)
-{
-}
-
-void MenuItem::update()
 {
 }

@@ -17,7 +17,7 @@ class IUSBDevice;
 
 class NumericValueScreen : public IScreen
 {
-    char const* _header;
+    const char* _header;
     PushButton _cancelButton;
     ToggleButton _liveButton;
     PushButton _setButton;
@@ -30,7 +30,7 @@ class NumericValueScreen : public IScreen
     int16_t _minRange;
     int16_t _maxRange;
     uint16_t _stepSize;
-    char const* _suffix;
+    const char* _suffix;
 
   public:
     explicit NumericValueScreen(IUSBDevice* usbDevice);
@@ -47,7 +47,7 @@ class NumericValueScreen : public IScreen
 
     void SetHeader(const char* value);
 
-    char const* GetHeader();
+    const char* GetHeader();
 
     void IncreaseValueStep();
 

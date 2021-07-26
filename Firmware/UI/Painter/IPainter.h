@@ -17,7 +17,7 @@ class IPainter
     // {
     // }
 
-    void SetDebugOverlay(IDebugPainter* debugPainter);
+    virtual void SetDebugOverlay(IDebugPainter* debugPainter) = 0;
 
     // Primitives
     virtual void DrawLine(int16_t x0, int16_t y0, int16_t x1, int16_t y1, uint16_t color) = 0;

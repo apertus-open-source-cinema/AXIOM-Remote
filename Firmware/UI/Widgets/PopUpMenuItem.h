@@ -11,7 +11,7 @@ class IPainter;
 class PopUpMenuItem : public MenuItem
 {
     uint8_t _dropDownChoices;
-    char const* _choiceLabels[7];
+    const char* _choiceLabels[7];
     uint8_t _choiceIndex;
 
   public:

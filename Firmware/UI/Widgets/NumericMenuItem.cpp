@@ -22,7 +22,7 @@ void NumericMenuItem::SetSuffix(const char* value)
     _suffix = value;
 }
 
-char const* NumericMenuItem::GetSuffix()
+const char* NumericMenuItem::GetSuffix()
 {
     return _suffix;
 }
@@ -67,7 +67,7 @@ void NumericMenuItem::Draw(IPainter* painter)
 
     // value
     char valuetext[8];
-    sprintf(valuetext, "%d%s", _value, _suffix);
+    // sprintf(valuetext, "%d%s", _value, _suffix);
     painter->DrawText(_x + 180, _y + _verticalLabelOffset, valuetext, _currentTextColor, TextAlign::TEXT_ALIGN_RIGHT,
                       80);
 }

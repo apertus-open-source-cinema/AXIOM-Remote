@@ -15,8 +15,8 @@ class ParameterMenuItem : public IWidget
     bool _pressed;
     bool _highlighted;
     bool _previousChoice;
-    char const* _label;
-    char const* _value;
+    const char* _label;
+    const char* _value;
 
     uint16_t _backgroundColor;
     uint16_t _backgroundHighlightColor;
@@ -56,11 +56,11 @@ class ParameterMenuItem : public IWidget
 
     void SetLabel(const char* value);
 
-    char const* GetLabel();
+    const char* GetLabel();
 
-    void SetValue(char const* value);
+    void SetValue(const char* value);
 
-    char const* GetValue();
+    const char* GetValue();
 
     void SetPreviousChoice(bool previousChoice);
 

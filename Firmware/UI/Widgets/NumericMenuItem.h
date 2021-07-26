@@ -18,7 +18,7 @@ class NumericMenuItem : public MenuItem
     int16_t _maxRange;
     int16_t _stepSize;
 
-    char const* _suffix;
+    const char* _suffix;
 
   public:
     NumericMenuItem(CentralDB* centralDB = nullptr, const char* label = "", int16_t value = 0, int16_t minRange = 0,
@@ -28,7 +28,7 @@ class NumericMenuItem : public MenuItem
 
     void SetSuffix(const char* value);
 
-    char const* GetSuffix();
+    const char* GetSuffix();
 
     void SetStepSize(int16_t newstepsize);
     int16_t GetStepSize();

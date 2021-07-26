@@ -1,72 +1,47 @@
 version: 2.1
 
 orbs:
-  codecov: codecov/codecov@1.0.5
+  gh-pages: sugarshin/gh-pages@0.0.6
 
 jobs:
   build:
     docker:
-      - image: bandit1983/xc32_ubuntu:latest
-    environment:
-      MP_CC: /opt/microchip/xc32/v3.00/bin/xc32-gcc
-      MP_CC_DIR: /opt/microchip/xc32/v3.00/bin/      
+      - image: cimg/node:16.0.0
     steps:
       - checkout
-      - run:
-          name: Build firmware
-          command: |
-            cd Firmware
-            make -j8
-      - run:
-          name: Build bootloader
-          command: |
-            cd Bootloader
-            make -j8
-      - run:
-          name: Create artifact folder
-          command: mkdir /tmp/artifacts
-      - run:
-          name: Copy firmware artifacts
-          command: |
-            cd Firmware/build
-            mv AXIOM_Remote_Firmware.hex AXIOM_Remote_Firmware_${CIRCLE_BUILD_NUM}.hex
-            md5sum AXIOM_Remote_Firmware_${CIRCLE_BUILD_NUM}.hex > AXIOM_Remote_Firmware_${CIRCLE_BUILD_NUM}.hex.md5
-            cp *.hex *.md5 /tmp/artifacts
-      - run:
-          name: Copy bootloader artifacts
-          command: |
-            cd Bootloader/build
-            mv AXIOM_Remote_Bootloader.hex AXIOM_Remote_Bootloader_${CIRCLE_BUILD_NUM}.hex
-            md5sum AXIOM_Remote_Bootloader_${CIRCLE_BUILD_NUM}.hex > AXIOM_Remote_Bootloader_${CIRCLE_BUILD_NUM}.hex.md5
-            cp *.hex *.md5 /tmp/artifacts
-      - store_artifacts:
-          path: /tmp/artifacts
-  test:
-    docker:
-      - image: tangramor/cpptools:latest
+      - run: |
+          cd AXIOM_Remote_3D_Visualizer && 
+          npm install &&
+          npx emsdk-checkout &&
+          npx emsdk install latest &&
+          npx emsdk activate latest &&
+          npm run transpile_firmware &&
+          npm run build
+      - persist_to_workspace:
+          root: AXIOM_Remote_3D_Visualizer
+          paths: dist
+
+  deploy-html:
     steps:
-      - checkout
-      - run:
-          name: Build firmware tests
-          command: |
-            cd FirmwareTest
-            mkdir build
-            cd build
-            cmake ..
-            make -j8
-            mkdir /tmp/test-results
-            ./AXIOM_Remote_Firmware_Test -r junit > /tmp/test-results/AXIOM_Remote_Firmware_Test_results.xml
-            pwd
-            ls coverage_report
-      - store_test_results:
-          path: /tmp/test-results
-      - codecov/upload:
-          file: /root/project/FirmwareTest/build/coverage_report/coverage_report.xml
-          flags: frontend
+      - attach_workspace:
+          at: ./
+      - gh-pages/deploy:
+          build-dir: dist/
+          ssh-fingerprints: "81:d5:a7:f9:4f:00:79:f7:f5:c7:fa:75:1c:58:3b:4b"
 
 workflows:
   version: 2
-  build_and_test:
+  build:
     jobs:
-      - build
-      - test
+      - build:
+        filters:
+          branches:
+            ignore:
+              - gh-pages
+      - deploy-html:
+          requires:
+            - build
+          filters:
+            branches:
+              ignore:
+                - gh-pages
