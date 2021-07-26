@@ -2,6 +2,7 @@ version: 2.1
 
 orbs:
   codecov: codecov/codecov@1.0.5
+  gh-pages: sugarshin/gh-pages@0.0.6
 
 jobs:
   build:
