@@ -216,3 +216,5 @@ pip-log.txt
 /AXIOM Remote Prototype V01/nbproject/private/
 
 Firmware/Bootloader/
+
+AXIOM_Remote_3D_Visualizer/node_modules/
