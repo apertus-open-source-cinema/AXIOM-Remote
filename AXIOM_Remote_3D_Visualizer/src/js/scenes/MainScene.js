@@ -232,6 +232,8 @@ export class MainScene {
     };
   }
 
+  glowingObjects = [];
+
   LoadModel(modelFilename) {
     let filePath = "data/models/" + modelFilename;
 
@@ -273,6 +275,11 @@ export class MainScene {
           this.knobCenter.x = x;
           this.knobCenter.y = this.knob.position.z;
         }
+
+        if (child.name.startsWith("Button_") || child.name.startsWith("LED")) {
+          this.glowingObjects.push(child);
+        }
+
         if (child.isMesh) {
           child.castShadow = true;
           child.receiveShadow = true;
