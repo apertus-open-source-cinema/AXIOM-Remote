@@ -3,7 +3,7 @@
 import * as THREE from "three";
 import { OrbitControls } from "three/examples/jsm/controls/OrbitControls";
 import { MainScene } from "./scenes/MainScene.js";
-
+import { HDRCubeTextureLoader } from "three/examples/jsm/loaders/HDRCubeTextureLoader.js";
 import PubSub from "pubsub-js";
 
 export class App {
@@ -85,8 +85,6 @@ export class App {
     // (-1 to +1) for both components
     this.mouse.x = (event.clientX / this.renderContainer.clientWidth) * 2 - 1;
     this.mouse.y = -(event.clientY / this.renderContainer.clientHeight) * 2 + 1;
-
-    //console.log(this.mouse);
   }
 
   SetupScene() {
@@ -122,28 +120,28 @@ export class App {
     });
   }
 
-  // TODO: replace with real HDR
   SetupHDR() {
-    var environmentTexture = new THREE.TextureLoader().load(
-      "data/textures/hdri/abstract_room.png"
-    );
-    environmentTexture.mapping = THREE.EquirectangularReflectionMapping;
-    environmentTexture.encoding = THREE.sRGBEncoding;
-    this.scene.scene.environment = environmentTexture;
-  }
+    var env = undefined;
 
-  UpdateSceneMaterial() {
-    console.log("Update material");
-    this.scene.UpdateMaterial();
-    //this.RequestFrame();
-  }
+    var environmentTexture = new HDRCubeTextureLoader()
+      .setPath("data/textures/hdri/Reinforced_Concrete_02/")
+      .setDataType(THREE.FloatType)
+      .load(
+        ["px.hdr", "nx.hdr", "py.hdr", "ny.hdr", "pz.hdr", "nz.hdr"],
+        () => {
+          var pmremGenerator = new THREE.PMREMGenerator(this.renderer);
+          pmremGenerator.compileCubemapShader();
+          env = pmremGenerator.fromCubemap(environmentTexture);
+          pmremGenerator.dispose();
 
-  Start() {
-    requestAnimationFrame(this.RenderFrame);
+          this.scene.scene.environment = env.texture;
+
+          this.RequestFrame();
+        }
+      );
   }
 
   RequestFrame() {
-    //console.log("Requested frame");
     if (this.isRenderingActive) {
       return;
     }
@@ -152,25 +150,9 @@ export class App {
     requestAnimationFrame(this.RenderFrame);
   }
 
-  // TODO: Add delta time and smooth framerate
   RenderFrame = () => {
-    //console.log("Render frame");
     this.isRenderingActive = false;
-
-    if (this.animationEnabled) {
-      const deltaTime = this.clock.getDelta();
-      this.scene.animationMixer.update(deltaTime);
-    }
-
-    this.renderer.autoClear = false;
-    this.renderer.clear();
-    this.renderer.setViewport(
-      0,
-      0,
-      this.renderContainer.clientWidth,
-      this.renderContainer.clientHeight
-    );
-    this.renderer.render(this.scene.getScene, this.camera);
+    this.renderer.render(this.scene.scene, this.camera);
   };
 }
 
