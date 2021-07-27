@@ -6,6 +6,18 @@ import { MainScene } from "./scenes/MainScene.js";
 import { HDRCubeTextureLoader } from "three/examples/jsm/loaders/HDRCubeTextureLoader.js";
 import PubSub from "pubsub-js";
 
+import {
+  SelectiveBloomEffect,
+  SSAOEffect,
+  EffectComposer,
+  EffectPass,
+  RenderPass,
+  BlendFunction,
+  KernelSize,
+  BloomEffect,
+  SMAAEffect,
+} from "postprocessing";
+
 export class App {
   renderContainer = undefined;
   uiContainer = undefined;
@@ -16,9 +28,13 @@ export class App {
 
   isRenderingActive = false;
 
+  composer = undefined;
+
   clock = new THREE.Clock();
 
   cameraTargetPosition = new THREE.Vector3(0, 0.0, 0);
+
+  selectiveBloomEffect = undefined;
 
   Init() {
     this.renderContainer = document.getElementById("render_canvas");
@@ -42,6 +58,8 @@ export class App {
     this.controls.addEventListener("change", () => {
       this.RequestFrame();
     });
+
+    this.SetupPostProcessing();
   }
 
   SetupGeneral() {
@@ -58,8 +76,11 @@ export class App {
 
   SetupRenderer() {
     this.renderer = new THREE.WebGLRenderer({
-      antialias: true,
+      //antialias: true,
       canvas: this.renderContainer,
+      antialias: false,
+      stencil: false,
+      depth: false,
     });
     this.renderer.setSize(
       this.renderContainer.clientWidth,
@@ -78,6 +99,29 @@ export class App {
     this.renderer.shadowMap.type = THREE.PCFSoftShadowMap;
   }
 
+  SetupPostProcessing() {
+    this.composer = new EffectComposer(this.renderer);
+
+    this.composer.addPass(new RenderPass(this.scene.scene, this.camera));
+    this.selectiveBloomEffect = new SelectiveBloomEffect(
+      this.scene.scene,
+      this.camera,
+      {
+        kernelSize: KernelSize.MEDIUM,
+        luminanceThreshold: 0.4,
+        luminanceSmoothing: 0.1,
+        intesity: 2.0,
+        // height: 480,
+      }
+    );
+    this.composer.addPass(
+      new EffectPass(this.camera, this.selectiveBloomEffect)
+    );
+    this.selectiveBloomEffect.ignoreBackground = true;
+
+    this.composer.multisampling = 4;
+  }
+
   mouse = new THREE.Vector2();
 
   onMouseMove(event) {
@@ -90,6 +134,9 @@ export class App {
   SetupScene() {
     this.scene = new MainScene();
     var token = PubSub.subscribe("scene_loaded", () => {
+      const selection = this.selectiveBloomEffect.selection;
+      this.scene.glowingObjects.forEach((element) => selection.add(element));
+
       window.addEventListener("pointerdown", (e) => {
         this.scene.processMouseDown(e, this.mouse, this.camera);
         this.RequestFrame();
@@ -125,7 +172,6 @@ export class App {
 
     var environmentTexture = new HDRCubeTextureLoader()
       .setPath("data/textures/hdri/Reinforced_Concrete_02/")
-      .setDataType(THREE.FloatType)
       .load(
         ["px.hdr", "nx.hdr", "py.hdr", "ny.hdr", "pz.hdr", "nz.hdr"],
         () => {
@@ -152,7 +198,8 @@ export class App {
 
   RenderFrame = () => {
     this.isRenderingActive = false;
-    this.renderer.render(this.scene.scene, this.camera);
+    //this.renderer.render(this.scene.scene, this.camera);
+    this.composer.render(this.clock.getDelta());
   };
 }
 
