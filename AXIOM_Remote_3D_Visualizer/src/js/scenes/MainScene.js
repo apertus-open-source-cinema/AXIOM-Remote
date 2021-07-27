@@ -100,7 +100,7 @@ export class MainScene {
     });
 
     this.SetupLight();
-    this.LoadModel("../../data/models/axiom_remote.glb");
+    this.LoadModel("../../data/models/axiom_remote02.glb");
 
     this.plane = new THREE.Plane(new THREE.Vector3(0, 0, 1), 0);
     //this.scene.add(this.plane);

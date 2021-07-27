@@ -125,7 +125,7 @@ export class App {
   // TODO: replace with real HDR
   SetupHDR() {
     var environmentTexture = new THREE.TextureLoader().load(
-      "data/textures/hdri/reinforced_concrete_02.png"
+      "data/textures/hdri/abstract_room.png"
     );
     environmentTexture.mapping = THREE.EquirectangularReflectionMapping;
     environmentTexture.encoding = THREE.sRGBEncoding;
