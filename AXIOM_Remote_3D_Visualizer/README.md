@@ -33,7 +33,7 @@ npm run transpile_firmware
 npm install
 ```
 
-## 3D Viewer - Requirements
+## 3D Viewer
 
 ```
 npm run dev
