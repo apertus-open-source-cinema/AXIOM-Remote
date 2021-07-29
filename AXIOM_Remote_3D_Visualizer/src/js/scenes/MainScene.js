@@ -296,7 +296,7 @@ export class MainScene {
               this.lcd.map.format = THREE.RGBFormat;
               this.lcd.map.type = THREE.UnsignedShort565Type;
               this.lcd.map.minFilter = THREE.LinearFilter;
-              this.lcd.map.magFilter = THREE.NearestFilter;
+              this.lcd.map.magFilter = THREE.LinearFilter;
               this.lcd.map.wrapS = THREE.ClampToEdgeWrapping;
               this.lcd.map.wrapT !== THREE.ClampToEdgeWrapping;
               this.lcd.map.anisotropy = 16;
