@@ -1,9 +1,18 @@
+@font-face {
+  font-family: 'Roboto';
+  src:  url('../fonts/roboto-v27-latin-regular.woff2') format('woff2'),
+        url('../fonts/roboto-v27-latin-regular.woff') format('woff');
+}
+
 html,
 body {
   margin: 0;
   height: 100%;
   overflow: hidden;
+  font-family: 'Roboto', sans-serif;
 }
+
+
 
 #app {
   /* top: 0;
@@ -43,7 +52,12 @@ body {
 
   grid-area: overlay;
   pointer-events: none;
-  background: none;
+  overflow: hidden;
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  margin: 2em;
+}
 }
 
 #render_canvas {
@@ -120,4 +134,13 @@ body {
 #timeline > li:hover {
   color: yellowgreen;
   cursor: pointer;
+}
+
+#axiom_logo {
+  top: 3em;
+  position: relative;
+  align-self: center;
+  margin-bottom: 3em;
+  width: 60%;
+  filter: var(--negative_image);
 }
