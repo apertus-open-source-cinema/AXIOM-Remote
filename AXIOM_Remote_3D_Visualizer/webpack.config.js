@@ -29,8 +29,17 @@ module.exports = {
         },
         {
           context: path.join(__dirname, "src"),
+          from: "fonts/",
+          to: "fonts/",
+        },
+        {
+          context: path.join(__dirname, "src"),
           from: "data/",
           to: "data/",
+        },{
+          context: path.join(__dirname, "src"),
+          from: "images/",
+          to: "images/",
         },
         {
           context: path.join(__dirname, "src"),

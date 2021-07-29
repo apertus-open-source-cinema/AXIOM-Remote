@@ -9,13 +9,26 @@
     <link rel="stylesheet" href="css/default.css" />
   </head>
   <body>
-    <div id="app" class="backdrop-blur" style="background-color: black">
-      <!-- <div id="ui">
-         <ul id="timeline"></ul> 
-      </div> -->
-      <canvas id="render_canvas" class="full_page"></canvas>
+    <div style="display: grid; grid-template-columns: 25em 25em auto; height: 100%;">
+        <div style="overflow: hidden; height: 100%; background-color: #bebebe;">
+            <div class="overlay">
+              <img id="axiom_logo" src="images/axiom_logo_light.png" alt="AXIOM Logo" title="AXIOM Logo">
+                <h2>AXIOM Remote 3D Viewer</h2>
+                <br />
+                Left Mouse Button - interact with knob/buttons<br />
+                Right Mouse Button - Rotate 3D Viewer
+                <br />
+                AXIOM Remote on Wiki<br />
+                AXIOM Remote Source Code on Github<br />
+            </div>
+        </div>
+        <div id="app" class="backdrop-blur" style="background-color: black">
+          <!-- <div id="ui">
+             <ul id="timeline"></ul> 
+          </div> -->
+          <canvas id="render_canvas" class="full_page"></canvas>
+        </div>
     </div>
-
     <script type="module" src="js/bundle.js"></script>
   </body>
 </html>
