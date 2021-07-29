@@ -10,12 +10,31 @@ This program is free software; you can redistribute it and/or modify
 it under the terms of the GNU General Public License 2 as published by the Free Software Foundation.
 for details see: LICENSE.txt
 
-## Build instructions
+## Transpile Firmware - Requirements
+Tested with node.js version 14 and up.
+
 ```
-npm install
 npx emsdk-checkout
 npx emsdk install latest
 npx emsdk activate latest
+```
+
+## Transpile Firmware
+
+A binary version of the firmware is already contained in the repository in ```/src/js/FW/``` but if you want transpile a new version:
+
+```
 npm run transpile_firmware
+```
+
+## 3D Viewer - Requirements
+
+```
+npm install
+```
+
+## 3D Viewer - Requirements
+
+```
 npm run dev
 ```
