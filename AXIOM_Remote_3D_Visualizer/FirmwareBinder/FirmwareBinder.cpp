@@ -19,9 +19,9 @@ emscripten::val FirmwareBinder::GetFB()
     return emscripten::val(emscripten::typed_memory_view(320 * 240 * 2, &fb[0]));
 }
 
-void FirmwareBinder::Update(ButtonID button)
+void FirmwareBinder::Update(ButtonID button, int8_t knobValue)
 {
-    _menuSystem.Update(button, 0);
+    _menuSystem.Update(button, knobValue);
     _menuSystem.Draw(&_painter);
 }
 
@@ -57,5 +57,8 @@ EMSCRIPTEN_BINDINGS(firmware_binder)
         .value("BUTTON_11_DOWN", ButtonID::BUTTON_11_DOWN)
         .value("BUTTON_11_UP", ButtonID::BUTTON_11_UP)
         .value("BUTTON_12_DOWN", ButtonID::BUTTON_12_DOWN)
-        .value("BUTTON_12_UP", ButtonID::BUTTON_12_UP);
+        .value("BUTTON_12_UP", ButtonID::BUTTON_12_UP)
+        .value("E1_UP", ButtonID::E_1_UP)
+        .value("E1_DOWN", ButtonID::E_1_DOWN)
+        .value("BUTTON_NONE", ButtonID::BUTTON_NONE);
 }

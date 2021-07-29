@@ -57,6 +57,9 @@ export class MainScene {
   m = undefined;
   firmwareBinder = undefined;
 
+  mousePoint = undefined;
+  intersectPoint = undefined;
+
   material = {
     color: 0xb1b1b1,
     roughness: 0.2,
@@ -102,8 +105,24 @@ export class MainScene {
     this.SetupLight();
     this.LoadModel("../../data/models/axiom_remote02.glb");
 
-    this.plane = new THREE.Plane(new THREE.Vector3(0, 0, 1), 0);
-    //this.scene.add(this.plane);
+    // const geometry = new THREE.PlaneGeometry(0, 0, 1);
+    // const material = new THREE.MeshBasicMaterial({
+    //   color: 0xffff00,
+    //   side: THREE.DoubleSide,
+    // });
+    // this.plane = new THREE.Mesh(geometry, material);
+    this.planeZ = new THREE.Plane(new THREE.Vector3(0, 1, 0), 0);
+    //    this.scene.add(this.plane);
+
+    var sphere = new THREE.SphereBufferGeometry(0.0005, 16, 8);
+    this.mousePoint = new THREE.Mesh(
+      sphere,
+      new THREE.MeshBasicMaterial({ color: "red" })
+    );
+
+    this.scene.add(this.mousePoint);
+
+    this.intersectPoint = new THREE.Vector3();
   }
 
   get getScene() {
@@ -229,6 +248,9 @@ export class MainScene {
       Button_11_UP: this.m.ButtonID.BUTTON_11_UP,
       Button_12_DOWN: this.m.ButtonID.BUTTON_12_DOWN,
       Button_12_UP: this.m.ButtonID.BUTTON_12_UP,
+      Knob_new_DOWN: this.m.ButtonID.E1_DOWN,
+      Knob_new_UP: this.m.ButtonID.E1_UP,
+      BUTTON_NONE: this.m.ButtonID.BUTTON_NONE,
     };
   }
 
@@ -284,25 +306,9 @@ export class MainScene {
           child.castShadow = true;
           child.receiveShadow = true;
 
-          if (child.name === "Button_4") {
-            console.log(child.userData.name);
-          }
-
           if (child.material) {
-            // if (child.material.name === "Steel.001") {
-            //   console.log(child.material);
-            //   child.material.normalScale = new Vector2(0.1, 0.1);
-            //   child.material.normalMap.anisotropy = 16;
-            //   child.material.needsUpdate = true;
-            // }
-
             if (child.material.name === "LCD") {
               this.lcd = child.material;
-              //   texture.needsUpdate = true;
-              //   child.material.map.generateMipmaps = false;
-              //child.material.roughness = 0.1;
-              //child.material.metalness = 1;
-
               this.lcd.map = this.texture;
               this.lcd.map.format = THREE.RGBFormat;
               this.lcd.map.type = THREE.UnsignedShort565Type;
@@ -312,57 +318,13 @@ export class MainScene {
               this.lcd.map.wrapT !== THREE.ClampToEdgeWrapping;
               this.lcd.map.anisotropy = 16;
               this.update_lcd();
-              //child.material.map.needsUpdate = true;
-              //   child.material.color = new Three.Color(0xff0000);
             }
-
-            console.log("LCD");
           }
         }
       });
 
       this.scene.add(gltfScene);
     });
-  }
-
-  FlipModel = () => {
-    var boundingBox = new THREE.Box3().setFromObject(this.currentModel);
-    var rotation = this.currentModel.rotation.x;
-    var rotationAngle = 0;
-    var heightOffset = -boundingBox.min.y;
-
-    if (rotation == 0) {
-      rotationAngle = THREE.Math.degToRad(180);
-      heightOffset = boundingBox.max.y;
-    }
-
-    anime
-      .timeline({
-        easing: "linear",
-        duration: 200,
-        begin: () => PubSub.publishSync("scene_animation_started"),
-        complete: () => PubSub.publishSync("scene_animation_finished"),
-      })
-      .add({ targets: this.currentModel.position, y: boundingBox.max.y * 2 })
-      .add({ targets: this.currentModel.rotation, x: rotationAngle })
-      .add({ targets: this.currentModel.position, y: heightOffset });
-  };
-
-  get currentMaterial() {
-    return this.material;
-  }
-
-  PlayAnimation(index) {
-    var action = this.animationMixer
-      .clipAction(this.currentAnimations[index])
-      .setLoop(THREE.LoopOnce);
-    action.clampWhenFinished = true;
-    action.stop();
-    action.reset();
-    this.runningAnimations++;
-
-    PubSub.publishSync("scene_animation_started");
-    action.play();
   }
 
   raycaster = new THREE.Raycaster();
@@ -404,42 +366,34 @@ export class MainScene {
       this.object.position.add(
         new THREE.Vector3(0.0, -this.buttonPressDistance, 0.0)
       );
-      this.buttonPress = true;
 
-      //console.log("BD: ", this.button_definitions);
-      // console.log("ID: ", this.button_definitions[this.object.name]);
       if (this.button_definitions[this.object.name + "_DOWN"]) {
+        console.log("MMMDDD");
         this.firmwareBinder.Update(
-          this.button_definitions[this.object.name + "_DOWN"]
+          this.button_definitions[this.object.name + "_DOWN"],
+          this.knobValue
         );
         this.update_lcd();
       }
     }
 
-    if (name === "Knob_new") {
-      this.mouseDownPosition.copy(mouse);
+    this.buttonPress = true;
 
+    if (name === "Knob_new") {
       this.knobDrag = true;
     }
-
-    //animation.play();
-
-    //.add({ targets: this.currentModel.rotation, x: rotationAngle })
-    //.add({ targets: this.currentModel.position, y: heightOffset });
-    //obj.visible = false;
   }
 
   processMouseUp(event) {
     if (this.object && this.buttonPress) {
-      //console.log("MU: ", this.intersection.object.name);
       this.object.position.add(
         new THREE.Vector3(0.0, this.buttonPressDistance, 0.0)
       );
 
-      //console.log("BB: ", this.object.name + "_UP");
       if (this.button_definitions[this.object.name + "_UP"]) {
         this.firmwareBinder.Update(
-          this.button_definitions[this.object.name + "_UP"]
+          this.button_definitions[this.object.name + "_UP"],
+          this.knobValue
         );
         this.update_lcd();
       }
@@ -459,70 +413,65 @@ export class MainScene {
   fullCircleRad = 2 * Math.PI;
   tick = this.fullCircleRad / 12; // 30°, 12 -> possible detents of real rotary encoder
   oldAngle = 0.0;
+  knobAngle = 0.0;
+  knobValue = 0;
 
-  processMouseMove(event, mouse) {
-    //console.log("EX: ", event.movementX);
-    // this.raycaster.ray.intersectPlane(this.plane, this.intersectPoint);
-    // console.log("IP: ", this.intersectPoint);
+  processMouseMove(event, mouse, camera) {
+    if (this.object && this.knobDrag) {
+      this.raycaster.setFromCamera(mouse, camera);
+      this.raycaster.ray.intersectPlane(this.planeZ, this.intersectPoint);
 
-    // this.knob.lookAt(0, this.intersectPoint.y, 0);
-    if (this.object)
-      if (this.object && this.knobDrag) {
-        //var mouseX = event.clientX - container.clientWidth / 2;
-        //console.log("MM: ", this.object);
+      this.mousePoint.position.x = this.intersectPoint.x;
+      this.mousePoint.position.y = this.intersectPoint.y;
+      this.mousePoint.position.z = this.intersectPoint.z;
 
-        //var targetRotationX = mouse.x - this.mouseDownPosition.x;
-        //if (isNaN(targetRotationX)) targetRotationX = 0;
-        //console.log("M: ", mouse);
-        //console.log("MO: ", this.mouseDownPosition);
-        //console.log("ROT: ", targetRotationX);
-        // var newAngle = Math.atan2(
-        //   mouse.y - this.knobCenter.y,
-        //   this.knobCenter.x - mouse.x
-        // );
+      var newAngle = Math.atan2(
+        this.knobCenter.y - this.intersectPoint.z,
+        this.intersectPoint.x - this.knobCenter.x
+      );
+      newAngle -= Math.PI / 2;
 
-        var newAngle = Math.atan2(
-          mouse.x - this.knobCenter.x,
-          mouse.y - this.knobCenter.y
-        );
-        //newAngle += Math.PI / 2;
-
-        if (this.oldAngle < 0) {
-          this.oldAngle += this.fullCircleRad;
-        }
-        if (this.oldAngle > this.fullCircleRad) {
-          fullRotations = this.oldAngle / this.fullCircleRad;
-          this.oldAngle -= fullRotations * this.fullCircleRad;
-        }
-        console.log("NA: ", newAngle);
-
-        var delta = this.newAngle + this.oldAngle;
-        if (delta < 0) {
-          // Underflow, convert to full circle
-          delta += this.fullCircleRad;
-        }
-        if (delta > Math.PI) {
-          // Convert from full circle (0..360) to half circle (-180..180) to get rotation direction
-          delta -= this.fullCircleRad;
-        }
-
-        if (delta < -this.tick) {
-          //value++;
-          this.oldAngle += this.tick;
-        } else if (delta > this.tick) {
-          //value--;
-          this.oldAngle -= this.tick;
-        }
-        console.log("ROT: ", this.oldAngle);
-
-        this.object.rotation.y = -this.oldAngle; //targetRotationX / 100;
-        this.oldAngle = newAngle;
-
-        //console.log("MU: ", intersection.object.name);
-        //intersection.object.position.add(
-        //  new Three.Vector3(0.0, buttonPressDistance, 0.0)
-        //);
-        //intersection == null;
+      if (this.oldAngle < 0) {
+        this.oldAngle += this.fullCircleRad;
       }
+      if (this.oldAngle > this.fullCircleRad) {
+        var fullRotations = this.oldAngle / this.fullCircleRad;
+        this.oldAngle -= fullRotations * this.fullCircleRad;
+      }
+
+      var delta = newAngle + this.oldAngle;
+      if (delta < 0) {
+        // Underflow, convert to full circle
+        delta += this.fullCircleRad;
+      }
+      if (delta > Math.PI) {
+        // Convert from full circle (0..360) to half circle (-180..180) to get rotation direction
+        delta -= this.fullCircleRad;
+      }
+
+      if (delta < -this.tick) {
+        this.knobValue--;
+        this.oldAngle += this.tick;
+      } else if (delta > this.tick) {
+        this.knobValue++;
+        this.oldAngle -= this.tick;
+      }
+
+      this.object.rotation.y = -this.oldAngle;
+
+      if (this.knobValue != 0) {
+        this.firmwareBinder.Update(
+          this.button_definitions["BUTTON_NONE"],
+          this.knobValue
+        );
+        this.update_lcd();
+
+        this.knobValue = 0;
+
+        return true;
+      }
+
+      return false;
+    }
   }
 }

@@ -79,8 +79,8 @@ export class App {
       //antialias: true,
       canvas: this.renderContainer,
       antialias: false,
-      stencil: false,
-      depth: false,
+      //stencil: false,
+      //depth: false,
     });
     this.renderer.setSize(
       this.renderContainer.clientWidth,
@@ -100,24 +100,29 @@ export class App {
   }
 
   SetupPostProcessing() {
-    this.composer = new EffectComposer(this.renderer);
+    this.composer = new EffectComposer(this.renderer, {
+      frameBufferType: THREE.HalfFloatType,
+    });
 
     this.composer.addPass(new RenderPass(this.scene.scene, this.camera));
     this.selectiveBloomEffect = new SelectiveBloomEffect(
       this.scene.scene,
       this.camera,
       {
+        blendFunction: BlendFunction.ADD,
         kernelSize: KernelSize.MEDIUM,
-        luminanceThreshold: 0.4,
+        luminanceThreshold: 0.5,
         luminanceSmoothing: 0.1,
-        intesity: 2.0,
-        // height: 480,
+        intensity: 0.5,
       }
     );
+
+    this.selectiveBloomEffect.luminancePass.enabled = false;
+    this.selectiveBloomEffect.ignoreBackground = true;
+
     this.composer.addPass(
       new EffectPass(this.camera, this.selectiveBloomEffect)
     );
-    this.selectiveBloomEffect.ignoreBackground = true;
 
     this.composer.multisampling = 4;
   }
@@ -143,8 +148,9 @@ export class App {
       });
       window.addEventListener("pointermove", (e) => {
         this.onMouseMove(e);
-        //     this.scene.processMouseMove(e, this.mouse);
-        //     this.RequestFrame();
+        if (this.scene.processMouseMove(e, this.mouse, this.camera)) {
+          this.RequestFrame();
+        }
       });
       window.addEventListener("pointerup", (e) => {
         this.scene.processMouseUp(e);
@@ -172,6 +178,7 @@ export class App {
 
     var environmentTexture = new HDRCubeTextureLoader()
       .setPath("data/textures/hdri/Reinforced_Concrete_02/")
+      .setDataType(THREE.FloatType)
       .load(
         ["px.hdr", "nx.hdr", "py.hdr", "ny.hdr", "pz.hdr", "nz.hdr"],
         () => {
@@ -181,6 +188,7 @@ export class App {
           pmremGenerator.dispose();
 
           this.scene.scene.environment = env.texture;
+          //this.scene.scene.background = env.texture;
 
           this.RequestFrame();
         }

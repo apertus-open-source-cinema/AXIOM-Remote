@@ -20,7 +20,7 @@ class FirmwareBinder
 
     emscripten::val GetFB();
     void UpdateFB();
-    void Update(ButtonID button);
+    void Update(ButtonID button, int8_t knobValue);
 };
 
 #endif // TEST_CLASS_H
