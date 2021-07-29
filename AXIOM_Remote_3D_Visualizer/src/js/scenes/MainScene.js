@@ -57,7 +57,6 @@ export class MainScene {
   m = undefined;
   firmwareBinder = undefined;
 
-  mousePoint = undefined;
   intersectPoint = undefined;
 
   material = {
@@ -105,23 +104,7 @@ export class MainScene {
     this.SetupLight();
     this.LoadModel("../../data/models/axiom_remote02.glb");
 
-    // const geometry = new THREE.PlaneGeometry(0, 0, 1);
-    // const material = new THREE.MeshBasicMaterial({
-    //   color: 0xffff00,
-    //   side: THREE.DoubleSide,
-    // });
-    // this.plane = new THREE.Mesh(geometry, material);
     this.planeZ = new THREE.Plane(new THREE.Vector3(0, 1, 0), 0);
-    //    this.scene.add(this.plane);
-
-    var sphere = new THREE.SphereBufferGeometry(0.0005, 16, 8);
-    this.mousePoint = new THREE.Mesh(
-      sphere,
-      new THREE.MeshBasicMaterial({ color: "red" })
-    );
-
-    this.scene.add(this.mousePoint);
-
     this.intersectPoint = new THREE.Vector3();
   }
 
@@ -375,9 +358,9 @@ export class MainScene {
         );
         this.update_lcd();
       }
-    }
 
-    this.buttonPress = true;
+      this.buttonPress = true;
+    }
 
     if (name === "Knob_new") {
       this.knobDrag = true;
@@ -420,10 +403,6 @@ export class MainScene {
     if (this.object && this.knobDrag) {
       this.raycaster.setFromCamera(mouse, camera);
       this.raycaster.ray.intersectPlane(this.planeZ, this.intersectPoint);
-
-      this.mousePoint.position.x = this.intersectPoint.x;
-      this.mousePoint.position.y = this.intersectPoint.y;
-      this.mousePoint.position.z = this.intersectPoint.z;
 
       var newAngle = Math.atan2(
         this.knobCenter.y - this.intersectPoint.z,
