@@ -82,7 +82,7 @@ jobs:
 
   deploy-html:
     docker:
-      - image: cimg/node:16.0.0
+      - image: williamyeh/dummy:latest
     steps:
       - checkout
       - attach_workspace:
