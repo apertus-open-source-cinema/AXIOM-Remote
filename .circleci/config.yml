@@ -74,7 +74,7 @@ jobs:
       - run: |
           cd AXIOM_Remote_3D_Visualizer && 
           npm install &&
-          ./transpile_firmware &&
+          ./transpile_firmware.sh &&
           npm run build
       - persist_to_workspace:
           root: AXIOM_Remote_3D_Visualizer
