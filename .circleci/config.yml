@@ -82,7 +82,7 @@ jobs:
 
   deploy-html:
     docker:
-      - image: williamyeh/dummy:latest
+      - image: docker pull alpine/git:latest
     steps:
       - checkout
       - attach_workspace:
