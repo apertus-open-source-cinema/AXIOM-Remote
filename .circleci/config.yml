@@ -85,7 +85,7 @@ jobs:
       - image: alpine/git:latest
     steps:
       - run: mkdir -p ~/.ssh
-      - run: ssh-keyscan -p 443 ssh.github.com >> ~/.ssh/known_hosts
+      - run: ssh-keyscan github.com >> ~/.ssh/known_hosts
       - attach_workspace:
           at: ./
       - gh-pages/deploy:
