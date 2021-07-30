@@ -68,16 +68,13 @@ jobs:
 
   build-3d:
     docker:
-      - image: cimg/node:16.0.0
+      - image: emscripten/emsdk:2.0.26
     steps:
       - checkout
       - run: |
           cd AXIOM_Remote_3D_Visualizer && 
           npm install &&
-          npx emsdk-checkout &&
-          npx emsdk install latest &&
-          npx emsdk activate latest &&
-          npm run transpile_firmware &&
+          ./transpile_firmware &&
           npm run build
       - persist_to_workspace:
           root: AXIOM_Remote_3D_Visualizer
