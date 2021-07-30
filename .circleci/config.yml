@@ -84,7 +84,6 @@ jobs:
     docker:
       - image: alpine/git:latest
     steps:
-      - checkout
       - attach_workspace:
           at: ./
       - gh-pages/deploy:
