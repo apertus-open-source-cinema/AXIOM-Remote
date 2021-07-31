@@ -138,8 +138,6 @@ export class App {
         2 -
       1;
     this.mouse.y = -(event.clientY / this.renderContainer.clientHeight) * 2 + 1;
-
-    console.log("M: ", this.mouse);
   }
 
   SetupScene() {
