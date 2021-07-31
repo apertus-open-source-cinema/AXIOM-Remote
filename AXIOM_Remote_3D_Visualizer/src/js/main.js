@@ -132,8 +132,14 @@ export class App {
   onMouseMove(event) {
     // calculate mouse position in normalized device coordinates
     // (-1 to +1) for both components
-    this.mouse.x = (event.clientX / this.renderContainer.clientWidth) * 2 - 1;
+    this.mouse.x =
+      ((event.clientX - this.renderContainer.offsetLeft) /
+        this.renderContainer.clientWidth) *
+        2 -
+      1;
     this.mouse.y = -(event.clientY / this.renderContainer.clientHeight) * 2 + 1;
+
+    console.log("M: ", this.mouse);
   }
 
   SetupScene() {

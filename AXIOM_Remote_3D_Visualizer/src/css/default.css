@@ -43,6 +43,7 @@ body {
 .full_page {
   width: 100vw;
   height: 100vh;
+  pointer-events: auto;
 }
 
 .overlay {
