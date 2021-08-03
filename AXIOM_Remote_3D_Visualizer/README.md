@@ -11,6 +11,7 @@ it under the terms of the GNU General Public License 2 as published by the Free 
 for details see: LICENSE.txt
 
 ## Transpile Firmware - Requirements
+
 Tested with node.js version 14 and up.
 
 ```
@@ -21,7 +22,7 @@ npx emsdk activate latest
 
 ## Transpile Firmware
 
-A binary version of the firmware is already contained in the repository in ```/src/js/FW/``` but if you want transpile a new version:
+A binary version of the firmware is already contained in the repository in `/src/js/FW/` but if you want transpile a new version:
 
 ```
 npm run transpile_firmware
@@ -38,3 +39,14 @@ npm install
 ```
 npm run dev
 ```
+
+## Export model from Blender
+
+We're exporting in packed GLB format, which contains model data and textures in binary format. Following steps should used to get proper output:
+
+- Select collection **For Export** in the Outliner
+- Select **File** &#8594; **Export** &#8594; **glTF 2.0 (.glb/.gltf)**
+- Enable following options:
+  - **Remember Export Settings** (to avoid the need to enable options every time)
+  - **Include** &#8594; **Active Collection**
+  - **Geometry** &#8594; **Apply Modifiers**

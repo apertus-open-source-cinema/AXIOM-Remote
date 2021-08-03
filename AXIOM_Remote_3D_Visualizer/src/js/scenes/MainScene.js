@@ -124,55 +124,61 @@ export class MainScene {
     // Spotlight 1
     const light1 = new THREE.SpotLight(
       0xaaaaff,
-      1.3,
-      1,
-      THREE.MathUtils.degToRad(45),
-      0.3
+      1.7,
+      0.3,
+      THREE.MathUtils.degToRad(25),
+      0.9
     );
-    light1.position.set(0.4, 0.4, 0.3);
+    light1.position.set(0.0, 0.2, 0.15);
 
     //Set up shadow properties for the light
     light1.castShadow = true;
     light1.shadow.mapSize.width = 2048; // default
     light1.shadow.mapSize.height = 2048; // default
     light1.shadow.camera.near = 0.1; // default
-    light1.shadow.camera.far = 0.6; // default
+    light1.shadow.camera.far = 0.3; // default
     light1.shadow.radius = 8;
-    light1.shadow.bias = -0.001;
+    light1.shadow.bias = -0.01;
     this.scene.add(light1);
+
+    //var lightHelper = new THREE.SpotLightHelper(light1);
+    // this.scene.add(lightHelper);
 
     // Spotlight 2
     const light2 = new THREE.SpotLight(
       0xffbb66,
       1.3,
-      1,
-      THREE.MathUtils.degToRad(45),
-      0.3
+      0.4,
+      THREE.MathUtils.degToRad(15),
+      0.8
     );
-    light2.position.set(-0.4, 0.45, -0.2);
+    light2.position.set(-0.2, 0.25, -0.1);
 
     //Set up shadow properties for the light
     light2.castShadow = true;
     light2.shadow.mapSize.width = 2048; // default
     light2.shadow.mapSize.height = 2048; // default
     light2.shadow.camera.near = 0.1; // default
-    light2.shadow.camera.far = 0.6; // default
+    light2.shadow.camera.far = 0.3; // default
     light2.shadow.radius = 8;
     light2.shadow.bias = -0.001;
     this.scene.add(light2);
 
-    const width = 1;
-    const height = 1;
-    const intensity = 1;
-    const rectLight = new THREE.RectAreaLight(
-      0x444444,
-      intensity,
-      width,
-      height
-    );
-    rectLight.position.set(0.4, 0.2, 0);
-    rectLight.lookAt(0, 0, 0);
-    this.scene.add(rectLight);
+    //lightHelper = new THREE.SpotLightHelper(light2);
+    //this.scene.add(lightHelper);
+
+    // const width = 1;
+    // const height = 1;
+    // const intensity = 1;
+    // const rectLight = new THREE.RectAreaLight(
+    //   0x444444,
+    //   intensity,
+    //   width,
+    //   height
+    // );
+    // rectLight.position.set(0.4, 0.2, 0);
+    // rectLight.lookAt(0, 0, 0);
+    // this.scene.add(rectLight);
   }
 
   LoadGLTF(filePath, callback) {
@@ -231,8 +237,8 @@ export class MainScene {
       Button_11_UP: this.m.ButtonID.BUTTON_11_UP,
       Button_12_DOWN: this.m.ButtonID.BUTTON_12_DOWN,
       Button_12_UP: this.m.ButtonID.BUTTON_12_UP,
-      Knob_new_DOWN: this.m.ButtonID.E1_DOWN,
-      Knob_new_UP: this.m.ButtonID.E1_UP,
+      Knob_DOWN: this.m.ButtonID.E1_DOWN,
+      Knob_UP: this.m.ButtonID.E1_UP,
       BUTTON_NONE: this.m.ButtonID.BUTTON_NONE,
     };
   }
@@ -269,7 +275,7 @@ export class MainScene {
       //this.scene.add(box);
 
       gltfScene.traverse((child) => {
-        if (child.name === "Knob_new") {
+        if (child.name === "Knob") {
           this.knob = child;
           console.log(this.knob);
           //const axis = new THREE.AxesHelper(0.1);
@@ -283,6 +289,7 @@ export class MainScene {
 
         if (child.name.startsWith("Button_") || child.name.startsWith("LED")) {
           this.glowingObjects.push(child);
+          console.log(child);
         }
 
         if (child.isMesh) {
@@ -291,6 +298,7 @@ export class MainScene {
 
           if (child.material) {
             if (child.material.name === "LCD") {
+              console.log("LCD");
               this.lcd = child.material;
               this.lcd.map = this.texture;
               this.lcd.map.format = THREE.RGBFormat;
@@ -335,11 +343,11 @@ export class MainScene {
     var name = this.intersection.object.name;
 
     //obj = intersection.object;
-    console.log("MD: ", intersects);
+    //console.log("MD: ", intersects);
 
     this.object = this.intersection.object;
     if (name.startsWith("Button") || name === "Knob_press") {
-      //console.log("MD: ", name);
+      console.log("MD: ", name);
 
       //var obj = intersection.object;
       if (name.startsWith("Knob_press")) {
@@ -362,7 +370,7 @@ export class MainScene {
       this.buttonPress = true;
     }
 
-    if (name === "Knob_new") {
+    if (name === "Knob") {
       this.knobDrag = true;
     }
   }

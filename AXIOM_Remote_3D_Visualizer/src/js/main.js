@@ -92,7 +92,7 @@ export class App {
     this.renderer.physicallyCorrectLights = true;
     this.renderer.toneMapping = THREE.LinearToneMapping;
     this.renderer.toneMappingExposure = 1.5;
-    this.renderer.gammaFactor = 2.2;
+    // this.renderer.gammaFactor = 2.2;
     this.renderer.outputEncoding = THREE.sRGBEncoding;
 
     this.renderer.shadowMap.enabled = true;
@@ -191,6 +191,8 @@ export class App {
           env = pmremGenerator.fromCubemap(environmentTexture);
           pmremGenerator.dispose();
 
+          env.texture.format = THREE.RGBFormat;
+          env.encoding = THREE.sRGBEncoding;
           this.scene.scene.environment = env.texture;
           //this.scene.scene.background = env.texture;
 
