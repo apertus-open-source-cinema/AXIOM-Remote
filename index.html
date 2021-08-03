@@ -9,10 +9,8 @@
     <link rel="stylesheet" href="css/default.css" />
   </head>
   <body>
-    <div
-      style="display: grid; grid-template-columns: 25em 25em auto; height: 100%"
-    >
-      <div style="overflow: hidden; height: 100%; background-color: #bebebe">
+    <div id="main_layout">
+      <div id="info_pane">
         <div class="overlay">
           <img
             id="axiom_logo"
@@ -29,13 +27,13 @@
             would with the real device.
           </p>
           <b style="margin-bottom: 1em">Usage:</b>
-          <div style="display: flex; flex-direction: column">
+          <div id="instructions">
             <div class="instruction_row">
               <img
                 src="images/lmb.png"
                 alt="Left Mouse Button"
                 title="Left Mouse Button"
-                style="padding-right: 1em; width: 30px"
+                class="instruction_image"
               />
               <span class="mouse_usage_illustation"
                 >Left Mouse Button - interact with knob/buttons</span
@@ -46,7 +44,7 @@
                 src="images/rmb.png"
                 alt="Right Mouse Button"
                 title="Right Mouse Button"
-                style="padding-right: 1em; width: 30px"
+                class="instruction_image"
               />
               <span class="mouse_usage_illustation"
                 >Right Mouse Button - Rotate View</span
@@ -57,7 +55,7 @@
                 src="images/mmb.png"
                 alt="Middle Mouse Button"
                 title="Middle Mouse Button"
-                style="padding-right: 1em; width: 30px"
+                class="instruction_image"
               />
               <span class="mouse_usage_illustation"
                 >Middle Mouse Button - Pan View</span
@@ -68,12 +66,14 @@
                 src="images/wheel.png"
                 alt="Mouse Wheel"
                 title="Mouse Wheel"
-                style="padding-right: 1em; width: 30px"
+                class="instruction_image"
               />
               <span class="mouse_usage_illustation"
                 >Mouse Wheel - Zoom View</span
               >
             </div>
+          </div>
+          <div style="margin-top: auto">
             <a
               href="https://wiki.apertus.org/index.php/AXIOM_Remote"
               target="_blank"
