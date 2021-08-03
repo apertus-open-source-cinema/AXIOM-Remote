@@ -50,7 +50,6 @@ body {
   /* width: 100%; */
   /* height: 100%; */
   /* display: block; */
-
   grid-area: overlay;
   pointer-events: none;
   overflow: hidden;
@@ -59,7 +58,7 @@ body {
   flex-direction: column;
   margin: 2em;
 }
-}
+
 
 #render_canvas {
   width: 100%;
@@ -148,4 +147,10 @@ body {
 
 .mouse_usage_illustation {
 	font-size:0.7em;
+}
+
+.instruction_row{
+  display: flex;
+  margin: 0.5em;
+  align-items: center;
 }
