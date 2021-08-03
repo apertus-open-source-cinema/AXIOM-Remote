@@ -145,3 +145,7 @@ body {
   width: 60%;
   filter: var(--negative_image);
 }
+
+.mouse-usage-illustation {
+	font-size:0.7em;
+}
