@@ -141,7 +141,7 @@ body {
   top: 3em;
   position: relative;
   align-self: center;
-  margin-bottom: 3em;
+  margin-bottom: 7em;
   width: 60%;
   filter: var(--negative_image);
 }
