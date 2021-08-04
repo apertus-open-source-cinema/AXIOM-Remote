@@ -263,9 +263,9 @@ export class MainScene {
       });
 
       var boundingBox = new THREE.Box3().setFromObject(gltfScene);
-      var width = -boundingBox.max.x - boundingBox.min.x;
-      var length = boundingBox.max.z + boundingBox.min.z;
-      gltfScene.position.set(width / 2, 0, length / 2);
+      //var width = -boundingBox.max.x;
+      //var length = boundingBox.max.z + boundingBox.min.z;
+      //gltfScene.position.set(width / 2, 0, length / 2);
 
       //const axis = new THREE.AxesHelper();
       //this.scene.add(axis);
@@ -278,12 +278,12 @@ export class MainScene {
         if (child.name === "Knob") {
           this.knob = child;
           console.log(this.knob);
-          //const axis = new THREE.AxesHelper(0.1);
-          var x = this.knob.position.x + width / 2;
-          //axis.position.set(x, this.knob.position.y, this.knob.position.z);
+          const axis = new THREE.AxesHelper(0.1);
+          var x = this.knob.position.x; // + width / 2;
+          axis.position.set(x, this.knob.position.y, this.knob.position.z);
           //this.scene.add(axis);
 
-          this.knobCenter.x = x;
+          this.knobCenter.x = this.knob.position.x;
           this.knobCenter.y = this.knob.position.z;
         }
 

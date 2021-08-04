@@ -8,14 +8,11 @@ import PubSub from "pubsub-js";
 
 import {
   SelectiveBloomEffect,
-  SSAOEffect,
   EffectComposer,
   EffectPass,
   RenderPass,
   BlendFunction,
   KernelSize,
-  BloomEffect,
-  SMAAEffect,
 } from "postprocessing";
 
 export class App {
@@ -32,7 +29,7 @@ export class App {
 
   clock = new THREE.Clock();
 
-  cameraTargetPosition = new THREE.Vector3(0, 0.0, 0);
+  cameraTargetPosition = new THREE.Vector3(0.0, 0.0, 0.0);
 
   selectiveBloomEffect = undefined;
 
@@ -53,6 +50,9 @@ export class App {
       MIDDLE: THREE.MOUSE.PAN,
       RIGHT: THREE.MOUSE.ROTATE,
     };
+    this.controls.touches = {
+      TWO: THREE.TOUCH.DOLLY_ROTATE,
+    };
     this.controls.update();
 
     this.controls.addEventListener("change", () => {
@@ -68,7 +68,7 @@ export class App {
     console.log("Aspect ratio: " + aspectRatio);
 
     this.camera = new THREE.PerspectiveCamera(75, aspectRatio, 0.01, 1000);
-    this.camera.position.set(-0.3, 0.3, 0.5);
+    this.camera.position.set(-0.2, 0.5, 0.5);
     this.camera.lookAt(this.cameraTargetPosition);
     this.camera.setFocalLength(85);
     this.camera.updateProjectionMatrix();
@@ -86,6 +86,7 @@ export class App {
       this.renderContainer.clientWidth,
       this.renderContainer.clientHeight
     );
+
     this.renderer.setPixelRatio(window.devicePixelRatio);
     this.renderer.setClearColor(0x223344);
 
@@ -123,8 +124,6 @@ export class App {
     this.composer.addPass(
       new EffectPass(this.camera, this.selectiveBloomEffect)
     );
-
-    this.composer.multisampling = 4;
   }
 
   mouse = new THREE.Vector2();
