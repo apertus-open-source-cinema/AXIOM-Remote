@@ -103,6 +103,7 @@ export class App {
   SetupPostProcessing() {
     this.composer = new EffectComposer(this.renderer, {
       frameBufferType: THREE.HalfFloatType,
+      multisampling: 8,
     });
 
     this.composer.addPass(new RenderPass(this.scene.scene, this.camera));
