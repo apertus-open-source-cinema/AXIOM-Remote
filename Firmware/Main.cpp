@@ -10,7 +10,7 @@
 #include "Periphery/I2C/I2C.h"
 #include "Periphery/UART/UART.h"
 
-// Menus/Pages
+// Menus Pages
 #include "UI/MenuSystem.h"
 #include "UI/Screens/MainPage.h"
 #include "UI/Screens/MainMenu.h"
