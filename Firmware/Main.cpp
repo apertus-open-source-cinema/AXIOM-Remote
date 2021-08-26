@@ -32,6 +32,7 @@
 volatile extern uint16_t framebuffer[ILI9341_TFTWIDTH * ILI9341_TFTHEIGHT];
 ILI9341Display display(framebuffer);
 uint8_t fps = 0, frames = 0;
+
 void ConfigGPIO()
 {
     // Enable pull-up resistor for E9 to prevent UANT RX interferences
@@ -544,11 +545,10 @@ extern "C" void __ISR(_TIMER_2_VECTOR, IPL7SOFT) Timer2_ISR(void)
     fps = frames;
     frames = 0;
     IFS0bits.T2IF = 0; //clear flag
-   
 }
 
-void InitTimer2(){
-
+void InitTimer2()
+{
     T2CONbits.TCS = 0; //Internal Clock
     T2CONbits.TCKPS = 0b111; //1:256 Prescale value
     TMR2 = 0; //Value of timer 2
@@ -562,11 +562,8 @@ void InitTimer2(){
     IEC0bits.T2IE = 1;
 }
 
-
-
 int main()
 {   
-
     USBCDCDevice cdcDevice;
 
     Setup(display, cdcDevice);
