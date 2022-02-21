@@ -12,8 +12,8 @@ enum class ButtonID;
 
 class FirmwareBinder
 {
-    MenuSystem _menuSystem;
     Painter _painter;
+    MenuSystem _menuSystem;
 
   public:
     FirmwareBinder();

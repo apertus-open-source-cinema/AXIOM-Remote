@@ -13,10 +13,10 @@ module.exports = {
   },
   target: "web",
   devServer: {
-    contentBase: path.join(__dirname, "dist"),
-    watchOptions: {
-      ignored: /node_modules/,
-    },
+    static: path.join(__dirname, "dist"),
+  },
+  watchOptions: {
+    ignored: /node_modules/,
   },
   plugins: [
     new CopyPlugin({
@@ -36,7 +36,8 @@ module.exports = {
           context: path.join(__dirname, "src"),
           from: "data/",
           to: "data/",
-        },{
+        },
+        {
           context: path.join(__dirname, "src"),
           from: "images/",
           to: "images/",

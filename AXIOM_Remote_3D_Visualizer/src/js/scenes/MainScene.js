@@ -301,8 +301,8 @@ export class MainScene {
               console.log("LCD");
               this.lcd = child.material;
               this.lcd.map = this.texture;
-              this.lcd.map.format = THREE.RGBFormat;
-              this.lcd.map.type = THREE.UnsignedShort565Type;
+              this.lcd.map.format = THREE.RGBAFormat;
+              this.lcd.map.type = THREE.UnsignedShort5551Type;
               this.lcd.map.minFilter = THREE.LinearMipmapLinearFilter;
               this.lcd.map.magFilter = THREE.NearestFilter;
               this.lcd.map.wrapS = THREE.ClampToEdgeWrapping;

@@ -30,6 +30,7 @@ FILE(GLOB GL3W_SOURCES "${CMAKE_SOURCE_DIR}/3rdParty/gl3w/GL/gl3w.c")
 FILE(GLOB FIRMWARE_SOURCES "${CMAKE_CURRENT_SOURCE_DIR}/../Firmware/UI/*.cpp"
                            "${CMAKE_CURRENT_SOURCE_DIR}/../Firmware/UI/Painter/*.cpp"
                            "${CMAKE_CURRENT_SOURCE_DIR}/../Firmware/UI/Screens/*.cpp"
+                           "${CMAKE_CURRENT_SOURCE_DIR}/../Firmware/UI/Widgets/*.cpp"
                            "${CMAKE_CURRENT_SOURCE_DIR}/../Firmware/CentralDB/Attribute.cpp"
                            "${CMAKE_CURRENT_SOURCE_DIR}/../Firmware/CentralDB/CentralDB.cpp"
                            "${CMAKE_CURRENT_SOURCE_DIR}/../Firmware/CentralDB/CentralDBObserver.cpp"
@@ -40,7 +41,7 @@ MESSAGE(STATUS "Firmware files: ${FIRMWARE_SOURCES}")
 #MESSAGE(STATUS "Bootloader USB files: ${BOOTLOADER_SOURCES}")
 #include_directories("${CMAKE_CURRENT_SOURCE_DIR}/../Bootloader/Periphery/USB/")
 
-SET(VISUALIZER_SOURCES Main.cpp VirtualUI.cpp imgui_modules/imgui_impl_sdl.cpp imgui_modules/imgui_impl_opengl3.cpp)
+SET(VISUALIZER_SOURCES Main.cpp VirtualUI.cpp HelpersGL.cpp imgui_modules/imgui_impl_sdl.cpp imgui_modules/imgui_impl_opengl3.cpp)
 
 # Copy image folder to build folder
 file(COPY images DESTINATION ${CMAKE_BINARY_DIR})

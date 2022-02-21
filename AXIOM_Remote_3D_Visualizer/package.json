@@ -6,16 +6,16 @@
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "transpile_firmware": "emsdk-run ./transpile_firmware.sh",
-    "dev": "webpack serve --hot --inline --open",
+    "dev": "webpack serve --hot --open",
     "build": "webpack build"
   },
   "author": "",
   "license": "ISC",
   "dependencies": {
     "animejs": "^3.2.1",
-    "postprocessing": "^6.22.2",
-    "pubsub-js": "^1.9.3",
-    "three": "^0.130.1"
+    "postprocessing": "^6.24.1",
+    "pubsub-js": "^1.9.4",
+    "three": "^0.137.5"
   },
   "browser": {
     "fs": false,
@@ -23,10 +23,10 @@
     "os": false
   },
   "devDependencies": {
-    "copy-webpack-plugin": "^9.0.1",
+    "copy-webpack-plugin": "^10.2.4",
     "emscripten-sdk": "Sxxov/emscripten-sdk-npm",
-    "webpack": "^5.46.0",
-    "webpack-cli": "^4.7.2",
-    "webpack-dev-server": "^3.11.2"
+    "webpack": "^5.69.1",
+    "webpack-cli": "^4.9.2",
+    "webpack-dev-server": "^4.7.4"
   }
 }
