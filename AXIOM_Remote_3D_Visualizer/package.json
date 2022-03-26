@@ -13,9 +13,9 @@
   "license": "ISC",
   "dependencies": {
     "animejs": "^3.2.1",
-    "postprocessing": "^6.24.1",
+    "postprocessing": "^6.26.3",
     "pubsub-js": "^1.9.4",
-    "three": "^0.137.5"
+    "three": "^0.139.0"
   },
   "browser": {
     "fs": false,
@@ -25,7 +25,7 @@
   "devDependencies": {
     "copy-webpack-plugin": "^10.2.4",
     "emscripten-sdk": "Sxxov/emscripten-sdk-npm",
-    "webpack": "^5.69.1",
+    "webpack": "^5.70.0",
     "webpack-cli": "^4.9.2",
     "webpack-dev-server": "^4.7.4"
   }
