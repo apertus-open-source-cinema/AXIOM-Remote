@@ -1,3 +1,6 @@
+#include <xc.h>
+#include <sys/attribs.h>
+
 // Configuration
 #include "Configuration/PIC32.h"
 
@@ -28,6 +31,7 @@
 // Defined in procdefs.ld
 volatile extern uint16_t framebuffer[ILI9341_TFTWIDTH * ILI9341_TFTHEIGHT];
 ILI9341Display display(framebuffer);
+uint8_t fps = 0, frames = 0;
 
 void ConfigGPIO()
 {
@@ -44,6 +48,9 @@ void InitPBUS(void)
     PB7DIVbits.PBDIV = 0b000000; // divide by 1
     PB7DIVbits.ON = 1;
 
+    PB3DIVbits.PBDIV = 13; // divide by 12, 192Mhz/12 = 16Mhz
+    PB3DIVbits.ON = 1;
+    
     CFGCONbits.OCACLK = 1;
     TRISDbits.TRISD10 = 0;
     RPD10R = 0b1100;
@@ -532,8 +539,31 @@ void init_uart2()
     irq_enable();
 }
 
-int main()
+//ISR
+extern "C" void __ISR(_TIMER_2_VECTOR, IPL7SOFT) Timer2_ISR(void)
 {
+    fps = frames;
+    frames = 0;
+    IFS0bits.T2IF = 0; //clear flag
+}
+
+void InitTimer2()
+{
+    T2CONbits.TCS = 0; //Internal Clock
+    T2CONbits.TCKPS = 0b111; //1:256 Prescale value
+    TMR2 = 0; //Value of timer 2
+    PR2 = 62500; // (62500/16Mhz)x256 = 1
+    T2CONbits.ON = 1;
+
+    //Timer 2 Interrupt
+    IPC2bits.T2IP = 7;
+    IPC2bits.T2IS = 0;
+    IFS0bits.T2IF = 0;    
+    IEC0bits.T2IE = 1;
+}
+
+int main()
+{   
     USBCDCDevice cdcDevice;
 
     Setup(display, cdcDevice);
@@ -589,17 +619,16 @@ int main()
 
     // init_uart2();
 
-    uint16_t counter = 0;
+    InitTimer2();
     while (1)
     {
         cdcDevice.Process();
 
         menuSystem.Update(PollButtons(&cdcDevice), PollKMW(&cdcDevice));
-
         menuSystem.Draw(painter);
 
-        counter++;
-        sprintf(debugText, "%d\r\n", counter);
+        frames++;
+        sprintf(debugText, "%d\r\n", fps);
         painter->DrawText(3, 90, debugText, (uint16_t)Color565::Red, TextAlign::TEXT_ALIGN_LEFT, 0);
 
         // painter.DrawFillRoundRectangle(50, 120, 100, 40, 5, (uint16_t)Color565::Black);
