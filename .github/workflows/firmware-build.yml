@@ -23,7 +23,8 @@ jobs:
 
       - name: Build firmware
         run: |
-          apt install -y cmake ninja-build
+          export DEBIAN_FRONTEND="noninteractive"
+          apt-get install -y cmake ninja-build
           cd Firmware
           cmake -B build -G Ninja .
           cmake --build build
