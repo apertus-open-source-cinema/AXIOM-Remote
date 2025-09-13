@@ -1,0 +1,122 @@
+name: Build, Test, and Deploy
+
+on:
+  push:
+    branches-ignore:
+      - "gh-pages"
+  pull_request:
+    branches-ignore:
+      - "gh-pages"
+
+jobs:
+  build-firmware:
+    name: Build Firmware
+    runs-on: ubuntu-latest
+    container: arduinoci/ci-arduino-pico-rp2040
+    #env:
+    #  MP_CC: /opt/microchip/xc32/v3.00/bin/xc32-gcc
+    #  MP_CC_DIR: /opt/microchip/xc32/v3.00/bin/
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Build firmware
+        run: make -j8 -C Firmware
+
+      - name: Build bootloader
+        run: make -j8 -C Bootloader
+
+      - name: Prepare firmware artifacts
+        run: |
+          cd Firmware/build
+          mv AXIOM_Remote_Firmware.hex AXIOM_Remote_Firmware_${{ github.run_number }}.hex
+          md5sum AXIOM_Remote_Firmware_${{ github.run_number }}.hex > AXIOM_Remote_Firmware_${{ github.run_number }}.hex.md5
+
+      - name: Upload firmware artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: firmware-artifacts
+          path: |
+            Firmware/build/*.hex
+            Firmware/build/*.md5
+
+  # test:
+  #   name: Run C++ Tests
+  #   runs-on: ubuntu-latest
+  #   container: tangramor/cpptools:latest
+
+  #   steps:
+  #     - name: Checkout code
+  #       uses: actions/checkout@v4
+
+  #     - name: Build and run tests
+  #       run: |
+  #         cd FirmwareTest
+  #         mkdir build
+  #         cd build
+  #         cmake ..
+  #         make -j8
+  #         ./AXIOM_Remote_Firmware_Test -r junit > test-results.xml
+
+  #     - name: Upload Test Results
+  #       uses: actions/upload-artifact@v4
+  #       with:
+  #         name: test-results
+  #         path: FirmwareTest/build/test-results.xml
+
+  #     - name: Upload coverage to Codecov
+  #       uses: codecov/codecov-action@v4
+  #       with:
+  #         token: ${{ secrets.CODECOV_TOKEN }}
+  #         file: ./FirmwareTest/build/coverage_report/coverage_report.xml
+  #         flags: frontend
+
+  # build-3d:
+  #   name: Build 3D Visualizer
+  #   runs-on: ubuntu-latest
+  #   needs: build-firmware
+  #   container: emscripten/emsdk:2.0.26
+
+  #   steps:
+  #     - name: Checkout code
+  #       uses: actions/checkout@v4
+
+  #     - name: Build 3D visualizer
+  #       run: |
+  #         cd AXIOM_Remote_3D_Visualizer
+  #         npm install
+  #         ./transpile_firmware.sh
+  #         npm run build
+
+  #     - name: Upload 3D visualizer artifact
+  #       uses: actions/upload-artifact@v4
+  #       with:
+  #         name: 3d-visualizer-dist
+  #         path: AXIOM_Remote_3D_Visualizer/dist
+
+  # deploy-gh-pages:
+  #   name: Deploy to GitHub Pages
+  #   runs-on: ubuntu-latest
+  #   needs: build-3d
+  #   # Only run on pushes to the main branch
+  #   if: github.ref == 'refs/heads/main' && github.event_name == 'push'
+
+  #   steps:
+  #     - name: Checkout code
+  #       uses: actions/checkout@v4
+
+  #     - name: Download 3D visualizer artifact
+  #       uses: actions/download-artifact@v4
+  #       with:
+  #         name: 3d-visualizer-dist
+  #         path: dist
+
+  #     - name: Deploy to GitHub Pages
+  #       uses: peaceiris/actions-gh-pages@v4
+  #       with:
+  #         github_token: ${{ secrets.GITHUB_TOKEN }}
+  #         publish_dir: ./dist
+  #         # The user/organization that owns the repository
+  #         user_name: "github-actions[bot]"
+  #         user_email: "github-actions[bot]@users.noreply.github.com"
