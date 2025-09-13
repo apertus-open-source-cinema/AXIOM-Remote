@@ -1,0 +1,18 @@
+include(FetchContent)
+set(FETCHCONTENT_QUIET FALSE)
+set(FETCHCONTENT_BASE_DIR "${CMAKE_SOURCE_DIR}/3rdParty")
+
+# Fetch LVGL
+FetchContent_Declare(
+  lvgl
+  GIT_REPOSITORY https://github.com/lvgl/lvgl.git
+  GIT_TAG master
+)
+FetchContent_MakeAvailable(lvgl)
+
+target_compile_definitions(lvgl PRIVATE
+  LV_CONF_BUILD_DISABLE_EXAMPLES
+  LV_CONF_BUILD_DISABLE_DEMOS
+)
+
+#target_include_directories(lvgl PRIVATE ${CMAKE_CURRENT_SOURCE_DIR}/src)

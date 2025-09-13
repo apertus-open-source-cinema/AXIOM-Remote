@@ -1,0 +1,346 @@
+;
+; Copyright (c) 2025 Herbert Poetzl
+;
+
+.pio_version 0
+
+.program pargen
+.side_set 4
+
+.wrap_target
+			;    0bCDWR	; CSN, DCN, WRX, RDX
+idle:
+    jmp idle		side 0b1111	; loop in idle state
+
+public entry:
+
+    out pindirs, 8	side 0b0111	; configure all out
+    out pins, 8		side 0b0001	; command, clear WRX and DCX
+    jmp x--,    wdat	side 0b0011	; more data to write? set WRX
+    jmp turn		side 0b0111	; continue with read
+
+wdat: 			     	  	; write data loop
+    out pins, 8		side 0b0101	; out data, set DCX, clear WRX
+    jmp x--,	wdat	side 0b0111	; set WRX and loop
+
+turn:
+    jmp y--,	read	side 0b0111	; data to read?
+    jmp done		side 0b0111	; otherwise we are done
+
+read:
+    mov osr, null	side 0b0111    	; load OSR with all zeros
+    out pindirs, 32	side 0b0111	; all input, clear RDX
+
+rdat:			     	  	; read data loop
+    nop			side 0b0110 [1]
+    in pins, 8		side 0b0111	; input data and set RDX
+    jmp y--,	rdat	side 0b0111 	; clear RDX and loop
+
+done:					; all done
+    push block		side 0b1111	; push read data, all HIGH
+.wrap
+
+
+% c-sdk {
+
+static inline
+void pargen_program_init(
+    PIO pio, uint sm, uint off,
+    uint data_base, uint data_count,
+    uint side_base, float clk_div)
+{
+    // set all data and side pins to HIGH
+    // set all set pins to HIGH and clock to LOW
+    pio_sm_set_pins(pio, sm,
+    	(((1u << 4) - 1) << side_base) |
+    	((1u << (data_count - 1)) << data_base));
+
+    // configure side set pins as output
+    pio_sm_set_consecutive_pindirs(pio, sm, side_base, 4, true);
+    // configure data pins as output
+    pio_sm_set_consecutive_pindirs(pio, sm, data_base, data_count, true);
+
+    // configure all data pins for PIO
+    for (uint i=0; i<data_count; i++)
+	pio_gpio_init(pio, data_base + i);
+    // configure all side set pins for PIO
+    for (uint i=0; i<4; i++)
+	pio_gpio_init(pio, side_base + i);
+
+    pio_sm_config c = pargen_program_get_default_config(off);
+    sm_config_set_sideset_pins(&c, side_base);
+    // sm_config_set_set_pins(&c, set_base, set_count);
+    sm_config_set_out_pins(&c, data_base, data_count);
+    sm_config_set_in_pins(&c, data_base);
+    sm_config_set_clkdiv(&c, clk_div);
+    sm_config_set_in_shift(&c, false, true, 16);
+    sm_config_set_out_shift(&c, false, true, 16);
+
+    pio_sm_init(pio, sm, off, &c);
+
+    return;
+}
+
+static inline
+void pargen_put(PIO pio, uint sm, uint16_t val)
+{
+    // printf("p[%d]=%04X\n", sm, val);
+    pio_sm_put_blocking(pio, sm, val << 16);
+}
+
+static inline
+void pargen_put32(PIO pio, uint sm, uint32_t val)
+{
+    // printf("p[%d]=%08lX\n", sm, val);
+    pio_sm_put_blocking(pio, sm, val);
+}
+
+static inline
+uint16_t pargen_get(PIO pio, uint sm)
+{
+    uint16_t val = pio_sm_get_blocking(pio, sm);
+    // printf("g[%d]=%04X\n", sm, val);
+    return val;
+}
+
+static inline
+void pargen_exec(PIO pio, uint sm, uint instr)
+{
+    pio_sm_exec(pio, sm,
+    	instr | pio_encode_sideset(4, 0xF));
+}
+
+static inline
+void pargen_exec_wait(PIO pio, uint sm, uint instr)
+{
+    pio_sm_exec_wait_blocking(pio, sm,
+    	instr | pio_encode_sideset(4, 0xF));
+}
+
+static inline
+void pargen_loadx8y16p8(PIO pio, uint sm, uint8_t x, uint16_t y)
+{
+    uint16_t x8p8 = (x << 8) | 0xFF;
+
+    // printf("x8=%02X,y16=%04X\n", x, y);
+    pargen_put(pio, sm, y);
+    pargen_exec(pio, sm, pio_encode_out(pio_y, 16));
+    pargen_put(pio, sm, x8p8);
+    pargen_exec(pio, sm, pio_encode_out(pio_x, 8));
+}
+
+static inline
+void pargen_loadx16y8p8(PIO pio, uint sm, uint16_t x, uint8_t y)
+{
+    uint32_t y8p8 = (y << 8) | 0xFF;
+
+    // printf("x16=%04X,y8=%02X\n", x, y);
+    pargen_put(pio, sm, x);
+    pargen_exec(pio, sm, pio_encode_out(pio_x, 16));
+    pargen_put(pio, sm, y8p8);
+    pargen_exec(pio, sm, pio_encode_out(pio_y, 8));
+}
+
+static inline
+void pargen_loadx8y8p8c8(PIO pio, uint sm,
+    uint8_t x, uint8_t y, uint8_t cmd)
+{
+    uint16_t x8y8 = (x << 8) | y;
+    uint16_t p8c8 = 0xFF00 | cmd;
+
+    // printf("x8=%02X,y8=%02X,cmd=%02X\n", x, y, cmd);
+    pargen_put(pio, sm, x8y8);
+    pargen_exec(pio, sm, pio_encode_out(pio_x, 8));
+    pargen_exec(pio, sm, pio_encode_out(pio_y, 8));
+    pargen_put(pio, sm, p8c8);
+}
+
+static inline
+void pargen_loadpc(PIO pio, uint sm, unsigned idx)
+{
+    pargen_exec(pio, sm, pio_encode_jmp(idx));
+}
+
+static inline
+void pargen_purge(PIO pio, uint sm, uint count)
+{
+    // printf("purge = %d\n", count);
+    if (count)
+	pargen_exec_wait(pio, sm,
+	    pio_encode_out(pio_null, count));
+}
+
+static inline
+void pargen_cmd(PIO pio, uint sm, uint off, uint8_t cmd)
+{
+    uint16_t p8c8 = 0xFF00 | cmd;
+
+    pio_sm_restart(pio, sm);
+
+    pargen_exec(pio, sm, pio_encode_mov(pio_x, pio_null));
+    pargen_exec(pio, sm, pio_encode_mov(pio_y, pio_null));
+    pargen_put(pio, sm, p8c8);
+    pargen_loadpc(pio, sm, off + pargen_offset_entry);
+    pargen_get(pio, sm);
+
+    while (pio_sm_get_pc(pio, sm) != off);
+    return;
+}
+
+static inline
+void pargen_cmd_arg(PIO pio, uint sm, uint off,
+    uint8_t cmd, uint8_t arg)
+{
+    uint16_t x8y0p8 = 0x01FF;
+    uint16_t c8a8 = (cmd << 8) | arg;
+
+    pio_sm_restart(pio, sm);
+
+    pargen_put(pio, sm, x8y0p8);
+    pargen_exec(pio, sm, pio_encode_out(pio_x, 8));
+    pargen_exec(pio, sm, pio_encode_mov(pio_y, pio_null));
+    pargen_put(pio, sm, c8a8);
+    pargen_loadpc(pio, sm, off + pargen_offset_entry);
+    pargen_get(pio, sm);
+
+    while (pio_sm_get_pc(pio, sm) != off);
+    return;
+}
+
+static inline
+void pargen_cmd_wdat(PIO pio, uint sm, uint off,
+    uint8_t cmd, const uint16_t *wdat, uint16_t wcnt)
+{
+    uint16_t p8c8 = 0xFF00 | cmd;
+    unsigned wlen = (wcnt + 1)/2;
+
+    pio_sm_restart(pio, sm);
+
+    pargen_put(pio, sm, wcnt);
+    pargen_exec(pio, sm, pio_encode_out(pio_x, 16));
+    pargen_exec(pio, sm, pio_encode_mov(pio_y, pio_null));
+    pargen_put(pio, sm, p8c8);
+    pargen_loadpc(pio, sm, off + pargen_offset_entry);
+
+    for (int i=0; i<wlen; i++)
+	pargen_put(pio, sm, wdat[i]);
+
+    pargen_get(pio, sm);
+    pargen_purge(pio, sm, ((-wcnt) % 2)*8);
+
+    while (pio_sm_get_pc(pio, sm) != off);
+    return;
+}
+
+static inline
+void pargen_cmd_rdat(PIO pio, uint sm, uint off,
+    uint8_t cmd, uint16_t *rdat, uint16_t rcnt)
+{
+    uint16_t p8c8 = 0xFF00 | cmd;
+    unsigned rlen = (rcnt + 1)/2;
+
+    pio_sm_restart(pio, sm);
+    pio_sm_clear_fifos(pio, sm);
+
+    pargen_put(pio, sm, rcnt);
+    pargen_exec(pio, sm, pio_encode_mov(pio_x, pio_null));
+    pargen_exec(pio, sm, pio_encode_out(pio_y, 16));
+    pargen_put(pio, sm, p8c8);
+    pargen_loadpc(pio, sm, off + pargen_offset_entry);
+
+    for (int i=0; i<rlen; i++)
+	rdat[i] = pargen_get(pio, sm);
+
+    while (pio_sm_get_pc(pio, sm) != off);
+    return;
+}
+
+static inline
+void ili9341_program_init(
+    PIO pio, uint sm, uint off,
+    uint data_base, uint ctrl_base)
+{
+    pargen_program_init(pio, sm, off,
+    	data_base, 8, ctrl_base, 6.0f);
+}
+
+
+#define ili9341_cmd pargen_cmd
+#define	ili9341_cmd_arg pargen_cmd_arg
+
+static inline
+void ili9341_cmd_caset(PIO pio, uint sm, uint off,
+    uint16_t start, uint16_t end)
+{
+    uint16_t seq[] = { start, end };
+
+    pargen_cmd_wdat(pio, sm, off, 0x2A, seq, 4);
+    return;
+}
+
+static inline
+void ili9341_cmd_paset(PIO pio, uint sm, uint off,
+    uint16_t start, uint16_t end)
+{
+    uint16_t seq[] = { start, end };
+
+    pargen_cmd_wdat(pio, sm, off, 0x2B, seq, 4);
+    return;
+}
+
+static inline
+uint32_t ili9341_cmd_rddid(PIO pio, uint sm, uint off)
+{
+    // 04h cmd, 1dummy, 3byte reply
+    uint16_t res[2] = { 0 };
+
+    pargen_cmd_rdat(pio, sm, off, 0x04, res, 4);
+    printf("res[2] = %04X, %04X\n", res[0], res[1]);
+    return res[0] << 16 | res[1];
+}
+
+static inline
+uint32_t ili9341_cmd_rddst(PIO pio, uint sm, uint off)
+{
+    // 09h cmd, 1dummy, 4byte reply
+    uint16_t res[3] = { 0 };
+
+    pargen_cmd_rdat(pio, sm, off, 0x09, res, 5);
+    printf("res[3] = %04X, %04X, %04X\n", res[0], res[1], res[2]);
+    return res[0] << 24 | res[1] << 8 | res[2] >> 8;
+}
+
+
+static inline
+void pargen_data_dma(PIO pio, uint sm, uint off,
+    uint dma_chan, dma_channel_config *dma_cfg,
+    const uint16_t *data, uint32_t size, bool inc)
+{
+    pio_sm_restart(pio, sm);
+    pio_sm_clear_fifos(pio, sm);
+
+    // prepare memory write command (0x2C)
+    pargen_put32(pio, sm, size);
+    pargen_exec(pio, sm, pio_encode_out(pio_x, 32));
+    pargen_exec(pio, sm, pio_encode_mov(pio_y, pio_null));
+    pargen_put(pio, sm, 0xFF2C);
+    pargen_loadpc(pio, sm, off + pargen_offset_entry);
+
+//#if 0
+//    for (int i=0; i<size/2; i++) {
+//	uint16_t val = inc ? data[i] : data[0];
+	// printf("val[%d] = %04X\n", i, val);
+//	pargen_put(pio, sm, val);
+//    }
+//#else
+    channel_config_set_read_increment(dma_cfg, inc);
+    dma_channel_configure(dma_chan, dma_cfg,
+	&pio->txf[sm], data, size/2, true);
+//#endif
+
+    pargen_get(pio, sm);
+    while (pio_sm_get_pc(pio, sm) != off);
+    return;
+}
+
+%}

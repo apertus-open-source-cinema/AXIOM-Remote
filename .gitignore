@@ -218,3 +218,6 @@ pip-log.txt
 Firmware/Bootloader/
 
 AXIOM_Remote_3D_Visualizer/node_modules/
+
+.cache/
+3rdParty/
