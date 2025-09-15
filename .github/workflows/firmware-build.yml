@@ -28,7 +28,9 @@ jobs:
         run: |
           cd Firmware/build
           mv AXIOM_Remote_Firmware.hex AXIOM_Remote_Firmware_${{ github.run_number }}.hex
+          mv AXIOM_Remote_Firmware.uf2 AXIOM_Remote_Firmware_${{ github.run_number }}.uf2
           md5sum AXIOM_Remote_Firmware_${{ github.run_number }}.hex > AXIOM_Remote_Firmware_${{ github.run_number }}.hex.md5
+          md5sum AXIOM_Remote_Firmware_${{ github.run_number }}.uf2 > AXIOM_Remote_Firmware_${{ github.run_number }}.uf2.md5
 
       - name: Upload firmware artifact
         uses: actions/upload-artifact@v4
@@ -36,6 +38,7 @@ jobs:
           name: firmware-artifacts
           path: |
             Firmware/build/*.hex
+            Firmware/build/*.uf2
             Firmware/build/*.md5
 
   # test:

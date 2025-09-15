@@ -1,11 +1,15 @@
 // For format details, see https://aka.ms/devcontainer.json. For config options, see the README at:
 // https://github.com/microsoft/vscode-dev-containers/tree/v0.163.0/containers/cpp
 {
-	"name": "PIC32MZ development environment (Alpine)",
-	"image": "bandit1983/xc32_ubuntu",
-	"mounts": ["source=/dev,target=/dev,type=bind"],
-	"runArgs": ["--device-cgroup-rule=a 189:* rwm"],
-	"settings": { 
+	"name": "RP2040 development environment",
+	"image": "docker.io/bandit1983/gcc-arm-toolchain",
+	"mounts": [
+		"source=/dev,target=/dev,type=bind"
+	],
+	"runArgs": [
+		"--device-cgroup-rule=a 189:* rwm"
+	],
+	"settings": {
 		"terminal.integrated.shell.linux": "/bin/bash"
 	},
 	// Add the IDs of extensions you want installed when the container is created.

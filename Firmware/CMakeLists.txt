@@ -8,12 +8,10 @@ set(PICO_PLATFORM rp2040)
 set(PICO_BOARD pico)
 
 # Pico SDK
-set(PICO_SDK_FETCH_FROM_GIT on)
-set(PICO_SDK_FETCH_FROM_GIT_PATH "${CMAKE_CURRENT_SOURCE_DIR}/3rdParty")
 include(${CMAKE_CURRENT_SOURCE_DIR}/pico_sdk_import.cmake)
 
 project(AXIOM_Remote_Firmware C CXX ASM)
-set(CMAKE_CXX_STANDARD 23)
+set(CMAKE_CXX_STANDARD 20)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 set(CMAKE_CXX_EXTENSIONS OFF)
 
@@ -27,10 +25,9 @@ add_subdirectory(src/UI)
 add_executable(${PROJECT_NAME} src/Main.cpp src/drivers/rp2040/RP2040HALDriver.cpp src/drivers/ili9341/ILI9341Display.cpp) #src/drivers/ili9341/ILI9341DisplaySPI.cpp
 target_link_libraries(${PROJECT_NAME} PUBLIC pico_stdlib hardware_clocks hardware_pio hardware_dma hardware_spi lvgl FirmwareUI) #$<TARGET_OBJECTS:FirmwareUI>
 
-pico_generate_pio_header(${PROJECT_NAME} ${CMAKE_CURRENT_LIST_DIR}/src/drivers/ili9341/pargen.pio)
+pico_generate_pio_header(${PROJECT_NAME} ${CMAKE_CURRENT_SOURCE_DIR}/src/drivers/ili9341/pargen.pio)
 
-target_compile_options(${PROJECT_NAME} PRIVATE -Wall -Wextra -fstack-usage)
-set(CMAKE_EXE_LINKER_FLAGS "${CMAKE_EXE_LINKER_FLAGS} -Wl,--print-memory-usage")
+target_link_options(${PROJECT_NAME} PRIVATE -Wl,--print-memory-usage)
 
 pico_enable_stdio_usb(${PROJECT_NAME} 1)
 pico_enable_stdio_uart(${PROJECT_NAME} 0)
