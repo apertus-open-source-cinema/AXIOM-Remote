@@ -4,7 +4,7 @@
 
 | dev |
 |:------:|
-|[![CircleCI](https://circleci.com/gh/apertus-open-source-cinema/AXIOM-Remote/tree/dev.svg?style=svg)](https://circleci.com/gh/apertus-open-source-cinema/AXIOM-Remote/tree/dev)|
+[![Build, Test, and Deploy](https://github.com/apertus-open-source-cinema/AXIOM-Remote/actions/workflows/firmware-build.yml/badge.svg)](https://github.com/apertus-open-source-cinema/AXIOM-Remote/actions/workflows/firmware-build.yml)
 |[![codecov](https://codecov.io/gh/apertus-open-source-cinema/AXIOM-Remote/branch/dev/graph/badge.svg)](https://codecov.io/gh/apertus-open-source-cinema/AXIOM-Remote)
 
 ## Preview (3D)
@@ -26,9 +26,9 @@ for details see: LICENSE.txt
 
 ```/Archive/``` contains old outdated projects related to the AXIOM Remote.
 
-```/AXIOM_Remote_Firmware_Visualizer/``` contains the AXIOM Remote Visualizer - a tool to emulate the actual code running on the PIC32 and pixels displayed on the 320x240 LCD on a PC.
+```/AXIOM_Remote_Firmware_Visualizer/``` contains the AXIOM Remote Visualizer - a tool to emulate the actual code running on the RP2040 and pixels displayed on the 320x240 LCD on a PC.
 
-```/Bootloader/``` The Bootloader will be used for handling of periphery (LCD, USB-UART, I2C) and updating the firmware of the main PIC32 and also the east and west PIC16s (key managers) without a dedicated programming hardware.
+```/Bootloader/``` The Bootloader will be used for handling of periphery (LCD, USB-UART, I2C) and updating the firmware.
 
 ```/Common/``` contains general code and definition that are used in several projects in this repository.
 
@@ -42,11 +42,11 @@ for details see: LICENSE.txt
 
 ## Build instructions
 
-### Fetch the Microchip XC32/XC32++ compiler for your OS
+### Setup RP2040 Build Environment
 
-[https://www.microchip.com/mplab/compilers](https://www.microchip.com/mplab/compilers). We have tested the code up to compiler version 3.0.
+Before building, you need to set up the Raspberry Pi Pico SDK and toolchain. Please follow the official guide for your operating system: [https://datasheets.raspberrypi.com/pico/getting-started-with-pico.pdf](https://datasheets.raspberrypi.com/pico/getting-started-with-pico.pdf)
 
-To be able to build, the variable **XC32_PATH** in the Makefile of firmware and bootloader has to be adjusted to the actual install path of XC32.
+Ensure the `PICO_SDK_PATH` environment variable is set correctly.
 
 ### Bootloader
 
@@ -57,35 +57,19 @@ To be able to build, the variable **XC32_PATH** in the Makefile of firmware and 
 
 ### Firmware
 
-- Open **Firmware** folder in terminal
-- Execute **make** or when rebuilding **make clean && make**
-- **HEX** and **ELF** files would placed in the **build** folder
+- Open the **Firmware** folder in a terminal.
+- Create a build directory: `mkdir build`
+- Change into the build directory: `cd build`
+- Run CMake: `cmake ..`
+- Run Make: `make`
+- The build output, including the `axiom_remote.uf2` file, will be in the `build` folder.
 
 ## Flash instructions
 
-Note that with the current hardware the PICKit2 needs to stay connected for normal operation even when flashing has been completed as the PICkit2 pulls down the RESET signal.
-
-### IPE
-
-- Open IPE and connect to your PICKit3 or later, drag and drop the HEX file into the IPE window
-- Click **Program**, after a moment it should be finished and main menu with 6 buttons shown
-
-### pic32prog
-
-- Acquire binary or build from source from: <https://github.com/sergev/pic32prog> to flash with PICKit2
-- run **pic32prog yourfile.hex** and you should see a progress bar of the flashing/verification process
-
-If ```pic32prog``` only works with ```sudo``` add your user to the plugdev group and add the following udev rule to /etc/udev/rules.d/26-microchip.rules (create file if it does not exist) and reboot:
-
-```
-ATTR{idVendor}=="04d8", MODE="664", GROUP="plugdev"
-```
-
-The idVendor should be looked up with ```lsusb```, in case of the PICkit2 it looks like this:
-
-```
-Bus 003 Device 002: ID 04d8:0033 Microchip Technology, Inc. PICkit2
-```
+- Connect the AXIOM Remote to your computer via USB while holding down the `BOOTSEL` button on the RP2040 board.
+- It will mount as a mass storage device named `RPI-RP2`.
+- Drag and drop the `Firmware/build/Axiom_Remote_Firmware.uf2` file onto the `RPI-RP2` volume.
+- The board will automatically reboot and run the new firmware.
 
 ## Development Environment
 
@@ -93,7 +77,6 @@ We use Visual Studio Code (<https://code.visualstudio.com/>) as IDE and supply s
 This means its important to open the root folder of this repo in VS code.
 
 We recommend installing the VsCode Action Buttons extension: <https://marketplace.visualstudio.com/items?itemName=seunlanlege.action-buttons> and configurations (.vscode/settings.json) to add buttons to compile and flash the AXIOM Remote.
-
 
 ### Developing inside Docker container
 
@@ -107,8 +90,7 @@ Remote container button | Remote container dialog
 :-------------------------:|:-------------------------:
 ![](Docs/Remote_container_button.png) | ![](Docs/Remote_container_reopen.png)
 - Use the terminal in VSCode for builds, like you've did on your machine before
-  - **minicom** and **pic32prog** are already included, if required
-
+  - **minicom** is already included for serial debugging, if required.
 
 ## Coding Guidelines ##
 
