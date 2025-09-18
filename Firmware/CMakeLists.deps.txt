@@ -1,7 +1,7 @@
 include(FetchContent)
 set(FETCHCONTENT_QUIET FALSE)
 set(FETCHCONTENT_BASE_DIR "${CMAKE_SOURCE_DIR}/3rdParty")
-
+set(CMAKE_POLICY_DEFAULT_CMP0077 NEW)
 # Fetch LVGL
 FetchContent_Declare(
   lvgl
@@ -10,9 +10,9 @@ FetchContent_Declare(
 )
 FetchContent_MakeAvailable(lvgl)
 
-target_compile_definitions(lvgl PRIVATE
-  LV_CONF_BUILD_DISABLE_EXAMPLES
-  LV_CONF_BUILD_DISABLE_DEMOS
-)
+#set(CONFIG_LV_BUILD_DEMOS OFF) # for demos
+#set(CONFIG_LV_BUILD_EXAMPLES OFF) # for examples
+#set(CONFIG_LV_USE_THORVG_INTERNAL OFF) # for ThorVG
 
-#target_include_directories(lvgl PRIVATE ${CMAKE_CURRENT_SOURCE_DIR}/src)
+set(CONFIG_LV_BUILD_EXAMPLES OFF CACHE BOOL "Disable LVGL examples")
+set(CONFIG_LV_BUILD_DEMOS OFF CACHE BOOL "Disable LVGL demos")

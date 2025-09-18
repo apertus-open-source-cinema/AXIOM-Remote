@@ -133,12 +133,11 @@ const uint8_t initcmd[] = {
 // };
 
 // --- Constructor ---
-ILI9341Display::ILI9341Display()
-    : pio_initialized(false), currentWidth(ILI9341_TFTWIDTH), currentHeight(ILI9341_TFTHEIGHT),
-      tx_dma_chan(dma_claim_unused_channel(true)) // Claim DMA channel in constructor
+ILI9341Display::ILI9341Display() :
+    pio_initialized(false), currentWidth(ILI9341_TFTWIDTH), currentHeight(ILI9341_TFTHEIGHT),
+    tx_dma_chan(dma_claim_unused_channel(true)) // Claim DMA channel in constructor
 {
-    if (tx_dma_chan < 0)
-    {
+    if (tx_dma_chan < 0) {
         // Use panic or a more robust error handling mechanism
         printf("FATAL: Failed to claim DMA channel!\n");
         // Consider setting an error flag instead of proceeding
@@ -148,15 +147,13 @@ ILI9341Display::ILI9341Display()
 // --- Destructor ---
 ILI9341Display::~ILI9341Display()
 {
-    if (tx_dma_chan >= 0)
-    {
+    if (tx_dma_chan >= 0) {
         // Halt and unclaim DMA channel
         dma_channel_abort(tx_dma_chan);
         dma_channel_unclaim(tx_dma_chan);
     }
     // Disable PIO state machine if it was initialized
-    if (pio_initialized && pio_sm_is_claimed(pio, sm))
-    {
+    if (pio_initialized && pio_sm_is_claimed(pio, sm)) {
         pio_sm_set_enabled(pio, sm, false);
         pio_remove_program(pio, &pargen_program, offset);
         pio_sm_unclaim(pio, sm);
@@ -167,12 +164,10 @@ ILI9341Display::~ILI9341Display()
 // --- Init Function ---
 void ILI9341Display::Init()
 {
-    if (pio_initialized)
-    {
+    if (pio_initialized) {
         return;
     }
-    if (tx_dma_chan < 0)
-    {
+    if (tx_dma_chan < 0) {
         printf("Error: Cannot initialize display, DMA channel not available.\n");
         return;
     }
@@ -227,7 +222,7 @@ void ILI9341Display::Init()
     // ExecuteInitSequence will set an initial orientation.
     // If you want to override it immediately, call SetOrientation here.
     // For now, let ExecuteInitSequence handle the initial setup.
-    // SetOrientation(Orientation::LANDSCAPE_90); // Example if LANDSCAPE_90 is defined
+    SetOrientation(Orientation::LANDSCAPE_90); // Example if LANDSCAPE_90 is defined
 
     printf("ILI9341 Initialization Complete.\n");
 
@@ -240,8 +235,7 @@ void ILI9341Display::Init()
 // --- Raw Screen Fill for Debugging ---
 void ILI9341Display::FillScreenRaw(uint16_t color)
 {
-    if (!pio_initialized)
-    {
+    if (!pio_initialized) {
         printf("FillScreenRaw: PIO not initialized!\n");
         return;
     }
@@ -257,8 +251,7 @@ void ILI9341Display::FillScreenRaw(uint16_t color)
     // Ensure any previous DMA transfer is finished (important!)
     // This might be overly cautious if FillScreenRaw is only called during init,
     // but good practice if it could be called at other times.
-    if (dma_channel_is_busy(tx_dma_chan))
-    {
+    if (dma_channel_is_busy(tx_dma_chan)) {
         dma_channel_wait_for_finish_blocking(tx_dma_chan);
     }
 
@@ -382,11 +375,9 @@ void ILI9341Display::ExecuteInitSequence()
     WriteCommand(ILI9341_SWRESET);
     sleep_ms(150); // Important delay after SWRESET
 
-    while (true)
-    {
-        cmd = *addr++; // Read command
-        if (cmd == 0x00)
-        { // End of list marker
+    while (true) {
+        cmd = *addr++;     // Read command
+        if (cmd == 0x00) { // End of list marker
             break;
         }
 
@@ -395,32 +386,26 @@ void ILI9341Display::ExecuteInitSequence()
         uint8_t num_actual_args = num_args_raw & ~0x80; // Clear delay marker bit
 
         printf("CMD: 0x%02X, NumArgs: %d", cmd, num_actual_args);
-        if (delay_after)
-        {
+        if (delay_after) {
             printf(" (Delay After)");
         }
 
         params_for_write_command.clear();
-        if (num_actual_args > 0)
-        {
+        if (num_actual_args > 0) {
             printf(", Params: ");
             params_for_write_command.reserve(num_actual_args);
-            for (uint8_t i = 0; i < num_actual_args; ++i)
-            {
+            for (uint8_t i = 0; i < num_actual_args; ++i) {
                 uint8_t param_val = *(addr + i); // Read parameter using current addr + offset
                 printf("0x%02X ", param_val);
                 params_for_write_command.push_back(static_cast<uint16_t>(param_val));
 
                 // Update currentWidth/Height if processing MADCTL
-                if (cmd == ILI9341_MADCTL && i == 0)
-                { // MADCTL has 1 parameter
-                    if (param_val & 0x20)
-                    { // Check MV bit (bit 5) for landscape
+                if (cmd == ILI9341_MADCTL && i == 0) { // MADCTL has 1 parameter
+                    if (param_val & 0x20) {            // Check MV bit (bit 5) for landscape
                         currentWidth = ILI9341_TFTHEIGHT;
                         currentHeight = ILI9341_TFTWIDTH;
                     }
-                    else
-                    { // Portrait
+                    else { // Portrait
                         currentWidth = ILI9341_TFTWIDTH;
                         currentHeight = ILI9341_TFTHEIGHT;
                     }
@@ -430,8 +415,7 @@ void ILI9341Display::ExecuteInitSequence()
             addr += num_actual_args; // Advance addr past all parameters for this command
             WriteCommand(cmd, params_for_write_command.data(), num_actual_args);
         }
-        else
-        {
+        else {
             printf("(none)");
             WriteCommand(cmd); // Command with no arguments
         }
@@ -439,9 +423,8 @@ void ILI9341Display::ExecuteInitSequence()
 
         if (delay_after) // Check delay_after flag from num_args_raw
         {
-            uint16_t delay_ms_val = 5; // Default short delay
-            if (cmd == ILI9341_SLPOUT || cmd == ILI9341_DISPON)
-            { // These typically need longer delays
+            uint16_t delay_ms_val = 5;                            // Default short delay
+            if (cmd == ILI9341_SLPOUT || cmd == ILI9341_DISPON) { // These typically need longer delays
                 delay_ms_val = 120;
             }
             sleep_ms(delay_ms_val);
@@ -481,10 +464,8 @@ void ILI9341Display::WaitForTearingEffect()
     // The TE signal is typically active HIGH during blanking periods (safe to write).
     // 1. Wait for TE to go LOW (display is actively scanning).
     //    This ensures we don't miss the rising edge if we start polling while it's already high.
-    while (gpio_get(ILI_PIN_TE))
-    {
-        if (time_us_32() - start_us > TE_WAIT_TIMEOUT_US)
-        {
+    while (gpio_get(ILI_PIN_TE)) {
+        if (time_us_32() - start_us > TE_WAIT_TIMEOUT_US) {
             printf("TE Timeout waiting for LOW\n");
             return;
         }
@@ -492,10 +473,8 @@ void ILI9341Display::WaitForTearingEffect()
     }
 
     // 2. Wait for TE to go HIGH (start of V-Blanking, safe to write new frame).
-    while (!gpio_get(ILI_PIN_TE))
-    {
-        if (time_us_32() - start_us > TE_WAIT_TIMEOUT_US)
-        {
+    while (!gpio_get(ILI_PIN_TE)) {
+        if (time_us_32() - start_us > TE_WAIT_TIMEOUT_US) {
             printf("TE Timeout waiting for HIGH\n");
             return;
         }
@@ -506,8 +485,7 @@ void ILI9341Display::WaitForTearingEffect()
 // --- Internal Read Function ---
 void ILI9341Display::ReadBytes(uint8_t command, uint8_t* buffer, size_t len)
 {
-    if (!pio_initialized || len == 0 || !buffer)
-    {
+    if (!pio_initialized || len == 0 || !buffer) {
         return;
     }
     // Allocate buffer for PIO read (reads in 32-bit chunks)
@@ -518,8 +496,7 @@ void ILI9341Display::ReadBytes(uint8_t command, uint8_t* buffer, size_t len)
     pargen_cmd_rdat(pio, sm, offset, command, read_data.data(), len);
 
     // Unpack the 32-bit words into the 8-bit buffer
-    for (size_t i = 0; i < len; ++i)
-    {
+    for (size_t i = 0; i < len; ++i) {
         buffer[i] = (read_data[i / 4] >> (8 * (i % 4))) & 0xFF;
     }
     printf("Read data: ");
@@ -531,20 +508,16 @@ void ILI9341Display::ReadBytes(uint8_t command, uint8_t* buffer, size_t len)
 // --- Internal Write Command Helper ---
 void ILI9341Display::WriteCommand(uint8_t command, const uint16_t* parameters, size_t len)
 {
-    if (!pio_initialized)
-    {
+    if (!pio_initialized) {
         return;
     }
-    if (len == 0)
-    {
+    if (len == 0) {
         ili9341_cmd(pio, sm, offset, command);
     }
-    else if (len == 1)
-    {
+    else if (len == 1) {
         ili9341_cmd_arg(pio, sm, offset, command, parameters[0]);
     }
-    else
-    {
+    else {
         // Pack parameters into uint32_t array for pargen_cmd_wdat
         // size_t num_words = (len + 3) / 4;
         // std::vector<uint16_t> params(num_words, 0);
@@ -559,8 +532,7 @@ void ILI9341Display::WriteCommand(uint8_t command, const uint16_t* parameters, s
 // --- Set Drawing Area ---
 void ILI9341Display::SetArea(uint16_t x, uint16_t y, uint16_t width, uint16_t height)
 {
-    if (!pio_initialized || width == 0 || height == 0)
-    {
+    if (!pio_initialized || width == 0 || height == 0) {
         return;
     }
     // Ensure area is within bounds (optional but recommended)
@@ -581,8 +553,7 @@ void ILI9341Display::SetArea(uint16_t x, uint16_t y, uint16_t width, uint16_t he
 // --- Set Display Orientation ---
 void ILI9341Display::SetOrientation(Orientation orientation)
 {
-    if (!pio_initialized)
-    {
+    if (!pio_initialized) {
         return;
     }
 
@@ -591,13 +562,11 @@ void ILI9341Display::SetOrientation(Orientation orientation)
 
     // Update internal dimensions based on MV (Memory Access Control) bit
     // MV=1 (bit 5) swaps width/height
-    if (data & 0x20)
-    { // Check MV bit
+    if (data & 0x28) { // Check MV bit
         currentWidth = ILI9341_TFTHEIGHT;
         currentHeight = ILI9341_TFTWIDTH;
     }
-    else
-    {
+    else {
         currentWidth = ILI9341_TFTWIDTH;
         currentHeight = ILI9341_TFTHEIGHT;
     }
@@ -656,8 +625,7 @@ void ILI9341Display::DrawPixmap(uint16_t x, uint16_t y, uint16_t width, uint16_t
     // Ensure PIO SM has finished sending all data from its TX FIFO.
     // This is critical if pargen_data_dma only waits for DMA to complete loading the FIFO,
     // not for the PIO to empty its FIFO and send all data to the display.
-    while (!pio_sm_is_tx_fifo_empty(pio, sm))
-    {
+    while (!pio_sm_is_tx_fifo_empty(pio, sm)) {
         tight_loop_contents(); // Use tight_loop_contents for minimal delay while waiting.
                                // This is important for performance-sensitive loops on RP2040.
     }
@@ -691,7 +659,8 @@ void ILI9341Display::ReadDisplayStatus(uint8_t* buffer)
     ReadBytes(ILI9341_RDDST, buffer, 5);
 }
 
-uint32_t ILI9341Display::MeasureTEInterval() {
+uint32_t ILI9341Display::MeasureTEInterval()
+{
     if (!pio_initialized) {
         printf("MeasureTEInterval: PIO not initialized!\n");
         return 0;
@@ -746,9 +715,7 @@ uint32_t ILI9341Display::MeasureTEInterval() {
     printf("TE Pulse 2 detected at %lu us\n", t2_us);
 
     uint32_t interval_us = t2_us - t1_us;
-    printf("Measured TE Interval: %lu us (%.2f ms, %.2f Hz)\n",
-           interval_us,
-           (float)interval_us / 1000.0f,
+    printf("Measured TE Interval: %lu us (%.2f ms, %.2f Hz)\n", interval_us, (float)interval_us / 1000.0f,
            1000000.0f / interval_us);
     return interval_us;
 }

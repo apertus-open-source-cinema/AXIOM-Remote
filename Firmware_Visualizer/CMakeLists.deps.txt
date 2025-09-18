@@ -1,0 +1,46 @@
+include(FetchContent)
+set(FETCHCONTENT_QUIET FALSE)
+set(FETCHCONTENT_BASE_DIR "${CMAKE_SOURCE_DIR}/3rdParty")
+
+FetchContent_Declare(
+  lvgl
+  GIT_REPOSITORY https://github.com/lvgl/lvgl.git
+  GIT_TAG release/v9.2
+  BUILD_COMMAND ""
+  CONFIGURE_COMMAND ""
+)
+
+FetchContent_Declare(
+  SDL3
+  GIT_REPOSITORY https://github.com/libsdl-org/SDL
+    GIT_TAG main
+    GIT_PROGRESS TRUE
+    )
+    
+    FetchContent_Declare(
+      SDL3_image
+      GIT_REPOSITORY https://github.com/libsdl-org/SDL_image
+      GIT_TAG main
+      GIT_PROGRESS TRUE
+      )
+      
+      FetchContent_Declare(
+        imgui
+        GIT_REPOSITORY https://github.com/ocornut/imgui.git
+        GIT_TAG master
+        BUILD_COMMAND ""
+        CONFIGURE_COMMAND ""
+    GIT_PROGRESS TRUE
+    )
+    
+    FetchContent_MakeAvailable(SDL3 SDL3_image imgui lvgl)
+    
+set(SDL3IMAGE_INSTALL OFF)
+set(SDL3IMAGE_BUILD_SHARED_LIBS OFF)
+
+target_compile_definitions(lvgl PRIVATE
+LV_CONF_BUILD_DISABLE_EXAMPLES
+LV_CONF_BUILD_DISABLE_DEMOS
+)
+
+#target_include_directories(lvgl PRIVATE ${CMAKE_CURRENT_SOURCE_DIR}/src)

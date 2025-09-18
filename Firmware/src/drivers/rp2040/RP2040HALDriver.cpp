@@ -14,7 +14,8 @@ ILI9341Display ili9341Display;
 
 static constexpr uint32_t FLUSH_TE_WAIT_TIMEOUT_US = 30000; // 30ms timeout for TE signal in flush
 
-// volatile bool te_ready = false; // This flag appears unused by the current main loop logic
+// volatile bool te_ready = false; // This flag appears unused by the current
+// main loop logic
 volatile bool g_request_lvgl_refresh = false; // Flag for main loop to request LVGL refresh
 
 // --- Static Draw Buffers ---
@@ -29,14 +30,16 @@ Rp2040HALDriver::Rp2040HALDriver()
 
 Rp2040HALDriver::~Rp2040HALDriver()
 {
-    // Deinitialize hardware if needed (destructor of ili9341Display handles PIO/DMA)
+    // Deinitialize hardware if needed (destructor of ili9341Display handles
+    // PIO/DMA)
     printf("RP2040HALDriver destroyed.\n");
 }
 
 void te_interrupt_handler(uint gpio, uint32_t events)
 {
     // printf("TE IRQ!\n"); // Uncomment for verbose TE interrupt logging
-    // te_ready = true; // This flag is not directly used by the flush_cb or main loop's active logic
+    // te_ready = true; // This flag is not directly used by the flush_cb or main
+    // loop's active logic
     g_request_lvgl_refresh = true; // Signal the main loop
 }
 
@@ -45,27 +48,24 @@ bool Rp2040HALDriver::Initialize() // Removed parameters
     printf("RP2040HALDriver Initializing...\n");
 
     // 1. Initialize Hardware
-    if (!InitializeDisplayHardware())
-    {
+    if (!InitializeDisplayHardware()) {
         printf("ERROR: Failed to initialize display hardware!\n");
         return false;
     }
-    if (!InitializeInputHardware())
-    {
+    if (!InitializeInputHardware()) {
         // Continue even if input fails for now, but log it
         printf("WARNING: Failed to initialize input hardware (using placeholder).\n");
     }
 
     // 2. Create LVGL Display Driver
     m_lvglDisplay = lv_display_create(Rp2040Config::DisplayWidth, Rp2040Config::DisplayHeight);
-    if (!m_lvglDisplay)
-    {
+    if (!m_lvglDisplay) {
         printf("ERROR: lv_display_create failed!\n");
         return false;
     }
 
     lv_display_set_default(m_lvglDisplay);
-lv_display_set_rotation(m_lvglDisplay, LV_DISPLAY_ROTATION_0);
+    lv_display_set_rotation(m_lvglDisplay, LV_DISPLAY_ROTATION_90);
     lv_display_delete_refr_timer(m_lvglDisplay);
 
     // 3. Set Display Buffers and Flush Callback
@@ -95,20 +95,23 @@ lv_display_set_rotation(m_lvglDisplay, LV_DISPLAY_ROTATION_0);
 bool Rp2040HALDriver::InitializeDisplayHardware()
 {
     printf("Initializing ILI9341 Display Hardware...\n");
-    // The global ili9341Display object's Init() method handles PIO, DMA, and commands
+    // The global ili9341Display object's Init() method handles PIO, DMA, and
+    // commands
     ili9341Display.Init(); // Assumes constructor claimed DMA channel successfully
 
-    sleep_ms(10); // Add a small delay before measuring TE to allow display to stabilize
+    sleep_ms(10); // Add a small delay before measuring TE to allow display to
+                  // stabilize
     ili9341Display.MeasureTEInterval();
     // Set desired orientation after Init
-    // Use LANDSCAPE_X_FLIP for 320 width, 240 height based on common ILI9341 modules
-    // ili9341Display.SetOrientation(Orientation::LANDSCAPE_X_FLIP);
+    // Use LANDSCAPE_X_FLIP for 320 width, 240 height based on common ILI9341
+    // modules ili9341Display.SetOrientation(Orientation::LANDSCAPE_X_FLIP);
     // ili9341Display.SetOrientation(Orientation::LANDSCAPE_90);
 
     // Optional: Fill screen with a color after init to verify
     // uint16_t black = 0x0000;
-    // ili9341Display.DrawPixmap(0, 0, Rp2040Config::DisplayWidth, Rp2040Config::DisplayHeight, &black); // Needs a
-    // buffer Or implement a FillRect function in ILI9341Display
+    // ili9341Display.DrawPixmap(0, 0, Rp2040Config::DisplayWidth,
+    // Rp2040Config::DisplayHeight, &black); // Needs a buffer Or implement a
+    // FillRect function in ILI9341Display
 
     printf("ILI9341 Display Hardware Initialized.\n");
     return true; // Add error checking if Init() could fail and return bool
@@ -140,9 +143,9 @@ bool Rp2040HALDriver::InitializeInputHardware()
     // If TE pin is currently HIGH: We are in a V-Blank period. Proceed to draw.
     // This happens if LVGL processing was fast enough after the TE interrupt.
     //
-    // If TE pin is currently LOW: The V-Blank (that might have triggered the refresh)
-    // is over, and the display is in active scan. We MUST wait for the *next*
-    // V-Blank (TE to go HIGH) to avoid tearing.
+    // If TE pin is currently LOW: The V-Blank (that might have triggered the
+    // refresh) is over, and the display is in active scan. We MUST wait for the
+    // *next* V-Blank (TE to go HIGH) to avoid tearing.
     //
     // Note: ILI_PIN_TE is defined in ILI9341Display.h
     if (!gpio_get(ILI_PIN_TE)) { // If TE is LOW (not in V-Blank)
@@ -150,28 +153,31 @@ bool Rp2040HALDriver::InitializeInputHardware()
         // printf("FlushCB: TE LOW, waiting for HIGH...\n"); // Debug: very verbose
         while (!gpio_get(ILI_PIN_TE)) { // Wait for TE to go HIGH
             if (time_us_32() - wait_start_us > FLUSH_TE_WAIT_TIMEOUT_US) {
-                // printf("FlushCB: TE Timeout waiting for HIGH\n"); // Debug: log timeout
-                break; // Proceed with drawing, may tear if timeout was too short or TE is stuck/misconfigured
+                // printf("FlushCB: TE Timeout waiting for HIGH\n"); // Debug: log
+                // timeout
+                break; // Proceed with drawing, may tear if timeout was too short or TE
+                       // is stuck/misconfigured
             }
-            tight_loop_contents(); // Essential for performance in tight loops on RP2040
+            tight_loop_contents(); // Essential for performance in tight loops on
+                                   // RP2040
         }
     }
-    // At this point, either TE was already high, or we've waited for it to become high (or timed out).
-    // The original ili9341Display.WaitForTearingEffect() (which waits low then high) is NOT called here.
+    // At this point, either TE was already high, or we've waited for it to become
+    // high (or timed out). The original ili9341Display.WaitForTearingEffect()
+    // (which waits low then high) is NOT called here.
 
     ili9341Display.DrawPixmap(pArea->x1, pArea->y1, width, height, pixmap);
     uint32_t draw_pixmap_duration_us = time_us_32() - draw_pixmap_start_us;
 
-
     // IMPORTANT: Inform LVGL that the flushing is finished and the buffer is free
     lv_display_flush_ready(pDisp);
 
-    // #define DEBUG_FLUSH_STATS // Uncomment this line to enable flush stats printing
-    // Print flush statistics for debugging DMA and display performance
-    #ifdef DEBUG_FLUSH_STATS
-    printf("Flush: Area(%ld,%ld %ldx%ld), DrawPixmap: %lu us, Total: %lu us\n",
-           pArea->x1, pArea->y1, width, height, draw_pixmap_duration_us, (time_us_32() - overall_flush_start_us));
-    #endif
+// #define DEBUG_FLUSH_STATS // Uncomment this line to enable flush stats
+// printing Print flush statistics for debugging DMA and display performance
+#ifdef DEBUG_FLUSH_STATS
+    printf("Flush: Area(%ld,%ld %ldx%ld), DrawPixmap: %lu us, Total: %lu us\n", pArea->x1, pArea->y1, width, height,
+           draw_pixmap_duration_us, (time_us_32() - overall_flush_start_us));
+#endif
 }
 
 /* static */ void Rp2040HALDriver::InputReadCallbackStatic(lv_indev_t* pIndev, lv_indev_data_t* pData)
@@ -195,6 +201,7 @@ bool Rp2040HALDriver::InitializeInputHardware()
     // }
 }
 
-// Instance callbacks are not strictly needed with the static approach using a global driver object
-// void Rp2040HALDriver::FlushCallbackImpl(const lv_area_t* pArea, uint8_t* pixmap) { ... }
-// void Rp2040HALDriver::InputReadCallbackImpl(lv_indev_data_t* pData) { ... }
+// Instance callbacks are not strictly needed with the static approach using a
+// global driver object void Rp2040HALDriver::FlushCallbackImpl(const lv_area_t*
+// pArea, uint8_t* pixmap) { ... } void
+// Rp2040HALDriver::InputReadCallbackImpl(lv_indev_data_t* pData) { ... }

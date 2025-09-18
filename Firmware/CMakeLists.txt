@@ -8,6 +8,10 @@ set(PICO_PLATFORM rp2040)
 set(PICO_BOARD pico)
 
 # Pico SDK
+if(NOT EXISTS PICO_SDK_PATH)
+    set(PICO_SDK_FETCH_FROM_GIT TRUE)
+    set(PICO_SDK_FETCH_FROM_GIT_PATH "${CMAKE_CURRENT_SOURCE_DIR}/3rdParty")
+endif()
 include(${CMAKE_CURRENT_SOURCE_DIR}/pico_sdk_import.cmake)
 
 project(AXIOM_Remote_Firmware C CXX ASM)
@@ -17,8 +21,8 @@ set(CMAKE_CXX_EXTENSIONS OFF)
 
 pico_sdk_init()
 
-include_directories(${CMAKE_CURRENT_SOURCE_DIR}/src)
 include(CMakeLists.deps.txt)
+include_directories(${CMAKE_CURRENT_SOURCE_DIR}/src)
 
 add_subdirectory(src/UI)
 

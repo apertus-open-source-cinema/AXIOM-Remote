@@ -6,7 +6,6 @@ PointerAlignment: Left
 IndentWidth: 4
 BreakBeforeBraces: Stroustrup
 BreakConstructorInitializers: AfterColon
-BreakBeforeBraces: Custom
 BraceWrapping:
   AfterEnum: true
   AfterStruct: true
