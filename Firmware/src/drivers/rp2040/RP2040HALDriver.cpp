@@ -66,7 +66,7 @@ bool Rp2040HALDriver::Initialize() // Removed parameters
 
     lv_display_set_default(m_lvglDisplay);
     lv_display_set_rotation(m_lvglDisplay, LV_DISPLAY_ROTATION_90);
-    lv_display_delete_refr_timer(m_lvglDisplay);
+    // lv_display_delete_refr_timer(m_lvglDisplay);
 
     // 3. Set Display Buffers and Flush Callback
     // Pass the static buffers directly. Size is in bytes.
@@ -85,7 +85,7 @@ bool Rp2040HALDriver::Initialize() // Removed parameters
     // lv_indev_set_read_cb(indev, InputReadCallbackStatic);
     // No user_data needed for static callback approach here
 
-    gpio_set_irq_enabled_with_callback(ILI_PIN_TE, GPIO_IRQ_EDGE_RISE, true, &te_interrupt_handler);
+    // gpio_set_irq_enabled_with_callback(ILI_PIN_TE, GPIO_IRQ_EDGE_RISE, true, &te_interrupt_handler);
 
     printf("RP2040HALDriver Initialization Complete.\n");
     return true;
@@ -130,6 +130,7 @@ bool Rp2040HALDriver::InitializeInputHardware()
 
 /* static */ void Rp2040HALDriver::FlushCallbackStatic(lv_display_t* pDisp, const lv_area_t* pArea, uint8_t* pixmap)
 {
+    printf("FlushCallbackStatic called for area (%ld,%ld) to (%ld,%ld)\n", pArea->x1, pArea->y1, pArea->x2, pArea->y2);
     int32_t width = lv_area_get_width(pArea);
     int32_t height = lv_area_get_height(pArea);
     uint32_t overall_flush_start_us = time_us_32(); // Moved here for better total timing
@@ -148,36 +149,50 @@ bool Rp2040HALDriver::InitializeInputHardware()
     // *next* V-Blank (TE to go HIGH) to avoid tearing.
     //
     // Note: ILI_PIN_TE is defined in ILI9341Display.h
-    if (!gpio_get(ILI_PIN_TE)) { // If TE is LOW (not in V-Blank)
-        uint32_t wait_start_us = time_us_32();
-        // printf("FlushCB: TE LOW, waiting for HIGH...\n"); // Debug: very verbose
-        while (!gpio_get(ILI_PIN_TE)) { // Wait for TE to go HIGH
-            if (time_us_32() - wait_start_us > FLUSH_TE_WAIT_TIMEOUT_US) {
-                // printf("FlushCB: TE Timeout waiting for HIGH\n"); // Debug: log
-                // timeout
-                break; // Proceed with drawing, may tear if timeout was too short or TE
-                       // is stuck/misconfigured
-            }
-            tight_loop_contents(); // Essential for performance in tight loops on
-                                   // RP2040
-        }
-    }
+    // if (!gpio_get(ILI_PIN_TE)) { // If TE is LOW (not in V-Blank)
+    //     uint32_t wait_start_us = time_us_32();
+    //     // printf("FlushCB: TE LOW, waiting for HIGH...\n"); // Debug: very verbose
+    //     while (!gpio_get(ILI_PIN_TE)) { // Wait for TE to go HIGH
+    //         if (time_us_32() - wait_start_us > FLUSH_TE_WAIT_TIMEOUT_US) {
+    //             // printf("FlushCB: TE Timeout waiting for HIGH\n"); // Debug: log
+    //             // timeout
+    //             break; // Proceed with drawing, may tear if timeout was too short or TE
+    //                    // is stuck/misconfigured
+    //         }
+    //         tight_loop_contents(); // Essential for performance in tight loops on
+    //                                // RP2040
+    //     }
+    // }
     // At this point, either TE was already high, or we've waited for it to become
     // high (or timed out). The original ili9341Display.WaitForTearingEffect()
     // (which waits low then high) is NOT called here.
 
+    while (ili9341Display.IsBusy()) {
+        tight_loop_contents(); // Use this to prevent the core from stalling completely
+    }
+
     ili9341Display.DrawPixmap(pArea->x1, pArea->y1, width, height, pixmap);
     uint32_t draw_pixmap_duration_us = time_us_32() - draw_pixmap_start_us;
+    printf("Pixmap drawn in %lu ms\n", draw_pixmap_duration_us / 1000);
 
     // IMPORTANT: Inform LVGL that the flushing is finished and the buffer is free
     lv_display_flush_ready(pDisp);
 
-// #define DEBUG_FLUSH_STATS // Uncomment this line to enable flush stats
-// printing Print flush statistics for debugging DMA and display performance
-#ifdef DEBUG_FLUSH_STATS
-    printf("Flush: Area(%ld,%ld %ldx%ld), DrawPixmap: %lu us, Total: %lu us\n", pArea->x1, pArea->y1, width, height,
-           draw_pixmap_duration_us, (time_us_32() - overall_flush_start_us));
-#endif
+    // #define DEBUG_FLUSH_STATS // Uncomment this line to enable flush stats
+    // printing Print flush statistics for debugging DMA and display performance
+    // #ifdef DEBUG_FLUSH_STATS
+    //     printf("Flush: Area(%ld,%ld %ldx%ld), DrawPixmap: %lu us, Total: %lu us\n", pArea->x1, pArea->y1, width,
+    //     height,
+    //            draw_pixmap_duration_us, (time_us_32() - overall_flush_start_us));
+    // #endif
+
+    //     static int flush_count = 0;
+    //     flush_count++;
+    //     if (overall_flush_start_us / 1000.0f >= 1000) {
+    //         float fps = (flush_count * 1000.0f) / overall_flush_start_us / 1000.0f;
+    //         printf("Display FPS: %.1f\n", fps);
+    //         flush_count = 0;
+    //     }
 }
 
 /* static */ void Rp2040HALDriver::InputReadCallbackStatic(lv_indev_t* pIndev, lv_indev_data_t* pData)

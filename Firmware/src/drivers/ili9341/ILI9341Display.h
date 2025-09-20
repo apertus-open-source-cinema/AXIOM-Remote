@@ -15,8 +15,8 @@
 // ctrl_base pins are assumed consecutive: RD, WR, DC, CS
 #define ILI_PIN_RST 0
 #define ILI_PIN_TE 1
-#define ILI_PIN_DB0 2  // Base data pin (D0-D7)
-#define ILI_PIN_RD  10 // Base control pin (RD=ctrl_base+0, WR=ctrl_base+1, DC=ctrl_base+2, CS=ctrl_base+3)
+#define ILI_PIN_DB0 2 // Base data pin (D0-D7)
+#define ILI_PIN_RD 10 // Base control pin (RD=ctrl_base+0, WR=ctrl_base+1, DC=ctrl_base+2, CS=ctrl_base+3)
 // The following are implicitly defined by ILI_PIN_RD being the base for the 4 side-set pins
 // #define ILI_PIN_WR  11 // ctrl_base + 1
 // #define ILI_PIN_DC  12 // ctrl_base + 2
@@ -30,14 +30,13 @@
 // --- Display Dimensions ---
 // Defined in ili_def.h presumably
 
-enum class Orientation : uint8_t
-{
-    PORTRAIT             = 0x48, // MY=0, MX=1, MV=0, ML=0, BGR=1
-    LANDSCAPE_Y_FLIP     = 0x28, // MY=0, MX=0, MV=1, ML=0, BGR=1 (Standard Landscape)
-    LANDSCAPE_X_FLIP     = 0xA8, // MY=1, MX=0, MV=1, ML=0, BGR=1 (Landscape 180) - Check datasheet/experiment
-    LANDSCAPE_90         = 0x28, // Alias for standard landscape
-    LANDSCAPE_270        = 0xA8, // Alias for landscape 180
-    PORTRAIT_INVERTED    = 0x88, // MY=1, MX=0, MV=0, ML=0, BGR=1
+enum class Orientation : uint8_t {
+    PORTRAIT          = 0x48, // MY=0, MX=1, MV=0, ML=0, BGR=1
+    LANDSCAPE_Y_FLIP  = 0x28, // MY=0, MX=0, MV=1, ML=0, BGR=1 (Standard Landscape)
+    LANDSCAPE_X_FLIP  = 0xA8, // MY=1, MX=0, MV=1, ML=0, BGR=1 (Landscape 180) - Check datasheet/experiment
+    LANDSCAPE_90      = 0x28, // Alias for standard landscape
+    LANDSCAPE_270     = 0xA8, // Alias for landscape 180
+    PORTRAIT_INVERTED = 0x88, // MY=1, MX=0, MV=0, ML=0, BGR=1
     // Add other orientations based on MADCTL bits (MY, MX, MV, ML, BGR) if needed
     // The names below might not map directly to the MADCTL values provided.
     // Double-check the MADCTL register description for ILI9341.
@@ -45,12 +44,10 @@ enum class Orientation : uint8_t
     // LANDSCAPE_270_INVERTED = 0x90  // Example, verify
 };
 
-
-class ILI9341Display
-{
-private:
-    bool pio_initialized = false;
-    uint16_t currentWidth = ILI9341_TFTWIDTH;
+class ILI9341Display {
+  private:
+    bool pio_initialized   = false;
+    uint16_t currentWidth  = ILI9341_TFTWIDTH;
     uint16_t currentHeight = ILI9341_TFTHEIGHT;
 
     // DMA channel and configuration for pixel transfers
@@ -68,13 +65,12 @@ private:
     // void WriteData16(uint16_t data); // Not typically used with DMA approach
     void FillScreenRaw(uint16_t color);
 
-    
-    public:
+  public:
     ILI9341Display();
     ~ILI9341Display();
-    
+
     void WaitForTearingEffect();
-    
+
     /**
      * @brief Initializes the PIO, DMA, and the ILI9341 display controller.
      * Must be called before any other display operations.
@@ -133,4 +129,8 @@ private:
      */
     uint32_t MeasureTEInterval();
 
+    bool IsBusy()
+    {
+        return dma_channel_is_busy(tx_dma_chan);
+    }
 };

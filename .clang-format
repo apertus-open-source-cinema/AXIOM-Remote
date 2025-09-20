@@ -18,3 +18,4 @@ SortIncludes: false
 Cpp11BracedListStyle: true
 ColumnLimit: 120
 AllowShortFunctionsOnASingleLine: false
+AlignConsecutiveAssignments: Consecutive

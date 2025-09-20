@@ -21,6 +21,8 @@
 extern "C" {
 #endif
 
+#define DEBUG 1
+
 /**
  * @brief A custom idle percentage function for LVGL's system monitor.
  * Since we are on a bare-metal system without a full OS to track idle time,
@@ -47,8 +49,8 @@ extern volatile bool g_request_lvgl_refresh;
 
 std::unique_ptr<LvglUI> lvglUI;
 
-const int LVGL_TICK_PERIOD_MS = 5; // Original
-// const int LVGL_TICK_PERIOD_MS = 17; // Adjusted to match LV_DEF_REFR_PERIOD,
+// const int LVGL_TICK_PERIOD_MS = 10; // Original
+const int LVGL_TICK_PERIOD_MS = 5; // Adjusted to match LV_DEF_REFR_PERIOD,
 // or try 15ms
 
 bool repeating_timer_callback(struct repeating_timer* t)
@@ -137,6 +139,12 @@ void ParseAndProcessCommand(const char* command_str)
     }
 }
 
+uint32_t my_get_millis(void)
+{
+    return timer_hw->timelr / 1000.0f;
+    // return (timer_hw->timehr << 32 | timer_hw->timelr) / 1000.0f;
+}
+
 int main()
 {
     stdio_init_all(); // Initialize all stdio (USB, UART, etc.)
@@ -190,31 +198,30 @@ int main()
         return -1;
     }
     printf("LvglUI created.\n");
+    lv_tick_set_cb(my_get_millis);
 
     // 4. Initialize Theme (if separate from LvglUI creation)
-    InitializeTheme(); // Make sure this is defined and works
-    printf("Theme Initialized.\n");
-
+    InitializeTheme(); // Make sure this is defined and
     // Explicitly invalidate the screen after all UI and theme initialization.
     // This ensures that lv_task_handler() or lv_refr_now() sees a dirty screen
     // for the first frame.
-    if (platformDriver && platformDriver->GetLvDisplay()) {
-        lv_display_t* disp_to_invalidate = platformDriver->GetLvDisplay();
-        lv_obj_t* active_screen_on_disp = lv_display_get_screen_active(disp_to_invalidate);
-        if (active_screen_on_disp) {
-            lv_obj_invalidate(active_screen_on_disp);
-            printf("Main.cpp: Active screen on display explicitly invalidated for "
-                   "initial draw.\n");
-        }
-    }
-    static struct repeating_timer lvgl_tick_timer;
-    if (!add_repeating_timer_ms(-LVGL_TICK_PERIOD_MS, // Negative for repeating, positive for one-shot
-                                repeating_timer_callback,
-                                NULL, // No user data passed to callback
-                                &lvgl_tick_timer)) {
-        printf("FATAL: Failed to add LVGL tick timer\n");
-        // Handle error, perhaps by falling back to main loop ticking or halting
-    }
+    // if (platformDriver && platformDriver->GetLvDisplay()) {
+    //     lv_display_t* disp_to_invalidate = platformDriver->GetLvDisplay();
+    //     lv_obj_t* active_screen_on_disp = lv_display_get_screen_active(disp_to_invalidate);
+    //     if (active_screen_on_disp) {
+    //         lv_obj_invalidate(active_screen_on_disp);
+    //         printf("Main.cpp: Active screen on display explicitly invalidated for "
+    //                "initial draw.\n");
+    //     }
+    // }
+    // static struct repeating_timer lvgl_tick_timer;
+    // if (!add_repeating_timer_ms(LVGL_TICK_PERIOD_MS, // Negative for repeating, positive for one-shot
+    //                             repeating_timer_callback,
+    //                             NULL, // No user data passed to callback
+    //                             &lvgl_tick_timer)) {
+    //     printf("FATAL: Failed to add LVGL tick timer\n");
+    //     // Handle error, perhaps by falling back to main loop ticking or halting
+    // }
 
     // setup_fps_display(); // Create the FPS label
     // fps_last_update_time = std::chrono::steady_clock::now(); // Initialize FPS
@@ -223,68 +230,48 @@ int main()
     // --- Main Loop ---
     printf("Entering main loop...\n");
     while (true) {
-        // --- Handle Serial Input ---
-        int c = getchar_timeout_us(0); // Poll USB, no timeout
-        while (c != PICO_ERROR_TIMEOUT) {
-            if (c == '\n' || c == '\r') { // End of command
-                if (cmd_buffer_idx > 0) {
-                    cmd_buffer[cmd_buffer_idx] = '\0'; // Null terminate
-                    // printf("RX: %s\n", cmd_buffer); // Echo received command
-                    ParseAndProcessCommand(cmd_buffer);
-                }
-                cmd_buffer_idx = 0; // Reset buffer
-            }
-            else if (cmd_buffer_idx < CMD_BUFFER_SIZE - 1 && c >= 32 && c < 127) {
-                // Store printable characters
-                cmd_buffer[cmd_buffer_idx++] = (char)c;
-            }
-            // Check for next character immediately
-            c = getchar_timeout_us(0);
-        }
-
-        uint32_t lv_handler_start_us = time_us_32();
-        lv_task_handler(); // Process LVGL tasks, events, and rendering.
-        uint32_t lv_handler_duration_us = time_us_32() - lv_handler_start_us;
-
-        // Check if TE interrupt requested an LVGL refresh
-        if (g_request_lvgl_refresh) {
-            g_request_lvgl_refresh = false; // Consume the flag
-            if (platformDriver && platformDriver->GetLvDisplay()) {
-                // printf("MainLoop: Calling lv_display_refr_timer() due to TE
-                // pulse.\n"); // Verbose lv_refr_now(platformDriver->GetLvDisplay());
-                // // lv_refr_now is immediate, can be heavy in main loop
-                lv_display_refr_timer(nullptr); // Schedules a refresh for the next lv_task_handler call
-            }
-        }
+        // uint32_t lv_handler_start_us = time_us_32();
+        lv_timer_handler(); // Process LVGL tasks, events, and rendering.
+        // uint32_t lv_handler_duration_us = time_us_32() - lv_handler_start_us;
+        //  printf("LVGL handler took %lu ms\n", lv_handler_duration_us / 1000);
+        //  Check if TE interrupt requested an LVGL refresh
+        //  if (g_request_lvgl_refresh) {
+        //      g_request_lvgl_refresh = false; // Consume the flag
+        //      if (platformDriver && platformDriver->GetLvDisplay()) {
+        //          // printf("MainLoop: Calling lv_display_refr_timer() due to TE
+        //          // pulse.\n"); // Verbose lv_refr_now(platformDriver->GetLvDisplay());
+        //          // // lv_refr_now is immediate, can be heavy in main loop
+        //          lv_display_refr_timer(nullptr); // Schedules a refresh for the next lv_task_handler call
+        //      }
+        //  }
 
         // Periodically print lv_task_handler duration, e.g., once per second along
         // with FPS This will be grouped with the FPS update logic below.
 
         // --- FPS Calculation ---
-        // fps_frame_count++;
-        // auto current_time = std::chrono::steady_clock::now();
-        // auto elapsed_ms =
-        // std::chrono::duration_cast<std::chrono::milliseconds>(current_time -
-        // fps_last_update_time).count();
+        // #ifdef DEBUG
+        //         fps_frame_count++;
+        //         auto current_time = std::chrono::steady_clock::now();
+        //         auto elapsed_ms =
+        //             std::chrono::duration_cast<std::chrono::milliseconds>(current_time -
+        //             fps_last_update_time).count();
 
-        // if (elapsed_ms >= 1000) { // Update every second
-        //     float fps_val = static_cast<float>(fps_frame_count * 1000.0f) /
-        //     elapsed_ms; if (fps_label_obj) {
-        //         char fps_buf[32]; // Increased buffer size for handler time
-        //         snprintf(fps_buf, sizeof(fps_buf), "FPS: %.1f\nHandler: %lu us",
-        //         fps_val, lv_handler_duration_us);
-        //         lv_label_set_text(fps_label_obj, fps_buf);
-        //     }
-        //     // Optional: Print to console as well
-        //     // printf("FPS: %.1f, LVGL Handler Time: %lu us\n", fps_val,
-        //     lv_handler_duration_us);
+        //         if (elapsed_ms >= 1000) { // Update every second
+        //             float fps_val = static_cast<float>(fps_frame_count * 1000.0f) / elapsed_ms;
+        //             if (fps_label_obj) {
+        //                 char fps_buf[32]; // Increased buffer size for handler time
+        //                 snprintf(fps_buf, sizeof(fps_buf), "FPS: %.1f\nHandler: %lu us", fps_val,
+        //                 lv_handler_duration_us); lv_label_set_text(fps_label_obj, fps_buf);
+        //             }
+        //             // Optional: Print to console as well
+        //             // printf("FPS: %.1f, LVGL Handler Time: %lu us\n", fps_val, lv_handler_duration_us);
 
-        //     fps_frame_count = 0;
-        //     fps_last_update_time = current_time;
-        // }
-
+        //             fps_frame_count = 0;
+        //             fps_last_update_time = current_time;
+        //         }
+        // #endif
         // --- Sleep ---
-        // sleep_ms(1);
+        sleep_ms(LVGL_TICK_PERIOD_MS);
     }
 
     // Should not reach here

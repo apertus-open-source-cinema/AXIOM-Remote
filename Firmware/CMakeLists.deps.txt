@@ -1,18 +1,16 @@
 include(FetchContent)
 set(FETCHCONTENT_QUIET FALSE)
 set(FETCHCONTENT_BASE_DIR "${CMAKE_SOURCE_DIR}/3rdParty")
+
 set(CMAKE_POLICY_DEFAULT_CMP0077 NEW)
+
 # Fetch LVGL
+set(CONFIG_LV_BUILD_EXAMPLES OFF CACHE BOOL "Disable LVGL examples" FORCE)
+set(CONFIG_LV_BUILD_DEMOS  OFF CACHE BOOL "Disable LVGL demos"  FORCE)
+
 FetchContent_Declare(
   lvgl
   GIT_REPOSITORY https://github.com/lvgl/lvgl.git
   GIT_TAG master
 )
 FetchContent_MakeAvailable(lvgl)
-
-#set(CONFIG_LV_BUILD_DEMOS OFF) # for demos
-#set(CONFIG_LV_BUILD_EXAMPLES OFF) # for examples
-#set(CONFIG_LV_USE_THORVG_INTERNAL OFF) # for ThorVG
-
-set(CONFIG_LV_BUILD_EXAMPLES OFF CACHE BOOL "Disable LVGL examples")
-set(CONFIG_LV_BUILD_DEMOS OFF CACHE BOOL "Disable LVGL demos")
