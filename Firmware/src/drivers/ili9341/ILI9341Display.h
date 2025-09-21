@@ -106,12 +106,6 @@ class ILI9341Display {
     void DrawPixmap(uint16_t x, uint16_t y, uint16_t width, uint16_t height, const uint8_t* pixmap);
 
     /**
-     * @brief Placeholder for future use (e.g., periodic tasks). Currently does nothing.
-     */
-    void Update();
-
-    // --- Optional Public Read Functions ---
-    /**
      * @brief Reads the 4-byte device ID.
      * @param buffer Pointer to a 4-byte buffer to store the ID.
      */

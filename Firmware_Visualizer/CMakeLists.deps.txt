@@ -2,6 +2,12 @@ include(FetchContent)
 set(FETCHCONTENT_QUIET FALSE)
 set(FETCHCONTENT_BASE_DIR "${CMAKE_SOURCE_DIR}/3rdParty")
 
+set(CMAKE_POLICY_DEFAULT_CMP0077 NEW)
+
+# Fetch LVGL
+set(CONFIG_LV_BUILD_EXAMPLES OFF CACHE BOOL "Disable LVGL examples" FORCE)
+set(CONFIG_LV_BUILD_DEMOS OFF CACHE BOOL "Disable LVGL demos" FORCE)
+
 FetchContent_Declare(
   lvgl
   GIT_REPOSITORY https://github.com/lvgl/lvgl.git
@@ -10,37 +16,33 @@ FetchContent_Declare(
   CONFIGURE_COMMAND ""
 )
 
+# Fetch SDL3
 FetchContent_Declare(
   SDL3
   GIT_REPOSITORY https://github.com/libsdl-org/SDL
-    GIT_TAG main
-    GIT_PROGRESS TRUE
-    )
-    
-    FetchContent_Declare(
-      SDL3_image
-      GIT_REPOSITORY https://github.com/libsdl-org/SDL_image
-      GIT_TAG main
-      GIT_PROGRESS TRUE
-      )
-      
-      FetchContent_Declare(
-        imgui
-        GIT_REPOSITORY https://github.com/ocornut/imgui.git
-        GIT_TAG master
-        BUILD_COMMAND ""
-        CONFIGURE_COMMAND ""
-    GIT_PROGRESS TRUE
-    )
-    
-    FetchContent_MakeAvailable(SDL3 SDL3_image imgui lvgl)
-    
-set(SDL3IMAGE_INSTALL OFF)
-set(SDL3IMAGE_BUILD_SHARED_LIBS OFF)
-
-target_compile_definitions(lvgl PRIVATE
-LV_CONF_BUILD_DISABLE_EXAMPLES
-LV_CONF_BUILD_DISABLE_DEMOS
+  GIT_TAG main
+  GIT_PROGRESS TRUE
 )
 
-#target_include_directories(lvgl PRIVATE ${CMAKE_CURRENT_SOURCE_DIR}/src)
+# Fetch SDL3-image
+FetchContent_Declare(
+  SDL3_image
+  GIT_REPOSITORY https://github.com/libsdl-org/SDL_image
+  GIT_TAG main
+  GIT_PROGRESS TRUE
+)
+
+# Fetch imgui
+FetchContent_Declare(
+  imgui
+  GIT_REPOSITORY https://github.com/ocornut/imgui.git
+  GIT_TAG master
+  BUILD_COMMAND ""
+  CONFIGURE_COMMAND ""
+  GIT_PROGRESS TRUE
+)
+
+FetchContent_MakeAvailable(SDL3 SDL3_image imgui lvgl)
+
+set(SDL3IMAGE_INSTALL OFF)
+set(SDL3IMAGE_BUILD_SHARED_LIBS OFF)

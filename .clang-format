@@ -1,21 +1,22 @@
 Language: Cpp
-Standard: Cpp11
+Standard: "c++20"
+BasedOnStyle: Microsoft
 # Force pointers to the type for C++.
-DerivePointerAlignment: false
+# DerivePointerAlignment: false
 PointerAlignment: Left
-IndentWidth: 4
-BreakBeforeBraces: Stroustrup
-BreakConstructorInitializers: AfterColon
-BraceWrapping:
-  AfterEnum: true
-  AfterStruct: true
-  SplitEmptyFunction: true
-  AfterControlStatement: true
-  AfterFunction: true
-  AfterNamespace: true
-  AfterClass: true
-SortIncludes: false
-Cpp11BracedListStyle: true
+# IndentWidth: 4
+# BreakBeforeBraces: Stroustrup
+# BreakConstructorInitializers: AfterColon
+# BraceWrapping:
+#   AfterEnum: true
+#   AfterStruct: true
+#   SplitEmptyFunction: true
+#   AfterControlStatement: true
+#   AfterFunction: true
+#   AfterNamespace: true
+#   AfterClass: true
+# SortIncludes: CaseSensitive
+# Cpp11BracedListStyle: true
 ColumnLimit: 120
-AllowShortFunctionsOnASingleLine: false
+AllowShortFunctionsOnASingleLine: None
 AlignConsecutiveAssignments: Consecutive
