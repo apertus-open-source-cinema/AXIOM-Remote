@@ -1,0 +1,4 @@
+@startuml
+Remote -> Daemon: LIST
+' TODO: Add more interactions here
+@enduml

@@ -1,5 +1,6 @@
 from typing import Optional, Any
 
+
 class ProtocolError(Exception):
     def __init__(self, code: str, detail: Optional[str] = None):
         self.code = code
@@ -9,6 +10,7 @@ class ProtocolError(Exception):
         if self.detail:
             return f"ERR {self.code} {self.detail}"
         return f"ERR {self.code}"
+
 
 def parse_value(param: Any, raw: str):
     if param.type == "int":
