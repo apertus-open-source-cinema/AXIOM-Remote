@@ -53,12 +53,18 @@ class VirtualUI {
 
   uint32_t _cameraPreviewTexture;
 
-  float _analogGainShader;
-  float _brightnessFactor;
-  float _contrastFactor;
+  // Shader uniform locations (GLint, not float)
+  GLint _cameraPreviewTextureUniform;
+  GLint _analogGainUniform;
+  GLint _brightnessFactorUniform;
+  GLint _contrastFactorUniform;
 
-  // CentralDB* _db;
-  // std::shared_ptr<CentralDBObserver> lcdObserver;
+  // UI state (moved from global variables)
+  uint8_t _brightnessLevel = 16;
+  uint8_t _lcdBrightness = 100;
+  float _lcdContrast = 1.0f;
+  bool _toggleContrast = false;
+  int8_t _glowValue = 0;
 
   // Shader helper
   uint32_t LoadShader(std::string shaderFilePath, uint32_t shaderID);
@@ -82,9 +88,17 @@ class VirtualUI {
   uint32_t LoadSingleShader(const std::string &shaderFilePath,
                             GLenum shaderType);
 
+  // Helper methods for rendering optimization
+  void RenderButtonGrid(int startIdx, int count, int offsetX, int offsetY,
+                        const ImVec2& size, bool isRound = false);
+  void SetShaderUniforms(GLint textureHandle, float brightness, float contrast) const;
+  void RenderFullScreenQuad() const;
+  void RenderToFBO(uint32_t fboHandle, uint32_t textureHandle, 
+                   const ImVec2& viewportSize, float brightness, float contrast) const;
+
   using ButtonClickHandler = std::function<void(ButtonID, ButtonState)>;
   ButtonClickHandler _buttonClickHandler;
-  void RenderAndHandleSimButton(const char *label_id, ButtonID id);
+  void RenderAndHandleSimButton(const char *label_id, ButtonID id, bool isSpecial = false);
 
 public:
   VirtualUI(
@@ -94,9 +108,8 @@ public:
   void Render(ButtonID &button, int8_t &knobValue, bool &debugOverlayEnabled);
 
   void RenderDisplayToFBO() const;
-  // void RenderDisplay() const;
 
-  void ToggleLCDContrast(bool toggleContrastEnabled) const;
+  void ToggleLCDContrast(bool toggleContrastEnabled);
   void SetupVBO();
 
   void SetButtonClickHandler(ButtonClickHandler handler);
