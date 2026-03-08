@@ -13,113 +13,118 @@ static const float tick = fullCircleRad / 12;
 static const float halfP = static_cast<float>(M_PI) / 2.0f;
 
 // Knob dimensions
-static const float knobDiameter = 200.0f;
-static const float knobRadius = knobDiameter * 0.5f;
-static const float knobPressableDiameter = 0.3f * knobDiameter;
-static const float knobPressableRadiusSquared = 0.25f * knobPressableDiameter * knobPressableDiameter;
-static const ImVec2 knobPressableSize = ImVec2(knobPressableDiameter, knobPressableDiameter);
-static const float knobPressableOffset = 0.50f * (knobDiameter - knobPressableDiameter);
-static const float knobValueTextOffset = 200.0f;
+// Based on: https://github.com/ocornut/imgui/issues/942
+int KnobEncoder(const char* label, float* p_angle_rad, bool* p_pressed, const char* button_label, const ImVec2& size, ImTextureID texture, ImU32 tint)
+{
+    ImGuiIO& io = ImGui::GetIO();
+    ImGuiStyle& style = ImGui::GetStyle();
+    ImDrawList* draw_list = ImGui::GetWindowDrawList();
+    ImGuiID id = ImGui::GetID(label);
 
-static float oldAngle = 0.0f;
-static int oldTickValue = 0; // To track crossing of ticks
+    ImVec2 knob_size = size;
+    if (knob_size.x == 0) knob_size.x = ImGui::GetItemRectSize().x;
+    if (knob_size.y == 0) knob_size.y = ImGui::GetItemRectSize().y;
 
-void UpdateKnobValue(uint8_t &value, const ImVec2 &center) {
-  ImVec2 mousePos = ImGui::GetIO().MousePos;
-  // Calculate the angle from the knob center to the mouse position.
-  // Adding halfP (+ M_PI / 2) is often done to align the zero angle upwards.
-  float newAngleRaw = atan2f(mousePos.y - center.y, center.x - mousePos.x) + halfP;
-  if (newAngleRaw < 0.0f)
-      newAngleRaw += fullCircleRad;
+    float radius = ImMin(knob_size.x, knob_size.y) / 2.0f;
+    ImVec2 center = ImVec2(ImGui::GetCursorScreenPos().x + radius, ImGui::GetCursorScreenPos().y + radius);
 
-  // Calculate the difference between the new angle and the old angle.
-  float deltaRaw = newAngleRaw - oldAngle;
+    // Main invisible button behavior
+    float line_height = ImGui::GetTextLineHeight();
+    ImGui::InvisibleButton(label, ImVec2(radius * 2, radius * 2 + line_height + style.ItemInnerSpacing.y));
+    bool is_active = ImGui::IsItemActive();
+    bool is_clicked = ImGui::IsItemClicked();
+    bool is_hovered = ImGui::IsItemHovered();
 
-  // Normalize the delta to be within -PI to PI for correct direction detection.
-  if (deltaRaw > M_PI)
-      deltaRaw -= fullCircleRad;
-  else if (deltaRaw < -M_PI)
-      deltaRaw += fullCircleRad;
+    if (p_pressed) *p_pressed = false;
 
-  if (ImGui::IsMouseDragging(ImGuiMouseButton_Left)) {
-      float angleThreshold = tick * 0.5f; // Adjust sensitivity
+    int tick_delta = 0;
+    const float tick_angle = (2 * M_PI) / 12.0f; // 12 detents
 
-      if (deltaRaw > angleThreshold) {
-          // Mouse moved clockwise (positive delta), should increase value
-          value = (value < 255) ? value + 1 : 0;
-          oldAngle += tick;
-          if (oldAngle > M_PI) oldAngle -= fullCircleRad;
-      } else if (deltaRaw < -angleThreshold) {
-          // Mouse moved counter-clockwise (negative delta), should decrease value
-          value = (value > 0) ? value - 1 : 255;
-          oldAngle -= tick;
-          if (oldAngle < -M_PI) oldAngle += fullCircleRad;
-      }
-  }
+    // Check for interaction with the center button area
+    float pressable_radius = radius * 0.4f;
+    ImVec2 mouse_from_center = io.MousePos - center;
+    float dist_sq = mouse_from_center.x * mouse_from_center.x + mouse_from_center.y * mouse_from_center.y;
+    bool is_over_center = dist_sq < pressable_radius * pressable_radius;
+    bool is_held = false;
+    
+    if (is_active && is_over_center) {
+        if (is_clicked) {
+            if (p_pressed) *p_pressed = true;
+        }
+        if (!ImGui::IsMouseDragging(ImGuiMouseButton_Left)) {
+            is_held = true;
+        }
+    }
+    
+    // Handle dragging the knob (only if not considered a button hold/click)
+    if (is_active && !is_over_center && ImGui::IsMouseDragging(ImGuiMouseButton_Left)) {
+        ImGuiStorage* storage = GetStateStorage();
+        float drag_start_offset = storage->GetFloat(id, 0.0f);
+        
+        float mouse_angle_raw = atan2f(io.MousePos.y - center.y, io.MousePos.x - center.x);
+        float mouse_angle_mapped = fmodf(mouse_angle_raw + 2.5f * M_PI, 2.0f * M_PI);
+
+        if (ImGui::IsItemActivated()) {
+            drag_start_offset = mouse_angle_mapped - *p_angle_rad;
+            if (drag_start_offset > M_PI) drag_start_offset -= 2 * M_PI;
+            if (drag_start_offset < -M_PI) drag_start_offset += 2 * M_PI;
+            storage->SetFloat(id, drag_start_offset);
+        }
+
+        float new_angle = mouse_angle_mapped - drag_start_offset;
+        float angle_diff = new_angle - *p_angle_rad;
+        
+        while (angle_diff >= M_PI) angle_diff -= 2 * M_PI;
+        while (angle_diff < -M_PI) angle_diff += 2 * M_PI;
+
+        if (fabsf(angle_diff) >= tick_angle) {
+            int ticks = roundf(angle_diff / tick_angle);
+            tick_delta = ticks;
+            *p_angle_rad += ticks * tick_angle;
+        }
+    }
+
+    // --- Rendering ---
+    
+    // Ensure angle stays in [0, 2*PI] range for consistent drawing
+    *p_angle_rad = fmodf(*p_angle_rad, 2 * M_PI);
+    if (*p_angle_rad < 0.0f) {
+        *p_angle_rad += 2 * M_PI;
+    }
+    
+    // Draw the main knob image
+    float cos_a = cosf(*p_angle_rad);
+    float sin_a = sinf(*p_angle_rad);
+    ImVec2 knob_quad_size = ImVec2(radius * 2, radius * 2);
+
+    ImVec2 pos[4] = {
+        center + ImRotate(ImVec2(-knob_quad_size.x * 0.5f, -knob_quad_size.y * 0.5f), cos_a, sin_a),
+        center + ImRotate(ImVec2(+knob_quad_size.x * 0.5f, -knob_quad_size.y * 0.5f), cos_a, sin_a),
+        center + ImRotate(ImVec2(+knob_quad_size.x * 0.5f, +knob_quad_size.y * 0.5f), cos_a, sin_a),
+        center + ImRotate(ImVec2(-knob_quad_size.x * 0.5f, +knob_quad_size.y * 0.5f), cos_a, sin_a)
+    };
+    ImVec2 uvs[4] = {
+        ImVec2(0.0f, 0.0f), ImVec2(1.0f, 0.0f), ImVec2(1.0f, 1.0f), ImVec2(0.0f, 1.0f)
+    };
+    draw_list->AddImageQuad(texture, pos[0], pos[1], pos[2], pos[3], uvs[0], uvs[1], uvs[2], uvs[3], tint);
+
+    // Draw visual feedback for the center button
+    if (is_held) {
+        draw_list->AddCircleFilled(center, pressable_radius, IM_COL32(0, 0, 0, 128)); // Darker circle for held state
+    } else if (is_hovered && is_over_center) {
+        draw_list->AddCircleFilled(center, pressable_radius, IM_COL32(255, 255, 255, 50)); // Lighter circle for hover
+    }
+
+    // Draw the button label
+    if (button_label && *button_label)
+    {
+        ImVec2 label_size = CalcTextSize(button_label, NULL, true);
+        draw_list->AddText(ImVec2(center.x - label_size.x * 0.5f, center.y - label_size.y * 0.5f), GetColorU32(ImGuiCol_Text), button_label);
+    }
+
+    return tick_delta;
 }
 
-ImVec2 GetKnobUV(float angle) {
-  angle = fmodf(angle, fullCircleRad);
-  if (angle < 0.0f) angle += fullCircleRad;
-
-  // Convert angle to a vector on the unit circle
-  float cos_a = cosf(angle);
-  float sin_a = sinf(angle);
-
-  // Map this vector to UV coordinates (center of the circle is at 0.5, 0.5)
-  float u = 0.5f + 0.5f * cos_a;
-  float v = 0.5f + 0.5f * sin_a;
-
-  return {u, v};
-}
-
-bool Knob(const char *label, uint8_t &value, bool &pressed, ImTextureID texture) {
-  ImVec2 knobOrigin = ImGui::GetCursorScreenPos();
-  ImVec2 knobCenter = {knobOrigin.x + knobRadius, knobOrigin.y + knobRadius};
-
-  ImGui::InvisibleButton(label, {knobDiameter, knobDiameter});
-  bool isActive = ImGui::IsItemActive();
-
-  if (isActive) {
-      UpdateKnobValue(value, knobCenter);
-  }
-
-  ImDrawList *drawList = ImGui::GetWindowDrawList();
-  float angle = oldAngle;
-
-  // UV coordinates corresponding to the corners of the *unrotated* quad
-  // These will sample the texture based on the rotation
-  ImVec2 uv_tl = GetKnobUV(angle + fullCircleRad * (3.0f / 8.0f)); // Top-Left (adjust offset as needed)
-  ImVec2 uv_tr = GetKnobUV(angle + fullCircleRad * (1.0f / 8.0f)); // Top-Right
-  ImVec2 uv_br = GetKnobUV(angle + fullCircleRad * (7.0f / 8.0f)); // Bottom-Right
-  ImVec2 uv_bl = GetKnobUV(angle + fullCircleRad * (5.0f / 8.0f)); // Bottom-Left
-
-  ImVec2 corners[4] = {
-      knobOrigin,
-      {knobOrigin.x + knobDiameter, knobOrigin.y},
-      {knobOrigin.x + knobDiameter, knobOrigin.y + knobDiameter},
-      {knobOrigin.x, knobOrigin.y + knobDiameter}
-  };
-
-  drawList->AddImageQuad(texture, corners[0], corners[1], corners[2], corners[3], uv_tl, uv_tr, uv_br, uv_bl);
-
-  char buf[32];
-  snprintf(buf, sizeof(buf), "Value: %d", value);
-  drawList->AddText({knobOrigin.x, knobOrigin.y + knobValueTextOffset}, ImGui::GetColorU32(ImGuiCol_Text), buf);
-
-  float distSq = powf(ImGui::GetIO().MousePos.x - knobCenter.x, 2) + powf(ImGui::GetIO().MousePos.y - knobCenter.y, 2);
-  if (distSq < knobPressableRadiusSquared) {
-      ImGui::SetCursorScreenPos({knobOrigin.x + knobPressableOffset, knobOrigin.y + knobPressableOffset});
-      ImGui::BeginChild("KnobPressable", knobPressableSize, false);
-      ImGui::PushStyleVar(ImGuiStyleVar_FrameRounding, knobPressableDiameter * 0.5f);
-      if (ImGui::Button("Click", knobPressableSize))
-          pressed = true;
-      ImGui::PopStyleVar();
-      ImGui::EndChild();
-  }
-
-  return isActive;
-}
 
 void ToggleButton(const char *id, const char *label, bool *state) {
     ImVec2 pos = ImGui::GetCursorScreenPos();

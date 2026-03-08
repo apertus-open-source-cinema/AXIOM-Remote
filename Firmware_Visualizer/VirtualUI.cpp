@@ -88,13 +88,10 @@ const char *buttonIDs[12] = {"1", "2", "3", "4",  "5",  "6",
                              "7", "8", "9", "10", "11", "12"};
 } // namespace UIConstants
 
-uint8_t value = 0;
-uint8_t lastValue = 0;
 uint8_t brightnessLevel = 16;
 uint8_t lcdBrightness = 100;
 float lcdContrast = 1.0;
 bool toggleContrast = false;
-float oldAngle = 0.0f; // Moved here as it's related to the knob
 
 VirtualUI::VirtualUI(SDL_Window *window, uint32_t displayTextureID)
     : _window(window), _io(ImGui::GetIO()),
@@ -390,15 +387,37 @@ void VirtualUI::RenderVirtualCamera() const {
 
 void VirtualUI::RenderKnob(int8_t &knobValue, ButtonID &button) {
   ImGui::SetCursorPos(UIConstants::KnobPosition);
-  bool knobPressed = false;
-  if (ImGui::Knob("Knob", value, knobPressed, _knobTextureID)) {
-    knobValue = -(value - lastValue);
-    brightnessLevel -= knobValue;
-    lastValue = value;
+
+  static float knob_angle = 0.0f;
+  static bool prev_knob_pressed = false;
+  bool knob_pressed = false;
+
+  int tick_delta = ImGui::KnobEncoder("Knob", &knob_angle, &knob_pressed, "Press",
+                                      ImVec2(UIConstants::KnobDiameter, UIConstants::KnobDiameter), 
+                                      _knobTextureID, IM_COL32_WHITE);
+
+  if (tick_delta != 0) {
+      knobValue = tick_delta;
+      brightnessLevel += tick_delta; 
+  } else {
+      knobValue = 0;
   }
-  if (knobPressed) {
-    // button = ButtonID::E_1_UP;
+
+  // Handle knob press state transitions with ButtonState
+  if (knob_pressed && !prev_knob_pressed) {
+      // Knob pressed this frame
+      if (_buttonClickHandler) {
+          _buttonClickHandler(ButtonID::KNOB, ButtonState::Pressed);
+      }
+      button = ButtonID::KNOB;
+  } else if (!knob_pressed && prev_knob_pressed) {
+      // Knob released this frame
+      if (_buttonClickHandler) {
+          _buttonClickHandler(ButtonID::KNOB, ButtonState::Released);
+      }
   }
+  
+  prev_knob_pressed = knob_pressed;
 }
 
 template <typename E>

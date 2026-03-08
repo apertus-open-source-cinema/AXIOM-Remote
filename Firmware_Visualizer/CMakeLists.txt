@@ -52,8 +52,8 @@ add_subdirectory("../Firmware/src/UI" "${CMAKE_BINARY_DIR}/FirmwareUI_build")
 
 target_link_libraries(${PROJECT_NAME}
     PRIVATE
-    SDL3::SDL3
-    SDL3_image::SDL3_image
+    SDL3::SDL3-static
+    SDL3_image::SDL3_image-static
     GL
     dl
     lvgl
