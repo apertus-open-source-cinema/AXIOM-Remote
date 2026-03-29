@@ -1,36 +1,33 @@
 #pragma once
 
-#include "../Theme.h"
 #include "AppContext.h"
 #include "ButtonDefinitions.h"
-#include "UIIdentifiers.h"
 #include <lvgl.h>
 
 class BaseScreen
 {
   protected:
-    lv_obj_t* _screenRoot = nullptr; // The root object for this screen (the tile object)
-    AppContext* _appContext;          // Pointer to shared application context
+    lv_obj_t* _screenRoot = nullptr;
+    AppContext* _appContext;
+
+    lv_obj_t* _topContainer    = nullptr;
+    lv_obj_t* _leftContainer   = nullptr;
+    lv_obj_t* _centerContainer = nullptr;
+    lv_obj_t* _rightContainer  = nullptr;
+    lv_obj_t* _bottomContainer = nullptr;
 
   public:
     explicit BaseScreen(AppContext* context) : _appContext(context)
     {
     }
-    virtual ~BaseScreen() = default; // Virtual destructor is essential!
+    virtual ~BaseScreen() = default;
 
     /**
      * @brief Creates the LVGL widgets for this screen.
      * Called by the ScreenManager.
      * @param parent The parent object (typically the tile view tile) to create widgets on.
      */
-    virtual void Create(lv_obj_t* parent)
-    {
-        _screenRoot = parent; // Store the root tile object
-        // Derived classes will implement widget creation here
-
-        lv_obj_set_style_bg_color(parent, lv_color_hex(0x808080), 0); // Medium gray background
-        lv_obj_set_style_bg_opa(parent, LV_OPA_COVER, 0);
-    }
+    virtual void Create(lv_obj_t* parent);
 
     /**
      * @brief Handles an action triggered by hardware/simulation buttons.
@@ -41,6 +38,18 @@ class BaseScreen
     virtual bool HandleAction(ButtonID id, ButtonState state)
     {
         (void)id;     // Mark as unused in base class
+        return false; // Base implementation handles nothing
+    }
+
+    /**
+     * @brief Handles knob rotation events.
+     * Override in derived classes to handle knob input relevant to that screen.
+     * @param delta The amount of rotation (positive for clockwise, negative for counter-clockwise).
+     * @return true if the knob event was handled, false otherwise.
+     */
+    virtual bool HandleKnob(int8_t delta)
+    {
+        (void)delta;  // Mark as unused in base class
         return false; // Base implementation handles nothing
     }
 
@@ -64,5 +73,10 @@ class BaseScreen
     lv_obj_t* GetRootObject() const
     {
         return _screenRoot;
+    }
+
+    AppContext* GetContext() const
+    {
+        return _appContext;
     }
 };
