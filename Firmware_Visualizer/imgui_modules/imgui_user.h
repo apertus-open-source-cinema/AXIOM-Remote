@@ -16,24 +16,24 @@ static const float halfP = static_cast<float>(M_PI) / 2.0f;
 // Based on: https://github.com/ocornut/imgui/issues/942
 int KnobEncoder(const char* label, float* p_angle_rad, bool* p_pressed, const char* button_label, const ImVec2& size, ImTextureID texture, ImU32 tint)
 {
-    ImGuiIO& io = ImGui::GetIO();
-    ImGuiStyle& style = ImGui::GetStyle();
-    ImDrawList* draw_list = ImGui::GetWindowDrawList();
-    ImGuiID id = ImGui::GetID(label);
+    ImGuiIO& io = GetIO();
+    ImGuiStyle& style = GetStyle();
+    ImDrawList* draw_list = GetWindowDrawList();
+    ImGuiID id = GetID(label);
 
     ImVec2 knob_size = size;
-    if (knob_size.x == 0) knob_size.x = ImGui::GetItemRectSize().x;
-    if (knob_size.y == 0) knob_size.y = ImGui::GetItemRectSize().y;
+    if (knob_size.x == 0) knob_size.x = GetItemRectSize().x;
+    if (knob_size.y == 0) knob_size.y = GetItemRectSize().y;
 
     float radius = ImMin(knob_size.x, knob_size.y) / 2.0f;
-    ImVec2 center = ImVec2(ImGui::GetCursorScreenPos().x + radius, ImGui::GetCursorScreenPos().y + radius);
+    ImVec2 center = ImVec2(GetCursorScreenPos().x + radius, GetCursorScreenPos().y + radius);
 
     // Main invisible button behavior
-    float line_height = ImGui::GetTextLineHeight();
-    ImGui::InvisibleButton(label, ImVec2(radius * 2, radius * 2 + line_height + style.ItemInnerSpacing.y));
-    bool is_active = ImGui::IsItemActive();
-    bool is_clicked = ImGui::IsItemClicked();
-    bool is_hovered = ImGui::IsItemHovered();
+    float line_height = GetTextLineHeight();
+    InvisibleButton(label, ImVec2(radius * 2, radius * 2 + line_height + style.ItemInnerSpacing.y));
+    bool is_active = IsItemActive();
+    bool is_clicked = IsItemClicked();
+    bool is_hovered = IsItemHovered();
 
     if (p_pressed) *p_pressed = false;
 
@@ -51,20 +51,20 @@ int KnobEncoder(const char* label, float* p_angle_rad, bool* p_pressed, const ch
         if (is_clicked) {
             if (p_pressed) *p_pressed = true;
         }
-        if (!ImGui::IsMouseDragging(ImGuiMouseButton_Left)) {
+        if (!IsMouseDragging(ImGuiMouseButton_Left)) {
             is_held = true;
         }
     }
     
     // Handle dragging the knob (only if not considered a button hold/click)
-    if (is_active && !is_over_center && ImGui::IsMouseDragging(ImGuiMouseButton_Left)) {
+    if (is_active && !is_over_center && IsMouseDragging(ImGuiMouseButton_Left)) {
         ImGuiStorage* storage = GetStateStorage();
         float drag_start_offset = storage->GetFloat(id, 0.0f);
         
         float mouse_angle_raw = atan2f(io.MousePos.y - center.y, io.MousePos.x - center.x);
         float mouse_angle_mapped = fmodf(mouse_angle_raw + 2.5f * M_PI, 2.0f * M_PI);
 
-        if (ImGui::IsItemActivated()) {
+        if (IsItemActivated()) {
             drag_start_offset = mouse_angle_mapped - *p_angle_rad;
             if (drag_start_offset > M_PI) drag_start_offset -= 2 * M_PI;
             if (drag_start_offset < -M_PI) drag_start_offset += 2 * M_PI;
@@ -127,36 +127,36 @@ int KnobEncoder(const char* label, float* p_angle_rad, bool* p_pressed, const ch
 
 
 void ToggleButton(const char *id, const char *label, bool *state) {
-    ImVec2 pos = ImGui::GetCursorScreenPos();
-    float height = ImGui::GetFrameHeight();
+    ImVec2 pos = GetCursorScreenPos();
+    float height = GetFrameHeight();
     float width = height * 1.55f;
     float radius = height * 0.5f;
 
-    ImGui::InvisibleButton(id, {width, height});
-    if (ImGui::IsItemClicked())
+    InvisibleButton(id, {width, height});
+    if (IsItemClicked())
         *state = !*state;
 
-    ImDrawList *drawList = ImGui::GetWindowDrawList();
-    ImU32 bgColor = ImGui::GetColorU32(*state ? ImVec4(0.56f, 0.83f, 0.26f, 1.0f) : ImVec4(0.85f, 0.85f, 0.85f, 1.0f));
+    ImDrawList *drawList = GetWindowDrawList();
+    ImU32 bgColor = GetColorU32(*state ? ImVec4(0.56f, 0.83f, 0.26f, 1.0f) : ImVec4(0.85f, 0.85f, 0.85f, 1.0f));
     drawList->AddRectFilled(pos, {pos.x + width, pos.y + height}, bgColor, radius);
 
     float circlePosX = pos.x + radius + (*state ? (width - 2 * radius) : 0.0f);
     drawList->AddCircleFilled({circlePosX, pos.y + radius}, radius - 1.5f, IM_COL32_WHITE);
 
-    drawList->AddText({pos.x + 40, pos.y + 2}, ImGui::GetColorU32(ImGuiCol_Text), label);
+    drawList->AddText({pos.x + 40, pos.y + 2}, GetColorU32(ImGuiCol_Text), label);
 }
 
 bool CustomImageButton(const char *id, ImTextureID texture, ImTextureID pressedTexture, const ImVec2 &size, ImU32 tint = IM_COL32_WHITE) {
-    ImGuiWindow *window = ImGui::GetCurrentWindow();
-    ImGuiID buttonId = ImGui::GetID(id);
+    ImGuiWindow *window = GetCurrentWindow();
+    ImGuiID buttonId = GetID(id);
     ImRect rect(window->DC.CursorPos, window->DC.CursorPos + size);
 
-    ImGui::ItemSize(size);
-    if (!ImGui::ItemAdd(rect, buttonId))
+    ItemSize(size);
+    if (!ItemAdd(rect, buttonId))
         return false;
 
     bool hovered, held;
-    bool pressed = ImGui::ButtonBehavior(rect, buttonId, &hovered, &held, ImGuiButtonFlags_PressedOnClick);
+    bool pressed = ButtonBehavior(rect, buttonId, &hovered, &held, ImGuiButtonFlags_PressedOnClick);
 
     ImTextureID displayTex = (held && pressedTexture) ? pressedTexture : texture;
     window->DrawList->AddImage(displayTex, rect.Min, rect.Max, {0.0f, 0.0f}, {1.0f, 1.0f}, tint);

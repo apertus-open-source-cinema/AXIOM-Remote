@@ -1,6 +1,7 @@
 #pragma once
 
 #include <ILvglPlatformDriver.h>
+#include <ButtonDefinitions.h>
 
 #include <cstdint>
 #include <vector>
@@ -31,6 +32,7 @@ public:
 
   // --- Desktop-Specific Methods ---
   GLuint GetTextureId() const;
+  const uint8_t* GetFramebuffer() const { return m_framebuffer.data(); }
 
   // Renamed base method for clarity if needed
   // void UpdateDisplayContext() override { /* Default if no params needed */ }
@@ -48,13 +50,19 @@ public:
 
   lv_display_t *GetLvDisplay() const override { return nullptr; }
 
-  lv_indev_t *GetLvInputDevice() const override { return nullptr; };
+  lv_indev_t *GetLvInputDevice() const override { return m_lvglInputDevice; };
+
+  void UpdateInputState(ButtonID btn, ButtonState state, int16_t knobDiff);
 
 private:
   int m_fbWidth;
   int m_fbHeight;
   GLuint m_glTextureId = 0;
   std::vector<uint8_t> m_framebuffer; // RAM buffer for pixels
+  lv_indev_t* m_lvglInputDevice = nullptr;
+
+  int16_t m_encDiff = 0;
+  bool m_isEncPressed = false;
 
 // Static buffers for LVGL draw operations (using s_ prefix)
 #ifdef LV_USE_DOUBLE_BUFFER

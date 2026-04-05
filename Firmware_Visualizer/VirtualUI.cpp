@@ -12,94 +12,7 @@
 #include "imgui_modules/imgui_user.h"
 
 #include <ButtonDefinitions.h>
-
-namespace UIConstants {
-const float FullCircleRad = 2 * M_PI;
-const float Tick = FullCircleRad / 12;
-const float HalfPi = static_cast<float>(M_PI) / 2.0f;
-
-// Knob dimensions (diameter and offsets can be ints for pixel placement)
-const int KnobDiameter = 200;
-const float KnobRadius =
-    KnobDiameter * 0.5f; // Radius might be used in float calculations
-const int KnobPressableDiameter = static_cast<int>(0.3f * KnobDiameter);
-const float KnobPressableRadiusSquared =
-    0.25f * KnobPressableDiameter * KnobPressableDiameter;
-const ImVec2 KnobPressableSize =
-    ImVec2(static_cast<float>(KnobPressableDiameter),
-           static_cast<float>(KnobPressableDiameter));
-const float KnobPressableOffset =
-    0.50f * (KnobDiameter - KnobPressableDiameter);
-const int KnobValueTextOffset = 200;
-
-// Button dimensions
-const int SmallButtonWidth = 46;
-const int SmallButtonHeight = 30;
-const int RoundButtonDiameter = 30;
-const ImVec2 RoundButtonSize = ImVec2(static_cast<float>(RoundButtonDiameter),
-                                      static_cast<float>(RoundButtonDiameter));
-const int PhotoButtonWidth = 46;
-const int PhotoButtonHeight = 46;
-const int RecordButtonWidth = 68;
-const int RecordButtonHeight = 68;
-
-// LED dimensions and offsets
-const ImVec2 LEDSize =
-    ImVec2(30.0f, 29.0f); // Size could remain float if used with ImGui::Image
-const ImVec2 LEDGlowSize = ImVec2(40.0f, 40.0f); // Size could remain float
-const ImVec2 LEDGlowOffset = ImVec2(5.0f, 5.0f); // Offset could be int
-
-// Virtual camera FBO dimensions
-const int CameraFBOWidth = 800;
-const int CameraFBOHeight = 480;
-const int DisplayFBOWidth = 320;
-const int DisplayFBOHeight = 240;
-
-// Overlay dimensions and positioning
-const ImVec2 OverlaySize = ImVec2(120.0f, 400.0f); // Size could remain float
-const ImVec2 OverlayPosition =
-    ImVec2(650.0f, 30.0f); // Position needs to be float
-const int OverlayTextOffsetX = 20;
-const int OverlayTextOffsetY = 20;
-const int OverlayTextSpacingY = 100;
-
-// UI element positions (these need to be ImVec2 with float components)
-const ImVec2 KnobPosition = ImVec2(40.0f, 140.0f);
-const ImVec2 SpecialButton1Position = ImVec2(55.0f, 22.0f);
-const ImVec2 SpecialButton2Position = ImVec2(148.0f, 22.0f);
-const ImVec2 PhotoButtonPosition = ImVec2(236.0f, 367.0f);
-const ImVec2 RecordButtonPosition = ImVec2(225.0f, 56.0f);
-const int ButtonSpacingX = 103;
-const int RoundButtonSpacingY = 55;
-const ImVec2 LEDTopPosition = ImVec2(63.0f, 70.0f);
-const ImVec2 LEDBottomPosition = ImVec2(63.0f, 109.0f);
-const ImVec2 CameraPreviewPosition = ImVec2(338.0f, 120.0f);
-const ImVec2 DebugTogglePosition = ImVec2(50.0f, 375.0f);
-const ImVec2 ContrastTogglePosition = ImVec2(50.0f, 410.0f);
-const ImVec2 ScreenshotButtonPosition = ImVec2(50.0f, 445.0f);
-
-// These are offsets/spacing
-const int Buttons1_3_OffsetY = 55;
-const int Buttons4_6_OffsetY = 395;
-const int Buttons7_9_OffsetX = 249;
-const int Buttons10_12_OffsetX = 717;
-
-const char *buttonIDs[12] = {"1", "2", "3", "4",  "5",  "6",
-                             "7", "8", "9", "10", "11", "12"};
-
-// Magic number constants for button grid positions
-const float BUTTONS_1_3_X = 372.0f;
-const float BUTTONS_7_9_GRID_Y_START = 170.0f;
-const float BUTTONS_GRID_Y_START = 170.0f;
-const float CAMERA_PREVIEW_ZOOM = 4.0f;
-const float CAMERA_PREVIEW_ZOOM_REGION = 48.0f;
-const float CAMERA_BRIGHTNESS_FACTOR = 0.1f;
-const float LCD_BRIGHTNESS_FACTOR = 1.0f / 100.0f;
-const uint8_t DEFAULT_BRIGHTNESS_LEVEL = 16;
-const uint8_t DEFAULT_LCD_BRIGHTNESS = 100;
-const float DEFAULT_LCD_CONTRAST = 1.0f;
-const float DEFAULT_LCD_CONTRAST_REDUCED = 0.7f;
-} // namespace UIConstants
+#include "UIConstants.h"
 
 VirtualUI::VirtualUI(SDL_Window *window, uint32_t displayTextureID)
     : _window(window), _io(ImGui::GetIO()),
@@ -182,6 +95,14 @@ void VirtualUI::SetButtonClickHandler(ButtonClickHandler buttonClickHandler) {
   _buttonClickHandler = buttonClickHandler;
 }
 
+void VirtualUI::SetKnobHandler(KnobHandler knobHandler) {
+  _knobHandler = knobHandler;
+}
+
+void VirtualUI::SetDebugToggleHandler(DebugToggleHandler debugToggleHandler) {
+  _debugToggleHandler = debugToggleHandler;
+}
+
 uint32_t VirtualUI::LoadSingleShader(const std::string &shaderFilePath,
                                      GLenum shaderType) {
   uint32_t shaderID = glCreateShader(shaderType);
@@ -217,9 +138,11 @@ void VirtualUI::CompileShaders() {
     std::cerr << "Error validating shader program: " << errorLog << std::endl;
   }
 
-  _cameraPreviewTextureUniform = glGetUniformLocation(_programID, "cameraPreviewTexture");
+  _cameraPreviewTextureUniform =
+      glGetUniformLocation(_programID, "cameraPreviewTexture");
   _analogGainUniform = glGetUniformLocation(_programID, "analogGain");
-  _brightnessFactorUniform = glGetUniformLocation(_programID, "brightnessFactor");
+  _brightnessFactorUniform =
+      glGetUniformLocation(_programID, "brightnessFactor");
   _contrastFactorUniform = glGetUniformLocation(_programID, "contrastFactor");
 
   // Clean up shader objects after linking
@@ -243,10 +166,13 @@ void VirtualUI::ShowShaderLog(uint32_t shaderID) {
 }
 
 void VirtualUI::ToggleLCDContrast(bool toggleContrastEnabled) {
-  _lcdContrast = toggleContrastEnabled ? UIConstants::DEFAULT_LCD_CONTRAST_REDUCED : UIConstants::DEFAULT_LCD_CONTRAST;
+  _lcdContrast = toggleContrastEnabled
+                     ? UIConstants::DEFAULT_LCD_CONTRAST_REDUCED
+                     : UIConstants::DEFAULT_LCD_CONTRAST;
 }
 
-void VirtualUI::SetShaderUniforms(GLint textureHandle, float brightness, float contrast) const {
+void VirtualUI::SetShaderUniforms(GLint textureHandle, float brightness,
+                                  float contrast) const {
   glUniform1i(_cameraPreviewTextureUniform, 0);
   glUniform1f(_contrastFactorUniform, contrast);
   glUniform1f(_brightnessFactorUniform, brightness);
@@ -261,10 +187,12 @@ void VirtualUI::RenderFullScreenQuad() const {
 }
 
 void VirtualUI::RenderToFBO(uint32_t fboHandle, uint32_t textureHandle,
-                             const ImVec2& viewportSize, float brightness, float contrast) const {
+                            const ImVec2 &viewportSize, float brightness,
+                            float contrast) const {
   glBindFramebuffer(GL_FRAMEBUFFER, fboHandle);
   glFramebufferTexture(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, textureHandle, 0);
-  glViewport(0, 0, static_cast<GLsizei>(viewportSize.x), static_cast<GLsizei>(viewportSize.y));
+  glViewport(0, 0, static_cast<GLsizei>(viewportSize.x),
+             static_cast<GLsizei>(viewportSize.y));
   glUseProgram(_programID);
 
   glActiveTexture(GL_TEXTURE0);
@@ -279,13 +207,14 @@ void VirtualUI::RenderToFBO(uint32_t fboHandle, uint32_t textureHandle,
 
 void VirtualUI::RenderDisplayToFBO() const {
   glBindFramebuffer(GL_FRAMEBUFFER, _cameraFBO);
-  glFramebufferTexture(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, (GLuint)(intptr_t)_displayTextureID, 0);
+  glFramebufferTexture(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0,
+                       (GLuint)(intptr_t)_displayTextureID, 0);
   glViewport(0, 0, UIConstants::DisplayFBOWidth, UIConstants::DisplayFBOHeight);
   glUseProgram(_programID);
 
   glActiveTexture(GL_TEXTURE0);
   glBindTexture(GL_TEXTURE_2D, (GLuint)(intptr_t)_displayTextureID);
-  
+
   float brightness = UIConstants::LCD_BRIGHTNESS_FACTOR * _lcdBrightness;
   SetShaderUniforms(0, brightness, _lcdContrast);
 
@@ -295,7 +224,7 @@ void VirtualUI::RenderDisplayToFBO() const {
   glBindFramebuffer(GL_FRAMEBUFFER, 0);
 }
 
-void VirtualUI::ShowZoomTooltip() {
+void VirtualUI::ShowZoomTooltip()const {
   ImVec2 pos = ImGui::GetCursorScreenPos();
   int16_t textureWidth = UIConstants::DisplayFBOWidth;
   int16_t textureHeight = UIConstants::DisplayFBOHeight;
@@ -330,7 +259,7 @@ void VirtualUI::RenderCameraPreviewToFBO() const {
               brightness, 1.0f);
 }
 
-void VirtualUI::RenderOverlay() const {
+void VirtualUI::RenderOverlay()  {
   ImGui::PushStyleColor(ImGuiCol_ChildBg, (ImU32)ImColor(16, 16, 16, 196));
   ImGui::BeginChild("Parameters", UIConstants::OverlaySize, true);
   ImGui::SetWindowFontScale(1.5f);
@@ -380,29 +309,41 @@ void VirtualUI::RenderKnob(int8_t &knobValue, ButtonID &button) {
   static bool prev_knob_pressed = false;
   bool knob_pressed = false;
 
-  int tick_delta = ImGui::KnobEncoder("Knob", &knob_angle, &knob_pressed, "Press",
-                                      ImVec2(UIConstants::KnobDiameter, UIConstants::KnobDiameter), 
-                                      _knobTextureID, IM_COL32_WHITE);
+  int tick_delta = ImGui::KnobEncoder(
+      "Knob", &knob_angle, &knob_pressed, "Press",
+      ImVec2(UIConstants::KnobDiameter, UIConstants::KnobDiameter),
+      _knobTextureID, IM_COL32_WHITE);
+
+  // Check for mouse wheel over the knob
+  if (ImGui::IsItemHovered()) {
+    float wheel = ImGui::GetIO().MouseWheel;
+    if (wheel != 0.0f) {
+      tick_delta += static_cast<int>(wheel);
+    }
+  }
 
   if (tick_delta != 0) {
-      knobValue = tick_delta;
-      _brightnessLevel += tick_delta; 
+    knobValue = tick_delta;
+    _brightnessLevel += tick_delta;
+    if (_knobHandler) {
+      _knobHandler(tick_delta);
+    }
   } else {
-      knobValue = 0;
+    knobValue = 0;
   }
 
   // Handle knob press state transitions with ButtonState
   if (knob_pressed && !prev_knob_pressed) {
-      if (_buttonClickHandler) {
-          _buttonClickHandler(ButtonID::KNOB, ButtonState::Pressed);
-      }
-      button = ButtonID::KNOB;
+    if (_buttonClickHandler) {
+      _buttonClickHandler(ButtonID::KNOB, ButtonState::Pressed);
+    }
+    button = ButtonID::KNOB;
   } else if (!knob_pressed && prev_knob_pressed) {
-      if (_buttonClickHandler) {
-          _buttonClickHandler(ButtonID::KNOB, ButtonState::Released);
-      }
+    if (_buttonClickHandler) {
+      _buttonClickHandler(ButtonID::KNOB, ButtonState::Released);
+    }
   }
-  
+
   prev_knob_pressed = knob_pressed;
 }
 
@@ -411,7 +352,8 @@ constexpr typename std::underlying_type<E>::type to_underlying(E e) noexcept {
   return static_cast<typename std::underlying_type<E>::type>(e);
 }
 
-void VirtualUI::RenderAndHandleSimButton(const char *label_id, ButtonID id, bool isSpecial) {
+void VirtualUI::RenderAndHandleSimButton(const char *label_id, ButtonID id,
+                                         bool isSpecial) {
   if (isSpecial) {
     ImGui::CustomImageButton(
         label_id, _buttonTextureID, _buttonPressedTextureID,
@@ -434,11 +376,16 @@ void VirtualUI::RenderAndHandleSimButton(const char *label_id, ButtonID id, bool
   }
 }
 
-void VirtualUI::RenderButtonGrid(int startIdx, int count, int offsetX, int offsetY,
-                                  const ImVec2& size, bool isRound) {
-  const ImTextureID normalTex = isRound ? _buttonRoundTextureID : _buttonTextureID;
-  const ImTextureID pressedTex = isRound ? _buttonRoundPressedTextureID : _buttonPressedTextureID;
-  const ImVec2 buttonSize = isRound ? ImVec2(size) : ImVec2(UIConstants::SmallButtonWidth, UIConstants::SmallButtonHeight);
+void VirtualUI::RenderButtonGrid(int startIdx, int count, int offsetX,
+                                 int offsetY, const ImVec2 &size,
+                                 bool isRound) {
+  const ImTextureID normalTex =
+      isRound ? _buttonRoundTextureID : _buttonTextureID;
+  const ImTextureID pressedTex =
+      isRound ? _buttonRoundPressedTextureID : _buttonPressedTextureID;
+  const ImVec2 buttonSize = isRound ? ImVec2(size)
+                                    : ImVec2(UIConstants::SmallButtonWidth,
+                                             UIConstants::SmallButtonHeight);
   const int spacingX = isRound ? 0 : UIConstants::ButtonSpacingX;
   const int spacingY = isRound ? UIConstants::RoundButtonSpacingY : 0;
 
@@ -446,12 +393,13 @@ void VirtualUI::RenderButtonGrid(int startIdx, int count, int offsetX, int offse
     int x = offsetX + (spacingX > 0 ? i * spacingX : 0);
     int y = offsetY + (spacingY > 0 ? i * spacingY : 0);
     ImGui::SetCursorPos(ImVec2(static_cast<float>(x), static_cast<float>(y)));
-    
-    const char* buttonLabel = UIConstants::buttonIDs[startIdx + i];
-    ButtonID buttonID = static_cast<ButtonID>(to_underlying(ButtonID::BUTTON_1) + startIdx + i);
-    
+
+    const char *buttonLabel = UIConstants::buttonIDs[startIdx + i];
+    ButtonID buttonID =
+        static_cast<ButtonID>(to_underlying(ButtonID::BUTTON_1) + startIdx + i);
+
     ImGui::CustomImageButton(buttonLabel, normalTex, pressedTex, buttonSize);
-    
+
     if (ImGui::IsItemActivated()) {
       if (_buttonClickHandler) {
         _buttonClickHandler(buttonID, ButtonState::Pressed);
@@ -468,17 +416,16 @@ void VirtualUI::RenderButtonGrid(int startIdx, int count, int offsetX, int offse
 void VirtualUI::RenderButtons(ButtonID &button) {
   // Special buttons (top-left and top-center)
   ImGui::SetCursorPos(UIConstants::SpecialButton1Position);
-  RenderAndHandleSimButton("SPECIAL_1", ButtonID::BUTTON_1, true);
+  RenderAndHandleSimButton("SPECIAL_1", ButtonID::BUTTON_A, true);
 
   ImGui::SetCursorPos(UIConstants::SpecialButton2Position);
-  RenderAndHandleSimButton("SPECIAL_2", ButtonID::BUTTON_2, true);
+  RenderAndHandleSimButton("SPECIAL_2", ButtonID::BUTTON_B, true);
 
   // Photo button
   ImGui::SetCursorPos(UIConstants::PhotoButtonPosition);
-  ImGui::CustomImageButton("PHOTO", _buttonPhotoTextureID,
-                           _buttonPhotoPressedTextureID,
-                           ImVec2(UIConstants::PhotoButtonWidth,
-                                  UIConstants::PhotoButtonHeight));
+  ImGui::CustomImageButton(
+      "PHOTO", _buttonPhotoTextureID, _buttonPhotoPressedTextureID,
+      ImVec2(UIConstants::PhotoButtonWidth, UIConstants::PhotoButtonHeight));
   if (ImGui::IsItemActivated()) {
     if (_buttonClickHandler) {
       _buttonClickHandler(ButtonID::BUTTON_PHOTO, ButtonState::Pressed);
@@ -492,10 +439,9 @@ void VirtualUI::RenderButtons(ButtonID &button) {
 
   // Record button
   ImGui::SetCursorPos(UIConstants::RecordButtonPosition);
-  ImGui::CustomImageButton("RECORD", _buttonRecordTextureID,
-                           _buttonRecordPressedTextureID,
-                           ImVec2(UIConstants::RecordButtonWidth,
-                                  UIConstants::RecordButtonHeight));
+  ImGui::CustomImageButton(
+      "RECORD", _buttonRecordTextureID, _buttonRecordPressedTextureID,
+      ImVec2(UIConstants::RecordButtonWidth, UIConstants::RecordButtonHeight));
   if (ImGui::IsItemActivated()) {
     if (_buttonClickHandler) {
       _buttonClickHandler(ButtonID::BUTTON_RECORD, ButtonState::Pressed);
@@ -508,19 +454,25 @@ void VirtualUI::RenderButtons(ButtonID &button) {
   }
 
   // Buttons 1-3 (rectangular buttons, top row)
-  RenderButtonGrid(0, 3, UIConstants::BUTTONS_1_3_X, UIConstants::Buttons1_3_OffsetY,
-                   ImVec2(UIConstants::SmallButtonWidth, UIConstants::SmallButtonHeight), false);
+  RenderButtonGrid(
+      0, 3, UIConstants::BUTTONS_1_3_X, UIConstants::Buttons1_3_OffsetY,
+      ImVec2(UIConstants::SmallButtonWidth, UIConstants::SmallButtonHeight),
+      false);
 
   // Buttons 4-6 (rectangular buttons, bottom row)
-  RenderButtonGrid(3, 3, UIConstants::BUTTONS_1_3_X, UIConstants::Buttons4_6_OffsetY,
-                   ImVec2(UIConstants::SmallButtonWidth, UIConstants::SmallButtonHeight), false);
+  RenderButtonGrid(
+      3, 3, UIConstants::BUTTONS_1_3_X, UIConstants::Buttons4_6_OffsetY,
+      ImVec2(UIConstants::SmallButtonWidth, UIConstants::SmallButtonHeight),
+      false);
 
   // Buttons 7-9 (round buttons, left column)
-  RenderButtonGrid(6, 3, UIConstants::Buttons7_9_OffsetX, UIConstants::BUTTONS_7_9_GRID_Y_START,
+  RenderButtonGrid(6, 3, UIConstants::Buttons7_9_OffsetX,
+                   UIConstants::BUTTONS_7_9_GRID_Y_START,
                    UIConstants::RoundButtonSize, true);
 
   // Buttons 10-12 (round buttons, right column)
-  RenderButtonGrid(9, 3, UIConstants::Buttons10_12_OffsetX, UIConstants::BUTTONS_7_9_GRID_Y_START,
+  RenderButtonGrid(9, 3, UIConstants::Buttons10_12_OffsetX,
+                   UIConstants::BUTTONS_7_9_GRID_Y_START,
                    UIConstants::RoundButtonSize, true);
 }
 
@@ -544,16 +496,15 @@ void VirtualUI::RenderLED(int8_t glowValue) {
   // Render LED light
   ImGui::GetWindowDrawList()->ImDrawList::AddCallback(EnableBlending, nullptr);
 
-  ImGui::SetCursorPos(UIConstants::LEDTopPosition -
-                      UIConstants::LEDGlowOffset * 0.5f);
-  ImGui::Image(
-      _ledGlowTextureID,
-      UIConstants::LEDGlowSize); //, ImColor(255, 32, 32, 255 - glowValue)
+  ImGui::SetCursorPos(UIConstants::LEDTopPosition - UIConstants::LEDGlowOffset * 0.5f);
+  ImGui::ImageWithBg(_ledGlowTextureID, UIConstants::LEDGlowSize, ImVec2(0, 0),
+                     ImVec2(1, 1), ImColor(0, 0, 0, 0),
+                     ImColor(255, 32, 32, 255 - glowValue));
 
-  ImGui::SetCursorPos(UIConstants::LEDBottomPosition -
-                      UIConstants::LEDGlowOffset * 0.5f);
-  ImGui::Image(_ledGlowTextureID,
-               UIConstants::LEDGlowSize); //, ImColor(64, 64, 255, glowValue)
+  ImGui::SetCursorPos(UIConstants::LEDBottomPosition - UIConstants::LEDGlowOffset * 0.5f);
+  ImGui::ImageWithBg(_ledGlowTextureID, UIConstants::LEDGlowSize, ImVec2(0, 0),
+                     ImVec2(1, 1), ImColor(0, 0, 0, 0),
+                     ImColor(64, 64, 255, 255 - glowValue));
 
   ImGui::GetWindowDrawList()->ImDrawList::AddCallback(DisableBlending, nullptr);
 }
@@ -584,12 +535,15 @@ void VirtualUI::Render(ButtonID &button, int8_t &knobValue,
   RenderLED(_glowValue);
 
   ImGui::SetCursorPos(UIConstants::DebugTogglePosition);
-  ImGui::ToggleButton("debug_overlay_switch", "Debug overlay",
-                      &debugOverlayEnabled);
+  bool oldDebugState = debugOverlayEnabled;
+  ImGui::ToggleButton("debug_overlay_switch", "Debug overlay", &debugOverlayEnabled);
+
+  if (oldDebugState != debugOverlayEnabled && _debugToggleHandler) {
+      _debugToggleHandler(debugOverlayEnabled);
+  }
 
   ImGui::SetCursorPos(UIConstants::ContrastTogglePosition);
-  ImGui::ToggleButton("toggle_contrast_switch", "Simulate LCD",
-                      &_toggleContrast);
+  ImGui::ToggleButton("toggle_contrast_switch", "Simulate LCD", &_toggleContrast);
   ToggleLCDContrast(_toggleContrast);
 
   ImGui::SetCursorPos(UIConstants::CameraPreviewPosition);

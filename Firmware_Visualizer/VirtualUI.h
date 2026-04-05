@@ -43,7 +43,7 @@ class VirtualUI {
 
   uint32_t _programID;
 
-  void ShowZoomTooltip();
+  void ShowZoomTooltip()const;
   std::function<void()> _screenshotHandler;
 
   uint32_t _vertexBuffer;
@@ -82,7 +82,7 @@ class VirtualUI {
   void RenderButtons(ButtonID &button);
   void RenderLED(int8_t glowValue);
 
-  void RenderOverlay() const;
+  static void RenderOverlay() ;
   void RenderVirtualCamera() const;
   void CompileShaders();
   uint32_t LoadSingleShader(const std::string &shaderFilePath,
@@ -97,8 +97,13 @@ class VirtualUI {
                    const ImVec2& viewportSize, float brightness, float contrast) const;
 
   using ButtonClickHandler = std::function<void(ButtonID, ButtonState)>;
+  using KnobHandler = std::function<void(int)>;
   ButtonClickHandler _buttonClickHandler;
+  KnobHandler _knobHandler;
   void RenderAndHandleSimButton(const char *label_id, ButtonID id, bool isSpecial = false);
+
+    using DebugToggleHandler = std::function<void(bool)>;
+    DebugToggleHandler _debugToggleHandler;
 
 public:
   VirtualUI(
@@ -113,4 +118,6 @@ public:
   void SetupVBO();
 
   void SetButtonClickHandler(ButtonClickHandler handler);
+  void SetKnobHandler(KnobHandler handler);
+  void SetDebugToggleHandler(DebugToggleHandler handler);
 };

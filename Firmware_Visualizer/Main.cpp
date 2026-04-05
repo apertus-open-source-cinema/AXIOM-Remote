@@ -23,7 +23,6 @@
 #include "SDL3/SDL_timer.h"
 #include "VirtualUI.h"
 
-#include "Theme.h"
 #include "HelpersGL.h"
 
 #include <ButtonDefinitions.h>
@@ -163,7 +162,6 @@ bool Application::initializeLVGL() {
                            sizeof(DesktopGLDriver::s_drawBuf1), LV_DISPLAY_RENDER_MODE_PARTIAL);
     lv_display_set_user_data(lvglDisplay, platformDriver.get());
 
-    InitializeTheme();
 
     lvglUI = std::make_unique<LvglUI>();
 
@@ -207,6 +205,16 @@ bool Application::initialize() {
         }
     };
     virtualUI->SetButtonClickHandler(buttonCallback);
+
+    virtualUI->SetKnobHandler([&](int delta) {
+        LvglUI::UpdateEncoder(delta);
+    });
+
+    virtualUI->SetDebugToggleHandler([&](bool enabled) {
+        if (lvglUI) {
+            lvglUI->SetDebugMarkersVisible(enabled);
+        }
+    });
 
     appInitialized = true;
     return true;

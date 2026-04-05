@@ -53,10 +53,21 @@ bool DesktopGLDriver::Initialize()
     return false;
   }
 
-  // Other driver-specific initialization could go here if needed
+  // Create Input Device
+  // m_lvglInputDevice = lv_indev_create();
+  // lv_indev_set_type(m_lvglInputDevice, LV_INDEV_TYPE_ENCODER);
+  // lv_indev_set_read_cb(m_lvglInputDevice, InputReadCallbackStatic);
+  // lv_indev_set_user_data(m_lvglInputDevice, this);
+  // // Important: Add input device to the default group so it controls focused objects!
+  // lv_group_t* g = lv_group_get_default();
+  // if (g) {
+  //     lv_indev_set_group(m_lvglInputDevice, g);
+  // } else {
+  //     SDL_LogWarn(SDL_LOG_CATEGORY_APPLICATION, "No default group found when initializing input device!");
+  // }
 
   SDL_LogInfo(SDL_LOG_CATEGORY_APPLICATION,
-              "DesktopGLDriver Initialized (Texture ready).");
+              "DesktopGLDriver Initialized (Texture & Input ready).");
   return true;
 }
 
@@ -144,18 +155,32 @@ bool DesktopGLDriver::InitializeTexture()
 DesktopGLDriver::InputReadCallbackStatic(lv_indev_t *inputDevice,
                                          lv_indev_data_t *inputData)
 {
-  // Get the driver struct associated with this input device
-//   lv_indev_t *driverStruct = lv_indev_get_driver(inputDevice);
-//   if (driverStruct)
-//   {
-//     // Get the driver instance from the driver struct's user data (set in main)
-//     auto *instance = static_cast<DesktopGLDriver *>(driverStruct->user_data);
-//     if (instance)
-//     {
-//       // Call the instance method to perform the input reading
-//       instance->InputReadCallbackImpl(inputData);
-//     }
-//   }
+    auto *instance = static_cast<DesktopGLDriver *>(lv_indev_get_user_data(inputDevice));
+    if (instance)
+    {
+        instance->InputReadCallbackImpl(inputData);
+    }
+}
+
+void DesktopGLDriver::InputReadCallbackImpl(lv_indev_data_t *data)
+{
+    data->enc_diff = m_encDiff;
+    data->state = m_isEncPressed ? LV_INDEV_STATE_PRESSED : LV_INDEV_STATE_RELEASED;
+    
+    // Clear the accumulated diff after reading, or just reset it if it was consumed?
+    // Usually, we accumulate until read, then clear.
+    m_encDiff = 0;
+}
+
+void DesktopGLDriver::UpdateInputState(ButtonID btn, ButtonState state, int16_t knobDiff)
+{
+    // Accumulate knob rotation
+    m_encDiff += knobDiff;
+
+    // Track button press state
+    if (btn == ButtonID::KNOB) {
+        m_isEncPressed = (state == ButtonState::Pressed);
+    }
 }
 
 // --- Instance Callback Implementations ---
