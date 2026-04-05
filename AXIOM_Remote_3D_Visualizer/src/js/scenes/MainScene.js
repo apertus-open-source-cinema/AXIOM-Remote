@@ -170,7 +170,7 @@ export class MainScene {
         this.SetupLight();
         this.LoadModel("axiom_remote02.glb");
 
-        this.lcd_pixel_texture = new THREE.TextureLoader().load("/src/data/textures/lcd_pixel.png");
+        this.lcd_pixel_texture = new THREE.TextureLoader().load("data/textures/lcd_pixel.png");
 
         this.lcd_pixel_texture.wrapS = THREE.RepeatWrapping;
         this.lcd_pixel_texture.wrapT = THREE.RepeatWrapping;

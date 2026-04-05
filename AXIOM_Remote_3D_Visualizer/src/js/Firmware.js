@@ -11,9 +11,8 @@ export async function loadFirmware(options = {}) {
   const module = await axiomRemoteFirmware({
     locateFile(path) {
       if (path.endsWith(".wasm")) {
-        // Using a leading slash ensures the path is relative to the web root,
-        // which is safer when using Vite's dev server or nested routes.
-        return "/src/js/FW/" + path;
+        // Using a relative path ensures it works when hosted in a subfolder (like GitHub Pages)
+        return "js/FW/" + path;
       }
       return path;
     },
