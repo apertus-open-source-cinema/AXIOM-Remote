@@ -1,100 +1,62 @@
 <!DOCTYPE html>
 <html>
-  <head>
-    <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1" />
 
-    <title>AXIOM Remote 3D Viewer</title>
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
 
-    <link rel="stylesheet" href="css/default.css" />
-  </head>
-  <body>
-    <div id="main_layout">
-      <div id="info_pane">
-        <div class="overlay">
-          <img
-            id="axiom_logo"
-            src="images/axiom_logo_light.png"
-            alt="AXIOM Logo"
-            title="AXIOM Logo"
-          />
-          <h2 style="margin-bottom: 1em">AXIOM Remote 3D Viewer</h2>
-          <p>
-            This enclosure concept represents the current state of the design of
-            the open hardware/free software AXIOM Remote with all buttons, knob
-            and LCD. The original firmware running on the device is also running
-            on this 3D mockup and you can interact with buttons, etc. like you
-            would with the real device.
-          </p>
-          <b style="margin-bottom: 1em">Usage:</b>
-          <div id="instructions">
-            <div class="instruction_row">
-              <img
-                src="images/lmb.png"
-                alt="Left Mouse Button"
-                title="Left Mouse Button"
-                class="instruction_image"
-              />
-              <span class="mouse_usage_illustation"
-                >Left Mouse Button - interact with knob/buttons</span
-              >
-            </div>
-            <div class="instruction_row">
-              <img
-                src="images/rmb.png"
-                alt="Right Mouse Button"
-                title="Right Mouse Button"
-                class="instruction_image"
-              />
-              <span class="mouse_usage_illustation"
-                >Right Mouse Button - Rotate View</span
-              >
-            </div>
-            <div class="instruction_row">
-              <img
-                src="images/mmb.png"
-                alt="Middle Mouse Button"
-                title="Middle Mouse Button"
-                class="instruction_image"
-              />
-              <span class="mouse_usage_illustation"
-                >Middle Mouse Button - Pan View</span
-              >
-            </div>
-            <div class="instruction_row">
-              <img
-                src="images/wheel.png"
-                alt="Mouse Wheel"
-                title="Mouse Wheel"
-                class="instruction_image"
-              />
-              <span class="mouse_usage_illustation"
-                >Mouse Wheel - Zoom View</span
-              >
-            </div>
+  <title>AXIOM Remote 3D Viewer</title>
+  <link rel="stylesheet" href="css/default.css" />
+  <script type="module" crossorigin src="./assets/index-D426hwie.js"></script>
+</head>
+
+<body>
+  <div id="main_layout">
+    <div id="info_pane">
+      <div class="overlay">
+        <img id="axiom_logo" src="./assets/axiom_logo_light-D5cq7OEr.png" alt="AXIOM Logo" title="AXIOM Logo" />
+        <h2 style="margin-bottom: 1em">AXIOM Remote 3D Viewer</h2>
+        <p>
+          This enclosure concept represents the current state of the design of
+          the open hardware/free software AXIOM Remote with all buttons, knob
+          and LCD. The original firmware running on the device is also running
+          on this 3D mockup and you can interact with buttons, etc. like you
+          would with the real device.
+        </p>
+        <b style="margin-bottom: 1em">Usage:</b>
+        <div id="instructions">
+          <div class="instruction_row">
+            <img src="./assets/lmb-CKsECwFg.png" alt="Left Mouse Button" title="Left Mouse Button" class="instruction_image" />
+            <span class="mouse_usage_illustation">Left Mouse Button - interact with knob/buttons</span>
           </div>
-          <div style="margin-top: auto">
-            <a
-              href="https://wiki.apertus.org/index.php/AXIOM_Remote"
-              target="_blank"
-              >AXIOM Remote on Wiki</a
-            >
-            <a
-              href="https://github.com/apertus-open-source-cinema/AXIOM-Remote"
-              target="_blank"
-              >AXIOM Remote Source Code on Github</a
-            >
-            <a href="https://www.apertus.org" target="_blank">apertus.org</a>
+          <div class="instruction_row">
+            <img src="./assets/rmb-DrZwqmYD.png" alt="Right Mouse Button" title="Right Mouse Button"
+              class="instruction_image" />
+            <span class="mouse_usage_illustation">Right Mouse Button - Rotate View</span>
+          </div>
+          <div class="instruction_row">
+            <img src="./assets/mmb-CXJM8wXI.png" alt="Middle Mouse Button" title="Middle Mouse Button"
+              class="instruction_image" />
+            <span class="mouse_usage_illustation">Middle Mouse Button - Pan View</span>
+          </div>
+          <div class="instruction_row">
+            <img src="./assets/wheel-BLKyuifB.png" alt="Mouse Wheel" title="Mouse Wheel" class="instruction_image" />
+            <span class="mouse_usage_illustation">Mouse Wheel - Zoom View</span>
           </div>
         </div>
-      </div>
-      <div id="app" class="backdrop-blur" style="background-color: black">
-        <!-- <div id="ui">
-             <ul id="timeline"></ul> 
-          </div> -->
-        <canvas id="render_canvas" class="full_page"></canvas>
+        <div style="margin-top: auto">
+          <a href="https://wiki.apertus.org/index.php/AXIOM_Remote" target="_blank">AXIOM Remote on Wiki</a>
+          <a href="https://github.com/apertus-open-source-cinema/AXIOM-Remote" target="_blank">Source Code on Github</a>
+          <a href="https://www.apertus.org" target="_blank">apertus.org</a>
+        </div>
       </div>
     </div>
-    <script type="module" src="js/bundle.js"></script>
-  </body>
+    <div id="app" class="backdrop-blur" style="background-color: black">
+      <canvas id="render_canvas" class="full_page"></canvas>
+    </div>
+  </div>
+
+  <!-- Vite entry point -->
+</body>
+
 </html>
