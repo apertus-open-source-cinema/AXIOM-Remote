@@ -1,5 +1,5 @@
-import * as THREE from "three";
-import PubSub from "pubsub-js";
+import * as THREE from "three/webgpu";
+import eventBus from "./eventBus.js";
 
 export class InputManager {
     constructor(renderContainer, scene, camera) {
@@ -49,13 +49,16 @@ export class InputManager {
         this.updateMousePosition(event);
 
         if (this.isKnobDragging && this.activeObject) {
-            PubSub.publish("knob_move", { mouse: this.mouse, camera: this.camera });
+            eventBus.emit("knob_move", { mouse: this.mouse, camera: this.camera });
         }
     }
 
     onPointerUp() {
         if (this.activeObject && this.isButtonDown) {
             this.handleButtonInteraction(this.activeObject, 'UP');
+        }
+        if (this.isKnobDragging) {
+            eventBus.emit("knob_drag_end");
         }
         this.isKnobDragging = false;
         this.activeObject = null;
@@ -66,7 +69,7 @@ export class InputManager {
         obj.position.y += move;
         this.isButtonDown = state === 'DOWN';
 
-        PubSub.publish("input_interaction", { name: obj.name, state });
-        PubSub.publish("scene_update_required");
+        eventBus.emit("input_interaction", { name: obj.name, state });
+        eventBus.emit("scene_update_required");
     }
 }
