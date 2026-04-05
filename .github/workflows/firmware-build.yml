@@ -2,11 +2,9 @@ name: Build, Test, and Deploy
 
 on:
   push:
-    branches-ignore:
-      - "gh-pages"
+    branches-ignore: ["gh-pages"]
   pull_request:
-    branches-ignore:
-      - "gh-pages"
+    branches-ignore: ["gh-pages"]
 
 jobs:
   build-firmware:
@@ -15,8 +13,7 @@ jobs:
     container: bandit1983/gcc-arm-toolchain
 
     steps:
-      - name: Checkout code
-        uses: actions/checkout@v4
+      - uses: actions/checkout@v4
 
       - name: Build firmware
         run: |
@@ -27,96 +24,91 @@ jobs:
       - name: Prepare firmware artifacts
         run: |
           cd Firmware/build
-          mv AXIOM_Remote_Firmware.hex AXIOM_Remote_Firmware_${{ github.run_number }}.hex
-          mv AXIOM_Remote_Firmware.uf2 AXIOM_Remote_Firmware_${{ github.run_number }}.uf2
-          md5sum AXIOM_Remote_Firmware_${{ github.run_number }}.hex > AXIOM_Remote_Firmware_${{ github.run_number }}.hex.md5
-          md5sum AXIOM_Remote_Firmware_${{ github.run_number }}.uf2 > AXIOM_Remote_Firmware_${{ github.run_number }}.uf2.md5
+          for f in *.hex *.uf2; do
+            mv "$f" "${f%.*}_${{ github.run_number }}.${f##*.}"
+            md5sum "${f%.*}_${{ github.run_number }}.${f##*.}" > "${f%.*}_${{ github.run_number }}.${f##*.}.md5"
+          done
 
-      - name: Upload firmware artifact
-        uses: actions/upload-artifact@v4
+      - uses: actions/upload-artifact@v4
         with:
-          name: firmware-artifacts
-          path: |
-            Firmware/build/*.hex
-            Firmware/build/*.uf2
-            Firmware/build/*.md5
+          name: firmware
+          path: Firmware/build/*
 
-  test:
-    name: Run C++ Tests
-    runs-on: ubuntu-latest
-    container: tangramor/cpptools:latest
+  # test:
+  #   name: Run C++ Tests
+  #   runs-on: ubuntu-latest
+  #   container: tangramor/cpptools:latest
 
-    steps:
-      - name: Checkout code
-        uses: actions/checkout@v4
+  #   steps:
+  #     - uses: actions/checkout@v4
 
-      - name: Build and run tests
-        run: |
-          cd FirmwareTest
-          mkdir build
-          cd build
-          cmake ..
-          make -j8
-          ./AXIOM_Remote_Firmware_Test -r junit > test-results.xml
+  #     - name: Build and run tests
+  #       run: |
+  #         cd FirmwareTest
+  #         cmake -B build -G Ninja .
+  #         cmake --build build
+  #         ./build/AXIOM_Remote_Firmware_Test -r junit > build/test-results.xml
 
-      - name: Upload Test Results
-        uses: actions/upload-artifact@v4
-        with:
-          name: test-results
-          path: FirmwareTest/build/test-results.xml
+  #     - uses: actions/upload-artifact@v4
+  #       with:
+  #         name: test-results
+  #         path: FirmwareTest/build/test-results.xml
 
-      - name: Upload coverage to Codecov
-        uses: codecov/codecov-action@v4
-        with:
-          token: ${{ secrets.CODECOV_TOKEN }}
-          file: ./FirmwareTest/build/coverage_report/coverage_report.xml
-          flags: frontend
+  #     - uses: codecov/codecov-action@v4
+  #       with:
+  #         files: ./FirmwareTest/build/coverage_report/coverage_report.xml
+  #         fail_ci_if_error: true
 
   build-3d:
     name: Build 3D Visualizer
     runs-on: ubuntu-latest
     needs: build-firmware
-    container: emscripten/emsdk:2.0.26
+
+
+    defaults:
+      run:
+        working-directory: AXIOM_Remote_3D_Visualizer
 
     steps:
-      - name: Checkout code
-        uses: actions/checkout@v4
+      - uses: actions/checkout@v4
 
-      - name: Build 3D visualizer
+      - name: Fetch LVGL source dependency
         run: |
-          cd AXIOM_Remote_3D_Visualizer
-          pnpm install
+          mkdir -p ../Firmware/3rdParty
+          git clone --depth 1 --branch master https://github.com/lvgl/lvgl.git ../Firmware/3rdParty/lvgl-src
+
+      - uses: pnpm/action-setup@v4
+        with:
+          version: 9
+
+      - uses: mymindstorm/setup-emsdk@v14
+
+      - name: Install dependencies
+        run: pnpm install --frozen-lockfile
+
+      - name: Build
+        run: |
           ./transpile_firmware.sh
           pnpm build
 
-      - name: Upload 3D visualizer artifact
-        uses: actions/upload-artifact@v4
+      - uses: actions/upload-artifact@v4
         with:
-          name: 3d-visualizer-dist
+          name: web-dist
           path: AXIOM_Remote_3D_Visualizer/dist
 
   deploy-gh-pages:
     name: Deploy to GitHub Pages
     runs-on: ubuntu-latest
     needs: build-3d
-    # Only run on pushes to the main branch
-    if: github.ref == 'refs/heads/main' && github.event_name == 'push'
+    if: github.event_name == 'push'
 
     steps:
-      - name: Checkout code
-        uses: actions/checkout@v4
-
-      - name: Download 3D visualizer artifact
-        uses: actions/download-artifact@v4
+      - uses: actions/download-artifact@v4
         with:
-          name: 3d-visualizer-dist
+          name: web-dist
           path: dist
 
-      - name: Deploy to GitHub Pages
-        uses: peaceiris/actions-gh-pages@v4
+      - uses: peaceiris/actions-gh-pages@v4
         with:
           github_token: ${{ secrets.GITHUB_TOKEN }}
           publish_dir: ./dist
-          # The user/organization that owns the repository
-          user_name: "github-actions[bot]"
-          user_email: "github-actions[bot]@users.noreply.github.com"

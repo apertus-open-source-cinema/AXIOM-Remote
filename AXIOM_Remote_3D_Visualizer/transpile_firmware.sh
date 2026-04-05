@@ -11,9 +11,9 @@ fi
 
 # --- Configuration & Path Resolution ---
 # We resolve absolute paths here to prevent breakage when we 'cd' later
-FIRMWARE_ROOT=$(realpath "../Firmware")
-LVGL_SRC=$(realpath "$FIRMWARE_ROOT/3rdParty/lvgl-src")
-LVGL_BUILD=$(realpath "$FIRMWARE_ROOT/3rdParty/lvgl-build")
+FIRMWARE_ROOT=$(realpath -m "../Firmware")
+LVGL_SRC=$(realpath -m "$FIRMWARE_ROOT/3rdParty/lvgl-src")
+LVGL_BUILD=$(realpath -m "$FIRMWARE_ROOT/3rdParty/lvgl-build")
 LV_CONF="$FIRMWARE_ROOT/lv_conf.h"
 FIRMWARE_SRC="$FIRMWARE_ROOT/src/UI"
 BUILD_DIR="build"
@@ -22,7 +22,8 @@ OUTPUT_DIR="src/js/FW"
 # Validate source paths exist
 if [ ! -d "$LVGL_SRC/src" ]; then
     echo >&2 "Error: LVGL source directory not found at: $LVGL_SRC"
-    echo >&2 "Hint: Run 'git submodule update --init --recursive' in the project root."
+    echo >&2 "Hint: Ensure you have initialized the project with CMake in the Firmware directory."
+    echo >&2 "      Run: cd ../Firmware && cmake -B build"
     exit 1
 fi
 
@@ -123,4 +124,4 @@ emcc $COMMON_FLAGS -std=c++20 \
     -o "$OUTPUT_DIR/axiom_remote_firmware.mjs"
 
 echo "Done!"
-ls -lh "$OUTPUT_DIR/axiom_remote_firmware.js" "$OUTPUT_DIR/axiom_remote_firmware.wasm"
+ls -lh "$OUTPUT_DIR/axiom_remote_firmware.mjs" "$OUTPUT_DIR/axiom_remote_firmware.wasm"
