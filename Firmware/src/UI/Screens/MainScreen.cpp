@@ -92,7 +92,6 @@ void MainScreen::Create(lv_obj_t* parent)
 
 bool MainScreen::HandleAction(ButtonID id, ButtonState state)
 {
-    // Add handling for other buttons here if needed, beyond the 12 around the display
     return false;
 }
 

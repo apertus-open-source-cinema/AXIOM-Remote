@@ -1,11 +1,16 @@
 add_library(FirmwareUI STATIC
     LvglUI.cpp
-    LvglCore.cpp
     Theme.cpp
     Media/ApertusLogo_full.c
     Screens/MainScreen.cpp
     Screens/SettingsMenuScreen.cpp
-    ScreenManager.cpp
+#    Screens/ParameterScreen.h
+#    Screens/ListParameterScreen.h
+    Screens/SliderParameterScreen.h
+    Screens/WhiteBalanceScreen.h
+#    Screens/ShutterScreen.h
+    Screens/DebugScreen.cpp
+    Screens/BaseScreen.cpp
     AppContext.cpp
     Fonts/titillium_12.c
     Fonts/titillium_18.c

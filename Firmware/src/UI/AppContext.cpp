@@ -68,18 +68,25 @@ void AppContext::NotifyStateChanged()
     }
 }
 
-void AppContext::RequestScreenChange(ScreenID targetId, bool animate)
+void AppContext::RequestScreenChange(ScreenID targetId, AnimationDirection direction)
 {
-    printf("AppContext: Requesting screen change to %d.", (int)targetId);
+    printf("AppContext: Requesting screen change to %d with direction %d.", (int)targetId, (int)direction);
     if (m_screenChangeRequestHandler)
     {
         // Call the registered handler (likely calls ScreenManager::SwitchToScreen)
-        m_screenChangeRequestHandler(targetId, animate);
+        m_screenChangeRequestHandler(targetId, direction);
     }
     else
     {
         printf("AppContext: No ScreenChangeRequestHandler set.");
     }
+}
+
+// Overload for backward compatibility and pending animation direction
+void AppContext::RequestScreenChange(ScreenID targetId)
+{
+    RequestScreenChange(targetId, m_pendingAnimationDirection);
+    m_pendingAnimationDirection = AnimationDirection::NONE; // Reset
 }
 
 // --- Action Processing Dispatcher ---
@@ -90,6 +97,18 @@ void AppContext::ProcessAction(UIAction action)
      switch (action) {
         case UIAction::OPEN_SETTINGS_MENU:
             HandleMenuAction();
+            break;
+        case UIAction::OPEN_SHUTTER_SETTINGS:
+            HandleShutterSettingsAction();
+            break;
+        case UIAction::OPEN_WHITE_BALANCE_SETTINGS:
+            HandleWhiteBalanceSettingsAction();
+            break;
+        case UIAction::OPEN_DEBUG_SCREEN:
+            RequestScreenChange(ScreenID::DEBUG, AnimationDirection::NONE);
+            break;
+        case UIAction::GO_TO_PREVIOUS_SCREEN:
+            HandleGoBackAction();
             break;
     //     case UIAction::Identifier::ACTION_1_FPS:     HandleFPSAction();     break;
     //     case UIAction::Identifier::ACTION_2_A_GAIN:  HandleAGainAction();   break;
@@ -102,6 +121,13 @@ void AppContext::ProcessAction(UIAction action)
     //          SDL_LogWarn(SDL_LOG_CATEGORY_APPLICATION, "AppContext: Unhandled action ID %d", (int)actionId);
     //         break;
     }
+}
+
+void AppContext::ProcessActionWithAnimation(UIAction action, AnimationDirection direction)
+{
+    // Store the animation direction for the next screen change
+    m_pendingAnimationDirection = direction;
+    ProcessAction(action);
 }
 
 // --- Individual Action Handlers ---
@@ -140,7 +166,7 @@ void AppContext::HandleMenuAction()
 {
     printf("Action: MENU pressed.\n");
     // This action requests navigation, handled by ScreenManager via callback
-    RequestScreenChange(ScreenID::SETTINGS_MENU, true);
+    RequestScreenChange(ScreenID::SETTINGS_MENU, AnimationDirection::NONE);
     // It might also change state, e.g., m_isMenuOpen = true; NotifyStateChanged();
 }
 
@@ -160,4 +186,22 @@ void AppContext::HandleWbAction()
     m_wbIndex = next_index;
     printf("Action: WB set to %s\n", GetWbValue().c_str());
     NotifyStateChanged();
+}
+
+void AppContext::HandleShutterSettingsAction()
+{
+    printf("Action: Open Shutter Settings\n");
+    RequestScreenChange(ScreenID::SHUTTER_SPEED);
+}
+
+void AppContext::HandleWhiteBalanceSettingsAction()
+{
+    printf("Action: Open White Balance Settings\n");
+    RequestScreenChange(ScreenID::WHITE_BALANCE);
+}
+
+void AppContext::HandleGoBackAction()
+{
+    printf("Action: Go Back\n");
+    RequestScreenChange(ScreenID::MAIN); // For now, just go back to main
 }

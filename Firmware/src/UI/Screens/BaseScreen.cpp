@@ -44,7 +44,7 @@ void BaseScreen::Create(lv_obj_t* parent)
     lv_obj_set_grid_cell(_leftContainer, LV_GRID_ALIGN_STRETCH, 0, 1, LV_GRID_ALIGN_STRETCH, 1, 1);
     lv_obj_set_layout(_leftContainer, LV_LAYOUT_FLEX);
     lv_obj_set_flex_flow(_leftContainer, LV_FLEX_FLOW_COLUMN);
-    lv_obj_set_flex_align(_leftContainer, LV_FLEX_ALIGN_CENTER, LV_FLEX_ALIGN_SPACE_EVENLY, LV_FLEX_ALIGN_CENTER);
+    lv_obj_set_flex_align(_leftContainer, LV_FLEX_ALIGN_CENTER, LV_FLEX_ALIGN_SPACE_BETWEEN, LV_FLEX_ALIGN_START);
 
     // Center Container: Middle row, second column
     _centerContainer = lv_obj_create(parent);
@@ -63,7 +63,7 @@ void BaseScreen::Create(lv_obj_t* parent)
     lv_obj_set_grid_cell(_rightContainer, LV_GRID_ALIGN_STRETCH, 2, 1, LV_GRID_ALIGN_STRETCH, 1, 1);
     lv_obj_set_layout(_rightContainer, LV_LAYOUT_FLEX);
     lv_obj_set_flex_flow(_rightContainer, LV_FLEX_FLOW_COLUMN);
-    lv_obj_set_flex_align(_rightContainer, LV_FLEX_ALIGN_CENTER, LV_FLEX_ALIGN_SPACE_EVENLY, LV_FLEX_ALIGN_CENTER);
+    lv_obj_set_flex_align(_rightContainer, LV_FLEX_ALIGN_CENTER, LV_FLEX_ALIGN_SPACE_BETWEEN, LV_FLEX_ALIGN_END);
 
     // Bottom Container: Spans all 3 columns in the last row
     _bottomContainer = lv_obj_create(parent);

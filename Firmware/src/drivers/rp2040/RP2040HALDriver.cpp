@@ -1,11 +1,11 @@
 #include "RP2040HALDriver.h"
-#include "../drivers/ili9341/ILI9341Display.h"
 
-#include "pico/stdlib.h"
-#include "pico/time.h"
 #include <cstdio>
-#include <src/display/lv_display.h>
 #include <stdexcept>
+
+#include "pico/time.h"
+
+#include "../drivers/ili9341/ILI9341Display.h"
 
 ILI9341Display ili9341Display;
 

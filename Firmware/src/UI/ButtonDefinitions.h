@@ -5,7 +5,7 @@
 
 enum class ButtonID
 {
-    BUTTON_NONE = 0,
+    BUTTON_NONE = -1,
 
     // Display top
     BUTTON_1,
@@ -34,10 +34,10 @@ enum class ButtonID
     BUTTON_RECORD,
     
     // Rotary Knobs
-    KNOB
+    KNOB,
     // E_1,
     // E_2,
-    // E_1_DOWN,
+    // E1_DOWN,
     // E_2_DOWN,
     // E_1_UP,
     // E_2_UP,
